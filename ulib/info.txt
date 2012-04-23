@@ -1,7 +1,7 @@
 "AddonInfo"
 {
 	"name"				"ULib"
-	"version"			"2.42"
+	"version"			"2.50"
 	"up_date"			"01/01/12"
 	"author_name"			"Team Ulysses"
 	"author_email"			"teamulysses@ulyssesmod.net"

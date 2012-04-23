@@ -1,6 +1,6 @@
 Title: ULib Readme
 
-*ULib v2.42 (released 01/01/12)*
+*ULib v2.50 (released 00/00/00)*
 
 ULib is a developer library for GMod 10 (<http://garrysmod.com/>).
 
@@ -44,6 +44,9 @@ After installing ULib correctly, scripts that take advantage of ULib will take c
 Rest easy!
 
 Group: Changelog
+v2.50 - *(00/00/00)*
+	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
+
 v2.42 - *(01/01/12)*
 	* [FIX] Garry breakages.
 

@@ -1198,7 +1198,7 @@ local function routedCommandCallback( ply, commandName, argv )
 		ply.ulib_threat_level = 1
 		ply.ulib_threat_time = curtime + 3
 		ply.ulib_threat_warned = nil
-	elseif ply.ulib_threat_level >= 30 then
+	elseif ply.ulib_threat_level >= 60 then
 		if not ply.ulib_threat_warned then
 			ULib.tsay( ply, "You are running too many commands too quickly, please wait before executing more" )
 			ply.ulib_threat_warned = true

@@ -29,4 +29,4 @@ xgui.settings_tabs.PerformLayout = function( self )
 	self.tabScroller:SetWide( 555 ) --Make the tabs smaller to accomadate for the X button at the top-right corner.
 end
 
-xgui.addModule( "Settings", settings, "gui/silkicons/wrench" )
+xgui.addModule( "Settings", settings, "icon16/wrench.png" )

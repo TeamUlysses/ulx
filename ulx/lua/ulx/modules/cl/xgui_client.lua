@@ -71,7 +71,8 @@ if not xgui.settings.animIntype then xgui.settings.animIntype = 1 end
 if not xgui.settings.animOuttype then xgui.settings.animOuttype = 1 end
 
 
-local function xgui_init( authedply )
+function xgui.init( authedply )
+	print( "XGUI: hook received" )
 	if authedply ~= LocalPlayer() then return end
 
 	--Check if the server has XGUI installed
@@ -83,7 +84,7 @@ local function xgui_init( authedply )
 	--Create the bottom infobar
 	xgui.infobar = xlib.makepanel{ x=10, y=399, w=580, h=20, parent=xgui.base }
 	xgui.infobar:NoClipping( true )
-	xgui.infobar.Paint = function( self )
+	xgui.infobar.Paint = function( self, w, h )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
 	local version_type = ulx.revision and ( ulx.revision > 0 and " SVN " .. ulx.revision or " Release") or (" N/A")
@@ -160,7 +161,8 @@ local function xgui_init( authedply )
 
 	xgui.processModules()
 end
-hook.Add( "UCLAuthed", "InitXGUI", xgui_init, 20 )
+print( "XGUI: Hook added" )
+hook.Add( "UCLAuthed", "InitXGUI", xgui.init, 20 )
 
 function xgui.saveClientSettings()
 	local output = "// This file stores clientside settings for XGUI.\n"
@@ -195,7 +197,7 @@ function xgui.processModules()
 		if module then
 			module = xgui.modules.tab[module]
 			if module.xbutton == nil then
-				module.xbutton = xlib.makesysbutton{ x=565, y=5, w=20, btype="close", parent=module.panel }
+				module.xbutton = xlib.makespecialbutton{ x=565, y=5, w=20, btype="close", parent=module.panel }
 				module.xbutton.DoClick = function()
 					xgui.hide()
 				end

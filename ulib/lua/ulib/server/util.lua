@@ -26,13 +26,14 @@ function ULib.clientRPC( plys, fn, ... )
 	ULib.checkArg( 1, "ULib.clientRPC", {"nil","Player","table"}, plys )
 	ULib.checkArg( 2, "ULib.clientRPC", {"string"}, fn )
 
-	if not plys then
-		plys = player.GetAll()
-	elseif type( plys ) == "Entity" then
-		plys = { plys }
+	net.Start( "URPC" )
+	net.WriteString( fn )
+	net.WriteTable( {...} )
+	if plys then
+		net.Send( plys )
+	else
+		net.Broadcast()
 	end
-
-	ulib_datastream.StreamToClients( plys, "ULibRPC", { fn=fn, args={...} })
 end
 
 

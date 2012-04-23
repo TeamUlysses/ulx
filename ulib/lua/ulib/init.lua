@@ -1,5 +1,3 @@
-require( "datastream" )
-
 if not ULib then
 	ULib = {}
 	--[[
@@ -20,8 +18,6 @@ if not ULib then
 
 	Msg( "//  shared/defines.lua       //\n" )
 	include( "ulib/shared/defines.lua" )
-	Msg( "//  shared/datastream.lua    //\n" )
-	include( "ulib/shared/datastream.lua" )
 	Msg( "//  shared/misc.lua          //\n" )
 	include( "ulib/shared/misc.lua" )
 	Msg( "//  shared/util.lua          //\n" )

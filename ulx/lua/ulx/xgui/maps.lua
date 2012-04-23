@@ -36,7 +36,7 @@ maps.disp:SetPos( 185, 30 )
 maps.disp:SetImage( "maps/noicon.vmt" )
 maps.disp:SetSize( 192, 192 )
 
-maps.gamemode = xlib.makemultichoice{ x=70, y=345, w=110, h=20, text="<default>", parent=maps }
+maps.gamemode = xlib.makecombobox{ x=70, y=345, w=110, h=20, text="<default>", parent=maps }
 
 maps.vote = xlib.makebutton{ x=185, y=245, w=192, h=20, label="Vote to play this map!", parent=maps }
 maps.vote.DoClick = function()
@@ -167,4 +167,4 @@ hook.Add( "ULibReplicatedCvarChanged", "XGUI_mapsUpdateVotemapEnabled", maps.Con
 
 xgui.hookEvent( "onProcessModules", nil, maps.updatePermissions )
 xgui.hookEvent( "votemaps", "process", maps.updateVoteMaps )
-xgui.addModule( "Maps", maps, "gui/silkicons/world" )
+xgui.addModule( "Maps", maps, "icon16/map.png" )

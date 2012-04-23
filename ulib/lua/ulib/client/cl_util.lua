@@ -4,22 +4,24 @@
 	Some client-side utilties
 ]]
 
-local function ULibRPC( handler, id, encoded, decoded )
-	local fn = ULib.findVar( decoded.fn )
-	if type( fn ) ~= "function" then return error( "Received bad RPC, invalid function (" .. tostring( decoded.fn ) .. ")!" ) end
+local function ULibRPC()
+	local fn_string = net.ReadString()
+	local args = net.ReadTable()
+	local fn = ULib.findVar( fn_string )
+	if type( fn ) ~= "function" then return error( "Received bad RPC, invalid function (" .. tostring( fn_string ) .. ")!" ) end
 
 	-- Since the table length operator can't always be trusted if there are holes in it, find the length by ourself
 	local max = 0
-	for k, v in pairs( decoded.args ) do
+	for k, v in pairs( args ) do
 		local n = tonumber( k )
 		if n and n > max then
 			max = n
 		end
 	end
 
-	fn( unpack( decoded.args, 1, max ) )
+	fn( unpack( args, 1, max ) )
 end
-ulib_datastream.Hook( "ULibRPC", ULibRPC )
+net.Receive( "URPC", ULibRPC )
 
 --[[
 	Function: umsgRcv

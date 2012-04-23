@@ -18,7 +18,7 @@
 	Revisions:
 
 		v2.40 - No longer strips comments, removed ability to execute on players.
-		v2.42 - Added usebasefolder to conform to Garry's API changes.
+		v2.50 - Added usebasefolder to conform to Garry's API changes.
 ]]
 function ULib.execFile( f, usebasefolder )
 	if not file.Exists( f, usebasefolder ) then
@@ -143,7 +143,7 @@ end
 
 		v2.10 - Initial (But dragged over from GM9 archive).
 		v2.40 - Fixed (was completely broken).
-		v2.42 - Now assumes paths relative to base folder.
+		v2.50 - Now assumes paths relative to base folder.
 ]]
 function ULib.filesInDir( dir, recurse, root )
 	if not file.IsDir( dir, true ) then
