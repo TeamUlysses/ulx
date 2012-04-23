@@ -1,0 +1,10 @@
+; ATTENTION! /ADDONS/ulx/data/ulx/<this file> is a DEFAULT file. DO NOT EDIT THE /ADDONS/ULX/DATA/ULX FOLDER FILE!!!
+; Instead, edit the version in <garrysmod root>/data/ulx/ if it exists. If it doesn't, copy this file to <gmod root>/data/ulx/ to create it.
+; This file is used to store default reasons for kicking and banning users.
+; These reasons show up in console autocomplete and in XGUI dropdowns.
+Spammer
+Crashed server
+Minge
+Griefer
+Foul language
+Disobeying the rules

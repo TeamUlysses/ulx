@@ -1,0 +1,3 @@
+This folder is similar to the lua/autorun folder, except all scripts in this folder are loaded after ULib.
+Scripts in this directory are shared ( loaded both server and client side ).
+Scripts in the client and server sub-folders are loaded only on the client and server respectively.

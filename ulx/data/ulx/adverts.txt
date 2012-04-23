@@ -1,0 +1,38 @@
+; ATTENTION! /ADDONS/ulx/data/ulx/<this file> is a DEFAULT file. DO NOT EDIT THE /ADDONS/ULX/DATA/ULX FOLDER FILE!!!
+; Instead, edit the version in <garrysmod root>/data/ulx/ if it exists. If it doesn't, copy this file to <gmod root>/data/ulx/ to create it.
+; Here's where you put advertisements
+;
+; Whether an advertisement is a center advertisement (csay) or text box advertisement (tsay) is determined by
+; whether or not the "time_on_screen" key is present. If it is present, it's a csay.
+;
+; The 'time' argument inside a center advertisement and the number following a chat advertisement are the
+; time it takes between each showing of this advertisement in seconds. Set it to 300 and the advertisement
+; will show every five minutes.
+;
+; If you want to make it so that one advertisement is shown and then will always be followed by another,
+; put them in a table. For example, if you add the following to the bottom of the file, A will always show
+; first followed by B.
+; "my_group"
+; {
+;     {
+;         "text" "Advertisement A"
+;         "time" "200"
+;     }
+;     {
+;         "text" "Advertisement B"
+;         "time" "300"
+;     }
+; }
+
+{
+	"text" "You're playing on %host%, enjoy your stay!"
+	"red" "100"
+	"green" "255"
+	"blue" "200"
+	"time_on_screen" "10"
+	"time" "300"
+}
+{
+	"text" "This server is running ULX Admin Mod version %ulx_version% by Team Ulysses -- ulyssesmod.net"
+	"time" "635"
+}

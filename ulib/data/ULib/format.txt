@@ -1,0 +1,39 @@
+Format of admin account in users.txt--
+"<steamid|ip|unique id>"
+{
+	"group" "superadmin"
+	"allow"
+	{
+		"ulx kick"
+		"ulx ban"
+	}
+	"deny"
+	{
+		"ulx cexec"
+	}
+}
+
+Example of a superadmin:
+"STEAM_0:1:123456"
+{
+	"group" "superadmin"
+	"allow"
+	{
+	}
+	"deny"
+	{
+	}
+}
+
+
+
+Format of group that gets the same allows as a superadmin in groups.txt--
+"<group_name>"
+{
+	"allow"
+	{
+		"ulx kick"
+		"ulx ban"
+	}
+	"inherit_from" "superadmin"
+}

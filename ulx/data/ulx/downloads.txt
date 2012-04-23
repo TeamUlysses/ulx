@@ -1,0 +1,9 @@
+;ATTENTION! /ADDONS/ulx/data/ulx/<this file> is a DEFAULT file. DO NOT EDIT THE /ADDONS/ULX/DATA/ULX FOLDER FILE!!!
+; Instead, edit the version in <garrysmod root>/data/ulx/ if it exists. If it doesn't, copy this file to <gmod root>/data/ulx/ to create it.
+; You can add forced downloads here. Add as many as you want, one file or
+; folder per line. You can also add these to your map- or game-specific files.
+; You can add a folder to add all files inside that folder recursively.
+; Any line starting with ';' is a comment and WILL NOT be processed!!!
+; Examples:
+;sound/cheeseman.mp3 <-- Adds the file 'cheeseman.mp3' under the sound folder
+;sound/my_music <-- Adds all files within the my_music folder, inside the sound folder
