@@ -1,0 +1,19 @@
+<html>
+<body bgcolor=#dbdbdb>
+<div style="text-align: center;">
+<div style="width: 80%; margin: 0px auto; border: 10px solid #c9d6e4; background-color: #ededed; padding: 10px; font-size: 12px; font-family: Tahoma; margin-top: 30px; color: #818181; text-align: left;">
+<div style="font-size: 30px; font-family: impact; width: 100%; margin-bottom: 5px;">My Server Name</div>
+<br>
+This Server uses the following mods:<br>
+ULX, PropDefender, and VMFLoader.<br>
+<br>
+<h2>Rules</h2>
+1. DON'T MESS WITH OTHER PLAYERS STUFF. If they want help, they'll ask!<br>
+2. Don't spam.<br>
+3. Have fun.<br>
+<div style="width: 100%; text-align: center; margin: 10px; font-weight: bold;">- The Admins</div>
+</div>
+</div>
+
+</body>
+</html>

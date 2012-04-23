@@ -1,0 +1,100 @@
+;ATTENTION! /ADDONS/ulx/data/ulx/<this file> is a DEFAULT file. DO NOT EDIT THE /ADDONS/ULX/DATA/ULX FOLDER FILE!!!
+; Instead, edit the version in <garrysmod root>/data/ulx/ if it exists. If it doesn't, copy this file to <gmod root>/data/ulx/ to create it.
+;Any of the settings in here can be added to the per-map or per-gamemode configs.
+;To add per-map and per-gamemode configs, create data/ulx/maps/<mapname>/config.txt
+;and data/ulx/gamemodes/<gamemodename>/config.txt files. This can also be done for
+;All other configuration files (adverts.txt, downloads.txt, gimps.txt, votemaps.txt)
+;All configurations add to each other except gimps and votemaps, which takes the most
+;specific config only.
+;Any line starting with a ';' is a comment!
+
+ulx showMotd 1 ; Set to 0 to disable showing motd on connect. Shows the file the cvar motdfile says to. Set to a URL to show a URL.
+motdfile ulx_motd.txt ; The motd to show
+
+
+ulx chattime 0 ; Players can only chat every x seconds (anti-spam). 0 to disable
+
+
+; This is what the players will see when they join, set it to "" to disable.
+; You can use %host% and %curmap% in your text and have it automagically parsed for you
+ulx welcomemessage "Welcome to %host%! We're playing %curmap%."
+
+
+ulx logFile 1 ; Log to file (Can still echo if off). This is a global setting, nothing will be logged to file with this off.
+ulx logEvents 1 ; Log events (player connect, disconnect, death)
+ulx logChat 1 ; Log player chat
+ulx logSpawns 1 ; Log when players spawn objects (props, effects, etc)
+ulx logSpawnsEcho 1 ; Echo spawns to players in server. -1 = Off, 0 = Dedicated console only, 1 = Admins only, 2 = All players. (Echoes to console)
+ulx logJoinLeaveEcho 1 ; Echo players leaves and joins to admins in the server (useful for banning minges)
+ulx logDir "ulx_logs" ; The log dir under garrysmod/data
+ulx logEcho 1 ; Echo mode
+; Echo modes:
+; 0 - OFF No output to any players when an admin command is used
+; 1 - ANONYMOUS Output to players without access to see who used the command (admins by default) similar to "(Someone) slapped Bob with 0 damage"
+; 2 - FULL Output to players similar to "Foo slapped Bob with 0 damage"
+
+ulx logEchoColors 1 ; Whether or not echoed commands in chat are colored
+ulx logEchoColorDefault "151 211 255" ; The default text color (RGB)
+ulx logEchoColorConsole "0 0 0" ; The color that Console gets when using actions
+ulx logEchoColorSelf "75 0 130" ; The color for yourself in echoes
+ulx logEchoColorEveryone "0 128 128" ; The color to use when everyone is targeted in echoes
+ulx logEchoColorPlayerAsGroup 1 ; Whether or not to use group colors for players. If false, it uses the color below.
+ulx logEchoColorPlayer "255 255 0" ; The color to use for players when ulx logEchoColorPlayerAsGroup is set to 0.
+ulx logEchoColorMisc "0 255 0" ; The color for anything else in echoes
+
+ulx rslotsMode 0
+ulx rslots 2
+ulx rslotsVisible 1 ; When this is 0, sv_visiblemaxplayers will be set to maxplayers - slots_currently_reserved
+;Modes:
+;0 - Off
+;1 - Keep # of slots reserved for admins, admins fill slots.
+;2 - Keep # of slots reserved for admins, admins don't fill slots, they'll be freed when a player leaves.
+;3 - Always keep 1 slot open for admins, kick the user with the shortest connection time if an admin joins.
+
+;Difference between 1 and 2:
+;I realize it's a bit confusing, so here's an example.
+;On mode 1--
+;	You have maxplayers set to 10, rslots set to 2, and there are currently 8 non-admins connected.
+;	If a non-admin tries to join, they'll be kicked to keep the reserved slots open. Two admins join
+;	and fill the two reserved slots. When non-admins leave, the two admins will still be filling the
+;	two reserved slots, so another regular player can join and fill the server up again without being
+;	kicked by the slots system
+
+;On mode 2--
+;	Same setup as mode 1, you have the two admins in the server and the server is full. Now, when a
+;	non-admin leaves the server, reserved slots will pick up the slot again as reserved. If a regular
+;	player tries to join and fill the server again, even though there are two admins connected, it will
+;	kick the regular player to keep the slot open
+
+;So, the basic difference between these two is mode 1 will subtract currently connected admins from the slot
+;pool, while mode 2 while always be attempting to reclaim slots if it doesn't currently have enough when
+;players leave no matter how many admins are connected.
+
+;rslotsVisible:
+;	If you set this variable to 0, ULX will automatically change sv_visiblemaxplayers for you so that if
+;	there are no regular player slots available in your server, it will appear that the server is full.
+;	The major downside to this is that admins can't connect to the server using the "find server" dialog
+;	when it appears full. Instead, they have to go to console and use the command "connect <ip>".
+;	NOTE THIS DOES NOT CHANGE YOUR MAXPLAYERS VARIABLE, ONLY HOW MANY MAXPLAYERS IT _LOOKS_ LIKE YOUR
+;	SERVER HAS. YOU CAN NEVER, EVER HAVE MORE PLAYERS IN YOUR SERVER THAN THE MAXPLAYERS VARIABLE.
+
+
+
+ulx votemapEnabled 1 ; Enable/Disable the entire votemap command
+ulx votemapMintime 10 ; Time after map change before votes count.
+ulx votemapWaittime 5 ; Time before a user must wait before they can change their vote.
+ulx votemapSuccessratio 0.4 ; Ratio of (votes for map)/(total players) needed to change map. (Rounds up)
+ulx votemapMinvotes 3 ; Number of minimum votes needed to change map (Prevents llamas). This supercedes the above convar on small servers.
+ulx votemapVetotime 30 ; Time in seconds an admin has after a successful votemap to veto the vote. Set to 0 to disable.
+ulx votemapMapmode 1 ; 1 = Use all maps but what's specified in votemaps.txt, 2 = Use only the maps specified in votemaps.txt.
+
+ulx voteEcho 0 ; 1 = Echo what every player votes (this does not apply to votemap). 0 = Don't echo
+
+ulx votemap2Successratio 0.5 ; Ratio of (votes for map)/(total players) needed to change map. (Rounds up)
+ulx votemap2Minvotes 3 ; Number of minimum votes needed to change map (Pevents llamas). This supercedes the above convar on small servers.
+
+ulx votekickSuccessratio 0.6 ; Ratio of (votes for kick)/(total players) needed to kick player. (Rounds up)
+ulx votekickMinvotes 2 ; Number of minimum votes needed to kick player (Pevents llamas). This supercedes the above convar on small servers.
+
+ulx votebanSuccessratio 0.7 ; Ratio of (votes for ban)/(total players) needed to ban player. (Rounds up)
+ulx votebanMinvotes 3 ; Number of minimum votes needed to ban player (Pevents llamas). This supercedes the above convar on small servers.
