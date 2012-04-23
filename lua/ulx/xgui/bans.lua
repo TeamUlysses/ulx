@@ -49,19 +49,19 @@ xlib.makebutton{ x=455, y=345, w=130, label="View Source Bans...", parent=xbans 
 		xbans.sbanWindow.sbanDetails:SetDisabled( false )
 	end
 	xlib.makelabel{ x=5, y=32, label="100 per page", parent=xbans.sbanWindow }
-	xbans.sbanWindow.pgleft = xlib.makesysbutton{ x=80, y=30, w=20, btype="left", disabled=true, parent=xbans.sbanWindow }
+	xbans.sbanWindow.pgleft = xlib.makespecialbutton{ x=80, y=30, w=20, btype="left", disabled=true, parent=xbans.sbanWindow }
 	xbans.sbanWindow.pgleft.DoClick = function()
 		local page = xbans.sbanWindow.sbanPage:GetValue()-1
 		xbans.sbanWindow.gotoPage( page )
 		xbans.sbanWindow.sbanPage:SetText( page )
 	end
-	xbans.sbanWindow.pgright = xlib.makesysbutton{ x=100, y=30, w=20, btype="right", disabled=true, parent=xbans.sbanWindow }
+	xbans.sbanWindow.pgright = xlib.makespecialbutton{ x=100, y=30, w=20, btype="right", disabled=true, parent=xbans.sbanWindow }
 	xbans.sbanWindow.pgright.DoClick = function()
 		local page = xbans.sbanWindow.sbanPage:GetValue()+1
 		xbans.sbanWindow.gotoPage( page )
 		xbans.sbanWindow.sbanPage:SetText( page )
 	end
-	xbans.sbanWindow.sbanPage = xlib.makemultichoice{x=120, y=30, w=35, text="1", disabled=true, parent=xbans.sbanWindow }
+	xbans.sbanWindow.sbanPage = xlib.makecombobox{x=120, y=30, w=35, text="1", disabled=true, parent=xbans.sbanWindow }
 	function xbans.sbanWindow.sbanPage:OnSelect()
 		xbans.sbanWindow.gotoPage( tonumber( self:GetValue() ) )
 	end
@@ -202,9 +202,9 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 		xlib.makelabel{ x=23, y=58, label="SteamID:", parent=xgui_banwindow }
 		xlib.makelabel{ x=28, y=83, label="Reason:", parent=xgui_banwindow }
 		xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
-		local reason = xlib.makemultichoice{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
+		local reason = xlib.makecombobox{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
 		local bantime = xlib.makeslider{ x=75, y=105, w=200, value=0, min=0, max=360, decimal=0, disabled=true, parent=xgui_banwindow }
-		local interval = xlib.makemultichoice{ x=75, y=105, w=75, text="Permanent", parent=xgui_banwindow }
+		local interval = xlib.makecombobox{ x=75, y=105, w=75, text="Permanent", parent=xgui_banwindow }
 		interval:AddChoice( "Permanent" )
 		interval:AddChoice( "Minutes" )
 		interval:AddChoice( "Hours" )
@@ -219,7 +219,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 		end
 		local name
 		if not isUpdate then
-			name = xlib.makemultichoice{ x=75, y=30, w=200, parent=xgui_banwindow, enableinput=true, selectall=true }
+			name = xlib.makecombobox{ x=75, y=30, w=200, parent=xgui_banwindow, enableinput=true, selectall=true }
 			for k,v in pairs( player.GetAll() ) do
 				name:AddChoice( v:Nick(), v:SteamID() )
 			end
@@ -456,4 +456,4 @@ xgui.hookEvent( "bans", "add", xbans.banUpdated )
 xgui.hookEvent( "bans", "remove", xbans.banRemoved )
 xgui.hookEvent( "sbans", "process", xbans.updateSBans )
 xgui.hookEvent( "sbans", "remove", xbans.updateSBans )
-xgui.addModule( "Bans", xbans, "gui/silkicons/exclamation", "xgui_managebans" )
+xgui.addModule( "Bans", xbans, "icon16/exclamation.png", "xgui_managebans" )

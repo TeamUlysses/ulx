@@ -54,7 +54,7 @@ end
 client.processModules()
 
 xgui.hookEvent( "onProcessModules", nil, client.processModules )
-xgui.addSettingModule( "Client", client, "gui/silkicons/page_white_wrench" )
+xgui.addSettingModule( "Client", client, "icon16/layout_content.png" )
 
 
 --------------------XGUI Clientside Module--------------------
@@ -91,7 +91,7 @@ for _, file in ipairs( file.FindInLua( "skins/*.lua" ) ) do
 	include( "skins/" .. file )
 end
 xlib.makelabel{ x=10, y=273, label="Derma Theme:", textcolor=color_black, parent=xguipnl }
-xguipnl.skinselect = xlib.makemultichoice{ x=10, y=290, w=150, parent=xguipnl }
+xguipnl.skinselect = xlib.makecombobox{ x=10, y=290, w=150, parent=xguipnl }
 if not derma.SkinList[xgui.settings.skin] then
 	xgui.settings.skin = "Default"
 	xguipnl.skinselect:SetText( derma.SkinList.Default.PrintName )
@@ -126,7 +126,7 @@ xguipnl.updateMainOrder = function()
 	end
 end
 xgui.hookEvent( "onProcessModules", nil, xguipnl.updateMainOrder )
-xguipnl.upbtnM = xlib.makesysbutton{ x=250, y=120, w=20, btype="up", disabled=true, parent=xguipnl }
+xguipnl.upbtnM = xlib.makespecialbutton{ x=250, y=120, w=20, btype="up", disabled=true, parent=xguipnl }
 xguipnl.upbtnM.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.mainorder:GetSelectedLine()
@@ -134,7 +134,7 @@ xguipnl.upbtnM.DoClick = function( self )
 	table.remove( xgui.settings.moduleOrder, i+1 )
 	xgui.processModules()
 end
-xguipnl.downbtnM = xlib.makesysbutton{ x=270, y=120, w=20, btype="down", disabled=true, parent=xguipnl }
+xguipnl.downbtnM = xlib.makespecialbutton{ x=270, y=120, w=20, btype="down", disabled=true, parent=xguipnl }
 xguipnl.downbtnM.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.mainorder:GetSelectedLine()
@@ -159,7 +159,7 @@ xguipnl.updateSettingOrder = function()
 	end
 end
 xgui.hookEvent( "onProcessModules", nil, xguipnl.updateSettingOrder )
-xguipnl.upbtnS = xlib.makesysbutton{ x=395, y=120, w=20, btype="up", disabled=true, parent=xguipnl }
+xguipnl.upbtnS = xlib.makespecialbutton{ x=395, y=120, w=20, btype="up", disabled=true, parent=xguipnl }
 xguipnl.upbtnS.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.settingorder:GetSelectedLine()
@@ -167,7 +167,7 @@ xguipnl.upbtnS.DoClick = function( self )
 	table.remove( xgui.settings.settingOrder, i+1 )
 	xgui.processModules()
 end
-xguipnl.downbtnS = xlib.makesysbutton{ x=375, y=120, w=20, btype="down", disabled=true, parent=xguipnl }
+xguipnl.downbtnS = xlib.makespecialbutton{ x=375, y=120, w=20, btype="down", disabled=true, parent=xguipnl }
 xguipnl.downbtnS.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.settingorder:GetSelectedLine()
@@ -181,23 +181,23 @@ end
 --------------------
 xlib.makelabel{ x=175, y=145, label="XGUI Positioning:", textcolor=color_black, parent=xguipnl }
 local pos = tonumber( xgui.settings.xguipos.pos )
-xguipnl.b7 = xlib.makesysbutton{ x=175, y=160, w=20, btype="none", disabled=pos==7, parent=xguipnl }
+xguipnl.b7 = xlib.makespecialbutton{ x=175, y=160, w=20, btype="none", disabled=pos==7, parent=xguipnl }
 xguipnl.b7.DoClick = function( self ) xguipnl.updatePos( 7 ) end
-xguipnl.b8 = xlib.makesysbutton{ x=195, y=160, w=20, btype="up",   disabled=pos==8, parent=xguipnl }
+xguipnl.b8 = xlib.makespecialbutton{ x=195, y=160, w=20, btype="up",   disabled=pos==8, parent=xguipnl }
 xguipnl.b8.DoClick = function( self ) xguipnl.updatePos( 8 ) end
-xguipnl.b9 = xlib.makesysbutton{ x=215, y=160, w=20, btype="none", disabled=pos==9, parent=xguipnl }
+xguipnl.b9 = xlib.makespecialbutton{ x=215, y=160, w=20, btype="none", disabled=pos==9, parent=xguipnl }
 xguipnl.b9.DoClick = function( self ) xguipnl.updatePos( 9 ) end
-xguipnl.b4 = xlib.makesysbutton{ x=175, y=180, w=20, btype="left", disabled=pos==4, parent=xguipnl }
+xguipnl.b4 = xlib.makespecialbutton{ x=175, y=180, w=20, btype="left", disabled=pos==4, parent=xguipnl }
 xguipnl.b4.DoClick = function( self ) xguipnl.updatePos( 4 ) end
-xguipnl.b5 = xlib.makesysbutton{ x=195, y=180, w=20, btype="updown", disabled=pos==5, parent=xguipnl }
+xguipnl.b5 = xlib.makespecialbutton{ x=195, y=180, w=20, btype="updown", disabled=pos==5, parent=xguipnl }
 xguipnl.b5.DoClick = function( self ) xguipnl.updatePos( 5 ) end
-xguipnl.b6 = xlib.makesysbutton{ x=215, y=180, w=20, btype="right", disabled=pos==6, parent=xguipnl }
+xguipnl.b6 = xlib.makespecialbutton{ x=215, y=180, w=20, btype="right", disabled=pos==6, parent=xguipnl }
 xguipnl.b6.DoClick = function( self ) xguipnl.updatePos( 6 ) end
-xguipnl.b1 = xlib.makesysbutton{ x=175, y=200, w=20, btype="none", disabled=pos==1, parent=xguipnl }
+xguipnl.b1 = xlib.makespecialbutton{ x=175, y=200, w=20, btype="none", disabled=pos==1, parent=xguipnl }
 xguipnl.b1.DoClick = function( self ) xguipnl.updatePos( 1 ) end
-xguipnl.b2 = xlib.makesysbutton{ x=195, y=200, w=20, btype="down", disabled=pos==2, parent=xguipnl }
+xguipnl.b2 = xlib.makespecialbutton{ x=195, y=200, w=20, btype="down", disabled=pos==2, parent=xguipnl }
 xguipnl.b2.DoClick = function( self ) xguipnl.updatePos( 2 ) end
-xguipnl.b3 = xlib.makesysbutton{ x=215, y=200, w=20, btype="none", disabled=pos==3, parent=xguipnl }
+xguipnl.b3 = xlib.makespecialbutton{ x=215, y=200, w=20, btype="none", disabled=pos==3, parent=xguipnl }
 xguipnl.b3.DoClick = function( self ) xguipnl.updatePos( 3 ) end
 
 function xguipnl.updatePos( position, xoffset, yoffset, ignoreanim )
@@ -221,12 +221,12 @@ xguipnl.xwang = xlib.makenumberwang{ x=245, y=167, w=50, min=-1000, max=1000, va
 xguipnl.xwang.OnValueChanged = function( self, val )
 	xguipnl.updatePos( xgui.settings.xguipos.pos, tonumber( val ), xgui.settings.xguipos.yoffset, true )
 end
-xguipnl.xwang.TextEntry.OnEnter = function( self )
+xguipnl.xwang.OnEnter = function( self )
 	local val = tonumber( self:GetValue() )
 	if not val then val = 0 end
 	xguipnl.updatePos( xgui.settings.xguipos.pos, tonumber( val ), xgui.settings.xguipos.yoffset )
 end
-xguipnl.xwang.TextEntry.OnLoseFocus = function( self )
+xguipnl.xwang.OnLoseFocus = function( self )
 	hook.Call( "OnTextEntryLoseFocus", nil, self )
 	self:OnEnter()
 end
@@ -236,12 +236,12 @@ xguipnl.ywang = xlib.makenumberwang{ x=245, y=193, w=50, min=-1000, max=1000, va
 xguipnl.ywang.OnValueChanged = function( self, val )
 	xguipnl.updatePos( xgui.settings.xguipos.pos, xgui.settings.xguipos.xoffset, tonumber( val ), true )
 end
-xguipnl.ywang.TextEntry.OnEnter = function( self )
+xguipnl.ywang.OnEnter = function( self )
 	local val = tonumber( self:GetValue() )
 	if not val then val = 0 end
 	xguipnl.updatePos( xgui.settings.xguipos.pos, xgui.settings.xguipos.xoffset, tonumber( val ) )
 end
-xguipnl.ywang.TextEntry.OnLoseFocus = function( self )
+xguipnl.ywang.OnLoseFocus = function( self )
 	hook.Call( "OnTextEntryLoseFocus", nil, self )
 	self:OnEnter()
 end
@@ -252,13 +252,13 @@ xlib.makelabel{ x=300, y=195, label="Y Offset", textcolor=color_black, parent=xg
 -------------------------
 xlib.makelabel{ x=175, y=229, label="XGUI Animations:", textcolor=color_black, parent=xguipnl }
 xlib.makelabel{ x=175, y=247, label="On Open:", textcolor=color_black, parent=xguipnl }
-xguipnl.inAnim = xlib.makemultichoice{ x=225, y=245, w=150, choices={ "Fade In", "Slide From Top", "Slide From Left", "Slide From Bottom", "Slide From Right" }, parent=xguipnl }
+xguipnl.inAnim = xlib.makecombobox{ x=225, y=245, w=150, choices={ "Fade In", "Slide From Top", "Slide From Left", "Slide From Bottom", "Slide From Right" }, parent=xguipnl }
 xguipnl.inAnim:ChooseOptionID( tonumber( xgui.settings.animIntype ) )
 function xguipnl.inAnim:OnSelect( index, value, data )
 	xgui.settings.animIntype = index
 end
 xlib.makelabel{ x=175, y=272, label="On Close:", textcolor=color_black, parent=xguipnl }
-xguipnl.outAnim = xlib.makemultichoice{ x=225, y=270, w=150, choices={ "Fade Out", "Slide To Top", "Slide To Left", "Slide To Bottom", "Slide To Right" }, parent=xguipnl }
+xguipnl.outAnim = xlib.makecombobox{ x=225, y=270, w=150, choices={ "Fade Out", "Slide To Top", "Slide To Left", "Slide To Bottom", "Slide To Right" }, parent=xguipnl }
 xguipnl.outAnim:ChooseOptionID( tonumber( xgui.settings.animOuttype ) )
 function xguipnl.outAnim:OnSelect( index, value, data )
 	xgui.settings.animOuttype = index

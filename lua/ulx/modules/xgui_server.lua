@@ -32,10 +32,6 @@ end
 Msg( "// XGUI modules added!       //\n" )
 Msg( "///////////////////////////////\n" )
 
---This is for servers with scriptenforcer enabled.
---It will force scriptenforcer to allow this file to be included on the client where they weren't included by default.
-AddCSLuaFile( "menu/progressbar.lua" )
-
 function xgui.init()
 	local function xgui_chatCommand( ply, func, args )
 		if ply:IsValid() then
