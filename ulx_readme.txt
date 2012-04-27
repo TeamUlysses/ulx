@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.53
+Version 3.54
 
-*ULX v3.53 (released 01/01/12)*
+*ULX v3.54 (released 04/27/12)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,6 +62,9 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
+v3.54 - *(04/27/12)*
+	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
+
 v3.53 - *(01/01/12)*
 	* [FIX] Garry breakages.
 
