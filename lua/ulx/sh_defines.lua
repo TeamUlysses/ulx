@@ -1,6 +1,6 @@
 ulx.LOW_ARGS = "You did not specify enough arguments for this command. Type 'ulx help' in console for help."
 
-ulx.version = 3.53 -- Current release version. Don't access directly, use ulx.getVersion instead. (SVN checks)
+ulx.version = 3.54 -- Current release version. Don't access directly, use ulx.getVersion instead. (SVN checks)
 ulx.release = true -- Is this the release?
 
 ulx.ID_ORIGINAL = 1
