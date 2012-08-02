@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.53
+Version 3.55
 
-*ULX v3.53 (released 01/01/12)*
+*ULX v3.55 (released 00/00/00)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,6 +62,14 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
+v3.55 - *(00/00/00)*
+	* [CHANGE] ULX ban now supports restricting of time/string formats.
+	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
+	* [FIX] Added a workaround to prevent the ULX MOTD from showing a white screen.
+
+v3.54 - *(04/27/12)*
+	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
+
 v3.53 - *(01/01/12)*
 	* [FIX] Garry breakages.
 
