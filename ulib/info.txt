@@ -2,7 +2,7 @@
 {
 	"name"				"ULib"
 	"version"			"2.50"
-	"up_date"			"01/01/12"
+	"up_date"			"00/00/00"
 	"author_name"			"Team Ulysses"
 	"author_email"			"teamulysses@ulyssesmod.net"
 	"author_url"			"http://www.ulyssesmod.net/"

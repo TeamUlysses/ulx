@@ -46,14 +46,9 @@ kick:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib
 kick:defaultAccess( ULib.ACCESS_ADMIN )
 kick:help( "Kicks target." )
 
-function ulx.ban( calling_ply, target_ply, time, reason )
+function ulx.ban( calling_ply, target_ply, minutes, reason )
 	if target_ply:IsBot() then
 		ULib.tsayError( calling_ply, "Cannot ban a bot", true )
-		return
-	end
-	local minutes = ULib.stringTimeToSeconds( time )
-	if not minutes then
-		ULib.tsayError( calling_ply, "Invalid time format." )
 		return
 	end
 
@@ -67,20 +62,15 @@ function ulx.ban( calling_ply, target_ply, time, reason )
 end
 local ban = ulx.command( CATEGORY_NAME, "ulx ban", ulx.ban, "!ban" )
 ban:addParam{ type=ULib.cmds.PlayerArg }
-ban:addParam{ type=ULib.cmds.StringArg, hint="minutes, 0 for perma. 'h' for hours, 'd' for days, 'w' for weeks. EG, '2w5d' for 2 weeks 5 days", ULib.cmds.optional }
+ban:addParam{ type=ULib.cmds.NumArg, hint="minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
 ban:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.cmds.takeRestOfLine, completes=ulx.common_kick_reasons }
 ban:defaultAccess( ULib.ACCESS_ADMIN )
 ban:help( "Bans target." )
 
-function ulx.banid( calling_ply, steamid, time, reason )
+function ulx.banid( calling_ply, steamid, minutes, reason )
 	steamid = steamid:upper()
 	if not ULib.isValidSteamID( steamid ) then
 		ULib.tsayError( calling_ply, "Invalid steamid." )
-		return
-	end
-	local minutes = ULib.stringTimeToSeconds( time )
-	if not minutes then
-		ULib.tsayError( calling_ply, "Invalid time format." )
 		return
 	end
 
@@ -107,7 +97,7 @@ function ulx.banid( calling_ply, steamid, time, reason )
 end
 local banid = ulx.command( CATEGORY_NAME, "ulx banid", ulx.banid )
 banid:addParam{ type=ULib.cmds.StringArg, hint="steamid" }
-banid:addParam{ type=ULib.cmds.StringArg, hint="minutes, 0 for perma. 'h' for hours, 'd' for days, 'w' for weeks. EG, '2w5d' for 2 weeks 5 days", ULib.cmds.optional }
+banid:addParam{ type=ULib.cmds.NumArg, hint="minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
 banid:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.cmds.takeRestOfLine, completes=ulx.common_kick_reasons }
 banid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 banid:help( "Bans steamid." )

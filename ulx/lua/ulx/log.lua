@@ -24,12 +24,12 @@ ULib.ucl.registerAccess( seeanonymousechoAccess, ULib.ACCESS_ADMIN, "Ability to 
 local spawnechoAccess = "ulx spawnecho"
 ULib.ucl.registerAccess( spawnechoAccess, ULib.ACCESS_ADMIN, "Ability to see spawn echoes and steamids from joined players in console", "Other" ) -- Give admins access to see spawn echoes by default
 
-local curDay -- This will hold the day we think it is right now.
+local curDateStr -- This will hold the date string (YYYY-mm-dd) we think it is right now.
 
 -- Utility stuff for our logs...
 ulx.log_file = nil
 local function init()
-	curDay = os.date( "%d" )
+	curDateStr = os.date( "%Y-%m-%d" )
 	if logFile:GetBool() then
 		ulx.log_file = os.date( logDir:GetString() .. "/" .. "%m-%d-%y" .. ".txt" )
 		if not file.Exists( ulx.log_file ) then
@@ -54,7 +54,7 @@ local function next_log()
 		file.Write( ulx.log_file, "" )
 		ulx.logWriteln( "<Logging continued from \"" .. old_log .. "\">" )
 	end
-	curDay = os.date( "%d" )
+	curDateStr = os.date( "%Y-%m-%d" )
 end
 
 function ulx.logUserAct( ply, target, action, hide_echo )
@@ -137,14 +137,15 @@ end
 function ulx.logString( str, log_to_main )
 	if not ulx.log_file then return end
 
-	local date = os.date( "*t" )
-	if curDay ~= date.day then
+	local dateStr = os.date( "%Y-%m-%d" )
+	if curDateStr < dateStr then
 		next_log()
 	end
 
 	if log_to_main then
 		ServerLog( "[ULX] " .. str .. "\n" )
 	end
+	local date = os.date( "*t" )
 	ulx.logWriteln( string.format( "[%02i:%02i:%02i] ", date.hour, date.min, date.sec ) .. str )
 end
 

@@ -8,14 +8,14 @@ local cmds = ULib.cmds -- To save my fingers
 --[[
 	Variable: cmds.optional
 
-	This is used when specyfing an argument to flag the argument as optional.
+	This is used when specifying an argument to flag the argument as optional.
 ]]
 cmds.optional = {} -- This is just a key, ignore the fact that it's a table.
 
 --[[
 	Variable: cmds.restrictToCompletes
 
-	This is used when specyfing a string argument to flag that only what was
+	This is used when specifying a string argument to flag that only what was
 	specified for autocomplete is allowed to be passed as a valid argument.
 ]]
 cmds.restrictToCompletes = {} -- Key
@@ -23,7 +23,7 @@ cmds.restrictToCompletes = {} -- Key
 --[[
 	Variable: cmds.takeRestOfLine
 
-	This is used when specyfing a string argument to flag that this argument
+	This is used when specifying a string argument to flag that this argument
 	should use up any remaining args, whether quoted as one arg or not. This
 	is useful for things like specifying a ban reason where you don't want to
 	force users to write an entire sentence within quotes.
@@ -33,7 +33,7 @@ cmds.takeRestOfLine = {} -- Key
 --[[
 	Variable: cmds.round
 
-	This is used when specyfing a number argument to flag the argument to round
+	This is used when specifying a number argument to flag the argument to round
 	the number to the nearest integer.
 ]]
 cmds.round = {} -- Key
@@ -41,11 +41,19 @@ cmds.round = {} -- Key
 --[[
 	Variable: cmds.ignoreCanTarget
 
-	This is used when specyfing a command that should ignore the can_target
+	This is used when specifying a command that should ignore the can_target
 	property in the groups config. IE, private say in ULX uses this so that
 	users can target admins to chat with them.
 ]]
 cmds.ignoreCanTarget = {} -- Key
+
+--[[
+	Variable: cmds.allowTimeString
+
+	This is used when specyfing a number argument that should allow time string
+	representations to be parsed (eg, '1w1d' for 1 week 1 day).
+]]
+cmds.allowTimeString = {} -- Key
 
 
 --[[
@@ -133,8 +141,9 @@ end
 	A number arg, inherits from <cmds.BaseArg>. Restrictions can include a numeric
 	value for keys 'min', 'max', and 'default'. All do what you think they do.
 	If the argument is optional and no default is specified, 0 is used for
-	default. Lastly, you can specify a value for the key 'hint' for a hint on
-	what this argument is for, IE "damage".
+	default. You can specify the allowTimeString key to allow time string
+	representations. Lastly, you can specify a value for the key 'hint' for a
+	hint on	what this argument is for, IE "damage".
 
 	Example:
 
@@ -162,15 +171,31 @@ function cmds.NumArg:processRestrictions( cmdRestrictions, plyRestrictions )
 	self.min = nil
 	self.max = nil
 
+	local allowTimeString = table.HasValue( cmdRestrictions, cmds.allowTimeString )
+
 	if plyRestrictions then -- Access tag restriction
 		if not plyRestrictions:find( ":" ) then -- Assume they only want one number here
 			self.min = plyRestrictions
 			self.max = plyRestrictions
 		else
-			dummy, dummy, self.min, self.max = plyRestrictions:find( "^(%d*):(%d*)$" )
+			local timeStringMatcher = "[-hdwy%d]*"
+			dummy, dummy, self.min, self.max = plyRestrictions:find( "^(" .. timeStringMatcher .. "):(" .. timeStringMatcher .. ")$" )
 		end
-		self.min = tonumber( self.min )
-		self.max = tonumber( self.max )
+
+		if not allowTimeString then
+			self.min = tonumber( self.min )
+			self.max = tonumber( self.max )
+		else
+			self.min = ULib.stringTimeToSeconds( self.min )
+			self.max = ULib.stringTimeToSeconds( self.max )
+		end
+	end
+
+	if allowTimeString and not self.timeStringsParsed then
+		self.timeStringsParsed = true
+		cmdRestrictions.min = ULib.stringTimeToSeconds( cmdRestrictions.min )
+		cmdRestrictions.max = ULib.stringTimeToSeconds( cmdRestrictions.max )
+		cmdRestrictions.default = ULib.stringTimeToSeconds( cmdRestrictions.default )
 	end
 
 	if cmdRestrictions.min and (not self.min or self.min < cmdRestrictions.min) then
@@ -199,15 +224,31 @@ function cmds.NumArg:parseAndValidate( ply, arg, cmdInfo, plyRestrictions )
 		arg = cmdInfo.default or 0 -- Set it, needs to go through our process
 	end
 
-	local num = tonumber( arg ) -- We'll check if it's nil after we see if a default has been provided for them
-	if not num then return nil, string.format( "invalid number \"%s\" specified", tostring( arg ) ) end
+	local allowTimeString = table.HasValue( cmdInfo, cmds.allowTimeString )
+	local num -- We check if it's nil after we see if a default has been provided for them
+	if not allowTimeString then
+		num = tonumber( arg )
+	else
+		num = ULib.stringTimeToSeconds( arg )
+	end
+
+	local typeString
+	if not allowTimeString then
+		typeString = "number"
+	else
+		typeString = "number or time string"
+	end
+
+	if not num then
+		return nil, string.format( "invalid " .. typeString .. " \"%s\" specified", tostring( arg ) )
+	end
 
 	if self.min and num < self.min then
-		return nil, string.format( "specified number (%g) was below your allowed minimum value of %g", num, self.min )
+		return nil, string.format( "specified " .. typeString .. " (%s) was below your allowed minimum value of %g", arg, self.min )
 	end
 
 	if self.max and num > self.max then
-		return nil, string.format( "specified number (%g) was above your allowed maximum value of %g", num, self.max )
+		return nil, string.format( "specified " .. typeString .. " (%s) was above your allowed maximum value of %g", arg, self.max )
 	end
 
 	if table.HasValue( cmdInfo, cmds.round ) then
@@ -308,6 +349,7 @@ function cmds.BoolArg:processRestrictions( cmdRestrictions, plyRestrictions )
 
 	-- There'd be no point in having command-level restrictions on this, so nothing is implemented for it.
 end
+
 
 --[[
 	Function: cmds.BoolArg:parseAndValidate
@@ -808,6 +850,7 @@ function cmds.StringArg:usage( cmdInfo, plyRestrictions )
 	return str
 end
 
+
 --------
 
 
@@ -1198,7 +1241,7 @@ local function routedCommandCallback( ply, commandName, argv )
 		ply.ulib_threat_level = 1
 		ply.ulib_threat_time = curtime + 3
 		ply.ulib_threat_warned = nil
-	elseif ply.ulib_threat_level >= 60 then
+	elseif ply.ulib_threat_level >= 100 then
 		if not ply.ulib_threat_warned then
 			ULib.tsay( ply, "You are running too many commands too quickly, please wait before executing more" )
 			ply.ulib_threat_warned = true

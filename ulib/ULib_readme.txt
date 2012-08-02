@@ -47,6 +47,9 @@ Group: Changelog
 v2.50 - *(00/00/00)*
 	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
 
+v2.43 - *(00/00/00)*
+	* [CHANGE] NumArg now allows for time string format.
+
 v2.42 - *(01/01/12)*
 	* [FIX] Garry breakages.
 

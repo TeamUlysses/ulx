@@ -14,8 +14,9 @@ function ulx.showMotdMenu()
 	window:SetTitle( "ULX MOTD" )
 	window:SetVisible( true )
 	window:MakePopup()
-
-	local html = vgui.Create( "HTML", window )
+	
+	local panel = vgui.Create( "DPanel", window )
+	local html = vgui.Create( "HTML", panel )
 
 	local button = vgui.Create( "DButton", window )
 	button:SetText( "Close" )
@@ -23,8 +24,10 @@ function ulx.showMotdMenu()
 	button:SetSize( 100, 40 )
 	button:SetPos( (window:GetWide() - button:GetWide()) / 2, window:GetTall() - button:GetTall() - 10 )
 
-	html:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
-	html:SetPos( 10, 30 )
+	panel:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
+	panel:SetPos( 10, 30 )
+	html:Dock( FILL )
+	
 	if not isUrl then
 		html:SetHTML( file.Read( "ulx/motd.txt" ) )
 	else

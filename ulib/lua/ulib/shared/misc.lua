@@ -660,8 +660,13 @@ end
 	Revisions:
 
 		v2.41 - Initial
+		v2.43 - Added year parameter
 ]]
 function ULib.stringTimeToSeconds( str )
+	if str == nil or type( str ) == "number" then
+		return str
+	end
+	
 	str = str:gsub( " ", "" )
 	local minutes = 0
 	local keycode_location = str:find( "%a" )
@@ -679,6 +684,8 @@ function ULib.stringTimeToSeconds( str )
 			multiplier = 60 * 24
 		elseif keycode == "w" then
 			multiplier = 60 * 24 * 7
+		elseif keycode == "y" then
+			multiplier = 60 * 24 * 365
 		else
 			return nil
 		end

@@ -138,20 +138,20 @@ function xbans.ShowBanDetailsWindow( ID )
 	xlib.makelabel{ x=36, y=50, label="SteamID:", parent=panel }
 	xlib.makelabel{ x=90, y=50, label=ID, parent=panel }
 	xlib.makelabel{ x=33, y=70, label="Ban Date:", parent=panel }
-	if xgui.data.bans[ID].time then xlib.makelabel{ x=90, y=70, label=os.date( "%b %d, %Y - %I:%M:%S %p", xgui.data.bans[ID].time ), parent=panel } end
+	if xgui.data.bans[ID].time then xlib.makelabel{ x=90, y=70, label=os.date( "%b %d, %Y - %I:%M:%S %p", tonumber( xgui.data.bans[ID].time ) ), parent=panel } end
 	xlib.makelabel{ x=20, y=90, label="Unban Date:", parent=panel }
-	xlib.makelabel{ x=90, y=90, label=( tonumber( xgui.data.bans[ID].unban ) == 0 and "Never" or os.date( "%b %d, %Y - %I:%M:%S %p", xgui.data.bans[ID].unban ) ), parent=panel }
+	xlib.makelabel{ x=90, y=90, label=( tonumber( xgui.data.bans[ID].unban ) == 0 and "Never" or os.date( "%b %d, %Y - %I:%M:%S %p", math.min(  tonumber( xgui.data.bans[ID].unban ), 4294967295 ) ) ), parent=panel }
 	xlib.makelabel{ x=10, y=110, label="Length of Ban:", parent=panel }
-	xlib.makelabel{ x=90, y=110, label=( tonumber( xgui.data.bans[ID].unban ) == 0 and "Permanent" or xgui.ConvertTime( xgui.data.bans[ID].unban - xgui.data.bans[ID].time ) ), parent=panel }
+	xlib.makelabel{ x=90, y=110, label=( tonumber( xgui.data.bans[ID].unban ) == 0 and "Permanent" or xgui.ConvertTime( tonumber( xgui.data.bans[ID].unban ) - xgui.data.bans[ID].time ) ), parent=panel }
 	xlib.makelabel{ x=33, y=130, label="Time Left:", parent=panel }
-	local timeleft = xlib.makelabel{ x=90, y=130, label=( tonumber( xgui.data.bans[ID].unban ) == 0 and "N/A" or xgui.ConvertTime( xgui.data.bans[ID].unban - os.time() ) ), parent=panel }
+	local timeleft = xlib.makelabel{ x=90, y=130, label=( tonumber( xgui.data.bans[ID].unban ) == 0 and "N/A" or xgui.ConvertTime( tonumber( xgui.data.bans[ID].unban ) - os.time() ) ), parent=panel }
 	xlib.makelabel{ x=26, y=150, label="Banned By:", parent=panel }
 	if xgui.data.bans[ID].admin then xlib.makelabel{ x=90, y=150, label=string.gsub( xgui.data.bans[ID].admin, "%(STEAM_%w:%w:%w*%)", "" ), parent=panel } end
 	if xgui.data.bans[ID].admin then xlib.makelabel{ x=90, y=165, label=string.match( xgui.data.bans[ID].admin, "%(STEAM_%w:%w:%w*%)" ), parent=panel } end
 	xlib.makelabel{ x=41, y=185, label="Reason:", parent=panel }
 	xlib.makelabel{ x=90, y=185, w=190, label=xgui.data.bans[ID].reason, parent=panel, tooltip=xgui.data.bans[ID].reason ~= "" and xgui.data.bans[ID].reason or nil }
 	xlib.makelabel{ x=13, y=205, label="Last Updated:", parent=panel }
-	xlib.makelabel{ x=90, y=205, label=( ( xgui.data.bans[ID].modified_time == nil ) and "Never" or os.date( "%b %d, %Y - %I:%M:%S %p", xgui.data.bans[ID].modified_time ) ), parent=panel }
+	xlib.makelabel{ x=90, y=205, label=( ( xgui.data.bans[ID].modified_time == nil ) and "Never" or os.date( "%b %d, %Y - %I:%M:%S %p", tonumber( xgui.data.bans[ID].modified_time ) ) ), parent=panel }
 	xlib.makelabel{ x=21, y=225, label="Updated by:", parent=panel }
 	if xgui.data.bans[ID].modified_admin then xlib.makelabel{ x=90, y=225, label=string.gsub( xgui.data.bans[ID].modified_admin, "%(STEAM_%w:%w:%w*%)", "" ), parent=panel } end
 	if xgui.data.bans[ID].modified_admin then xlib.makelabel{ x=90, y=240, label=string.match( xgui.data.bans[ID].modified_admin, "%(STEAM_%w:%w:%w*%)" ), parent=panel } end
@@ -181,7 +181,7 @@ function xbans.ShowBanDetailsWindow( ID )
 					panel:Remove()
 					return
 				end
-				local bantime = xgui.data.bans[ID].unban - os.time()
+				local bantime = tonumber( xgui.data.bans[ID].unban ) - os.time()
 				if bantime <= 0 then
 					timeleft:SetText( xgui.ConvertTime( 0 ) .. "      (Waiting for server)" )
 				else
@@ -204,18 +204,9 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 		xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
 		local reason = xlib.makecombobox{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
 		local bantime = xlib.makeslider{ x=75, y=105, w=200, value=0, min=0, max=360, decimal=0, disabled=true, parent=xgui_banwindow }
-		local interval = xlib.makecombobox{ x=75, y=105, w=75, text="Permanent", parent=xgui_banwindow }
-		interval:AddChoice( "Permanent" )
-		interval:AddChoice( "Minutes" )
-		interval:AddChoice( "Hours" )
-		interval:AddChoice( "Days" )
-		interval:AddChoice( "Years" )
+		local interval = xlib.makecombobox{ x=75, y=105, w=75, text="Permanent", choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, parent=xgui_banwindow }
 		interval.OnSelect = function( self, index, value, data )
-			if value == "Permanent" then
-				bantime:SetDisabled( true )
-			else
-				bantime:SetDisabled( false )
-			end
+			bantime:SetDisabled( value == "Permanent" )
 		end
 		local name
 		if not isUpdate then
@@ -376,7 +367,7 @@ end
 function xbans.addbanline( baninfo, steamID )
 	xbans.banlist:AddLine(	baninfo.name or steamID,
 								( baninfo.admin ) and string.gsub( baninfo.admin, "%(STEAM_%w:%w:%w*%)", "" ) or "",
-								(( tonumber( baninfo.unban ) ~= 0 ) and os.date( "%c", baninfo.unban )) or "Never",
+								(( tonumber( baninfo.unban ) ~= 0 ) and os.date( "%c", math.min( tonumber( baninfo.unban ), 4294967295 ) )) or "Never",
 								baninfo.reason,
 								steamID,
 								tonumber( baninfo.unban ) )
@@ -411,7 +402,7 @@ function xbans.banUpdated( bantable )
 				found = true
 				v:SetColumnText( 1, data.name or SteamID )
 				v:SetColumnText( 2, data.admin and string.gsub( data.admin, "%(STEAM_%w:%w:%w*%)", "" ) or "" )
-				v:SetColumnText( 3, (( tonumber( data.unban ) ~= 0 ) and os.date( "%c", data.unban )) or "Never" )
+				v:SetColumnText( 3, (( tonumber( data.unban ) ~= 0 ) and os.date( "%c", math.min( tonumber( data.unban ), 4294967295 ) )) or "Never" )
 				v:SetColumnText( 4, data.reason )
 				v:SetColumnText( 5, SteamID )
 				v:SetColumnText( 6, tonumber( data.unban ) )
