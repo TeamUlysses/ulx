@@ -438,17 +438,86 @@ local function xgui_helpers()
 	function ULib.cmds.NumArg.x_getcontrol( arg, argnum )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
+
 		ULib.cmds.NumArg.processRestrictions( restrictions, arg, ulx.getTagArgNum( tag, argnum ) )
 		
-		local defvalue = arg.min
-		if table.HasValue( arg, ULib.cmds.optional ) then defvalue = arg.default end
-		if not defvalue then defvalue = 0 end --No default was set for this command, so we'll use 0.
-		
-		local maxvalue = restrictions.max
-		if restrictions.max == nil and defvalue > 100 then maxvalue = defvalue end
-		
-		return xlib.makeslider{ min=restrictions.min, max=maxvalue, value=defvalue, label=arg.hint or "NumArg" }
+		if table.HasValue( arg, ULib.cmds.allowTimeString ) then
+			local min = restrictions.min or 0
+			local max = restrictions.max or 10 * 60 * 24 * 365 --default slider max 10 years
+			
+			outPanel = xlib.makepanel{ h=35 }
+			outPanel.val = xlib.makeslider{ w=160, min=min, max=max, value=min, decimal=0, parent=outPanel }
+			outPanel.interval = xlib.makemultichoice{ w=75, parent=outPanel }
+			
+			local divisor = {}
+			local sensiblemax = {}
+			if min == 0 then outPanel.interval:AddChoice( "Permanent" ) table.insert( divisor, 1 ) table.insert( sensiblemax, 1 ) end
+			if max >= 1 and min <= 60*24 then outPanel.interval:AddChoice( "Minutes" ) table.insert( divisor, 1 ) table.insert( sensiblemax, 60*24 ) end
+			if max >= 60 and min <= 60*24*7 then outPanel.interval:AddChoice( "Hours" ) table.insert( divisor, 60 ) table.insert( sensiblemax, 24*7 ) end
+			if max >= ( 60*24 ) and min <= 60*24*120 then outPanel.interval:AddChoice( "Days" ) table.insert( divisor, 60*24 ) table.insert( sensiblemax, 120 ) end
+			if max >= ( 60*24*7 ) and min <= 60*24*7*52 then outPanel.interval:AddChoice( "Weeks" ) table.insert( divisor, 60*24*7 ) table.insert( sensiblemax, 52 ) end
+			if max >= ( 60*24*365 ) then outPanel.interval:AddChoice( "Years" ) table.insert( divisor, 60*24*365 ) table.insert( sensiblemax, 10 ) end 
+
+			outPanel.interval.OnSelect = function( self, index, value, data )
+				outPanel.val:SetDisabled( value == "Permanent" )
+				outPanel.val.maxvalue = math.min( max / divisor[index], sensiblemax[index] )
+				outPanel.val.minvalue = math.max( min / divisor[index], 0 )
+				outPanel.val:SetMax( outPanel.val.maxvalue )
+				outPanel.val:SetMin( outPanel.val.minvalue )
+				outPanel.val:SetValue( math.Clamp( tonumber( outPanel.val:GetValue() ), outPanel.val.minvalue, outPanel.val.maxvalue ) )
+				outPanel.val:PerformLayout()
+			end
+			
+			function outPanel.val:ValueChanged( val )
+				val = math.Clamp( tonumber( val ), self.minvalue, self.maxvalue )
+				self.Slider:SetSlideX( self.Wang:GetFraction( val ) )
+				self:OnValueChanged( val )
+				self.Wang.TextEntry:SetText( val )
+			end
+			
+			outPanel.interval:ChooseOptionID( 1 )
+			
+			outPanel.GetValue = function( self )
+				local char = string.lower( self.interval:GetValue():sub(1,1) )
+				if char == "m" or char == "p" or self.val.Wang:GetValue() == 0 then char = "" end
+				return self.val.Wang:GetValue() .. char
+			end
+			
+			return outPanel
+		else		
+			local defvalue = arg.min
+			if table.HasValue( arg, ULib.cmds.optional ) then defvalue = arg.default end
+			if not defvalue then defvalue = 0 end --No default was set for this command, so we'll use 0.
+			
+			local maxvalue = restrictions.max
+			if restrictions.max == nil and defvalue > 100 then maxvalue = defvalue end
+			
+			return xlib.makeslider{ min=restrictions.min, max=maxvalue, value=defvalue, label=arg.hint or "NumArg" }
+		end
 	end
+	
+	function ULib.cmds.NumArg.getTime( arg )
+		if arg == nil or arg == "" then return nil, nil end
+		
+		if arg == 0 or tonumber( arg ) == 0 then
+			return "Permanent", 0
+		end
+		
+		local charPriority = { "y", "w", "d", "h" }
+		local charMap = { "Years", "Weeks", "Days", "Hours" }
+		local divisor = { 60 * 24 * 365, 60 * 24 * 7, 60 * 24, 60 }
+		for i, v in ipairs( charPriority ) do
+			if arg:find( v, 1, true ) then
+				if not charMap[ i ] or not divisor [ i ] or not ULib.stringTimeToSeconds( arg ) then return nil, nil end
+				local val = ULib.stringTimeToSeconds( arg ) / divisor[ i ]
+				if val == 0 then return "Permanent", 0 end
+				return charMap[ i ], val
+			end
+		end
+		
+		return "Minutes", ULib.stringTimeToSeconds( arg )
+	end
+
 	
 	function ULib.cmds.StringArg.x_getcontrol( arg, argnum )
 		local access, tag = LocalPlayer():query( arg.cmd )

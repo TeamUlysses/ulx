@@ -650,7 +650,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 					local ignoreCanTarget = ( restrictions[argnum] and string.sub( restrictions[argnum], 1, 1 ) == "$" )
 					local outPanel = xlib.makepanel{ h=50 }
 					outPanel.type = "ply"
-					outPanel.cantarget = xlib.makecheckbox{ x=5, y=5, label="Ignore can_target", value=ignoreCanTarget or 0, parent=outPanel }
+					outPanel.cantarget = xlib.makecheckbox{ x=5, y=5, label="Ignore can_target", textcolor=color_black, value=ignoreCanTarget or 0, parent=outPanel }
 					outPanel.txtfield = xlib.maketextbox{ x=5, y=25, w=170, text=ignoreCanTarget and string.sub( restrictions[argnum], 2 ) or restrictions[argnum] or "*", parent=outPanel }
 					--Handle change in width due to scrollbar
 					local tempfunc = outPanel.PerformLayout
@@ -662,37 +662,90 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 				---Number Argument---
 				elseif arg.type == ULib.cmds.NumArg then
 					local outPanel = xlib.makepanel{ h=85 }
-					outPanel.type = "num"
 					local rmin, rmax
 					if hasrestriction and hasrestriction ~= "*" then
 						local temp = restrictions[argnum] and string.Split( restrictions[argnum], ":" ) or ""
 						rmin = string.sub( temp[1], 1, 1 ) ~= ":" and temp[1]
 						rmax = temp[2]
+						if rmin == "" then rmin = nil end
+						if rmax == "" then rmax = nil end
 					end
 					outPanel.hasmin = xlib.makecheckbox{ x=5, y=15, value=( rmin~=nil ), parent=outPanel }
-					outPanel.hasmin.OnChange = function( self, bVal )
-						outPanel.min:SetDisabled( not bVal )
-					end
 					outPanel.hasmax = xlib.makecheckbox{ x=5, y=55, value=( rmax~=nil ), parent=outPanel }
-					outPanel.hasmax.OnChange = function( self, bVal )
-						outPanel.max:SetDisabled( not bVal )
+					if table.HasValue( arg, ULib.cmds.allowTimeString ) then
+						outPanel.type = "time"
+						
+						local irmin, vrmin = ULib.cmds.NumArg.getTime( rmin )
+						local iargmin, vargmin = ULib.cmds.NumArg.getTime( arg.min )
+						local irmax, vrmax = ULib.cmds.NumArg.getTime( rmax )
+						local iargmax, vargmax = ULib.cmds.NumArg.getTime( arg.max )
+						
+						local curinterval = ( irmin or iargmin or "Permanent" )
+						local curval = vrmin or vargmin or 0
+						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
+						outPanel.min.Wang.TextEntry:SetText( curval ) --Set the value of the textentry manually to show decimals even though decimal=0.
+						outPanel.minterval = xlib.makemultichoice{ x=50, y=5, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmin==nil ), parent=outPanel }
+						outPanel.minterval.OnSelect = function( self, index, value, data )
+							outPanel.min:SetDisabled( value == "Permanent" )
+						end
+						outPanel.hasmin.OnChange = function( self, bVal )
+							outPanel.min:SetDisabled( not bVal or outPanel.minterval:GetValue() == "Permanent" )
+							outPanel.minterval:SetDisabled( not bVal )
+						end
+						
+						local curinterval = ( irmax or iargmax or "Permanent" )
+						local curval = vrmax or vargmax or 0
+						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
+						outPanel.max.Wang.TextEntry:SetText( curval )
+						outPanel.maxterval = xlib.makemultichoice{ x=50, y=45, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmax==nil ), parent=outPanel }
+						outPanel.maxterval.OnSelect = function( self, index, value, data )
+							outPanel.max:SetDisabled( value == "Permanent" )
+						end
+						outPanel.hasmax.OnChange = function( self, bVal )
+							outPanel.max:SetDisabled( not bVal or outPanel.maxterval:GetValue() == "Permanent" )
+							outPanel.maxterval:SetDisabled( not bVal )
+						end
+						
+						xlib.makelabel{ x=25, y=8, label="Min", textcolor=color_black, parent=outPanel }
+						xlib.makelabel{ x=25, y=48, label="Max", textcolor=color_black, parent=outPanel }
+						
+						--Handle change in width due to scrollbar
+						local tempfunc = outPanel.PerformLayout
+						outPanel.PerformLayout = function( self )
+							tempfunc( self )
+							local w = self:GetWide() - 10
+							outPanel.min:SetWide( w-20 )
+							outPanel.max:SetWide( w-20 )
+							outPanel.minterval:SetWide( w-90 )
+							outPanel.maxterval:SetWide( w-90 )
+						end
+					else
+						outPanel.type = "num"
+						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, value=( rmin or arg.min or 0 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Min", textcolor=color_black, disabled=( rmin==nil ), parent=outPanel }
+						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, value=( rmax or arg.max or 100 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Max", textcolor=color_black, disabled=( rmax==nil ), parent=outPanel }
+						outPanel.hasmin.OnChange = function( self, bVal )
+							outPanel.min:SetDisabled( not bVal )
+						end
+						outPanel.hasmax.OnChange = function( self, bVal )
+							outPanel.max:SetDisabled( not bVal )
+						end
+						
+						--Handle change in width due to scrollbar
+						local tempfunc = outPanel.PerformLayout
+						outPanel.PerformLayout = function( self )
+							tempfunc( self )
+							local w = self:GetWide() - 10
+							outPanel.min:SetWide( w-20 )
+							outPanel.max:SetWide( w-20 )
+						end
 					end
-					outPanel.min = xlib.makeslider{ x=25, y=5, w=150, value=( rmin or arg.min or 0 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Minimum", disabled=( rmin==nil ), parent=outPanel }
-					outPanel.max = xlib.makeslider{ x=25, y=45, w=150, value=( rmax or arg.max or 100 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Maximum", disabled=( rmax==nil ), parent=outPanel }
-					--Handle change in width due to scrollbar
-					local tempfunc = outPanel.PerformLayout
-					outPanel.PerformLayout = function( self )
-						tempfunc( self )
-						local w = self:GetWide() - 10
-						outPanel.min:SetWide( w-20 )
-						outPanel.max:SetWide( w-20 )
-					end
+
 					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "number value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel }
 				---Bool Argument---
 				elseif arg.type == ULib.cmds.BoolArg then
 					local outPanel = xlib.makepanel{ h=25 }
 					outPanel.type = "bool"
-					outPanel.checkbox = xlib.makecheckbox{ x=5, y=5, value=restrictions[argnum] or false, label="Must be: True (1), False (0)", parent=outPanel }
+					outPanel.checkbox = xlib.makecheckbox{ x=5, y=5, value=restrictions[argnum] or false, label="Must be: True (1), False (0)", textcolor=color_black, parent=outPanel }
 					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "bool value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel }
 				---String Argument---
 				elseif arg.type == ULib.cmds.StringArg then
@@ -776,6 +829,25 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						else
 							outtmp = outtmp .. " *"
 						end
+					elseif pnl.type == "time" then
+						if pnl.hasmin:GetChecked() or pnl.hasmax:GetChecked() then
+							if pnl.min:GetValue() == 0 then pnl.minterval:ChooseOptionID(1) end --Set to Permanent when 0 hours/mins/weeks/years is selected
+							if pnl.max:GetValue() == 0 then pnl.maxterval:ChooseOptionID(1) end
+							
+							local minchr = string.lower( pnl.minterval:GetValue():sub(1,1) )
+							if minchr == "m" or minchr == "p" then minchr = "" end
+							
+							local maxchr = string.lower( pnl.maxterval:GetValue():sub(1,1) )
+							if maxchr == "m" or maxchr == "p" then maxchr = "" end
+							
+							outstr = outstr .. outtmp .. " " .. 
+								( pnl.hasmin:GetChecked() and ( pnl.min:GetValue() .. minchr ) or "" ) ..
+								( pnl.hasmax:GetChecked() and ( ":" .. pnl.max:GetValue() .. maxchr ) or "" )
+							outtmp = ""
+						else
+							outtmp = outtmp .. " *"
+						end
+					
 					elseif pnl.type == "bool" then
 						outstr = outstr .. outtmp .. " " .. ( pnl.checkbox:GetChecked() and "1" or "0" )
 						outtmp = ""
