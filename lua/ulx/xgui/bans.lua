@@ -204,18 +204,9 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 		xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
 		local reason = xlib.makemultichoice{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
 		local bantime = xlib.makeslider{ x=75, y=105, w=200, value=0, min=0, max=360, decimal=0, disabled=true, parent=xgui_banwindow }
-		local interval = xlib.makemultichoice{ x=75, y=105, w=75, text="Permanent", parent=xgui_banwindow }
-		interval:AddChoice( "Permanent" )
-		interval:AddChoice( "Minutes" )
-		interval:AddChoice( "Hours" )
-		interval:AddChoice( "Days" )
-		interval:AddChoice( "Years" )
+		local interval = xlib.makemultichoice{ x=75, y=105, w=75, text="Permanent", choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, parent=xgui_banwindow }
 		interval.OnSelect = function( self, index, value, data )
-			if value == "Permanent" then
-				bantime:SetDisabled( true )
-			else
-				bantime:SetDisabled( false )
-			end
+			bantime:SetDisabled( value == "Permanent" )
 		end
 		local name
 		if not isUpdate then
