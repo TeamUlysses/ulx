@@ -27,7 +27,7 @@ function ulx.soundComplete( ply, args )
 	local soundList = {}
 
 	local relpath = targs:GetPathFromFilename()
-	local sounds = file.Find( "sound/" .. relpath .. "*", true )
+	local sounds = file.Find( "sound/" .. relpath .. "*", "GAME" )
 	for _, sound in ipairs( sounds ) do
 		if targs:len() == 0 or (relpath .. sound):sub( 1, targs:len() ) == targs then
 			table.insert( soundList, relpath .. sound )

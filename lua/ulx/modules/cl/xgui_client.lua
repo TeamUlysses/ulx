@@ -48,8 +48,8 @@ xgui.tabcompletes = {}
 
 --Set up XGUI clientside settings, load settings from file if it exists
 xgui.settings = {}
-if file.Exists( "ulx/xgui_settings.txt" ) then
-	local input = file.Read( "ulx/xgui_settings.txt" )
+if file.Exists( "ulx/xgui_settings.txt", "DATA" ) then
+	local input = file.Read( "ulx/xgui_settings.txt", "DATA" )
 	input = input:match( "^.-\n(.*)$" )
 	xgui.settings = ULib.parseKeyValues( input )
 end
@@ -110,12 +110,12 @@ function xgui.init( authedply )
 		Msg( "///////////////////////////////////////\n" )
 		Msg( "// Loading GUI Modules...            //\n" )
 	end
-	for _, file in ipairs( file.FindInLua( "ulx/xgui/*.lua" ) ) do
+	for _, file in ipairs( file.Find( "ulx/xgui/*.lua", LUA_PATH ) ) do
 		include( "ulx/xgui/" .. file )
 		if sm then Msg( "//   " .. file .. string.rep( " ", 32 - file:len() ) .. "//\n" ) end
 	end
 	if sm then Msg( "// Loading Setting Modules...        //\n" ) end
-	for _, file in ipairs( file.FindInLua( "ulx/xgui/settings/*.lua" ) ) do
+	for _, file in ipairs( file.Find( "ulx/xgui/settings/*.lua", LUA_PATH ) ) do
 		include( "ulx/xgui/settings/" .. file )
 		if sm then Msg( "//   " .. file .. string.rep( " ", 32 - file:len() ) .. "//\n" ) end
 	end
@@ -124,7 +124,7 @@ function xgui.init( authedply )
 		include( "ulx/xgui/gamemodes/sandbox.lua" )
 		if sm then Msg( "//   sandbox.lua                     //\n" ) end
 	end
-	for _, file in ipairs( file.FindInLua( "ulx/xgui/gamemodes/*.lua" ) ) do
+	for _, file in ipairs( file.Find( "ulx/xgui/gamemodes/*.lua", LUA_PATH ) ) do
 		if string.lower( file ) == string.lower( GAMEMODE.FolderName .. ".lua" ) then
 			include( "ulx/xgui/gamemodes/" .. file )
 			if sm then Msg( "//   " .. file .. string.rep( " ", 32 - file:len() ) .. "//\n" ) end
@@ -307,7 +307,7 @@ function xgui.show( tabname )
 		return
 	end
 
-	if not SinglePlayer() and not ULib.ucl.authed[LocalPlayer():UniqueID()] then
+	if not game.SinglePlayer() and not ULib.ucl.authed[LocalPlayer():UniqueID()] then
 		local unauthedWarning = xlib.makeframe{ label="XGUI Error!", w=250, h=90, showclose=true, skin=xgui.settings.skin }
 		xlib.makelabel{ label="Your ULX player has not been Authed!", x=10, y=30, parent=unauthedWarning }
 		xlib.makelabel{ label="Please wait a couple seconds and try again.", x=10, y=45, parent=unauthedWarning }
@@ -387,10 +387,11 @@ end
 function xgui.expectChunks( numofchunks )
 	if xgui.isInstalled then
 		xgui.expectingdata = true
-		xgui.chunkbox.progress:SetMax( numofchunks )
-		xgui.chunkbox.progress:SetValue( 0 )
+		xgui.chunkbox.max = numofchunks
+		xgui.chunkbox.value = 0
+		xgui.chunkbox.progress:SetFraction( 0 )
 		xgui.chunkbox.progress.Label:SetText( "Waiting for server" .. " - " .. xgui.chunkbox.progress.Label:GetValue() )
-		xgui.chunkbox.progress:PerformLayout()
+		--xgui.chunkbox.progress:PerformLayout()
 		xgui.chunkbox:SetVisible( true )
 		xgui.flushQueue( "chunkbox" ) --Remove the queue entry that would hide the chunkbox
 	end

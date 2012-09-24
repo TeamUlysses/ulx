@@ -46,7 +46,7 @@ luarun:help( "Executes lua in server console. (Use '=' for output)" )
 
 function ulx.exec( calling_ply, config )
 	if string.sub( config, -4 ) ~= ".cfg" then config = config .. ".cfg" end
-	if not file.Exists( "cfg/" .. config, true ) then
+	if not file.Exists( "cfg/" .. config, "GAME" ) then
 		ULib.tsayError( calling_ply, "That config does not exist!", true )
 		return
 	end

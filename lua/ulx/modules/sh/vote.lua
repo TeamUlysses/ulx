@@ -72,7 +72,7 @@ function ulx.voteCallback( ply, command, argv )
 		ULib.tsay( _, str ) -- TODO, color?
 	end
 	ulx.logString( str )
-	if isDedicatedServer() then Msg( str .. "\n" ) end
+	if game.IsDedicated() then Msg( str .. "\n" ) end
 
 	if voteInProgress.votes >= voteInProgress.voters then
 		timer.Destroy( "ULXVoteTimeout" )
@@ -181,7 +181,7 @@ local function voteMapDone( t, argv, ply )
 	end
 	ULib.tsay( _, str ) -- TODO, color?
 	ulx.logString( str )
-	if isDedicatedServer() then Msg( str .. "\n" ) end
+	if game.IsDedicated() then Msg( str .. "\n" ) end
 end
 
 function ulx.votemap2( calling_ply, ... )
@@ -258,7 +258,7 @@ local function voteKickDone( t, target, time, ply, reason )
 
 	ULib.tsay( _, str ) -- TODO, color?
 	ulx.logString( str )
-	if isDedicatedServer() then Msg( str .. "\n" ) end
+	if game.IsDedicated() then Msg( str .. "\n" ) end
 end
 
 function ulx.votekick( calling_ply, target_ply, reason )

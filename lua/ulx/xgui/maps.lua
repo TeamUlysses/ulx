@@ -12,7 +12,7 @@ maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", pare
 maps.list = xlib.makelistview{ x=5, y=30, w=175, h=315, multiselect=true, parent=maps, headerheight=0 } --Remember to enable/disable multiselect based on admin status?
 maps.list:AddColumn( "Map Name" )
 maps.list.OnRowSelected = function( self, LineID, Line )
-	if ( file.Exists( "materials/maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".vmt", true ) ) then 
+	if ( file.Exists( "materials/maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".vmt", "GAME" ) ) then 
 		maps.disp:SetImage( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) )
 	else 
 		maps.disp:SetImage( "maps/noicon.vmt" )

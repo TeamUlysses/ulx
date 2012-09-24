@@ -9,7 +9,7 @@ xlib.makecheckbox{ x=10, y=30, label="Enable Alltalk", repconvar="rep_sv_alltalk
 xlib.makecheckbox{ x=10, y=50, label="Disable AI", repconvar="rep_ai_disabled", parent=server, textcolor=color_black }
 xlib.makecheckbox{ x=10, y=70, label="AI Ignore Players", repconvar="rep_ai_ignoreplayers", parent=server, textcolor=color_black }
 local offset = 0
-if SinglePlayer() then
+if game.SinglePlayer() then
 	offset = 20
 	xlib.makecheckbox{ x=10, y=90, label="Keep AI Ragdolls", repconvar="rep_ai_keepragdolls", parent=server, textcolor=color_black }
 end

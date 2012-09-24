@@ -4,8 +4,8 @@ if not ulx then
 	include( "ulx/cl_lib.lua" )
 	include( "ulx/sh_base.lua" )
 
-	local sh_modules = file.FindInLua( "ulx/modules/sh/*.lua" )
-	local cl_modules = file.FindInLua( "ulx/modules/cl/*.lua" )
+	local sh_modules = file.Find( "ulx/modules/sh/*.lua", LUA_PATH )
+	local cl_modules = file.Find( "ulx/modules/cl/*.lua", LUA_PATH )
 
 	for _, file in ipairs( cl_modules ) do
 		Msg( "[ULX] Loading CLIENT module: " .. file .. "\n" )

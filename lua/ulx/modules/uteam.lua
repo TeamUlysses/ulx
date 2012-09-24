@@ -99,7 +99,7 @@ function ulx.refreshTeams()
 			local team_model
 			if group_data.team.model then
 				team_model = group_data.team.model
-				if not file.Exists( team_model, true ) then
+				if not file.Exists( team_model, "GAME" ) then
 					team_model = player_manager.TranslatePlayerModel( team_model )
 				end
 			end

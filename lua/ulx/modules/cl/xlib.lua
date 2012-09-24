@@ -415,6 +415,7 @@ local function xlib_init()
 		local pos_start, pos_end = 1, 1
 		while true do
 			local begin, stop = text:find( "%s+", pos_end + 1 )
+
 			if (surface.GetTextSize( text:sub( pos_start, begin or -1 ):Trim() ) > width and pos_end - pos_start > 0) then -- If it's not going to fit, split into a newline
 				output = output .. text:sub( pos_start, pos_end ):Trim() .. "\n"
 				pos_start = pos_end + 1
@@ -431,19 +432,16 @@ local function xlib_init()
 		return output
 	end
 
-	--Includes Garry's ever-so-awesome progress bar!
-	include( "menu/ProgressBar.lua" )
 	function xlib.makeprogressbar( t )
-		pnl = vgui.Create( "DProgressBar", t.parent )
+		pnl = vgui.Create( "DProgress", t.parent )
+		pnl.Label = vgui.Create( "DLabel", pnl )
 		pnl:SetPos( t.x, t.y )
 		pnl:SetSize( t.w or 100, t.h or 20 )
-		pnl:SetMin( t.min or 0 )
-		pnl:SetMax( t.max or 100 )
-		pnl:SetValue( t.value or 0 )
-		if t.percent then
-			pnl.m_bLabelAsPercentage = true
-			pnl:UpdateText()
-		end
+		pnl:SetFraction( t.value or 0 )
+		--if t.percent then
+		--	pnl.m_bLabelAsPercentage = true
+		--	pnl:UpdateText()
+		--end
 		return pnl
 	end
 

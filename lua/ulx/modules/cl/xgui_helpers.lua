@@ -348,17 +348,18 @@ local function xgui_helpers()
 	
 		--Progress bar
 		xgui.chunkbox = xlib.makeframe{ label="XGUI is receiving data!", w=200, h=60, x=200, y=5, visible=false, nopopup=true, draggable=false, showclose=false, skin=xgui.settings.skin, parent=xgui.anchor }
-		xgui.chunkbox.progress = xlib.makeprogressbar{ x=10, y=30, w=180, h=20, min=0, percent=true, parent=xgui.chunkbox }
+		xgui.chunkbox.progress = xlib.makeprogressbar{ x=10, y=30, w=180, h=20, parent=xgui.chunkbox }
 		function xgui.chunkbox:Progress( datatype )
-			self.progress:SetValue( self.progress:GetValue() + 1 )
+			self.value = self.value + 1
+			self.progress:SetFraction( self.value / self.max )
 			self.progress.Label:SetText( datatype .. " - " .. self.progress.Label:GetValue() )
-			if self.progress:GetValue() == self.progress.m_iMax then
+			if self.value == self.max then
 				xgui.expectingdata = nil
 				self.progress.Label:SetText( "Waiting for clientside processing" )
 				xgui.queueFunctionCall( xgui.chunkbox.SetVisible, "chunkbox", xgui.chunkbox, false )
 				RunConsoleCommand( "_xgui", "dataComplete" )
 			end
-			self.progress:PerformLayout()
+			--self.progress:PerformLayout()
 		end
 	end
 	
