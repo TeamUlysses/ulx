@@ -19,7 +19,7 @@ function ULib.applyAccel( ent, magnitude, direction, dTime )
 	if dTime == nil then dTime = 1 end
 
 	if magnitude ~= nil then
-		direction = direction:Normalize()
+		direction:Normalize()
 	else
 		magnitude = 1
 	end
@@ -53,7 +53,7 @@ function ULib.applyForce( ent, magnitude, direction, dTime )
 	if dTime == nil then dTime = 1 end
 
 	if magnitude ~= nil then
-		direction = direction:Normalize()
+		direction:Normalize()
 	else
 		magnitude = 1
 	end

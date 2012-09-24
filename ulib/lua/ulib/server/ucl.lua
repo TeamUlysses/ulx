@@ -6,7 +6,7 @@
 
 local ucl = ULib.ucl -- Make it easier for us to refer to
 
-local accessStrings = ULib.parseKeyValues( file.Read( ULib.UCL_REGISTERED ) or "" ) or {}
+local accessStrings = ULib.parseKeyValues( file.Read( ULib.UCL_REGISTERED, "DATA" ) or "" ) or {}
 local accessCategories = {}
 ULib.ucl.accessStrings = accessStrings
 ULib.ucl.accessCategories = accessCategories
@@ -37,23 +37,23 @@ end
 local function reloadGroups()
 	local needsBackup = false
 	local err
-	ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS ), "/" ) )
+	ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS, "DATA" ), "/" ) )
 
 	if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 		needsBackup = true
 		-- Totally messed up! Clear it.
-		local f = "../addons/ulib/data/" .. ULib.UCL_GROUPS
-		if not file.Exists( f ) then
+		local f = "addons/ulib/data/" .. ULib.UCL_GROUPS
+		if not file.Exists( f, "GAME" ) then
 			Msg( "ULIB PANIC: groups.txt is corrupted and I can't find the default groups.txt file!!\n" )
 		else
 			local err2
-			ucl.groups, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f ), "/" ) )
+			ucl.groups, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f, "GAME" ), "/" ) )
 			if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 				Msg( "ULIB PANIC: default groups.txt is corrupt!\n" )
 				err = err2
 			end
 		end
-		if file.Exists( ULib.UCL_REGISTERED ) then
+		if file.Exists( ULib.UCL_REGISTERED, "DATA" ) then
 			file.Delete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}
@@ -131,24 +131,24 @@ reloadGroups()
 local function reloadUsers()
 	local needsBackup = false
 	local err
-	ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS ), "/" ) )
+	ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS, "DATA" ), "/" ) )
 
 	-- Check to make sure it passes a basic validity test
 	if not ucl.users then
 		needsBackup = true
 		-- Totally messed up! Clear it.
-		local f = "../addons/ulib/data/" .. ULib.UCL_USERS
-		if not file.Exists( f ) then
+		local f = "addons/ulib/data/" .. ULib.UCL_USERS
+		if not file.Exists( f, "GAME" ) then
 			Msg( "ULIB PANIC: users.txt is corrupted and I can't find the default users.txt file!!\n" )
 		else
 			local err2
-			ucl.users, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f ), "/" ) )
+			ucl.users, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f, "GAME" ), "/" ) )
 			if not ucl.users then
 				Msg( "ULIB PANIC: default users.txt is corrupt!\n" )
 				err = err2
 			end
 		end
-		if file.Exists( ULib.UCL_REGISTERED ) then
+		if file.Exists( ULib.UCL_REGISTERED, "DATA" ) then
 			file.Delete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}

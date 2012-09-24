@@ -7,7 +7,7 @@
 ULib = ULib or {}
 
 
-ULib.VERSION = 2.43
+ULib.VERSION = 2.50
 
 ULib.ACCESS_ALL = "user"
 ULib.ACCESS_OPERATOR = "operator"
@@ -228,8 +228,17 @@ ULib.VERSION_FILE = "ULib/version.txt"
 
 ULib.DEFAULT_GRANT_ACCESS = { allow={}, deny={}, guest=true }
 
-if file.Exists( ULib.UCL_REGISTERED ) and file.Exists( "addons/ulib/data/" .. ULib.UCL_GROUPS, true ) and file.Read( ULib.UCL_GROUPS ) == file.Read( "addons/ulib/data/" .. ULib.UCL_GROUPS, true ) then
+if file.Exists( ULib.UCL_REGISTERED, "DATA" ) and file.Exists( "addons/ulib/data/" .. ULib.UCL_GROUPS, "GAME" ) and file.Read( ULib.UCL_GROUPS, "DATA" ) == file.Read( "addons/ulib/data/" .. ULib.UCL_GROUPS, "GAME" ) then
   -- File has been reset, delete registered
 	file.Delete( ULib.UCL_REGISTERED )
 end
+end
+
+--[[
+	Section: Net pooled strings
+
+	These defines are server-only, to help with the networking library.
+]]
+if SERVER then
+	util.AddNetworkString( "URPC" )
 end

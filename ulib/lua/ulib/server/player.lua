@@ -1,8 +1,3 @@
--- Include gatekeeper if it's available
-if file.Exists( "lua/includes/modules/gmsv_gatekeeper.dll", true ) then
-    pcall( require, "gatekeeper" )
-end
-
 --[[
 	Title: Player
 
@@ -96,11 +91,7 @@ end
 		reason - *(Optional)* The reason to give for kicking.
 ]]
 function ULib.kick( ply, reason )
-	if gatekeeper then
-		ULib.queueFunctionCall( gatekeeper.Drop, ply:UserID(), reason ) -- This function immediately removes the ent, so wait a tick
-	else
-		ply:Kick( reason or "" )
-	end
+	ply:Kick( reason or "" )
 end
 
 
@@ -128,8 +119,8 @@ function ULib.ban( ply, time, reason, admin )
 	ULib.addBan( ply:SteamID(), time, reason, ply:Name(), admin )
 
 	-- Load our currently banned users so we don't overwrite them
-	if file.Exists( "cfg/banned_user.cfg", true ) then
-		ULib.execFile( "cfg/banned_user.cfg", true )
+	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
+		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
 	end
 end
 
@@ -158,8 +149,8 @@ function ULib.kickban( ply, time, reason, admin )
 	ULib.addBan( ply:SteamID(), time, reason, ply:Name(), admin )
 
 	-- Load our currently banned users so we don't overwrite them
-	if file.Exists( "cfg/banned_user.cfg", true ) then
-		ULib.execFile( "cfg/banned_user.cfg", true )
+	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
+		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
 	end
 end
 
@@ -241,8 +232,8 @@ end
 function ULib.unban( steamid )
 
 	--Default banlist
-	if file.Exists( "cfg/banned_user.cfg", true ) then
-		ULib.execFile( "cfg/banned_user.cfg", true )
+	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
+		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
 	end
 	ULib.queueFunctionCall( game.ConsoleCommand, "removeid " .. steamid .. ";writeid\n" ) -- Execute after done loading bans
 
@@ -331,10 +322,10 @@ end
 ]]
 function ULib.refreshBans()
 	local err
-	if not file.Exists( ULib.BANS_FILE ) then
+	if not file.Exists( ULib.BANS_FILE, "DATA" ) then
 		ULib.bans = {}
 	else
-		ULib.bans, err = ULib.parseKeyValues( file.Read( ULib.BANS_FILE ) )
+		ULib.bans, err = ULib.parseKeyValues( file.Read( ULib.BANS_FILE, "DATA" ) )
 	end
 
 	if err then
@@ -347,10 +338,10 @@ function ULib.refreshBans()
 	end
 
 	local default_bans = ""
-	if file.Exists( "cfg/banned_user.cfg", true ) then
-		ULib.execFile( "cfg/banned_user.cfg", true )
+	if file.Exists( "cfg/banned_user.cfg", "DATA" ) then
+		ULib.execFile( "cfg/banned_user.cfg", "DATA" )
 		ULib.queueFunctionCall( game.ConsoleCommand, "writeid\n" )
-		default_bans = file.Read( "cfg/banned_user.cfg", true )
+		default_bans = file.Read( "cfg/banned_user.cfg", "DATA" )
 	end
 
 	--default_bans = ULib.makePatternSafe( default_bans )

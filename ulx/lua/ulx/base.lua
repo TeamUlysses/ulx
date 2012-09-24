@@ -44,7 +44,7 @@ end
 -- Setup the maps table
 do
 	ulx.maps = {}
-	local maps = file.Find( "maps/*.bsp", true )
+	local maps = file.Find( "maps/*.bsp", "GAME" )
 
 	for _, map in ipairs( maps ) do
 		table.insert( ulx.maps, map:sub( 1, -5 ):lower() ) -- Take off the .bsp
@@ -52,10 +52,10 @@ do
 	table.sort( ulx.maps ) -- Make sure it's alphabetical
 
 	ulx.gamemodes = {}
-	local gamemodes = file.Find( "gamemodes/*", true )
+	local gamemodes = file.Find( "gamemodes/*", "GAME" )
 
 	for _, gamemode in ipairs( gamemodes ) do
-		if file.IsDir( "gamemodes/" .. gamemode, true ) and file.Exists( "gamemodes/" .. gamemode .. "/info.txt", true ) and not util.tobool( util.KeyValuesToTable( file.Read( "gamemodes/" .. gamemode .. "/info.txt", true ) ).hide ) then
+		if file.IsDir( "gamemodes/" .. gamemode, "GAME" ) and file.Exists( "gamemodes/" .. gamemode .. "/info.txt", "GAME" ) and not util.tobool( util.KeyValuesToTable( file.Read( "gamemodes/" .. gamemode .. "/info.txt", "GAME" ) ).hide ) then
 			table.insert( ulx.gamemodes, gamemode:lower() )
 		end
 	end
@@ -95,7 +95,7 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	if not ulx.cvars[ command ] then return end
 	sv_cvar = ulx.cvars[ command ].original -- Make sure we have intended casing
 	local path = "ulx/config.txt"
-	if not file.Exists( path ) then
+	if not file.Exists( path, "DATA" ) then
 		Msg( "[ULX ERROR] Config doesn't exist at " .. path .. "\n" )
 		return
 	end
@@ -104,7 +104,7 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 
 	if new_value:find( "[%s:']" ) then new_value = string.format( "%q", new_value ) end
 	local replacement = string.format( "%s %s ", sv_cvar, new_value:gsub( "%%", "%%%%" ) ) -- Because we're feeding it through gsub below, need to expand '%'s
-	local config = file.Read( "ulx/config.txt" )
+	local config = file.Read( "ulx/config.txt", "DATA" )
 	config = config:gsub( ULib.makePatternSafe( sv_cvar ):gsub( "%a", function( c ) return "[" .. c:lower() .. c:upper() .. "]" end ) .. "%s+[^;\r\n]*", replacement ) -- The gsub makes us case neutral
 	file.Write( path, config )
 end

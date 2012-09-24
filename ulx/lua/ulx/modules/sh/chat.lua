@@ -118,7 +118,7 @@ local function doAdvert( group, id )
 	ULib.queueFunctionCall( function()
 		local nextid = math.fmod( id, #adverts[ group ] ) + 1
 		timer.Remove( "ULXAdvert" .. type( group ) .. group )
-		timer.Create( "ULXAdvert" .. type( group ) .. group, adverts[ group ][ nextid ].rpt, 1, doAdvert, group, nextid )
+		timer.Create( "ULXAdvert" .. type( group ) .. group, adverts[ group ][ nextid ].rpt, 1, function() doAdvert( group, nextid ) end )
 	end )
 end
 
@@ -139,8 +139,8 @@ function ulx.addAdvert( message, rpt, group, color, len )
 
 	local id = table.insert( t, { message=message, rpt=rpt, color=color, len=len } )
 
-	if not timer.IsTimer( "ULXAdvert" .. type( group ) .. group ) then
-		timer.Create( "ULXAdvert" .. type( group ) .. group, rpt, 1, doAdvert, group, id )
+	if not timer.Exists( "ULXAdvert" .. type( group ) .. group ) then
+		timer.Create( "ULXAdvert" .. type( group ) .. group, rpt, 1, function() doAdvert( group, id ) end )
 	end
 end
 
@@ -288,7 +288,7 @@ local function meCheck( ply, strText, bPublic )
 			end
 		end
 
-		if isDedicatedServer() then
+		if game.IsDedicated() then
 			Msg( strText .. "\n" ) -- Log to console
 		end
 		if util.tobool( GetConVarNumber( "ulx_logChat" ) ) then

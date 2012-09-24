@@ -2,18 +2,18 @@
 
 local function init()
 	-- Load our banned users
-	if file.Exists( "cfg/banned_user.cfg", true ) then
-		ULib.execFile( "cfg/banned_user.cfg", true )
+	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
+		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
 	end
 end
 hook.Add( "Initialize", "ULXInitialize", init )
 
 local function doMainCfg( path )
-	ULib.execString( ULib.stripComments( file.Read( path ), ";" ) )
+	ULib.execString( ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 end
 
 local function doDownloadCfg( path )
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -24,7 +24,7 @@ end
 
 local function doGimpCfg( path )
 	ulx.clearGimpSays()
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -34,7 +34,7 @@ local function doGimpCfg( path )
 end
 
 local function doAdvertCfg( path )
-	local data_root, err = ULib.parseKeyValues( ULib.stripComments( file.Read( path ), ";" ) )
+	local data_root, err = ULib.parseKeyValues( ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	if not data_root then Msg( "[ULX] Error in advert config: " .. err .. "\n" ) return end
 
 	for group_name, row in pairs( data_root ) do
@@ -54,7 +54,7 @@ end
 
 local function doVotemapsCfg( path )
 	ulx.clearVotemaps()
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -64,7 +64,7 @@ local function doVotemapsCfg( path )
 end
 
 local function doReasonsCfg( path )
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -88,29 +88,29 @@ local function doCfg()
 
 	for filename, fn in pairs( things_to_execute ) do
 		-- Global config
-		if file.Exists( "ulx/" .. filename ) then
+		if file.Exists( "ulx/" .. filename, "DATA" ) then
 			fn( "ulx/" .. filename )
 		end
 
 		-- Per gamemode config
-		if file.Exists( "ulx/gamemodes/" .. gamemode_name .. "/" .. filename ) then
+		if file.Exists( "ulx/gamemodes/" .. gamemode_name .. "/" .. filename, "DATA" ) then
 			fn( "ulx/gamemodes/" .. gamemode_name .. "/" .. filename )
 		end
 
 		-- Per map config
-		if file.Exists( "ulx/maps/" .. map_name .. "/" .. filename ) then
+		if file.Exists( "ulx/maps/" .. map_name .. "/" .. filename, "DATA" ) then
 			fn( "ulx/maps/" .. map_name .. "/" .. filename )
 		end
 	end
 
 	ULib.queueFunctionCall( hook.Call, ulx.HOOK_ULXDONELOADING, _ ) -- We're done loading! Wait a tick so the configs load.
 
-	if not isDedicatedServer() then
+	if not game.IsDedicated() then
 		hook.Remove( "PlayerInitialSpawn", "ULXDoCfg" )
 	end
 end
 
-if isDedicatedServer() then
+if game.IsDedicated() then
 	hook.Add( "Initialize", "ULXDoCfg", doCfg, 20 )
 else
 	hook.Add( "PlayerInitialSpawn", "ULXDoCfg", doCfg, 20 ) -- TODO can we make this initialize too?

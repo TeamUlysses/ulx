@@ -210,7 +210,7 @@ function groups.init()
 			output = output .. ULib.makeKeyValues( emptyteams )
 			file.Write( "ulx/empty_teams.txt", output )
 		else
-			if file.Exists( "ulx/empty_teams.txt" ) then
+			if file.Exists( "ulx/empty_teams.txt", "DATA" ) then
 				file.Delete( "ulx/empty_teams.txt" )
 			end
 		end
@@ -288,7 +288,7 @@ end
 function groups.postinit()
 	--Get user information from Garry's users.txt
 	groups.garryUsers = {}
-	for group, users in pairs ( util.KeyValuesToTable( file.Read( "settings/users.txt", true ) ) ) do
+	for group, users in pairs ( util.KeyValuesToTable( file.Read( "settings/users.txt", "GAME" ) ) ) do
 		for user, steamID in pairs( users ) do
 			groups.garryUsers[steamID] = { name=user, group=group }
 		end
@@ -311,8 +311,8 @@ function groups.postinit()
 	xgui.teams = table.Copy( ulx.teams )
 	
 	--Load empty teams saved by XGUI (if any)
-	if file.Exists( "ulx/empty_teams.txt" ) then
-		local input = file.Read( "ulx/empty_teams.txt" )
+	if file.Exists( "ulx/empty_teams.txt", "DATA" ) then
+		local input = file.Read( "ulx/empty_teams.txt", "DATA" )
 		input = input:match( "^.-\n(.*)$" )
 		local emptyteams = ULib.parseKeyValues( input )
 		for _, teamdata in ipairs( emptyteams ) do

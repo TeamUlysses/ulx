@@ -207,12 +207,12 @@ spectate:defaultAccess( ULib.ACCESS_ADMIN )
 spectate:help( "Spectate target." )
 
 function ulx.addForcedDownload( path )
-	if file.IsDir( path, true ) then
+	if file.IsDir( path, "GAME" ) then
 		files = ULib.filesInDir( path )
 		for _, v in ipairs( files ) do
 			ulx.addForcedDownload( path .. "/" .. v )
 		end
-	elseif file.Exists( path, true ) then
+	elseif file.Exists( path, "GAME" ) then
 		resource.AddFile( path )
 	else
 		Msg( "[ULX] ERROR: Tried to add nonexistent or empty file to forced downloads '" .. path .. "'\n" )
@@ -222,7 +222,7 @@ end
 function ulx.debuginfo( calling_ply )
 	local str = string.format( "ULX version: %s\nULib version: %.2f\n", ulx.getVersion(), ULib.VERSION )
 	str = str .. string.format( "Gamemode: %s\nMap: %s\n", GAMEMODE.Name, game.GetMap() )
-	str = str .. "Dedicated server: " .. tostring( isDedicatedServer() ) .. "\n\n"
+	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 
 	local players = player.GetAll()
 	str = str .. string.format( "Currently connected players:\nNick%s steamid%s uid%s id lsh created\n", str.rep( " ", 27 ), str.rep( " ", 11 ), str.rep( " ", 7 ) )
@@ -246,17 +246,17 @@ function ulx.debuginfo( calling_ply )
 		str = str .. plyline .. "\n"
 	end
 
-	local gmoddefault = util.KeyValuesToTable( file.Read( "settings/users.txt", true ) )
+	local gmoddefault = util.KeyValuesToTable( file.Read( "settings/users.txt", "GAME" ) )
 	str = str .. "\n\nULib.ucl.users (#=" .. table.Count( ULib.ucl.users ) .. "):\n" .. ulx.dumpTable( ULib.ucl.users, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.groups (#=" .. table.Count( ULib.ucl.groups ) .. "):\n" .. ulx.dumpTable( ULib.ucl.groups, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.authed (#=" .. table.Count( ULib.ucl.authed ) .. "):\n" .. ulx.dumpTable( ULib.ucl.authed, 1 ) .. "\n\n"
 	str = str .. "Garrysmod default file (#=" .. table.Count( gmoddefault ) .. "):\n" .. ulx.dumpTable( gmoddefault, 1 ) .. "\n\n"
 
 	str = str .. "Active addons on this server:\n"
-	local possibleaddons = file.FindDir( "addons/*", true )
+	local possibleaddons = file.FindDir( "addons/*", "GAME" )
 	for _, addon in ipairs( possibleaddons ) do
-		if file.Exists( "addons/" .. addon .. "/info.txt", true ) then
-			local t = util.KeyValuesToTable( file.Read( "addons/" .. addon .. "/info.txt", true ) )
+		if file.Exists( "addons/" .. addon .. "/info.txt", "GAME" ) then
+			local t = util.KeyValuesToTable( file.Read( "addons/" .. addon .. "/info.txt", "GAME" ) )
 			if tonumber( t.version ) then t.version = string.format( "%g", t.version ) end -- Removes innaccuracy in floating point numbers
 			str = str .. string.format( "%s%s by %s, version %s (%s)\n", addon, str.rep( " ", 24 - addon:len() ), t.author_name, t.version, t.up_date )
 		end

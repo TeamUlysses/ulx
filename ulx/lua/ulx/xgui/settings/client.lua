@@ -87,7 +87,7 @@ end
 --SKIN MANAGER--
 ----------------
 --Include the extra skins in case nothing else has included them.
-for _, file in ipairs( file.FindInLua( "skins/*.lua" ) ) do
+for _, file in ipairs( file.Find( "skins/*.lua", LUA_PATH ) ) do
 	include( "skins/" .. file )
 end
 xlib.makelabel{ x=10, y=273, label="Derma Theme:", textcolor=color_black, parent=xguipnl }
