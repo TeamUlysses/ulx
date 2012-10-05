@@ -346,7 +346,7 @@ function adverts.createNode( parent, data, group, number, message, lastNode )
 	node.data = data
 	node.group = group
 	node.number = number
-	node:SetTooltip( xlib.wordWrap( message, 250, "MenuItem" ) )
+	node:SetTooltip( xlib.wordWrap( message, 250, "Default" ) )
 	if data.len then --Is Tsay or Csay?
 		node.Icon:SetImage( "icon16/text_smallcaps.png" )
 	else

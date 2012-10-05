@@ -391,7 +391,6 @@ function xgui.expectChunks( numofchunks )
 		xgui.chunkbox.value = 0
 		xgui.chunkbox.progress:SetFraction( 0 )
 		xgui.chunkbox.progress.Label:SetText( "Waiting for server" .. " - " .. xgui.chunkbox.progress.Label:GetValue() )
-		--xgui.chunkbox.progress:PerformLayout()
 		xgui.chunkbox:SetVisible( true )
 		xgui.flushQueue( "chunkbox" ) --Remove the queue entry that would hide the chunkbox
 	end

@@ -359,7 +359,6 @@ local function xgui_helpers()
 				xgui.queueFunctionCall( xgui.chunkbox.SetVisible, "chunkbox", xgui.chunkbox, false )
 				RunConsoleCommand( "_xgui", "dataComplete" )
 			end
-			--self.progress:PerformLayout()
 		end
 	end
 	
