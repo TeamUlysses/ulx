@@ -24,7 +24,10 @@ function ulx.map( calling_ply, map, gamemode )
 	else
 		ulx.fancyLogAdmin( calling_ply, "#A changed the map to #s with gamemode #s", map, gamemode )
 	end
-	game.ConsoleCommand( "changegamemode " .. map .. " " .. (gamemode or "") .. "\n" )
+	game.ConsoleCommand( "map " .. map ..  "\n" )
+	if gamemode and gamemode ~= "" then
+		game.ConsoleCommand( "gamemode " .. gamemode .. "\n" )
+	end
 end
 local map = ulx.command( CATEGORY_NAME, "ulx map", ulx.map, "!map" )
 map:addParam{ type=ULib.cmds.StringArg, completes=ulx.maps, hint="map", error="invalid map \"%s\" specified", ULib.cmds.restrictToCompletes }

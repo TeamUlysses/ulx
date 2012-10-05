@@ -18,7 +18,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -57,7 +57,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 			pnl:SetMouseInputEnabled( true )
@@ -65,7 +65,7 @@ local function xlib_init()
 		
 		if t.font then pnl:SetFont( t.font ) end
 		if t.w and t.wordwrap then
-			pnl:SetText( xlib.wordWrap( t.label, t.w, t.font or "default" ) )
+			pnl:SetText( xlib.wordWrap( t.label, t.w, t.font or "Default" ) )
 		end
 		pnl:SizeToContents()
 		if t.w then pnl:SetWidth( t.w ) end
@@ -134,7 +134,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -282,7 +282,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -410,12 +410,15 @@ local function xlib_init()
 	--Thanks to Megiddo for this code! :D
 	function xlib.wordWrap( text, width, font )
 		surface.SetFont( font )
+		if not surface.GetTextSize( "" ) then
+			surface.SetFont( "default" ) --Set font to default if specified font does not return a size properly.
+		end
 		text = text:Trim()
 		local output = ""
 		local pos_start, pos_end = 1, 1
 		while true do
 			local begin, stop = text:find( "%s+", pos_end + 1 )
-
+			
 			if (surface.GetTextSize( text:sub( pos_start, begin or -1 ):Trim() ) > width and pos_end - pos_start > 0) then -- If it's not going to fit, split into a newline
 				output = output .. text:sub( pos_start, pos_end ):Trim() .. "\n"
 				pos_start = pos_end + 1
@@ -468,7 +471,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
