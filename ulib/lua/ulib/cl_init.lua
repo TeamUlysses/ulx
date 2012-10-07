@@ -16,7 +16,7 @@ include( "ulib/shared/sh_ucl.lua" )
 Msg( string.format( "You are running ULib version %.2f.\n", ULib.VERSION ) )
 
 --Shared modules
-local files = file.Find( "ulib/modules/*.lua", LUA_PATH )
+local files = file.Find( "ulib/modules/*.lua", "LUA" )
 if #files > 0 then
 	for _, file in ipairs( files ) do
 		Msg( "[ULIB] Loading SHARED module: " .. file .. "\n" )
@@ -25,7 +25,7 @@ if #files > 0 then
 end
 
 --Client modules
-local files = file.Find( "ulib/modules/client/*.lua", LUA_PATH )
+local files = file.Find( "ulib/modules/client/*.lua", "LUA" )
 if #files > 0 then
 	for _, file in ipairs( files ) do
 		Msg( "[ULIB] Loading CLIENT module: " .. file .. "\n" )

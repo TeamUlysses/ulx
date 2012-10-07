@@ -56,19 +56,19 @@ if not ULib then
 	AddCSLuaFile( "ulib/cl_init.lua" )
 	AddCSLuaFile( "autorun/ulib_init.lua" )
 	local folder = "ulib/shared"
-	local files = file.Find( folder .. "/" .. "*.lua", LUA_PATH )
+	local files = file.Find( folder .. "/" .. "*.lua", "LUA" )
 	for _, file in ipairs( files ) do
 		AddCSLuaFile( folder .. "/" .. file )
 	end
 
 	folder = "ulib/client"
-	files = file.Find( folder .. "/" .. "*.lua", LUA_PATH )
+	files = file.Find( folder .. "/" .. "*.lua", "LUA" )
 	for _, file in ipairs( files ) do
 		AddCSLuaFile( folder .. "/" .. file )
 	end
 
 	--Shared modules
-	local files = file.Find( "ulib/modules/*.lua", LUA_PATH )
+	local files = file.Find( "ulib/modules/*.lua", "LUA" )
 	if #files > 0 then
 		for _, file in ipairs( files ) do
 			Msg( "[ULIB] Loading SHARED module: " .. file .. "\n" )
@@ -78,7 +78,7 @@ if not ULib then
 	end
 
 	--Server modules
-	local files = file.Find( "ulib/modules/server/*.lua", LUA_PATH )
+	local files = file.Find( "ulib/modules/server/*.lua", "LUA" )
 	if #files > 0 then
 		for _, file in ipairs( files ) do
 			Msg( "[ULIB] Loading SERVER module: " .. file .. "\n" )
@@ -87,7 +87,7 @@ if not ULib then
 	end
 
 	--Client modules
-	local files = file.Find( "ulib/modules/client/*.lua", LUA_PATH )
+	local files = file.Find( "ulib/modules/client/*.lua", "LUA" )
 	if #files > 0 then
 		for _, file in ipairs( files ) do
 			Msg( "[ULIB] Loading CLIENT module: " .. file .. "\n" )

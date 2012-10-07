@@ -72,7 +72,6 @@ if not xgui.settings.animOuttype then xgui.settings.animOuttype = 1 end
 
 
 function xgui.init( authedply )
-	print( "XGUI: hook received" )
 	if authedply ~= LocalPlayer() then return end
 
 	--Check if the server has XGUI installed
@@ -110,12 +109,12 @@ function xgui.init( authedply )
 		Msg( "///////////////////////////////////////\n" )
 		Msg( "// Loading GUI Modules...            //\n" )
 	end
-	for _, file in ipairs( file.Find( "ulx/xgui/*.lua", LUA_PATH ) ) do
+	for _, file in ipairs( file.Find( "ulx/xgui/*.lua", "LUA" ) ) do
 		include( "ulx/xgui/" .. file )
 		if sm then Msg( "//   " .. file .. string.rep( " ", 32 - file:len() ) .. "//\n" ) end
 	end
 	if sm then Msg( "// Loading Setting Modules...        //\n" ) end
-	for _, file in ipairs( file.Find( "ulx/xgui/settings/*.lua", LUA_PATH ) ) do
+	for _, file in ipairs( file.Find( "ulx/xgui/settings/*.lua", "LUA" ) ) do
 		include( "ulx/xgui/settings/" .. file )
 		if sm then Msg( "//   " .. file .. string.rep( " ", 32 - file:len() ) .. "//\n" ) end
 	end
@@ -124,7 +123,7 @@ function xgui.init( authedply )
 		include( "ulx/xgui/gamemodes/sandbox.lua" )
 		if sm then Msg( "//   sandbox.lua                     //\n" ) end
 	end
-	for _, file in ipairs( file.Find( "ulx/xgui/gamemodes/*.lua", LUA_PATH ) ) do
+	for _, file in ipairs( file.Find( "ulx/xgui/gamemodes/*.lua", "LUA" ) ) do
 		if string.lower( file ) == string.lower( GAMEMODE.FolderName .. ".lua" ) then
 			include( "ulx/xgui/gamemodes/" .. file )
 			if sm then Msg( "//   " .. file .. string.rep( " ", 32 - file:len() ) .. "//\n" ) end
@@ -161,7 +160,6 @@ function xgui.init( authedply )
 
 	xgui.processModules()
 end
-print( "XGUI: Hook added" )
 hook.Add( "UCLAuthed", "InitXGUI", xgui.init, 20 )
 
 function xgui.saveClientSettings()

@@ -86,7 +86,7 @@ function maps.updateVoteMaps()
 	local lastselected = {}
 	for k, Line in pairs( maps.list.Lines ) do
 		--if ( Line:GetSelected() ) then table.insert( lastselected, Line:GetColumnText(1) ) end
-		print( "XGUI: TODO! Something is supposed to happen here, but it broke." )
+		--TODO! Something is supposed to happen here, but it broke.
 	end
 	
 	maps.list:Clear()
