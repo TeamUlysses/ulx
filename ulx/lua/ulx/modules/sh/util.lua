@@ -39,6 +39,7 @@ function ulx.kick( calling_ply, target_ply, reason )
 	if reason and reason ~= "" then
 		ulx.fancyLogAdmin( calling_ply, "#A kicked #T (#s)", target_ply, reason )
 	else
+		reason = nil
 		ulx.fancyLogAdmin( calling_ply, "#A kicked #T", target_ply )
 	end
 	ULib.kick( target_ply, reason )

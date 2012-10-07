@@ -114,6 +114,24 @@ function Remove( event_name, name )
 end
 
 --[[
+	Function: hook.Run
+	
+	A convienence function created by Garry so you don't have to pass the gamemode in by hand.
+	
+	Parameters:
+	
+		name - The name of the event
+		... - Any other params to pass
+		
+	Revisions:
+	
+		2.50 - Created to match GM13 API
+]]
+function Run( name, ... )
+	return Call( name, GAMEMODE, ... )
+end
+
+--[[
 	Function: hook.Call
 
 	Normally, you don't want to call this directly. Use gamemode.Call() instead.

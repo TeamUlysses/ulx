@@ -91,7 +91,7 @@ end
 		reason - *(Optional)* The reason to give for kicking.
 ]]
 function ULib.kick( ply, reason )
-	ply:Kick( reason or "" )
+	ply:Kick( reason or "[ULX] Kicked from server" )
 end
 
 
