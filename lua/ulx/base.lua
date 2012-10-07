@@ -52,10 +52,10 @@ do
 	table.sort( ulx.maps ) -- Make sure it's alphabetical
 
 	ulx.gamemodes = {}
-	local gamemodes = file.Find( "gamemodes/*", "GAME" )
+	local _, gamemodes = file.Find( "gamemodes/*", "GAME" )
 
 	for _, gamemode in ipairs( gamemodes ) do
-		if file.IsDir( "gamemodes/" .. gamemode, "GAME" ) and file.Exists( "gamemodes/" .. gamemode .. "/info.txt", "GAME" ) and not util.tobool( util.KeyValuesToTable( file.Read( "gamemodes/" .. gamemode .. "/info.txt", "GAME" ) ).hide ) then
+		if file.IsDir( "gamemodes/" .. gamemode, "GAME" ) and file.Exists( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt", "GAME" ) and not util.tobool( util.KeyValuesToTable( file.Read( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt", "GAME" ) ).hide ) then
 			table.insert( ulx.gamemodes, gamemode:lower() )
 		end
 	end
