@@ -24,10 +24,10 @@ function ulx.map( calling_ply, map, gamemode )
 	else
 		ulx.fancyLogAdmin( calling_ply, "#A changed the map to #s with gamemode #s", map, gamemode )
 	end
-	game.ConsoleCommand( "map " .. map ..  "\n" )
 	if gamemode and gamemode ~= "" then
 		game.ConsoleCommand( "gamemode " .. gamemode .. "\n" )
 	end
+	game.ConsoleCommand( "changelevel " .. map ..  "\n" )
 end
 local map = ulx.command( CATEGORY_NAME, "ulx map", ulx.map, "!map" )
 map:addParam{ type=ULib.cmds.StringArg, completes=ulx.maps, hint="map", error="invalid map \"%s\" specified", ULib.cmds.restrictToCompletes }
@@ -256,7 +256,7 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "Garrysmod default file (#=" .. table.Count( gmoddefault ) .. "):\n" .. ulx.dumpTable( gmoddefault, 1 ) .. "\n\n"
 
 	str = str .. "Active addons on this server:\n"
-	local possibleaddons = file.FindDir( "addons/*", "GAME" )
+	local _, possibleaddons = file.Find( "addons/*", "GAME" )
 	for _, addon in ipairs( possibleaddons ) do
 		if file.Exists( "addons/" .. addon .. "/info.txt", "GAME" ) then
 			local t = util.KeyValuesToTable( file.Read( "addons/" .. addon .. "/info.txt", "GAME" ) )
