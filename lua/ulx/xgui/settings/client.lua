@@ -87,17 +87,15 @@ end
 --SKIN MANAGER--
 ----------------
 --Include the extra skins in case nothing else has included them.
-for _, file in ipairs( file.Find( "skins/*.lua", LUA_PATH ) ) do
+for _, file in ipairs( file.Find( "skins/*.lua", "LUA" ) ) do
 	include( "skins/" .. file )
 end
 xlib.makelabel{ x=10, y=273, label="Derma Theme:", textcolor=color_black, parent=xguipnl }
 xguipnl.skinselect = xlib.makecombobox{ x=10, y=290, w=150, parent=xguipnl }
 if not derma.SkinList[xgui.settings.skin] then
 	xgui.settings.skin = "Default"
-	xguipnl.skinselect:SetText( derma.SkinList.Default.PrintName )
-else
-	xguipnl.skinselect:SetText( derma.SkinList[xgui.settings.skin].PrintName )
 end
+xguipnl.skinselect:SetText( derma.SkinList[xgui.settings.skin].PrintName )
 xgui.base.refreshSkin = true
 xguipnl.skinselect.OnSelect = function( self, index, value, data )
 	xgui.settings.skin = data

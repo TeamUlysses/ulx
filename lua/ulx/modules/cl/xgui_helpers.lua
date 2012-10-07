@@ -220,7 +220,6 @@ local function xgui_helpers()
 		xgui.anchor:SetKeyboardInputEnabled( false )
 		xgui.anchor.Paint = function( self, w, h ) hook.Call( "XLIBDoAnimation" ) end
 		xgui.anchor:SetAlpha( 0 )
-		xgui.base:SetAlpha( 0 )
 		xgui.base:SetParent( xgui.anchor )
 		xgui.base:SetPos( 0, 70 )
 		xgui.base:SetSize( 600, 400 )
