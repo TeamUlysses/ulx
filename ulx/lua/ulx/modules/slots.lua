@@ -37,7 +37,7 @@ local function updateSlots( ply, disconnect )
 	local visible = util.tobool( GetConVarString( "ulx_rslotsVisible" ) )
 	if not visible then -- Make sure our visible slots is up to date
 		local slots = calcSlots( disconnect )
-		local max = MaxPlayers()
+		local max = game.MaxPlayers()
 		game.ConsoleCommand( "sv_visiblemaxplayers " .. max - slots .. "\n" )
 	end
 end
@@ -51,7 +51,7 @@ local function playerAccess( ply )
 	local visible = util.tobool( GetConVarString( "ulx_rslotsVisible" ) )
 	local slots = calcSlots()
 	local cur = #player.GetAll()
-	local max = MaxPlayers()
+	local max = game.MaxPlayers()
 
 	if ply:query( access ) then -- If they have access, handle this differently
 		if not visible then -- Make sure our visible slots is up to date
