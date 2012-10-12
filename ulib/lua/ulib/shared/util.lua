@@ -314,7 +314,36 @@ function ULib.getPlyByUID( uid )
 	return nil
 end
 
---- TEMP fix for garry's breoken API
+
+--[[
+	Function: pcallError
+	
+	An adaptation of a function that used to exist before GM13, allows you to 
+	call functions safely and print errors (if it errors).
+
+	Parameters:
+
+		... - Arguments to pass to the function
+
+	Returns:
+
+		The same thing regular pcall returns
+
+	Revisions:
+
+		v2.50 - Initial.
+]]
+function ULib.pcallError( ... )
+	local returns = { pcall( ... ) }
+	
+	if not returns[ 1 ] then -- The status flag
+		ErrorNoHalt( returns[ 2 ] ) -- The error message
+	end
+	
+	return unpack( returns )	
+end
+
+--- TEMP fix for garry's broken API
 
 local oldExists = file.Exists
 function file.Exists( path, option )

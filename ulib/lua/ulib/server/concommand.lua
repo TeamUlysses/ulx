@@ -54,7 +54,7 @@ local function sayCmdCheck( ply, strText, bPublic )
 		local fn = data.fn
 		local hide = data.hide
 
-		PCallError( fn, ply, match:Trim(), argv, args )
+		ULib.pcallError( fn, ply, match:Trim(), argv, args )
 		if hide then return "" end
 	end
 

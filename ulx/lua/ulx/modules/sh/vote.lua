@@ -89,7 +89,7 @@ function ulx.voteDone()
 
 	local vip = voteInProgress
 	voteInProgress = nil
-	PCallError( vip.callback, vip, unpack( vip.args ) )
+	ULib.pcallError( vip.callback, vip, unpack( vip.args ) )
 end
 -- End our helper functions
 
