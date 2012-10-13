@@ -86,7 +86,7 @@ local function optionsDraw()
 
 	if CurTime() > endtime then return end -- Expired
 
-	surface.SetFont( "DefaultBold" )
+	surface.SetFont( "Default" )
 	local w, h = surface.GetTextSize( title )
 	w = math.max( 200, w )
 	local totalh = h * 12 + 20
@@ -99,7 +99,7 @@ local function optionsDraw()
 		end
 		optiontxt = optiontxt .. "\n"
 	end
-	draw.DrawText( title .. "\n\n" .. optiontxt, "DefaultBold", 20, ScrH()*0.4, Color( 255, 255, 255, 255 ), TEXT_ALIGN_LEFT )
+	draw.DrawText( title .. "\n\n" .. optiontxt, "Default", 20, ScrH()*0.4, Color( 255, 255, 255, 255 ), TEXT_ALIGN_LEFT )
 end
 
 local function rcvVote( um )

@@ -4,7 +4,7 @@ local isUrl
 local url
 
 function ulx.showMotdMenu()
-	return -- MOTD is crashing clients ATM
+	if true then return end -- MOTD is crashing clients ATM
 	local window = vgui.Create( "DFrame" )
 	if ScrW() > 640 then -- Make it larger if we can.
 		window:SetSize( ScrW()*0.9, ScrH()*0.9 )
