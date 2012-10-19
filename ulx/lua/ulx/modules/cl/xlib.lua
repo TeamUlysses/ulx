@@ -186,6 +186,7 @@ local function xlib_init()
 		pnl:SetSize( t.w, t.h )
 		pnl:SetLabel( t.label or "" )
 		pnl:SetContents( t.contents )
+		t.contents:Dock( TOP )
 
 		if t.expanded ~= nil then pnl:SetExpanded( t.expanded ) end
 		if t.checkbox then
@@ -252,13 +253,15 @@ local function xlib_init()
 
 	function xlib.makecombobox( t )
 		local pnl = vgui.Create( "DComboBox", t.parent )
+		t.w = t.w or 100
+		t.h = t.h or 20
 		pnl:SetText( t.text or "" )
 		pnl:SetPos( t.x, t.y )
-		pnl:SetSize( t.w, t.h or 20 )
+		pnl:SetSize( t.w, t.h )
 
 		if ( t.enableinput == true ) then
 			pnl.TextEntry = vgui.Create( "DTextEntry", pnl )
-			pnl.TextEntry:SetSize( t.w-20, t.h or 20 )
+			pnl.TextEntry:SetSize( t.w-20, t.h )
 			pnl.TextEntry.selectAll = t.selectall
 			pnl.TextEntry:SetEditable( true )
 			

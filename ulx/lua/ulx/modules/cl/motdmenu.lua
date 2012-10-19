@@ -4,7 +4,6 @@ local isUrl
 local url
 
 function ulx.showMotdMenu()
-	if true then return end -- MOTD is crashing clients ATM
 	local window = vgui.Create( "DFrame" )
 	if ScrW() > 640 then -- Make it larger if we can.
 		window:SetSize( ScrW()*0.9, ScrH()*0.9 )
@@ -15,9 +14,8 @@ function ulx.showMotdMenu()
 	window:SetTitle( "ULX MOTD" )
 	window:SetVisible( true )
 	window:MakePopup()
-	
-	local panel = vgui.Create( "DPanel", window )
-	local html = vgui.Create( "HTML", panel )
+
+	local html = vgui.Create( "HTML", window )
 
 	local button = vgui.Create( "DButton", window )
 	button:SetText( "Close" )
@@ -25,10 +23,8 @@ function ulx.showMotdMenu()
 	button:SetSize( 100, 40 )
 	button:SetPos( (window:GetWide() - button:GetWide()) / 2, window:GetTall() - button:GetTall() - 10 )
 
-	panel:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
-	panel:SetPos( 10, 30 )
-	html:Dock( FILL )
-	
+	html:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
+	html:SetPos( 10, 30 )
 	if not isUrl then
 		html:SetHTML( file.Read( "ulx_motd.txt", "DATA" ) )
 	else
