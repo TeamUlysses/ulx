@@ -12,10 +12,10 @@ maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", pare
 maps.list = xlib.makelistview{ x=5, y=30, w=175, h=315, multiselect=true, parent=maps, headerheight=0 } --Remember to enable/disable multiselect based on admin status?
 maps.list:AddColumn( "Map Name" )
 maps.list.OnRowSelected = function( self, LineID, Line )
-	if ( file.Exists( "materials/maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".vmt", "GAME" ) ) then 
-		maps.disp:SetImage( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) )
+	if ( file.Exists( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png", "GAME" ) ) then 
+		maps.disp:SetMaterial( "../maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" )
 	else 
-		maps.disp:SetImage( "maps/noicon.vmt" )
+		maps.disp:SetMaterial( "../maps/noicon.png" )
 	end
 	maps.curmap:SetText( Line:GetColumnText(1) )
 	maps.updateButtonStates()
@@ -33,7 +33,7 @@ end
 
 maps.disp = vgui.Create( "DImage", maps )
 maps.disp:SetPos( 185, 30 )
-maps.disp:SetImage( "maps/noicon.vmt" )
+maps.disp:SetMaterial( "../maps/noicon.png" )
 maps.disp:SetSize( 192, 192 )
 
 maps.gamemode = xlib.makecombobox{ x=70, y=345, w=110, h=20, text="<default>", parent=maps }
@@ -85,8 +85,7 @@ end
 function maps.updateVoteMaps()
 	local lastselected = {}
 	for k, Line in pairs( maps.list.Lines ) do
-		--if ( Line:GetSelected() ) then table.insert( lastselected, Line:GetColumnText(1) ) end
-		--TODO! Something is supposed to happen here, but it broke.
+		if ( Line:IsLineSelected() ) then table.insert( lastselected, Line:GetColumnText(1) ) end
 	end
 	
 	maps.list:Clear()
@@ -149,7 +148,7 @@ function maps.updateButtonStates()
 		maps.svote:SetDisabled( true )
 		maps.changemap:SetDisabled( true )
 		maps.curmap:SetText( "No Map Selected" )
-		maps.disp:SetImage( "maps/noicon.vmt" )
+		maps.disp:SetMaterial( "../maps/noicon.png" )
 	end
 end
 
