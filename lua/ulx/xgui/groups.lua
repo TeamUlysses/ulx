@@ -8,7 +8,7 @@ xgui.prepareDataType( "accesses" )
 xgui.prepareDataType( "playermodels" )
 
 local groups = xlib.makepanel{ parent=xgui.null }
-groups.list = xlib.makemultichoice{ x=5, y=5, w=175, parent=groups }
+groups.list = xlib.makecombobox{ x=5, y=5, w=175, parent=groups }
 function groups.list:populate()
 	local prev_sel = self:GetValue()
 	if prev_sel == "" then prev_sel = "Select a group..." end
@@ -45,11 +45,11 @@ end
 groups.lastOpenGroup = nil
 
 groups.clippanela = xlib.makepanel{ x=5, y=30, w=580, h=335, parent=groups }
-groups.clippanela.Paint = function( self ) end
+groups.clippanela.Paint = function( self, w, h ) end
 groups.clippanelb = xlib.makepanel{ x=175, y=30, w=410, h=335, visible=false, parent=groups }
-groups.clippanelb.Paint = function( self ) end
+groups.clippanelb.Paint = function( self, w, h ) end
 groups.clippanelc = xlib.makepanel{ x=380, y=30, w=210, h=335, visible=false, parent=groups }
-groups.clippanelc.Paint = function( self ) end
+groups.clippanelc.Paint = function( self, w, h ) end
 
 -----------------------------------
 ------Groups Panel 1 (Users, Teams)
@@ -119,7 +119,7 @@ groups.cplayer.DoClick = function()
 	end
 end
 xlib.makelabel{ x=5, y=240, label="Team:", parent=groups.pnlG1, textcolor=color_black }
-groups.teams = xlib.makemultichoice{ x=5, y=255, w=160, disabled=not ULib.isSandbox(), parent=groups.pnlG1 }
+groups.teams = xlib.makecombobox{ x=5, y=255, w=160, disabled=not ULib.isSandbox(), parent=groups.pnlG1 }
 groups.teams.OnSelect = function( self, index, value, data )
 	if value == "<None>" then value = "" end
 	RunConsoleCommand( "xgui", "changeGroupTeam", groups.list:GetValue(), value )
@@ -253,7 +253,7 @@ xlib.makelabel{ x=145, y=8, label="Name:", textcolor=color_black, parent=groups.
 xlib.makelabel{ x=145, y=33, label="Inherits from:", textcolor=color_black, parent=groups.pnlG2 }
 xlib.makelabel{ x=145, y=58, label="Can Target:", textcolor=color_black, parent=groups.pnlG2 }
 groups.gname = xlib.maketextbox{ x=180, y=5, w=165, text="new_group", selectall=true, parent=groups.pnlG2 }
-groups.ginherit = xlib.makemultichoice{ x=215, y=30, w=130, text="user", parent=groups.pnlG2 }
+groups.ginherit = xlib.makecombobox{ x=215, y=30, w=130, text="user", parent=groups.pnlG2 }
 groups.gcantarget = xlib.maketextbox{ x=205, y=55, w=140, text="", selectall=true, parent=groups.pnlG2 }
 groups.gupdate = xlib.makebutton{ x=140, y=175, w=100, disabled=true, label="Update", parent=groups.pnlG2 }
 groups.gupdate.DoClick = function( self )
@@ -382,14 +382,14 @@ groups.teamdelete.DoClick = function()
 		"Remove", function() RunConsoleCommand( "xgui", "removeTeam", team ) end,
 		"Cancel", function() end )
 end
-groups.upbtn = xlib.makesysbutton{ x=85, y=160, w=20, btype="up", disabled=true, parent=groups.pnlG3 }
+groups.upbtn = xlib.makespecialbutton{ x=85, y=160, w=20, btype="up", disabled=true, parent=groups.pnlG3 }
 groups.upbtn.DoClick = function( self )
 	self:SetDisabled( true )
 	local lineID = groups.teamlist:GetSelectedLine()
 	RunConsoleCommand( "xgui", "updateTeamValue",  groups.teamlist.Lines[lineID]:GetColumnText(1), "order", lineID-1 )
 	RunConsoleCommand( "xgui", "updateTeamValue",  groups.teamlist.Lines[lineID-1]:GetColumnText(1), "order", lineID, "true" )
 end
-groups.downbtn = xlib.makesysbutton{ x=85, y=180, w=20, btype="down", disabled=true, parent=groups.pnlG3 }
+groups.downbtn = xlib.makespecialbutton{ x=85, y=180, w=20, btype="down", disabled=true, parent=groups.pnlG3 }
 groups.downbtn.DoClick = function( self )
 	self:SetDisabled( true )
 	local lineID = groups.teamlist:GetSelectedLine()
@@ -409,12 +409,12 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 			groups.teamctrl.OnEnter = function()
 				applybtn.DoClick()
 			end
-			groups.teammodspace:AddItem( groups.teamctrl )
+			groups.teammodspace:Add( groups.teamctrl )
 		elseif Line:GetColumnText(1) == "color" then
 			groups.teamctrl = xlib.makecolorpicker{}
 			local tempcolor = string.Explode( " ", Line:GetColumnText(2) )
 			groups.teamctrl:SetColor( Color( tempcolor[1], tempcolor[2], tempcolor[3] ) )
-			groups.teammodspace:AddItem( groups.teamctrl )
+			groups.teammodspace:Add( groups.teamctrl )
 		elseif Line:GetColumnText(1) == "model" then
 			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2) }
 			groups.teamctrl.OnEnter = function( self )
@@ -426,7 +426,7 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 					end
 				end
 			end
-			groups.teammodspace:AddItem( groups.teamctrl )
+			groups.teammodspace:Add( groups.teamctrl )
 			groups.setTeamModel = function( name ) --This func is called when any of the spawnicons in the playerlist are pressed.
 				groups.teamctrl:SetText( name )
 				applybtn.DoClick()
@@ -437,16 +437,16 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 					break
 				end
 			end
-			groups.teammodspace:AddItem( groups.modelList )
+			groups.teammodspace:Add( groups.modelList )
 		end
 	else
 		local defvalues = xgui.allowedTeamModifiers[Line:GetColumnText(1)]
 		if type( defvalues ) ~= "table" then defvalues = { defvalues } end
 		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4] or 0, textcolor=color_black, value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1) }
-		groups.teamctrl.Wang.TextEntry.OnEnter = function( self )
+		groups.teamctrl.Wang.OnEnter = function( self )
 			applybtn.DoClick()
 		end
-		groups.teammodspace:AddItem( groups.teamctrl )
+		groups.teammodspace:Add( groups.teamctrl )
 	end
 	applybtn.DoClick = function()
 		if Line:GetColumnText(1) == "color" then
@@ -461,7 +461,7 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 			RunConsoleCommand( "xgui", "updateTeamValue", groups.teamlist:GetSelected()[1]:GetColumnText(1), Line:GetColumnText(1), groups.teamctrl:GetValue() )
 		end
 	end
-	if Line:GetColumnText(1) ~= "model" then groups.teammodspace:AddItem( applybtn ) end
+	if Line:GetColumnText(1) ~= "model" then groups.teammodspace:Add( applybtn ) end
 end
 	
 --Default, Min, Max, Decimals
@@ -517,8 +517,8 @@ groups.teammodremove.DoClick = function()
 	local modifier = groups.teammodifiers:GetSelected()[1]:GetColumnText(1)
 	RunConsoleCommand( "xgui", "updateTeamValue", team, modifier, "" )
 end
-groups.teammodspace = xlib.makepanellist{ x=265, y=5, w=140, h=195, padding=1, parent=groups.pnlG3 }
-groups.teammodspace.Paint = function() end
+groups.teammodspace = xlib.makelistlayout{ x=265, y=5, w=140, h=195, padding=1, parent=groups.pnlG3 }
+groups.teammodspace.Paint = function( self, w, h ) end
 
 ----------------------------------------
 ------Groups Panel 4 (Access Management)
@@ -547,7 +547,7 @@ function groups.pnlG4:Close()
 	self:closeAnim()
 end
 xlib.makelabel{ x=5, y=5, label="Has access to:", textcolor=color_black, parent=groups.pnlG4 }
-groups.accesses = xlib.makepanellist{ x=5, y=20, w=190, h=310, padding=1, spacing=1, parent=groups.pnlG4 }
+groups.accesses = xlib.makelistlayout{ x=5, y=20, w=190, h=310, padding=1, spacing=1, parent=groups.pnlG4 }
 
 groups.access_cats = {}
 groups.access_lines = {}
@@ -627,7 +627,7 @@ function groups.pnlG5:Close()
 		self:closeAnim()
 	end
 end
-groups.rArgList = xlib.makepanellist{ x=5, y=20, w=190, h=308, parent=groups.pnlG5 }
+groups.rArgList = xlib.makelistlayout{ x=5, y=20, w=190, h=308, parent=groups.pnlG5 }
 xlib.makelabel{ x=5, y=5, label="Restrict command arguments:", textcolor=color_black, parent=groups.pnlG5 }
 
 function groups.populateRestrictionArgs( cmd, accessStr )
@@ -806,7 +806,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 					end
 					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "string value" ), w=180, padding=0, checkbox=true, expanded=hasrestriction, contents=outPanel }
 				end
-				groups.rArgList:AddItem( outCat )
+				groups.rArgList:Add( outCat )
 			end
 		end
 	end
@@ -873,7 +873,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 			RunConsoleCommand( "ulx", "groupallow", groups.list:GetValue(), cmd, outstr )
 		end
 	end
-	groups.rArgList:AddItem( groups.applyButton )
+	groups.rArgList:Add( groups.applyButton )
 	if ( groups.access_lines[cmd].Columns[2]:GetDisabled() or groups.access_lines[cmd]:GetColumnText(4) == "" ) then
 		groups.applyButton:SetText( "Apply access + restrictions" )
 	end	
@@ -1087,7 +1087,7 @@ function groups.updateAccessPanel()
 			end
 			groups.access_cats[catname] = list
 			local cat = xlib.makecat{ label=catname, contents=list, expanded=false }
-			groups.accesses:AddItem( cat )
+			groups.accesses:Add( cat )
 			function cat.Header:OnMousePressed( mcode )
 				if ( mcode == MOUSE_LEFT ) then
 					self:GetParent():Toggle()
@@ -1122,7 +1122,7 @@ function groups.updateAccessPanel()
 	--This results in the possibility of the end user seeing lines appearing as he's looking at the menus, but I believe that a few seconds of lines appearing is better than 150+ms of freeze time.
 	
 	local function finalSort()
-		table.sort( groups.accesses.Items, function( a,b ) return a.Header:GetValue() < b.Header:GetValue() end )
+		table.sort( groups.accesses:GetChildren(), function( a,b ) return a.Header:GetValue() < b.Header:GetValue() end )
 		for _, cat in pairs( groups.access_cats ) do
 			cat:SortByColumn( 1 )
 			cat:SetHeight( 17*#cat:GetLines() )
@@ -1207,7 +1207,7 @@ function groups.addToModelPanel( name )
 	icon.name = name
 	icon.model = xgui.data.playermodels[name]
 	icon.DoClick = function( self ) groups.modelList:SelectPanel( self ) groups.setTeamModel( icon.name ) end
-	groups.modelList:AddItem( icon )
+	groups.modelList:Add( icon )
 end
 
 --------------
@@ -1270,4 +1270,4 @@ xgui.hookEvent( "users", "remove", groups.playerRemoved )
 xgui.hookEvent( "teams", "process", groups.updateTeams )
 xgui.hookEvent( "accesses", "process", groups.updateAccessPanel )
 xgui.hookEvent( "playermodels", "process", groups.updateModelPanel )
-xgui.addModule( "Groups", groups, "gui/silkicons/group", "xgui_managegroups" )
+xgui.addModule( "Groups", groups, "icon16/group_gear.png", "xgui_managegroups" )

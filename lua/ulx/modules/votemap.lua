@@ -7,7 +7,7 @@ local specifiedMaps = {}
 local function init()
 	local mode = GetConVarNumber( "ulx_votemapMapmode" ) or 1
 	if mode == 1 then -- Add all but specified
-		local maps = file.Find( "maps/*.bsp", true )
+		local maps = file.Find( "maps/*.bsp", "GAME" )
 		for _, map in ipairs( maps ) do
 			map = map:sub( 1, -5 ) -- Take off .bsp
 			if not specifiedMaps[ map ] then
@@ -16,7 +16,7 @@ local function init()
 		end
 	else
 		for map, _ in pairs( specifiedMaps ) do
-			if file.Exists( "maps/" .. map .. ".bsp", true ) then
+			if file.Exists( "maps/" .. map .. ".bsp", "GAME" ) then
 				table.insert( ulx.votemaps, map )
 			end
 		end
@@ -166,7 +166,7 @@ function ulx.votemap( calling_ply, map )
 			ulx.logString( "Votemap for " .. ulx.votemaps[ mapid ] .. " won. Pending admin veto." )
 			ulx.timedVeto = true
 			hook.Call( ulx.HOOK_VETO )
-			timer.Create( "ULXVotemap", vetotime, 1, game.ConsoleCommand, "changelevel " .. ulx.votemaps[ mapid ] .. "\n" )
+			timer.Create( "ULXVotemap", vetotime, 1, function() game.ConsoleCommand( "changelevel " .. ulx.votemaps[ mapid ] .. "\n" ) end )
 		end
 	end
 end

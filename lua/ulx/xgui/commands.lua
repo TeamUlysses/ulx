@@ -4,7 +4,7 @@
 local cmds = xlib.makepanel{ parent=xgui.null }
 cmds.selcmd = nil
 cmds.mask = xlib.makepanel{ x=160, y=30, w=425, h=335, parent=cmds }
-cmds.argslist = xlib.makepanellist{ w=170, h=335, parent=cmds.mask }
+cmds.argslist = xlib.makelistlayout{ w=170, h=335, parent=cmds.mask }
 cmds.argslist.secondaryPos = nil
 cmds.argslist:SetVisible( false )
 function cmds.argslist:Open( cmd, secondary )
@@ -49,7 +49,7 @@ cmds.plist:SetVisible( false )
 cmds.plist:AddColumn( "Name" )
 cmds.plist:AddColumn( "Group" )
 
-cmds.cmds = xlib.makepanellist{ x=5, y=30, w=150, h=335, parent=cmds, padding=1, spacing=1 }
+cmds.cmds = xlib.makelistlayout{ x=5, y=30, w=150, h=335, parent=cmds, padding=1, spacing=1 }
 cmds.setselected = function( selcat, LineID )
 	if selcat.Lines[LineID]:GetColumnText(2) == cmds.selcmd then 
 		selcat:ClearSelection()
@@ -168,7 +168,7 @@ function cmds.buildArgsList( cmd )
 			if not ( argnum == 1 and expectingplayers ) then
 				if arg.invisible ~= true then
 					curitem = arg
-					cmds.argslist:AddItem( arg.type.x_getcontrol( arg, argnum ) )
+					cmds.argslist:Add( arg.type.x_getcontrol( arg, argnum ) )
 				end
 			end
 		end
@@ -177,7 +177,7 @@ function cmds.buildArgsList( cmd )
 		local panel = xlib.makepanel{ h=20 }
 		panel.numItems = 0
 		for i=2,curitem.repeat_min do --Start at 2 because the first one is already there
-			cmds.argslist:AddItem( curitem.type.x_getcontrol( curitem, argnum ) )
+			cmds.argslist:Add( curitem.type.x_getcontrol( curitem, argnum ) )
 			panel.numItems = panel.numItems + 1
 		end
 		panel.argnum = argnum
@@ -206,9 +206,9 @@ function cmds.buildArgsList( cmd )
 			if panel.numItems < parent.arg.repeat_min then self:SetDisabled( true ) end
 			if panel.button:GetDisabled() then panel.button:SetDisabled( false ) end
 		end
-		cmds.argslist:AddItem( panel )
+		cmds.argslist:Add( panel )
 	elseif curitem and curitem.type == ULib.cmds.NumArg then
-		cmds.argslist.Items[#cmds.argslist.Items].Wang.TextEntry.OnEnter = function( self )
+		cmds.argslist.Items[#cmds.argslist.Items].Wang.OnEnter = function( self )
 			cmds.runCmd( cmd.cmd )
 		end
 	elseif curitem and curitem.type == ULib.cmds.StringArg then
@@ -222,7 +222,7 @@ function cmds.buildArgsList( cmd )
 		xgui_temp.DoClick = function()
 			cmds.runCmd( cmd.cmd )
 		end
-		cmds.argslist:AddItem( xgui_temp )
+		cmds.argslist:Add( xgui_temp )
 	end
 	if cmd.opposite and LocalPlayer():query( cmd.opposite ) then
 		local xgui_temp = xlib.makebutton{ label=cmd.opposite }
@@ -230,12 +230,12 @@ function cmds.buildArgsList( cmd )
 			cmds.runCmd( cmd.opposite )
 		end
 		xgui_temp.xguiIgnore = true
-		cmds.argslist:AddItem( xgui_temp )
+		cmds.argslist:Add( xgui_temp )
 	end
 	if cmd.helpStr then --If the command has a string for help
 		local xgui_temp = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true }
 		xgui_temp.xguiIgnore = true
-		cmds.argslist:AddItem( xgui_temp )
+		cmds.argslist:Add( xgui_temp )
 	end
 end
 
@@ -303,7 +303,7 @@ cmds.refresh = function( permissionChanged )
 					end
 					return self:GetParent():OnMousePressed( mcode )
 				end
-				cmds.cmds:AddItem( cat )
+				cmds.cmds:Add( cat )
 			end
 			local line = cmds.cmd_cats[catname]:AddLine( string.gsub( data.cmd, "ulx ", "" ), data.cmd )
 			if data.cmd == lastcmd then
@@ -324,7 +324,7 @@ cmds.refresh = function( permissionChanged )
 		end
 	end
 	
-	table.sort( cmds.cmds.Items, function( a,b ) return a.Header:GetValue() < b.Header:GetValue() end )
+	table.sort( cmds.cmds:GetChildren(), function( a,b ) return a.Header:GetValue() < b.Header:GetValue() end )
 	for _, cat in pairs( cmds.cmd_cats ) do
 		cat:SortByColumn( 1 )
 		cat:SetHeight( 17*#cat:GetLines() )
@@ -373,4 +373,4 @@ end
 
 hook.Add( "UCLChanged", "xgui_RefreshPlayerCmds", cmds.refresh )
 hook.Add( "ULibPlayerNameChanged", "xgui_plyUpdateCmds", cmds.playerNameChanged )
-xgui.addModule( "Cmds", cmds, "gui/silkicons/user" )
+xgui.addModule( "Cmds", cmds, "icon16/user_gray.png" )

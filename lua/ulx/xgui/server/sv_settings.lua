@@ -43,7 +43,7 @@ function settings.init()
 	xgui.addCmd( "removeGimp", settings.removeGimp )
 	
 	function settings.saveGimps()
-		local orig_file = file.Read( "ulx/gimps.txt" )
+		local orig_file = file.Read( "ulx/gimps.txt", "DATA" )
 		local comment = xgui.getCommentHeader( orig_file )
 
 		local new_file = comment
@@ -79,7 +79,7 @@ function settings.init()
 	xgui.addCmd( "removeBanReason", settings.removeBanReason )
 	
 	function settings.saveBanReasons()
-		local orig_file = file.Read( "ulx/banreasons.txt" )
+		local orig_file = file.Read( "ulx/banreasons.txt", "DATA" )
 		local comment = xgui.getCommentHeader( orig_file )
 
 		local new_file = comment
@@ -187,7 +187,7 @@ function settings.init()
 	xgui.addCmd( "removeAdvertGroup", settings.removeAdvertGroup )
 	
 	function settings.saveAdverts()
-		local orig_file = file.Read( "ulx/adverts.txt" )
+		local orig_file = file.Read( "ulx/adverts.txt", "DATA" )
 		local comment = xgui.getCommentHeader( orig_file )
 		local new_file = comment
 
@@ -247,7 +247,7 @@ function settings.init()
 	end
 	
 	function settings.saveVotemaps( mapmode )
-		local orig_file = file.Read( "ulx/votemaps.txt" )
+		local orig_file = file.Read( "ulx/votemaps.txt", "DATA" )
 		local comment = xgui.getCommentHeader( orig_file )
 		local new_file = comment
 

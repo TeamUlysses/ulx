@@ -31,8 +31,9 @@ ulx.log_file = nil
 local function init()
 	curDateStr = os.date( "%Y-%m-%d" )
 	if logFile:GetBool() then
+		file.CreateDir( logDir:GetString() )
 		ulx.log_file = os.date( logDir:GetString() .. "/" .. "%m-%d-%y" .. ".txt" )
-		if not file.Exists( ulx.log_file ) then
+		if not file.Exists( ulx.log_file, "DATA" ) then
 			file.Write( ulx.log_file, "" )
 		else
 			ulx.logWriteln( "\n\n" ) -- Make some space
@@ -87,7 +88,7 @@ function ulx.logUserAct( ply, target, action, hide_echo )
 		end
 	end
 
-	if isDedicatedServer() then
+	if game.IsDedicated() then
 		Msg( action:gsub( "#A", nick, 1 ) .. "\n" )
 	end
 
@@ -125,7 +126,7 @@ function ulx.logServAct( ply, action, hide_echo )
 		end
 	end
 
-	if isDedicatedServer() then
+	if game.IsDedicated() then
 		Msg( action:gsub( "#A", nick, 1 ) .. "\n" )
 	end
 
@@ -228,7 +229,7 @@ hook.Add( "PlayerDeath", "ULXLogDeath", playerDeath, -20 )
 local function nameCheck( ply, oldnick, newnick )
 	local msg = string.format( "%s<%s> changed their name to %s", oldnick, ply:SteamID(), newnick )
 
-	if isDedicatedServer() then
+	if game.IsDedicated() then
 		Msg( msg .. "\n" )
 	end
 
@@ -250,7 +251,7 @@ function ulx.logSpawn( txt )
 		ulx.logString( txt, true )
 	end
 
-	if logSpawnsEcho:GetInt() >= 0 and isDedicatedServer() then
+	if logSpawnsEcho:GetInt() >= 0 and game.IsDedicated() then
 		Msg( txt .. "\n" )
 	end
 
@@ -488,7 +489,7 @@ function ulx.fancyLogAdmin( calling_ply, format, ... )
 			ULib.tsayColor( players[ i ], true, unpack( playerStrs[ i ] ) )
 		else
 			local msg = table.concat( playerStrs[ i ] )
-			if isDedicatedServer() then
+			if game.IsDedicated() then
 				Msg( msg .. "\n" )
 			end
 

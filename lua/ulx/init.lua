@@ -1,9 +1,11 @@
 if not ulx then
 	ulx = {}
 
-	local sv_modules = file.FindInLua( "ulx/modules/*.lua" )
-	local sh_modules = file.FindInLua( "ulx/modules/sh/*.lua" )
-	local cl_modules = file.FindInLua( "ulx/modules/cl/*.lua" )
+	file.CreateDir( "ulx" )
+	
+	local sv_modules = file.Find( "ulx/modules/*.lua", "LUA" )
+	local sh_modules = file.Find( "ulx/modules/sh/*.lua", "LUA" )
+	local cl_modules = file.Find( "ulx/modules/cl/*.lua", "LUA" )
 
 	Msg( "///////////////////////////////\n" )
 	Msg( "//       ULX Admin Mod       //\n" )

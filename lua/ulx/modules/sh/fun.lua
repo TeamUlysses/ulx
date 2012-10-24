@@ -189,7 +189,7 @@ unigniteall:help( "Extinguishes all players and all entities." )
 
 ------------------------------ Playsound ------------------------------
 function ulx.playsound( calling_ply, sound )
-	if not file.Exists( "sound/" .. sound, true ) then
+	if not file.Exists( "sound/" .. sound, "GAME" ) then
 		ULib.tsayError( calling_ply, "That sound doesn't exist on the server!", true )
 		return
 	end

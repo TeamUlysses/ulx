@@ -2,18 +2,6 @@
 --A set of generic functions to help with various XGUI-related things.
 
 local function xgui_helpers()
-	---------------
-	--Derma Helpers
-	---------------
-	--A quick function to get the value of a DMultiChoice (I like consistency)
-	function DMultiChoice:GetValue()
-		return self.TextEntry:GetValue()
-	end
-	
-	function DCheckBoxLabel:GetValue()
-		return self:GetChecked()
-	end
-
 	--Clears all of the tabs in a DPropertySheet, parents removed panels to xgui.null.
 	function DPropertySheet:Clear()
 		for _, Sheet in ipairs( self.Items ) do
@@ -28,12 +16,11 @@ local function xgui_helpers()
 	
 	--Clears a DTree.
 	function DTree:Clear()
-		for item, node in pairs( self.Items ) do
-			node:Remove()
-			self.Items[item] = nil
+		if self.RootNode.ChildNodes then
+			self.RootNode.ChildNodes:Remove()
+			self.m_pSelectedItem = nil
+			self:InvalidateLayout()
 		end
-		self.m_pSelectedItem = nil
-		self:InvalidateLayout()
 	end
 	
 	--These handle keyboard focus for textboxes within XGUI.
@@ -45,7 +32,7 @@ local function xgui_helpers()
 			pnl:SelectAllText()
 		end
 	end
-	hook.Add( "OnTextEntryGetFocus", "XGUI_GetKeyboardFocus", getKeyboardFocus )
+	hook.Add( "OnTextEntryGetFocus", "XGUI_GetKeyboardFocus", getKeyboardFocus )	--TODO: Hook no longer valid?
 	
 	local function loseKeyboardFocus( pnl )
 		if pnl:HasParent( xgui.base ) then
@@ -231,9 +218,8 @@ local function xgui_helpers()
 		xgui.anchor = xlib.makeXpanel{ w=600, h=470, x=ScrW()/2-300, y=ScrH()/2-270 }
 		xgui.anchor:SetVisible( false )
 		xgui.anchor:SetKeyboardInputEnabled( false )
-		xgui.anchor.Paint = function() hook.Call( "XLIBDoAnimation" ) end
+		xgui.anchor.Paint = function( self, w, h ) hook.Call( "XLIBDoAnimation" ) end
 		xgui.anchor:SetAlpha( 0 )
-		xgui.base:SetAlpha( 0 )
 		xgui.base:SetParent( xgui.anchor )
 		xgui.base:SetPos( 0, 70 )
 		xgui.base:SetSize( 600, 400 )
@@ -361,17 +347,17 @@ local function xgui_helpers()
 	
 		--Progress bar
 		xgui.chunkbox = xlib.makeframe{ label="XGUI is receiving data!", w=200, h=60, x=200, y=5, visible=false, nopopup=true, draggable=false, showclose=false, skin=xgui.settings.skin, parent=xgui.anchor }
-		xgui.chunkbox.progress = xlib.makeprogressbar{ x=10, y=30, w=180, h=20, min=0, percent=true, parent=xgui.chunkbox }
+		xgui.chunkbox.progress = xlib.makeprogressbar{ x=10, y=30, w=180, h=20, parent=xgui.chunkbox }
 		function xgui.chunkbox:Progress( datatype )
-			self.progress:SetValue( self.progress:GetValue() + 1 )
+			self.value = self.value + 1
+			self.progress:SetFraction( self.value / self.max )
 			self.progress.Label:SetText( datatype .. " - " .. self.progress.Label:GetValue() )
-			if self.progress:GetValue() == self.progress.m_iMax then
+			if self.value == self.max then
 				xgui.expectingdata = nil
 				self.progress.Label:SetText( "Waiting for clientside processing" )
 				xgui.queueFunctionCall( xgui.chunkbox.SetVisible, "chunkbox", xgui.chunkbox, false )
 				RunConsoleCommand( "_xgui", "dataComplete" )
 			end
-			self.progress:PerformLayout()
 		end
 	end
 	
@@ -528,15 +514,15 @@ local function xgui_helpers()
 			or restrictions.playerLevelRestriction -- The player's tag specifies only certain strings	
 		
 		if is_restricted_to_completes then
-			xgui_temp = xlib.makemultichoice{ text=arg.hint or "StringArg" }
+			xgui_temp = xlib.makecombobox{ text=arg.hint or "StringArg" }
 			for _, v in ipairs( restrictions.restrictedCompletes ) do
 				xgui_temp:AddChoice( v )
 			end
 			return xgui_temp
 		elseif restrictions.restrictedCompletes then
 			-- This is where there needs to be both a drop down AND an input box
-			local temp = xlib.makemultichoice{ text=arg.hint, choices=restrictions.restrictedCompletes, enableinput=true, selectall=true }
-			temp.TextEntry.OnEnter = function( self )
+			local temp = xlib.makecombobox{ text=arg.hint, choices=restrictions.restrictedCompletes, enableinput=true, selectall=true }
+			temp.OnEnter = function( self )
 				self:GetParent():OnEnter()
 			end
 			return temp
@@ -550,7 +536,7 @@ local function xgui_helpers()
 		local restrictions = {}
 		ULib.cmds.PlayerArg.processRestrictions( restrictions, LocalPlayer(), arg, ulx.getTagArgNum( tag, argnum ) )
 		
-		xgui_temp = xlib.makemultichoice{ text=arg.hint }
+		xgui_temp = xlib.makecombobox{ text=arg.hint }
 		local targets = restrictions.restrictedTargets
 		if targets == false then -- No one allowed
 			targets = {}
