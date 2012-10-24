@@ -26,13 +26,14 @@ function ULib.clientRPC( plys, fn, ... )
 	ULib.checkArg( 1, "ULib.clientRPC", {"nil","Player","table"}, plys )
 	ULib.checkArg( 2, "ULib.clientRPC", {"string"}, fn )
 
-	if not plys then
-		plys = player.GetAll()
-	elseif type( plys ) == "Entity" then
-		plys = { plys }
+	net.Start( "URPC" )
+	net.WriteString( fn )
+	net.WriteTable( {...} )
+	if plys then
+		net.Send( plys )
+	else
+		net.Broadcast()
 	end
-
-	ulib_datastream.StreamToClients( plys, "ULibRPC", { fn=fn, args={...} })
 end
 
 
@@ -266,30 +267,5 @@ repCvarServerChanged = function( sv_cvar, oldvalue, newvalue )
 		repcvars[ sv_cvar ].ignore = nil
 	else
 		hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, repcvars[ sv_cvar ].cl_cvar, Entity( 0 ), oldvalue, newvalue )
-	end
-end
-
-
--- Hacks to fix Garry-bugs
-
---[[
-	Function: isDedicatedServer
-
-	The normal GM10 bind is broken, this fixes it.
-]]
-function isDedicatedServer() -- The normal GM10 function isn't working, let's define a hack
-	return GetConVarString( "sensitivity" ) == "" -- This doesn't exist on a ded server, but exists on a listen server
-end
-
-local meta = FindMetaTable( "Player" )
-
-
--- Here's a quick patch so dedicated servers aren't spammed with messages about using IsListenServerHost()
-if isDedicatedServer() then
-	-- Return if there's nothing to add on to
-	if not meta then return end
-
-	function meta:IsListenServerHost()
-	        return false
 	end
 end

@@ -6,7 +6,7 @@
 
 local ucl = ULib.ucl -- Make it easier for us to refer to
 
-local accessStrings = ULib.parseKeyValues( file.Read( ULib.UCL_REGISTERED ) or "" ) or {}
+local accessStrings = ULib.parseKeyValues( file.Read( ULib.UCL_REGISTERED, "DATA" ) or "" ) or {}
 local accessCategories = {}
 ULib.ucl.accessStrings = accessStrings
 ULib.ucl.accessCategories = accessCategories
@@ -37,23 +37,23 @@ end
 local function reloadGroups()
 	local needsBackup = false
 	local err
-	ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS ), "/" ) )
+	ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS, "DATA" ), "/" ) )
 
 	if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 		needsBackup = true
 		-- Totally messed up! Clear it.
-		local f = "../addons/ulib/data/" .. ULib.UCL_GROUPS
-		if not file.Exists( f ) then
+		local f = "addons/ulib/data/" .. ULib.UCL_GROUPS
+		if not file.Exists( f, "GAME" ) then
 			Msg( "ULIB PANIC: groups.txt is corrupted and I can't find the default groups.txt file!!\n" )
 		else
 			local err2
-			ucl.groups, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f ), "/" ) )
+			ucl.groups, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f, "GAME" ), "/" ) )
 			if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 				Msg( "ULIB PANIC: default groups.txt is corrupt!\n" )
 				err = err2
 			end
 		end
-		if file.Exists( ULib.UCL_REGISTERED ) then
+		if file.Exists( ULib.UCL_REGISTERED, "DATA" ) then
 			file.Delete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}
@@ -131,24 +131,24 @@ reloadGroups()
 local function reloadUsers()
 	local needsBackup = false
 	local err
-	ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS ), "/" ) )
+	ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS, "DATA" ), "/" ) )
 
 	-- Check to make sure it passes a basic validity test
 	if not ucl.users then
 		needsBackup = true
 		-- Totally messed up! Clear it.
-		local f = "../addons/ulib/data/" .. ULib.UCL_USERS
-		if not file.Exists( f ) then
+		local f = "addons/ulib/data/" .. ULib.UCL_USERS
+		if not file.Exists( f, "GAME" ) then
 			Msg( "ULIB PANIC: users.txt is corrupted and I can't find the default users.txt file!!\n" )
 		else
 			local err2
-			ucl.users, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f ), "/" ) )
+			ucl.users, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f, "GAME" ), "/" ) )
 			if not ucl.users then
 				Msg( "ULIB PANIC: default users.txt is corrupt!\n" )
 				err = err2
 			end
 		end
-		if file.Exists( ULib.UCL_REGISTERED ) then
+		if file.Exists( ULib.UCL_REGISTERED, "DATA" ) then
 			file.Delete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}
@@ -908,27 +908,38 @@ hook.Add( "PlayerAuthed", "ULibAuth", ucl.probe, -4 ) -- Run slightly after garr
 
 local function sendAuthToClients( ply )
 	-- Check if it's a bot
-	if hook.isInHook( "PlayerInitialSpawn" ) and ply:IsBot() and not ucl.authed[ ply:UniqueID() ] then
+	--if hook.isInHook( "PlayerInitialSpawn" ) and ply:IsBot() and not ucl.authed[ ply:UniqueID() ] then
+	if ply:IsBot() and not ucl.authed[ ply:UniqueID() ] then
 		ply:SetUserGroup( ULib.ACCESS_ALL, true ) -- Give it a group!
 		ucl.probe( ply )
-		return -- We'll be called again
+		--return -- We'll be called again
 	end
 
 	-- We want to officially auth after both of these hooks occur for the player
-	if hook.isInHook( "PlayerAuthed" ) or hook.isInHook( "PlayerInitialSpawn" ) then
+	--[[if hook.isInHook( "PlayerAuthed" ) or hook.isInHook( "PlayerInitialSpawn" ) then
 		if not ply.ulib_auth_next then
 			ply.ulib_auth_next = true
 			return
 		else
 			ply.ulib_auth_next = nil
 		end
-	end
+	end]]
 
-	ULib.queueFunctionCall( ULib.clientRPC, _, "authPlayerIfReady", ply, ply:UserID() ) -- Call on client
+	--ULib.queueFunctionCall( function()
+		ULib.clientRPC( _, "authPlayerIfReady", ply, ply:UserID() ) -- Call on client
+	--end )
 end
-hook.Add( ULib.HOOK_UCLAUTH, "ULibSendAuthToClients", sendAuthToClients, -20 )
+--hook.Add( ULib.HOOK_UCLAUTH, "ULibSendAuthToClients", sendAuthToClients, -20 )
 hook.Add( "PlayerInitialSpawn", "ULibSendAuthToClients", sendAuthToClients, -20 )
 
+local function sendUCLDataToClient( ply )
+	ULib.clientRPC( ply, "ULib.ucl.initClientUCL", ucl.authed, ucl.groups ) -- Send all UCL data (minus offline users) to all loaded users
+	ULib.clientRPC( ply, "hook.Call", ULib.HOOK_UCLCHANGED ) -- Call hook on client
+	ULib.clientRPC( ply, "authPlayerIfReady", ply, ply:UserID() ) -- Call on client
+end
+hook.Add( ULib.HOOK_LOCALPLAYERREADY, "ULibSendUCLDataToClient", sendUCLDataToClient, -20 )
+
+--[[
 local function playerLoaded( ply )
 	local plys = player.GetAll()
 	for i=1, #plys do
@@ -937,7 +948,7 @@ local function playerLoaded( ply )
 		end
 	end
 end
-hook.Add( "PlayerInitialSpawn", "ULibSendUCLToClients", playerLoaded )
+hook.Add( "PlayerInitialSpawn", "ULibSendUCLToClients", playerLoaded )]]
 
 local function playerDisconnected( ply )
 	local uid = ply:UniqueID()
@@ -954,7 +965,12 @@ local function UCLChanged()
 end
 hook.Add( ULib.HOOK_UCLCHANGED, "ULibSendUCLToClients", UCLChanged )
 
-
+--[[
+-- The following is useful for debugging since Garry changes client bootstrapping so frequently
+hook.Add( ULib.HOOK_UCLCHANGED, "UTEST", function() print( "HERE HERE: UCL Changed" ) end )
+hook.Add( "PlayerInitialSpawn", "UTEST", function() print( "HERE HERE: Initial Spawn" ) end )
+hook.Add( "PlayerAuthed", "UTEST", function() print( "HERE HERE: Player Authed" ) end )
+]]
 
 ---------- Modify
 

@@ -46,7 +46,7 @@ function ucl.query( ply, access, hide )
 	access = access:lower()
 
 	local unique_id = ply:UniqueID()
-	if CLIENT and SinglePlayer() then
+	if CLIENT and game.SinglePlayer() then
 		unique_id = "1" -- Fix garry's bug
 	end
 
@@ -265,7 +265,7 @@ function meta:GetUserGroup()
 	if not self:IsValid() then return "" end -- Not a valid player
 
 	local uid = self:UniqueID()
-	if CLIENT and SinglePlayer() then
+	if CLIENT and game.SinglePlayer() then
 		uid = "1" -- Fix garry's bug
 	end
 	if not ucl.authed[ uid ] then return "" end

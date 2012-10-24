@@ -12,13 +12,14 @@ local function init()
 		ULib.replicatedWritableCvar( "sbox_weapons", "rep_sbox_weapons", GetConVarNumber( "sbox_weapons" ), false, false, "xgui_gmsettings" )
 		
 		--Get the list of known Sandbox Cvar Limits
-		local function cvarcallback( contents, size )
-			if size > 2900 then --This means that we didn't get a 404, HTTP error, or the server is not down!
+		local function httpcallback( contents, size, headers, code )
+			if size and size > 2900 then --This means that we didn't get a 404, HTTP error, or the server is not down!
 				file.Write( "ulx/sbox_limits.txt", contents )
 			end
 			xgui.processCvars()
 		end
-		http.Get( "http://ulyssesmod.net/xgui/sbox_cvars.txt", "", cvarcallback )
+		
+		http.Fetch( "http://ulyssesmod.net/xgui/sbox_cvars.txt", httpcallback, httpcallback )
 		
 		
 		--Process the list of known Sandbox Cvar Limits and check if they exist
@@ -26,7 +27,7 @@ local function init()
 			xgui.sboxLimits = {}
 			if ULib.isSandbox() then
 				local curgroup
-				local f = file.Read( "ulx/sbox_limits.txt" )
+				local f = file.Read( "ulx/sbox_limits.txt", "DATA" )
 				if f == nil then Msg( "XGUI ERROR: Sandbox Cvar limits file was needed but could not be found!\n" ) return end
 				local lines = string.Explode( "\n", f )
 				for i,v in ipairs( lines ) do

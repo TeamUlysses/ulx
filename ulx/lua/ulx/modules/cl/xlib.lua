@@ -18,7 +18,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -57,7 +57,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 			pnl:SetMouseInputEnabled( true )
@@ -65,7 +65,7 @@ local function xlib_init()
 		
 		if t.font then pnl:SetFont( t.font ) end
 		if t.w and t.wordwrap then
-			pnl:SetText( xlib.wordWrap( t.label, t.w, t.font or "default" ) )
+			pnl:SetText( xlib.wordWrap( t.label, t.w, t.font or "Default" ) )
 		end
 		pnl:SizeToContents()
 		if t.w then pnl:SetWidth( t.w ) end
@@ -75,15 +75,15 @@ local function xlib_init()
 		return pnl
 	end
 
-	function xlib.makepanellist( t )
-		local pnl = vgui.Create( "DPanelList", t.parent )
+	function xlib.makelistlayout( t )
+		local pnl = vgui.Create( "DListLayout", t.parent )
 		pnl:SetPos( t.x, t.y )
 		pnl:SetSize( t.w, t.h )
-		pnl:SetSpacing( t.spacing or 5 )
-		pnl:SetPadding( t.padding or 5 )
-		pnl:EnableVerticalScrollbar( t.vscroll or true )
-		pnl:EnableHorizontal( t.hscroll or false )
-		pnl:SetAutoSize( t.autosize )
+		--pnl:SetSpacing( t.spacing or 5 ) TODO?
+		--pnl:SetPadding( t.padding or 5 )
+		--pnl:EnableVerticalScrollbar( t.vscroll or true )
+		--pnl:EnableHorizontal( t.hscroll or false )
+		--pnl:SetAutoSize( t.autosize )
 		return pnl
 	end
 
@@ -96,12 +96,15 @@ local function xlib_init()
 		return pnl
 	end
 
-	function xlib.makesysbutton( t )
-		local pnl = vgui.Create( "DSysButton", t.parent )
-		pnl:SetType( t.btype )
+	function xlib.makespecialbutton( t )
+		--local pnl = vgui.Create( "DSysButton", t.parent ) pnl:SetType( t.btype )
+		
+		local pnl = vgui.Create( "DButton", t.parent )
 		pnl:SetSize( t.w, t.h or 20 )
 		pnl:SetPos( t.x, t.y )
 		pnl:SetDisabled( t.disabled )
+		pnl:SetText( "" )
+		pnl.Paint = function( panel, w, h ) derma.SkinHook( "Paint", "WindowCloseButton", panel, w, h ) end
 		return pnl
 	end
 
@@ -131,7 +134,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -227,7 +230,7 @@ local function xlib_init()
 	end
 
 	function xlib.makeXpanel( t )
-		pnl = vgui.Create( "xlibPanel", t.parent )
+		pnl = vgui.Create( "xlib_Panel", t.parent )
 		pnl:MakePopup()
 		pnl:SetPos( t.x, t.y )
 		pnl:SetSize( t.w, t.h )
@@ -247,32 +250,39 @@ local function xlib_init()
 		return pnl
 	end
 
-	function xlib.makemultichoice( t )
-		local pnl = vgui.Create( "DMultiChoice", t.parent )
+	function xlib.makecombobox( t )
+		local pnl = vgui.Create( "DComboBox", t.parent )
 		pnl:SetText( t.text or "" )
 		pnl:SetPos( t.x, t.y )
 		pnl:SetSize( t.w, t.h or 20 )
-		pnl.TextEntry.selectAll = t.selectall
-		pnl:SetEditable( t.enableinput or false )
 
 		if ( t.enableinput == true ) then
+			pnl.TextEntry = vgui.Create( "DTextEntry", pnl )
+			pnl.TextEntry:SetSize( t.w-20, t.h or 20 )
+			pnl.TextEntry.selectAll = t.selectall
+			pnl.TextEntry:SetEditable( true )
+			
+			pnl.TextEntry.OnMousePressed = function( button, mcode )
+				--hook.Call( "OnTextEntryGetFocus", nil, self )
+			end
+		
 			pnl.DropButton.OnMousePressed = function( button, mcode )
-				hook.Call( "OnTextEntryLoseFocus", nil, pnl.TextEntry )
+				--hook.Call( "OnTextEntryLoseFocus", nil, pnl.TextEntry )
 				pnl:OpenMenu( pnl.DropButton )
 			end
-			pnl.TextEntry.OnMousePressed = function( self )
-				hook.Call( "OnTextEntryGetFocus", nil, self )
-			end
+			
 			pnl.TextEntry.OnLoseFocus = function( self )
-				hook.Call( "OnTextEntryLoseFocus", nil, self )
+				--hook.Call( "OnTextEntryLoseFocus", nil, self )
 				self:UpdateConvarValue()
 			end
+			
+			
 		end
 
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -286,8 +296,8 @@ local function xlib_init()
 		pnl.enabled = true
 		function pnl:SetDisabled( val ) --Do some funky stuff to simulate enabling/disabling of a textbox
 			self.enabled = not val
-			self.TextEntry:SetEnabled( not val )
-			self.TextEntry:SetPaintBackgroundEnabled( val )
+			--self.TextEntry:SetEnabled( not val )
+			--self.TextEntry:SetPaintBackgroundEnabled( val )
 			self.DropButton:SetDisabled( val )
 			self.DropButton:SetMouseInputEnabled( not val )
 			self:SetMouseInputEnabled( not val )
@@ -400,11 +410,15 @@ local function xlib_init()
 	--Thanks to Megiddo for this code! :D
 	function xlib.wordWrap( text, width, font )
 		surface.SetFont( font )
+		if not surface.GetTextSize( "" ) then
+			surface.SetFont( "default" ) --Set font to default if specified font does not return a size properly.
+		end
 		text = text:Trim()
 		local output = ""
 		local pos_start, pos_end = 1, 1
 		while true do
 			local begin, stop = text:find( "%s+", pos_end + 1 )
+			
 			if (surface.GetTextSize( text:sub( pos_start, begin or -1 ):Trim() ) > width and pos_end - pos_start > 0) then -- If it's not going to fit, split into a newline
 				output = output .. text:sub( pos_start, pos_end ):Trim() .. "\n"
 				pos_start = pos_end + 1
@@ -421,19 +435,16 @@ local function xlib_init()
 		return output
 	end
 
-	--Includes Garry's ever-so-awesome progress bar!
-	include( "menu/ProgressBar.lua" )
 	function xlib.makeprogressbar( t )
-		pnl = vgui.Create( "DProgressBar", t.parent )
+		pnl = vgui.Create( "DProgress", t.parent )
+		pnl.Label = vgui.Create( "DLabel", pnl )
 		pnl:SetPos( t.x, t.y )
 		pnl:SetSize( t.w or 100, t.h or 20 )
-		pnl:SetMin( t.min or 0 )
-		pnl:SetMax( t.max or 100 )
-		pnl:SetValue( t.value or 0 )
-		if t.percent then
-			pnl.m_bLabelAsPercentage = true
-			pnl:UpdateText()
-		end
+		pnl:SetFraction( t.value or 0 )
+		--if t.percent then
+		--	pnl.m_bLabelAsPercentage = true
+		--	pnl:UpdateText()
+		--end
 		return pnl
 	end
 
@@ -460,7 +471,7 @@ local function xlib_init()
 		if not t.tooltipwidth then t.tooltipwidth = 250 end
 		if t.tooltip then
 			if t.tooltipwidth ~= 0 then
-				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "MenuItem" )
+				t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 			end
 			pnl:SetToolTip( t.tooltip )
 		end
@@ -468,13 +479,13 @@ local function xlib_init()
 		pnl:SetWidth( t.w )
 		pnl:SizeToContents()
 		pnl.Label:SetTextColor( t.textcolor )
-		pnl.Wang.TextEntry.selectAll = t.selectall
+		pnl.Wang.selectAll = t.selectall
 		if t.value then pnl:SetValue( t.value ) end
 
-		pnl.Wang.TextEntry.OnLoseFocus = function( self )
+		pnl.Wang.OnLoseFocus = function( self )
 			hook.Call( "OnTextEntryLoseFocus", nil, self )
 			self:UpdateConvarValue()
-			pnl.Wang:SetValue( pnl.Wang.TextEntry:GetValue() )
+			pnl.Wang:SetValue( pnl.Wang:GetValue() )
 		end
 
 		--Slider update stuff (Most of this code is copied from the default DNumSlider)
@@ -490,7 +501,7 @@ local function xlib_init()
 				val = string.TrimRight( val, "0" )
 				val = string.TrimRight( val, "." )
 			end
-			pnl.Wang.TextEntry:SetText( val )
+			pnl.Wang:SetText( val )
 			return x, y
 		end
 		pnl.Slider.OnMouseReleased = function( self, mcode )
@@ -501,7 +512,7 @@ local function xlib_init()
 		end
 
 		--This makes it so the value doesnt change while you're typing in the textbox
-		pnl.Wang.TextEntry.OnTextChanged = function() end
+		pnl.Wang.OnTextChanged = function() end
 
 		--NumberWang update stuff(Most of this code is copied from the default DNumberWang)
 		pnl.Wang.OnCursorMoved = function( self, x, y )
@@ -531,7 +542,7 @@ local function xlib_init()
 				val = string.TrimRight( val, "0" )
 				val = string.TrimRight( val, "." )
 			end
-			self.TextEntry:SetText( val )
+			self:SetText( val )
 		end
 
 		pnl.Wang.OnMouseReleased = function( self, mousecode )
@@ -546,7 +557,7 @@ local function xlib_init()
 			self.enabled = not bval
 			self:SetMouseInputEnabled( not bval )
 			self.Slider.Knob:SetVisible( not bval )
-			self.Wang.TextEntry:SetPaintBackgroundEnabled( bval )
+			self.Wang:SetPaintBackgroundEnabled( bval )
 		end
 		if t.disabled then pnl:SetDisabled( t.disabled ) end
 
@@ -563,14 +574,15 @@ local function xlib_init()
 			function pnl:OnValueChanged( val )
 				RunConsoleCommand( t.repconvar, tostring( val ) )
 			end
-			pnl.Wang.TextEntry.ConVarStringThink = function() end --Override think functions to remove Garry's convar check to (hopefully) speed things up
+			pnl.Wang.ConVarStringThink = function() end --Override think functions to remove Garry's convar check to (hopefully) speed things up
 			pnl.ConVarNumberThink = function() end
 			pnl.ConVarStringThink = function() end
 			pnl.ConVarChanged = function() end
 		end
 		return pnl
 	end
-
+	
+	
 	-----------------------------------------
 	--A stripped-down customized DPanel allowing for textbox input!
 	-----------------------------------------
@@ -583,8 +595,55 @@ local function xlib_init()
 		self:SetPaintBackground( true )
 	end
 
-	derma.DefineControl( "xlibPanel", "", PANEL, "EditablePanel" )
+	derma.DefineControl( "xlib_Panel", "", PANEL, "EditablePanel" )
+	
+	
+	-----------------------------------------
+	--Garry's old RGBBar which seems to have been removed in gmod 13
+	-----------------------------------------
+	local PANEL = {}
+	AccessorFunc( PANEL, "m_Hue", 				"Hue" )
+	AccessorFunc( PANEL, "m_RGB", 				"RGB" )
 
+	function PANEL:Init()
+		self:SetBackground( "vgui/hsv-bar" )
+		self:SetImage( "vgui/v-indicator" )
+		self:SetRGB( Color( 0, 255, 0, 255 ) )
+		self:SetColor( Color( 0, 0, 255, 255 ) )
+		self:SetLockX( 0.5 )
+		self.Knob:NoClipping( false )
+	end
+
+	function PANEL:PerformLayout()
+		DSlider.PerformLayout( self )
+	end
+
+	function PANEL:TranslateValues( x, y )
+		self:SetHue( y * 360 )
+		self:SetRGB( HSVToColor( self:GetHue(), 1, 1 ) )
+		self:OnColorChange( self.m_RGB )
+		return x, y
+	end
+
+	function PANEL:SetColor( color )
+		local h, s, v = ColorToHSV( color )
+		self:SetHue( h )
+		self:SetRGB( HSVToColor( self:GetHue(), 1, 1 ) )
+		self:SetSlideY( h / 360 )
+	end
+
+	function PANEL:OnColorChange( color )
+		--For override
+	end
+
+	function PANEL:PaintOver()
+		surface.SetDrawColor( 0, 0, 0, 250 )
+		self:DrawOutlinedRect()
+	end
+
+	vgui.Register( "xlib_DRGBBar", PANEL, "DSlider" )
+	
+	
 	-----------------------------------------
 	--A copy of Garry's ColorCtrl used in the sandbox spawnmenu, with the following changes:
 	-- -Doesn't use convars whatsoever
@@ -597,7 +656,7 @@ local function xlib_init()
 
 		self:SetSize( 130, 135 )
 
-		self.RGBBar = vgui.Create( "DRGBBar", self )
+		self.RGBBar = vgui.Create( "xlib_DRGBBar", self )
 		self.RGBBar.OnColorChange = function( ctrl, color )
 			if ( self.showAlpha ) then
 				color.a = self.txtA:GetValue()
@@ -627,18 +686,18 @@ local function xlib_init()
 			local p = self:GetParent()
 			p:SetColor( Color( val, p.txtG:GetValue(), p.txtB:GetValue(), p.showAlpha and p.txtA:GetValue() ) )
 		end
-		self.txtR.TextEntry.OnEnter = function( self )
+		self.txtR.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			self:GetParent():OnValueChanged( val )
 		end
-		self.txtR.TextEntry.OnTextChanged = function( self )
+		self.txtR.OnTextChanged = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
 			self:GetParent():GetParent():UpdateColorText()
 		end
-		self.txtR.TextEntry.OnLoseFocus = function( self )
+		self.txtR.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
 			local p = self:GetParent():GetParent()
 			p:OnChange( p:GetColor() )
@@ -655,18 +714,18 @@ local function xlib_init()
 			local p = self:GetParent()
 			p:SetColor( Color( p.txtR:GetValue(), val, p.txtB:GetValue(), p.showAlpha and p.txtA:GetValue() ) )
 		end
-		self.txtG.TextEntry.OnEnter = function( self )
+		self.txtG.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			self:GetParent():OnValueChanged( val )
 		end
-		self.txtG.TextEntry.OnTextChanged = function( self )
+		self.txtG.OnTextChanged = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
 			self:GetParent():GetParent():UpdateColorText()
 		end
-		self.txtG.TextEntry.OnLoseFocus = function( self )
+		self.txtG.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
 			local p = self:GetParent():GetParent()
 			p:OnChange( p:GetColor() )
@@ -683,18 +742,18 @@ local function xlib_init()
 			local p = self:GetParent()
 			p:SetColor( Color( p.txtR:GetValue(), p.txtG:GetValue(), val, p.showAlpha and p.txtA:GetValue() ) )
 		end
-		self.txtB.TextEntry.OnEnter = function( self )
+		self.txtB.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			self:GetParent():OnValueChanged( val )
 		end
-		self.txtB.TextEntry.OnTextChanged = function( self )
+		self.txtB.OnTextChanged = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
 			self:GetParent():GetParent():UpdateColorText()
 		end
-		self.txtB.TextEntry.OnLoseFocus = function( self )
+		self.txtB.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
 			local p = self:GetParent():GetParent()
 			p:OnChange( p:GetColor() )
@@ -717,20 +776,20 @@ local function xlib_init()
 			local p = self:GetParent()
 			p:SetColor( Color( p.txtR:GetValue(), p.txtG:GetValue(), p.txtB:GetValue(), val ) )
 		end
-		self.txtA.TextEntry.OnEnter = function( self )
+		self.txtA.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			self:GetParent():OnValueChanged( val )
 		end
-		self.txtA.TextEntry.OnTextChanged = function( self )
+		self.txtA.OnTextChanged = function( self )
 			local p = self:GetParent():GetParent()
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
-			p.AlphaBar:SetSlideY( 1 - ( val / 255) )
+			p.AlphaBar:SetValue( 1 - ( val / 255) )
 			p:OnChangeImmediate( p:GetColor() )
 		end
-		self.txtA.TextEntry.OnLoseFocus = function( self )
+		self.txtA.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
 			local p = self:GetParent():GetParent()
 			p:OnChange( p:GetColor() )
@@ -747,7 +806,7 @@ local function xlib_init()
 		self.AlphaBar.OnChange = function( ctrl, alpha ) self:SetColorAlpha( alpha ) end
 		self.AlphaBar:SetPos( 25,5 )
 		self.AlphaBar:SetSize( 15, 100 )
-		self.AlphaBar:SetSlideY( 1 )
+		self.AlphaBar:SetValue( 1 )
 		self.AlphaBar.OnMouseReleased = function( self, mcode )
 			self:SetDragging( false )
 			self:MouseCapture( false )
@@ -781,7 +840,7 @@ local function xlib_init()
 	function PANEL:UpdateColorText()
 		self.RGBBar:SetColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.showAlpha and self.txtA:GetValue() ) )
 		self.ColorCube:SetColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.showAlpha and self.txtA:GetValue() ) )
-		if ( self.showAlpha ) then self.AlphaBar:SetImageColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.txtA:GetValue() ) ) end
+		if ( self.showAlpha ) then self.AlphaBar:SetBarColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.txtA:GetValue() ) ) end
 		self:OnChangeImmediate( self:GetColor() )
 	end
 
@@ -789,14 +848,14 @@ local function xlib_init()
 		self.RGBBar:SetColor( color )
 		self.ColorCube:SetColor( color )
 
-		if tonumber( self.txtR.TextEntry:GetValue() ) ~= color.r then self.txtR.TextEntry:SetText( color.r or 255 ) end
-		if tonumber( self.txtG.TextEntry:GetValue() ) ~= color.g then self.txtG.TextEntry:SetText( color.g or 0 ) end
-		if tonumber( self.txtB.TextEntry:GetValue() ) ~= color.b then self.txtB.TextEntry:SetText( color.b or 0 ) end
+		if tonumber( self.txtR:GetValue() ) ~= color.r then self.txtR:SetText( color.r or 255 ) end
+		if tonumber( self.txtG:GetValue() ) ~= color.g then self.txtG:SetText( color.g or 0 ) end
+		if tonumber( self.txtB:GetValue() ) ~= color.b then self.txtB:SetText( color.b or 0 ) end
 
 		if ( self.showAlpha ) then
-			self.txtA.TextEntry:SetText( color.a or 0 )
-			self.AlphaBar:SetImageColor( color )
-			self.AlphaBar:SetSlideY( 1 - ( ( color.a or 0 ) / 255) )
+			self.txtA:SetText( color.a or 0 )
+			self.AlphaBar:SetBarColor( color )
+			self.AlphaBar:SetValue( 1 - ( ( color.a or 0 ) / 255) )
 		end
 
 		self:OnChangeImmediate( color )
@@ -805,12 +864,12 @@ local function xlib_init()
 	function PANEL:SetBaseColor( color )
         self.ColorCube:SetBaseRGB( color )
 
-		self.txtR.TextEntry:SetText(self.ColorCube.m_OutRGB.r)
-		self.txtG.TextEntry:SetText(self.ColorCube.m_OutRGB.g)
-		self.txtB.TextEntry:SetText(self.ColorCube.m_OutRGB.b)
+		self.txtR:SetText(self.ColorCube.m_OutRGB.r)
+		self.txtG:SetText(self.ColorCube.m_OutRGB.g)
+		self.txtB:SetText(self.ColorCube.m_OutRGB.b)
 
 		if ( self.showAlpha ) then
-			self.AlphaBar:SetImageColor( self:GetColor() )
+			self.AlphaBar:SetBarColor( self:GetColor() )
 		end
 		self:OnChangeImmediate( self:GetColor() )
 	end
@@ -823,11 +882,11 @@ local function xlib_init()
 	end
 
 	function PANEL:ColorCubeChanged( cube )
-		self.txtR.TextEntry:SetText(cube.m_OutRGB.r)
-		self.txtG.TextEntry:SetText(cube.m_OutRGB.g)
-		self.txtB.TextEntry:SetText(cube.m_OutRGB.b)
+		self.txtR:SetText(cube.m_OutRGB.r)
+		self.txtG:SetText(cube.m_OutRGB.g)
+		self.txtB:SetText(cube.m_OutRGB.b)
 		if ( self.showAlpha ) then
-			self.AlphaBar:SetImageColor( self:GetColor() )
+			self.AlphaBar:SetBarColor( self:GetColor() )
 		end
 		self:OnChangeImmediate( self:GetColor() )
 	end

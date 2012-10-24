@@ -1,9 +1,6 @@
-require( "datastream" )
-
 ULib = ULib or {} -- Init table
 
 include( "ulib/shared/defines.lua" )
-include( "ulib/shared/datastream.lua" )
 include( "ulib/shared/misc.lua" )
 include( "ulib/shared/util.lua" )
 include( "ulib/shared/hook.lua" )
@@ -19,7 +16,7 @@ include( "ulib/shared/sh_ucl.lua" )
 Msg( string.format( "You are running ULib version %.2f.\n", ULib.VERSION ) )
 
 --Shared modules
-local files = file.FindInLua( "ulib/modules/*.lua" )
+local files = file.Find( "ulib/modules/*.lua", "LUA" )
 if #files > 0 then
 	for _, file in ipairs( files ) do
 		Msg( "[ULIB] Loading SHARED module: " .. file .. "\n" )
@@ -28,7 +25,7 @@ if #files > 0 then
 end
 
 --Client modules
-local files = file.FindInLua( "ulib/modules/client/*.lua" )
+local files = file.Find( "ulib/modules/client/*.lua", "LUA" )
 if #files > 0 then
 	for _, file in ipairs( files ) do
 		Msg( "[ULIB] Loading CLIENT module: " .. file .. "\n" )

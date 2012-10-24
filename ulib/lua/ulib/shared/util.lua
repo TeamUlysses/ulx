@@ -13,20 +13,20 @@
 	Parameters:
 
 		f - The file, relative to the data folder.
-		usebasefolder - An optional boolean stating whether or not the file specified is relative to the base folder.
+		option - An optional string stating where to pull the file from.
 
 	Revisions:
 
 		v2.40 - No longer strips comments, removed ability to execute on players.
-		v2.42 - Added usebasefolder to conform to Garry's API changes.
+		v2.50 - Added option to conform to Garry's API changes.
 ]]
-function ULib.execFile( f, usebasefolder )
-	if not file.Exists( f, usebasefolder ) then
+function ULib.execFile( f, option )
+	if not file.Exists( f, option ) then
 		ULib.error( "Called execFile with invalid file! " .. f )
 		return
 	end
 
-	ULib.execString( file.Read( f, usebasefolder ) )
+	ULib.execString( file.Read( f, option ) )
 end
 
 
@@ -143,10 +143,10 @@ end
 
 		v2.10 - Initial (But dragged over from GM9 archive).
 		v2.40 - Fixed (was completely broken).
-		v2.42 - Now assumes paths relative to base folder.
+		v2.50 - Now assumes paths relative to base folder.
 ]]
 function ULib.filesInDir( dir, recurse, root )
-	if not file.IsDir( dir, true ) then
+	if not file.IsDir( dir, "GAME" ) then
 		return nil
 	end
 
@@ -157,10 +157,10 @@ function ULib.filesInDir( dir, recurse, root )
 	end
 	root = root or dir
 
-	local result = file.Find( dir .. "/*", true )
+	local result = file.Find( dir .. "/*", "GAME" )
 
 	for i=1, #result do
-		if file.IsDir( dir .. "/" .. result[ i ], true ) and recurse then
+		if file.IsDir( dir .. "/" .. result[ i ], "GAME" ) and recurse then
 			files = table.Add( files, ULib.filesInDir( dir .. "/" .. result[ i ], recurse, root ) )
 		else
 			if not relDir then
@@ -194,7 +194,7 @@ local function onThink()
 		table.remove( stack, 1 ) -- Remove the first inserted item. This is FIFO
 	else
 		hook.Remove( "Think", "ULibQueueThink" )
-		if isDedicatedServer() then
+		if game.IsDedicated() then
 			hook.Remove( "GetGameDescription", "ULibQueueThink" )
 		end
 	end
@@ -224,7 +224,7 @@ function ULib.queueFunctionCall( fn, ... )
 
 	table.insert( stack, { fn=fn, n=select( "#", ... ), ... } )
 	hook.Add( "Think", "ULibQueueThink", onThink, -20 )
-	if isDedicatedServer() then -- If it's a ded server we need another hook to make sure stuff runs even before players join
+	if game.IsDedicated() then -- If it's a ded server we need another hook to make sure stuff runs even before players join
 		hook.Add( "GetGameDescription", "ULibQueueThink", onThink, -20 )
 	end
 end
@@ -248,13 +248,13 @@ end
 		v2.40 - Initial.
 ]]
 function ULib.backupFile( f )
-	local contents = file.Read( f )
+	local contents = file.Read( f, "DATA" )
 	local filename = f:GetFileFromFilename():sub( 1, -5 ) -- Remove '.txt'
 	local folder = f:GetPathFromFilename()
 
 	local num = 1
 	local targetPath = folder .. filename .. "_backup.txt"
-	while file.Exists( targetPath ) do
+	while file.Exists( targetPath, "DATA" ) do
 		num = num + 1
 		targetPath = folder .. filename .. "_backup" .. num .. ".txt"
 	end
@@ -313,3 +313,52 @@ function ULib.getPlyByUID( uid )
 
 	return nil
 end
+
+
+--[[
+	Function: pcallError
+	
+	An adaptation of a function that used to exist before GM13, allows you to 
+	call functions safely and print errors (if it errors).
+
+	Parameters:
+
+		... - Arguments to pass to the function
+
+	Returns:
+
+		The same thing regular pcall returns
+
+	Revisions:
+
+		v2.50 - Initial.
+]]
+function ULib.pcallError( ... )
+	local returns = { pcall( ... ) }
+	
+	if not returns[ 1 ] then -- The status flag
+		ErrorNoHalt( returns[ 2 ] ) -- The error message
+	end
+	
+	return unpack( returns )	
+end
+
+--- TEMP fix for garry's broken API
+
+local oldExists = file.Exists
+function file.Exists( path, option )
+	if option == "DATA" then
+		option = "GAME"
+		path = "data/" .. path
+	end
+	return oldExists( path, option )
+end
+
+local oldRead = file.Read
+function file.Read( path, option )
+	if option == "DATA" then
+		option = "GAME"
+		path = "data/" .. path
+	end
+	return oldRead( path, option )
+	end

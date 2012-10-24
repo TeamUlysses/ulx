@@ -10,31 +10,27 @@ Msg( "///////////////////////////////\n" )
 Msg( "// ULX GUI -- by Stickly Man //\n" )
 Msg( "///////////////////////////////\n" )
 Msg( "// Adding Main Modules..     //\n" )
-for _, file in ipairs( file.FindInLua( "ulx/xgui/*.lua" ) ) do
+for _, file in ipairs( file.Find( "ulx/xgui/*.lua", "LUA" ) ) do
 	AddCSLuaFile( "ulx/xgui/" .. file )
 	Msg( "//  " .. file .. string.rep( " ", 25 - file:len() ) .. "//\n" )
 end
 Msg( "// Adding Setting Modules..  //\n" )
-for _, file in ipairs( file.FindInLua( "ulx/xgui/settings/*.lua" ) ) do
+for _, file in ipairs( file.Find( "ulx/xgui/settings/*.lua", "LUA" ) ) do
 	AddCSLuaFile( "ulx/xgui/settings/" .. file )
 	Msg( "//  " .. file .. string.rep( " ", 25 - file:len() ) .. "//\n" )
 end
 Msg( "// Adding Gamemode Modules.. //\n" )
-for _, file in ipairs( file.FindInLua( "ulx/xgui/gamemodes/*.lua" ) ) do
+for _, file in ipairs( file.Find( "ulx/xgui/gamemodes/*.lua", "LUA" ) ) do
 	AddCSLuaFile( "ulx/xgui/gamemodes/" .. file )
 	Msg( "//  " .. file .. string.rep( " ", 25 - file:len() ) .. "//\n" )
 end
 Msg( "// Loading Server Modules..  //\n" )
-for _, file in ipairs( file.FindInLua( "ulx/xgui/server/*.lua" ) ) do
+for _, file in ipairs( file.Find( "ulx/xgui/server/*.lua", "LUA" ) ) do
 	include( "ulx/xgui/server/" .. file )
 	Msg( "//  " .. file .. string.rep( " ", 25 - file:len() ) .. "//\n" )
 end
 Msg( "// XGUI modules added!       //\n" )
 Msg( "///////////////////////////////\n" )
-
---This is for servers with scriptenforcer enabled.
---It will force scriptenforcer to allow this file to be included on the client where they weren't included by default.
-AddCSLuaFile( "menu/progressbar.lua" )
 
 function xgui.init()
 	local function xgui_chatCommand( ply, func, args )

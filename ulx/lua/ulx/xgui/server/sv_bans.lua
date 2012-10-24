@@ -91,7 +91,7 @@ function bans.init()
 	ULib.unban = function( steamid, admin )
 		unbanfunc( steamid, admin )
 		bans.splitbans()
-		if timer.IsTimer( "xgui_unban" .. steamid ) then
+		if timer.Exists( "xgui_unban" .. steamid ) then
 			timer.Destroy( "xgui_unban" .. steamid )
 		end
 		xgui.removeData( {}, "bans", { steamid } )

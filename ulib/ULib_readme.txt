@@ -1,6 +1,6 @@
 Title: ULib Readme
 
-*ULib v2.43 (released 00/00/00)*
+*ULib v2.50 (released 00/00/00)*
 
 ULib is a developer library for GMod 10 (<http://garrysmod.com/>).
 
@@ -44,8 +44,13 @@ After installing ULib correctly, scripts that take advantage of ULib will take c
 Rest easy!
 
 Group: Changelog
-v2.43 - *(00/00/00)*
+v2.50 - *(00/00/00)*
+	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.
+	* [FIX] The usual assortment of garry breakages.
+	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
+	* [CHANGE] Lots of changes to match GM13.
 
+v2.43 - *(00/00/00)*
 	* [CHANGE] NumArg now allows for time string format.
 
 v2.42 - *(01/01/12)*

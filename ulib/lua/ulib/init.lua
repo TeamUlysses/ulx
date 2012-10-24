@@ -1,5 +1,3 @@
-require( "datastream" )
-
 if not ULib then
 	ULib = {}
 	--[[
@@ -12,6 +10,8 @@ if not ULib then
 	]]
 
 	if not ULib.consoleCommand then ULib.consoleCommand = game.ConsoleCommand end -- In case they remove our module or it doesn't load
+	
+	file.CreateDir( "ULib" )
 
 	Msg( "///////////////////////////////\n" )
 	Msg( "//      Ulysses Library      //\n" )
@@ -20,14 +20,10 @@ if not ULib then
 
 	Msg( "//  shared/defines.lua       //\n" )
 	include( "ulib/shared/defines.lua" )
-	Msg( "//  shared/datastream.lua    //\n" )
-	include( "ulib/shared/datastream.lua" )
 	Msg( "//  shared/misc.lua          //\n" )
 	include( "ulib/shared/misc.lua" )
 	Msg( "//  shared/util.lua          //\n" )
 	include( "ulib/shared/util.lua" )
-	Msg( "//  server/upgrade.lua       //\n" )
-	include( "ulib/server/upgrade.lua" )
 	Msg( "//  shared/hook.lua          //\n" )
 	include( "ulib/shared/hook.lua" )
 	Msg( "//  shared/table.lua         //\n" )
@@ -60,19 +56,19 @@ if not ULib then
 	AddCSLuaFile( "ulib/cl_init.lua" )
 	AddCSLuaFile( "autorun/ulib_init.lua" )
 	local folder = "ulib/shared"
-	local files = file.FindInLua( folder .. "/" .. "*.lua" )
+	local files = file.Find( folder .. "/" .. "*.lua", "LUA" )
 	for _, file in ipairs( files ) do
 		AddCSLuaFile( folder .. "/" .. file )
 	end
 
 	folder = "ulib/client"
-	files = file.FindInLua( folder .. "/" .. "*.lua" )
+	files = file.Find( folder .. "/" .. "*.lua", "LUA" )
 	for _, file in ipairs( files ) do
 		AddCSLuaFile( folder .. "/" .. file )
 	end
 
 	--Shared modules
-	local files = file.FindInLua( "ulib/modules/*.lua" )
+	local files = file.Find( "ulib/modules/*.lua", "LUA" )
 	if #files > 0 then
 		for _, file in ipairs( files ) do
 			Msg( "[ULIB] Loading SHARED module: " .. file .. "\n" )
@@ -82,7 +78,7 @@ if not ULib then
 	end
 
 	--Server modules
-	local files = file.FindInLua( "ulib/modules/server/*.lua" )
+	local files = file.Find( "ulib/modules/server/*.lua", "LUA" )
 	if #files > 0 then
 		for _, file in ipairs( files ) do
 			Msg( "[ULIB] Loading SERVER module: " .. file .. "\n" )
@@ -91,7 +87,7 @@ if not ULib then
 	end
 
 	--Client modules
-	local files = file.FindInLua( "ulib/modules/client/*.lua" )
+	local files = file.Find( "ulib/modules/client/*.lua", "LUA" )
 	if #files > 0 then
 		for _, file in ipairs( files ) do
 			Msg( "[ULIB] Loading CLIENT module: " .. file .. "\n" )
