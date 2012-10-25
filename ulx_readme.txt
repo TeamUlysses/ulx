@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.55
+Version 3.60
 
-*ULX v3.55 (released 00/00/00)*
+*ULX v3.60 (released 00/00/00)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,7 +62,7 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
-v3.55 - *(00/00/00)*
+v3.60 - *(00/00/00)*
 	* [CHANGE] ULX ban now supports restricting of time/string formats.
 	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
 	* [FIX] Garry breakages in GM13.
