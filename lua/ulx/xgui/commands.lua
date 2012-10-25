@@ -85,7 +85,7 @@ function cmds.refreshPlist( arg )
 	
 	local lastplys = {}
 	for k, Line in pairs( cmds.plist.Lines ) do
-		if ( Line:GetSelected() ) then table.insert( lastplys, Line:GetColumnText(1) ) end
+		if ( Line:IsLineSelected() ) then table.insert( lastplys, Line:GetColumnText(1) ) end
 	end
 	
 	local targets = cmds.calculateValidPlayers( arg )
@@ -183,12 +183,12 @@ function cmds.buildArgsList( cmd )
 		panel.argnum = argnum
 		panel.xguiIgnore = true
 		panel.arg = curitem
-		panel.insertPos = #cmds.argslist.Items + 1
+		panel.insertPos = #cmds.argslist:GetChildren() + 1
 		panel.button = xlib.makebutton{ label="Add", w=80, parent=panel }
 		panel.button.DoClick = function( self )
 			local parent = self:GetParent()
-			table.insert( cmds.argslist.Items, parent.insertPos, parent.arg.type.x_getcontrol( parent.arg, parent.argnum ) )
-			cmds.argslist.Items[parent.insertPos]:SetParent( cmds.argslist.pnlCanvas )
+			table.insert( cmds.argslist:GetChildren(), parent.insertPos, parent.arg.type.x_getcontrol( parent.arg, parent.argnum ) )
+			cmds.argslist:GetChildren()[parent.insertPos]:SetParent( cmds.argslist.pnlCanvas )
 			cmds.argslist:InvalidateLayout()
 			panel.numItems = panel.numItems + 1
 			parent.insertPos = parent.insertPos + 1
@@ -198,8 +198,8 @@ function cmds.buildArgsList( cmd )
 		panel.button2 = xlib.makebutton{ label="Remove", x=80, w=80, disabled=true, parent=panel }
 		panel.button2.DoClick = function( self )
 			local parent = self:GetParent()
-			cmds.argslist.Items[parent.insertPos-1]:Remove()
-			table.remove( cmds.argslist.Items, parent.insertPos - 1 )
+			cmds.argslist:GetChildren()[parent.insertPos-1]:Remove()
+			table.remove( cmds.argslist:GetChildren(), parent.insertPos - 1 )
 			cmds.argslist:InvalidateLayout()
 			panel.numItems = panel.numItems - 1
 			parent.insertPos = parent.insertPos - 1
@@ -208,11 +208,11 @@ function cmds.buildArgsList( cmd )
 		end
 		cmds.argslist:Add( panel )
 	elseif curitem and curitem.type == ULib.cmds.NumArg then
-		cmds.argslist.Items[#cmds.argslist.Items].Wang.OnEnter = function( self )
+		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].Wang.OnEnter = function( self )
 			cmds.runCmd( cmd.cmd )
 		end
 	elseif curitem and curitem.type == ULib.cmds.StringArg then
-		cmds.argslist.Items[#cmds.argslist.Items].OnEnter = function( self )
+		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].OnEnter = function( self )
 			cmds.runCmd( cmd.cmd )
 		end
 	end
@@ -251,7 +251,7 @@ function cmds.runCmd( cmd )
 		table.insert( cmd, table.concat( plys ) )
 	end
 	
-	for _, arg in ipairs( cmds.argslist.Items ) do
+	for _, arg in ipairs( cmds.argslist:GetChildren() ) do
 		if not arg.xguiIgnore then
 			table.insert( cmd, arg:GetValue() )
 		end
