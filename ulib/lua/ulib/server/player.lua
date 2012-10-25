@@ -252,7 +252,7 @@ local function doInvis()
 			remove = false
 			if player:Alive() and player:GetActiveWeapon():IsValid() then
 				if player:GetActiveWeapon() ~= t.invis.wep then
-					timer.Simple( 0.05, ULib.invisible, player, true, t.invis.vis )
+					timer.Simple( 0.05, function () ULib.invisible( player, true, t.invis.vis ) end )
 					t.invis.wep = player:GetActiveWeapon()
 				end
 			end
@@ -463,7 +463,7 @@ function ULib.spawn( player, bool )
 		local t = player.ULibSpawnInfo
 		player:SetHealth( t.health )
 		player:SetArmor( t.armor )
-		timer.Simple( 0.1, doWeapons, player, t )
+		timer.Simple( 0.1, function() doWeapons( player, t ) end )
 		player.ULibSpawnInfo = nil
 	end
 end

@@ -343,7 +343,7 @@ function ULib.pcallError( ... )
 	return unpack( returns )	
 end
 
---- TEMP fix for garry's broken API
+--- TEMP fix for garry's broken API (Hopefully he fixes this soon, still broken as of official GM13 release)
 
 local oldExists = file.Exists
 function file.Exists( path, option )
@@ -361,4 +361,4 @@ function file.Read( path, option )
 		path = "data/" .. path
 	end
 	return oldRead( path, option )
-	end
+end
