@@ -152,6 +152,7 @@ local function xgui_helpers()
 	end	
 	
 	xlib.addToAnimQueue = function( obj, ... )
+		local arg = { ... }
 		--If there is an animation running, then we need to store the new animation stuff somewhere else temporarily.
 		--Also, if ignoreRunning is true, then we'll add the anim to the regular queue regardless of running status.
 		local outTable = xlib.animRunning and xlib.animBackupQueue or xlib.animQueue
