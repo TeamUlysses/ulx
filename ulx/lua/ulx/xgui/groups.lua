@@ -1082,7 +1082,7 @@ function groups.updateAccessPanel()
 				local rety = tempfunc( list )
 				for _, Line in ipairs( list.Lines ) do
 					local x,y = Line:GetColumnText(2):GetPos()
-					Line.Columns[2]:SetPos( x, y+1 )
+					Line.Columns[2]:SetPos( x-2, y+1 )
 					Line.Columns[1]:SetColor( Line.col )
 				end
 				return rety
