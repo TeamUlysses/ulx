@@ -434,7 +434,7 @@ local function xgui_helpers()
 			
 			outPanel = xlib.makepanel{ h=35 }
 			outPanel.val = xlib.makeslider{ w=160, min=min, max=max, value=min, decimal=0, parent=outPanel }
-			outPanel.interval = xlib.makemultichoice{ w=75, parent=outPanel }
+			outPanel.interval = xlib.makecombobox{ w=75, parent=outPanel }
 			
 			local divisor = {}
 			local sensiblemax = {}
@@ -452,14 +452,14 @@ local function xgui_helpers()
 				outPanel.val:SetMax( outPanel.val.maxvalue )
 				outPanel.val:SetMin( outPanel.val.minvalue )
 				outPanel.val:SetValue( math.Clamp( tonumber( outPanel.val:GetValue() ), outPanel.val.minvalue, outPanel.val.maxvalue ) )
-				outPanel.val:PerformLayout()
+				--outPanel.val:PerformLayout() --TODO: Sliders broken
 			end
 			
 			function outPanel.val:ValueChanged( val )
 				val = math.Clamp( tonumber( val ), self.minvalue, self.maxvalue )
 				self.Slider:SetSlideX( self.Wang:GetFraction( val ) )
 				self:OnValueChanged( val )
-				self.Wang.TextEntry:SetText( val )
+				self.Wang:SetText( val )
 			end
 			
 			outPanel.interval:ChooseOptionID( 1 )

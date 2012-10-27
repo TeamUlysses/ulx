@@ -6,7 +6,12 @@ cmds.selcmd = nil
 cmds.mask = xlib.makepanel{ x=160, y=30, w=425, h=335, parent=cmds }
 cmds.argslist = xlib.makelistlayout{ w=170, h=335, parent=cmds.mask }
 cmds.argslist.secondaryPos = nil
-cmds.argslist:SetVisible( false )
+
+function cmds.argslist.IsVisible( self )
+	return self.scroll:IsVisible( self.scroll )
+end
+cmds.argslist.scroll:SetVisible( false )
+
 function cmds.argslist:Open( cmd, secondary )
 	if secondary then
 		if cmds.plist:IsVisible() then
@@ -187,8 +192,9 @@ function cmds.buildArgsList( cmd )
 		panel.button = xlib.makebutton{ label="Add", w=80, parent=panel }
 		panel.button.DoClick = function( self )
 			local parent = self:GetParent()
-			table.insert( cmds.argslist:GetChildren(), parent.insertPos, parent.arg.type.x_getcontrol( parent.arg, parent.argnum ) )
-			cmds.argslist:GetChildren()[parent.insertPos]:SetParent( cmds.argslist.pnlCanvas )
+			--table.insert( cmds.argslist:GetChildren(), parent.insertPos, parent.arg.type.x_getcontrol( parent.arg, parent.argnum ) )
+			--cmds.argslist:GetChildren()[parent.insertPos]:SetParent( cmds.argslist.pnlCanvas )  --TODO: Broken
+			--cmds.argslist:GetChildren()[parent.insertPos]:SetParent( parent ) -- does this help?
 			cmds.argslist:InvalidateLayout()
 			panel.numItems = panel.numItems + 1
 			parent.insertPos = parent.insertPos + 1
@@ -198,14 +204,15 @@ function cmds.buildArgsList( cmd )
 		panel.button2 = xlib.makebutton{ label="Remove", x=80, w=80, disabled=true, parent=panel }
 		panel.button2.DoClick = function( self )
 			local parent = self:GetParent()
-			cmds.argslist:GetChildren()[parent.insertPos-1]:Remove()
-			table.remove( cmds.argslist:GetChildren(), parent.insertPos - 1 )
+			--cmds.argslist:GetChildren()[parent.insertPos-1]:Remove()   --TODO: Broken
+			--table.remove( cmds.argslist:GetChildren(), parent.insertPos - 1 )
 			cmds.argslist:InvalidateLayout()
 			panel.numItems = panel.numItems - 1
 			parent.insertPos = parent.insertPos - 1
 			if panel.numItems < parent.arg.repeat_min then self:SetDisabled( true ) end
 			if panel.button:GetDisabled() then panel.button:SetDisabled( false ) end
 		end
+		--panel:SizeToChildren()
 		cmds.argslist:Add( panel )
 	elseif curitem and curitem.type == ULib.cmds.NumArg then
 		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].Wang.OnEnter = function( self )
@@ -333,7 +340,6 @@ cmds.refresh = function( permissionChanged )
 	end
 	cmds.permissionChanged = nil
 end
-cmds.refresh()
 
 --------------
 --ANIMATIONS--
@@ -351,28 +357,23 @@ function cmds.argslist:openAnim( cmd, secondary )
 	xlib.addToAnimQueue( function() cmds.argslist.secondaryPos = secondary end )
 	xlib.addToAnimQueue( cmds.buildArgsList, cmd )
 	if secondary then
-		xlib.addToAnimQueue( "pnlSlide", { panel=self, startx=-170, starty=0, endx=0, endy=0, setvisible=true } )
+		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=-170, starty=0, endx=0, endy=0, setvisible=true } )
 	else
-		xlib.addToAnimQueue( "pnlSlide", { panel=self, startx=80, starty=0, endx=255, endy=0, setvisible=true } )
+		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=80, starty=0, endx=255, endy=0, setvisible=true } )	
 	end
 end
 
 function cmds.argslist:closeAnim( secondary )
 	if secondary then
-		xlib.addToAnimQueue( "pnlSlide", { panel=self, startx=0, starty=0, endx=-170, endy=0, setvisible=false } )
+		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=0, starty=0, endx=-170, endy=0, setvisible=false } )
 	else
-		--Apparently derma is REALLY picky when working with panels that aren't visible. To fix a minor drawing issue, we're going to keep the argslist panel 
-		--visible, set it's position manually off the screen, then wait a frame or two. If the panel hasn't been moved since then, then we make it invisible.
-		xlib.addToAnimQueue( "pnlSlide", { panel=self, startx=255, starty=0, endx=80, endy=0, setvisible=true } )
-		xlib.addToAnimQueue( self.SetPos, self, -170, 0 )
-		xlib.addToAnimQueue( timer.Simple, 0.1, function()
-			local x,y = cmds.argslist:GetPos()
-			if x == -170 then cmds.argslist:SetVisible( false ) end end )
+		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=255, starty=0, endx=80, endy=0, setvisible=false } )
 	end
 	xlib.addToAnimQueue( function() cmds.argslist.secondaryPos = nil end )
 end
 --------------
 
+cmds.refresh()
 hook.Add( "UCLChanged", "xgui_RefreshPlayerCmds", cmds.refresh )
 hook.Add( "ULibPlayerNameChanged", "xgui_plyUpdateCmds", cmds.playerNameChanged )
 xgui.addModule( "Cmds", cmds, "icon16/user_gray.png" )

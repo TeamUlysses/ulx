@@ -684,8 +684,8 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						local curinterval = ( irmin or iargmin or "Permanent" )
 						local curval = vrmin or vargmin or 0
 						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
-						--outPanel.min.Wang.TextEntry:SetText( curval ) --Set the value of the textentry manually to show decimals even though decimal=0.  --TODO: Fix sliders
-						outPanel.minterval = xlib.makemultichoice{ x=50, y=5, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmin==nil ), parent=outPanel }
+						outPanel.min.Wang:SetText( curval ) --Set the value of the textentry manually to show decimals even though decimal=0.
+						outPanel.minterval = xlib.makecombobox{ x=50, y=5, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmin==nil ), parent=outPanel }
 						outPanel.minterval.OnSelect = function( self, index, value, data )
 							outPanel.min:SetDisabled( value == "Permanent" )
 						end
@@ -697,8 +697,8 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						local curinterval = ( irmax or iargmax or "Permanent" )
 						local curval = vrmax or vargmax or 0
 						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
-						outPanel.max.Wang.TextEntry:SetText( curval )
-						outPanel.maxterval = xlib.makemultichoice{ x=50, y=45, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmax==nil ), parent=outPanel }
+						outPanel.max.Wang:SetText( curval )
+						outPanel.maxterval = xlib.makecombobox{ x=50, y=45, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmax==nil ), parent=outPanel }
 						outPanel.maxterval.OnSelect = function( self, index, value, data )
 							outPanel.max:SetDisabled( value == "Permanent" )
 						end
