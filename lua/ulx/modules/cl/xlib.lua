@@ -76,14 +76,20 @@ local function xlib_init()
 	end
 
 	function xlib.makelistlayout( t )
-		local scrlpnl = vgui.Create( "DScrollPanel", t.parent )
 		local pnl = vgui.Create( "DListLayout" )
-		scrlpnl:SetPos( t.x, t.y )
-		scrlpnl:SetSize( t.w, t.h )
+		pnl.scroll = vgui.Create( "DScrollPanel", t.parent )
+		
+		pnl.scroll:SetPos( t.x, t.y )
+		pnl.scroll:SetSize( t.w, t.h )
 		pnl:SetSize( t.w, t.h )
-		scrlpnl:AddItem( pnl )
+		pnl.scroll:AddItem( pnl )
 		--pnl:SetSpacing( t.spacing or 5 ) TODO? :DockMargin( int, int, int, int )
 		--pnl:SetPadding( t.padding or 5 )
+		
+		function pnl:PerformLayout()
+			self:SetWide( self.scroll:GetWide() - ( self.scroll.VBar.Enabled and 16 or 0 ) )
+			self:SizeToChildren( false, true )
+		end
 		return pnl
 	end
 
@@ -602,52 +608,6 @@ local function xlib_init()
 	
 	
 	-----------------------------------------
-	--Garry's old RGBBar which seems to have been removed in gmod 13
-	-----------------------------------------
-	local PANEL = {}
-	AccessorFunc( PANEL, "m_Hue", 				"Hue" )
-	AccessorFunc( PANEL, "m_RGB", 				"RGB" )
-
-	function PANEL:Init()
-		self:SetBackground( "vgui/hsv-bar" )
-		self:SetImage( "vgui/v-indicator" )
-		self:SetRGB( Color( 0, 255, 0, 255 ) )
-		self:SetColor( Color( 0, 0, 255, 255 ) )
-		self:SetLockX( 0.5 )
-		self.Knob:NoClipping( false )
-	end
-
-	function PANEL:PerformLayout()
-		DSlider.PerformLayout( self )
-	end
-
-	function PANEL:TranslateValues( x, y )
-		self:SetHue( y * 360 )
-		self:SetRGB( HSVToColor( self:GetHue(), 1, 1 ) )
-		self:OnColorChange( self.m_RGB )
-		return x, y
-	end
-
-	function PANEL:SetColor( color )
-		local h, s, v = ColorToHSV( color )
-		self:SetHue( h )
-		self:SetRGB( HSVToColor( self:GetHue(), 1, 1 ) )
-		self:SetSlideY( h / 360 )
-	end
-
-	function PANEL:OnColorChange( color )
-		--For override
-	end
-
-	function PANEL:PaintOver()
-		surface.SetDrawColor( 0, 0, 0, 250 )
-		self:DrawOutlinedRect()
-	end
-
-	vgui.Register( "xlib_DRGBBar", PANEL, "DSlider" )
-	
-	
-	-----------------------------------------
 	--A copy of Garry's ColorCtrl used in the sandbox spawnmenu, with the following changes:
 	-- -Doesn't use convars whatsoever
 	-- -Is a fixed size, but you can have it with/without the alphabar, and there's two layout styles without the alpha bar.
@@ -659,8 +619,8 @@ local function xlib_init()
 
 		self:SetSize( 130, 135 )
 
-		self.RGBBar = vgui.Create( "xlib_DRGBBar", self )
-		self.RGBBar.OnColorChange = function( ctrl, color )
+		self.RGBBar = vgui.Create( "DRGBPicker", self )
+		self.RGBBar.OnChange = function( ctrl, color )
 			if ( self.showAlpha ) then
 				color.a = self.txtA:GetValue()
 			end
@@ -669,9 +629,13 @@ local function xlib_init()
 		self.RGBBar:SetSize( 15, 100 )
 		self.RGBBar:SetPos( 5,5 )
 		self.RGBBar.OnMouseReleased = function( self, mcode )
-			self:SetDragging( false )
 			self:MouseCapture( false )
+			self:OnCursorMoved( self:CursorPos() )
 			self:GetParent():OnChange( self:GetParent():GetColor() )
+		end
+		function self.RGBBar:SetColor( color )
+			local h, s, v = ColorToHSV( color )
+			self.LastY = ( 1 - h / 360 ) * self:GetTall()
 		end
 
 		self.ColorCube = vgui.Create( "DColorCube", self )
@@ -692,7 +656,7 @@ local function xlib_init()
 		self.txtR.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
-			self:GetParent():OnValueChanged( val )
+			self:OnValueChanged( val )
 		end
 		self.txtR.OnTextChanged = function( self )
 			local val = tonumber( self:GetValue() )
@@ -720,7 +684,7 @@ local function xlib_init()
 		self.txtG.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
-			self:GetParent():OnValueChanged( val )
+			self:OnValueChanged( val )
 		end
 		self.txtG.OnTextChanged = function( self )
 			local val = tonumber( self:GetValue() )
@@ -748,7 +712,7 @@ local function xlib_init()
 		self.txtB.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
-			self:GetParent():OnValueChanged( val )
+			self:OnValueChanged( val )
 		end
 		self.txtB.OnTextChanged = function( self )
 			local val = tonumber( self:GetValue() )
@@ -782,10 +746,10 @@ local function xlib_init()
 		self.txtA.OnEnter = function( self )
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
-			self:GetParent():OnValueChanged( val )
+			self:OnValueChanged( val )
 		end
 		self.txtA.OnTextChanged = function( self )
-			local p = self:GetParent():GetParent()
+			local p = self:GetParent()
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
@@ -794,7 +758,7 @@ local function xlib_init()
 		end
 		self.txtA.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
-			local p = self:GetParent():GetParent()
+			local p = self:GetParent()
 			p:OnChange( p:GetColor() )
 			hook.Call( "OnTextEntryLoseFocus", nil, self )
 		end
@@ -806,16 +770,16 @@ local function xlib_init()
 		end
 
 		self.AlphaBar = vgui.Create( "DAlphaBar", self )
-		self.AlphaBar.OnChange = function( ctrl, alpha ) self:SetColorAlpha( alpha ) end
+		self.AlphaBar.OnChange = function( ctrl, alpha ) self:SetColorAlpha( alpha*255 ) end
 		self.AlphaBar:SetPos( 25,5 )
 		self.AlphaBar:SetSize( 15, 100 )
 		self.AlphaBar:SetValue( 1 )
 		self.AlphaBar.OnMouseReleased = function( self, mcode )
-			self:SetDragging( false )
 			self:MouseCapture( false )
+			self:OnCursorMoved( self:CursorPos() )
 			self:GetParent():OnChange( self:GetParent():GetColor() )
 		end
-
+		
 		self.ColorCube:SetPos( 45,5 )
 		self:SetSize( 190, 110 )
 		self.txtR:SetPos( 150, 7 )
@@ -843,7 +807,7 @@ local function xlib_init()
 	function PANEL:UpdateColorText()
 		self.RGBBar:SetColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.showAlpha and self.txtA:GetValue() ) )
 		self.ColorCube:SetColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.showAlpha and self.txtA:GetValue() ) )
-		if ( self.showAlpha ) then self.AlphaBar:SetBarColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), self.txtA:GetValue() ) ) end
+		if ( self.showAlpha ) then self.AlphaBar:SetBarColor( Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue(), 255 ) ) end
 		self:OnChangeImmediate( self:GetColor() )
 	end
 
@@ -857,8 +821,8 @@ local function xlib_init()
 
 		if ( self.showAlpha ) then
 			self.txtA:SetText( color.a or 0 )
-			self.AlphaBar:SetBarColor( color )
-			self.AlphaBar:SetValue( 1 - ( ( color.a or 0 ) / 255) )
+			self.AlphaBar:SetBarColor( Color( color.r, color.g, color.b ) )
+			self.AlphaBar:SetValue( ( ( color.a or 0 ) / 255) )
 		end
 
 		self:OnChangeImmediate( color )
@@ -872,7 +836,7 @@ local function xlib_init()
 		self.txtB:SetText(self.ColorCube.m_OutRGB.b)
 
 		if ( self.showAlpha ) then
-			self.AlphaBar:SetBarColor( self:GetColor() )
+			self.AlphaBar:SetBarColor( Color( self:GetColor().r, self:GetColor().g, self:GetColor().b ) )
 		end
 		self:OnChangeImmediate( self:GetColor() )
 	end
@@ -889,7 +853,7 @@ local function xlib_init()
 		self.txtG:SetText(cube.m_OutRGB.g)
 		self.txtB:SetText(cube.m_OutRGB.b)
 		if ( self.showAlpha ) then
-			self.AlphaBar:SetBarColor( self:GetColor() )
+			self.AlphaBar:SetBarColor( Color( self:GetColor().r, self:GetColor().g, self:GetColor().b ) )
 		end
 		self:OnChangeImmediate( self:GetColor() )
 	end
@@ -897,7 +861,7 @@ local function xlib_init()
 	function PANEL:GetColor()
 		local color = Color( self.txtR:GetValue(), self.txtG:GetValue(), self.txtB:GetValue() )
 		if ( self.showAlpha ) then
-			color.a = self.txtA:GetValue() --math.Round( 255 - (self.AlphaBar:GetSlideY() * 255) )
+			color.a = self.txtA:GetValue()
 		else
 			color.a = 255
 		end
