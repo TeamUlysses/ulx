@@ -5,7 +5,7 @@ ulx.votemaps = {}
 xgui.prepareDataType( "votemaps", ulx.votemaps )
 local maps = xlib.makepanel{ parent=xgui.null }
 
-maps.maplabel = xlib.makelabel{ x=10, y=13, label="Server Votemaps: (Votemaps are highlighted)", parent=maps, textcolor=color_black }
+maps.maplabel = xlib.makelabel{ x=10, y=13, label="Server Votemaps: (Votemaps are highlighted)", textcolor=color_black, parent=maps }
 xlib.makelabel{ x=10, y=348, label="Gamemode:", parent=maps, textcolor=color_black }
 maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", parent=maps, textcolor=color_black }
 
@@ -24,7 +24,7 @@ maps.list.Think = function()
 	if maps.list.checkVotemaps then
 		for _,line in ipairs( maps.list.Lines ) do
 			if line.isNotVotemap then
-				timer.Simple( 0.01, function() line.Columns[1]:SetTextColor( Color( 255,255,255,90 ) ) end ) --Srsly, wtf derma? This doesn't show properly unless it's called on a think AND delayed?
+				timer.Simple( 0.01, function() line.Columns[1]:SetTextColor( Color( 55,55,55,90 ) ) end ) --Srsly, wtf derma? This doesn't show properly unless it's called on a think AND delayed?
 			end
 		end
 		maps.list.checkVotemaps = nil
