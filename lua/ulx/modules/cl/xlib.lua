@@ -576,7 +576,9 @@ local function xlib_init()
 			pnl:SetValue( GetConVar( t.repconvar ):GetFloat() )
 			function pnl.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 				if cl_cvar == t.repconvar:lower() then
-					-- pnl:SetValue( new_val ) -- Commented out to dodge errors
+					if ( IsValid( pnl ) ) then	--Prevents random errors when joining. TODO: Remove this when sliders are.. better?
+						pnl:SetValue( new_val )
+					end
 				end
 			end
 			hook.Add( "ULibReplicatedCvarChanged", "XLIB_" .. t.repconvar, pnl.ConVarUpdated )
