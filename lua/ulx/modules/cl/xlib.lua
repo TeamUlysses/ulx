@@ -76,14 +76,14 @@ local function xlib_init()
 	end
 
 	function xlib.makelistlayout( t )
-		local pnl = vgui.Create( "DListLayout", t.parent )
-		pnl:SetPos( t.x, t.y )
+		local scrlpnl = vgui.Create( "DScrollPanel", t.parent )
+		local pnl = vgui.Create( "DListLayout" )
+		scrlpnl:SetPos( t.x, t.y )
+		scrlpnl:SetSize( t.w, t.h )
 		pnl:SetSize( t.w, t.h )
-		--pnl:SetSpacing( t.spacing or 5 ) TODO?
+		scrlpnl:AddItem( pnl )
+		--pnl:SetSpacing( t.spacing or 5 ) TODO? :DockMargin( int, int, int, int )
 		--pnl:SetPadding( t.padding or 5 )
-		--pnl:EnableVerticalScrollbar( t.vscroll or true )
-		--pnl:EnableHorizontal( t.hscroll or false )
-		--pnl:SetAutoSize( t.autosize )
 		return pnl
 	end
 
@@ -698,11 +698,11 @@ local function xlib_init()
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
-			self:GetParent():GetParent():UpdateColorText()
+			self:GetParent():UpdateColorText()
 		end
 		self.txtR.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
-			local p = self:GetParent():GetParent()
+			local p = self:GetParent()
 			p:OnChange( p:GetColor() )
 			hook.Call( "OnTextEntryLoseFocus", nil, self )
 		end
@@ -726,11 +726,11 @@ local function xlib_init()
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
-			self:GetParent():GetParent():UpdateColorText()
+			self:GetParent():UpdateColorText()
 		end
 		self.txtG.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
-			local p = self:GetParent():GetParent()
+			local p = self:GetParent()
 			p:OnChange( p:GetColor() )
 			hook.Call( "OnTextEntryLoseFocus", nil, self )
 		end
@@ -754,11 +754,11 @@ local function xlib_init()
 			local val = tonumber( self:GetValue() )
 			if not val then val = 0 end
 			if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
-			self:GetParent():GetParent():UpdateColorText()
+			self:GetParent():UpdateColorText()
 		end
 		self.txtB.OnLoseFocus = function( self )
 			if not tonumber( self:GetValue() ) then self:SetValue( "0" ) end
-			local p = self:GetParent():GetParent()
+			local p = self:GetParent()
 			p:OnChange( p:GetColor() )
 			hook.Call( "OnTextEntryLoseFocus", nil, self )
 		end

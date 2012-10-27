@@ -59,7 +59,7 @@ cmds.setselected = function( selcat, LineID )
 		return 
 	end
 	
-	for _, cat in pairs( cmds.cmd_cats ) do
+	for _, cat in pairs( cmds.cmd_contents ) do
 		if cat ~= selcat then
 			cat:ClearSelection()
 		end
@@ -233,7 +233,7 @@ function cmds.buildArgsList( cmd )
 		cmds.argslist:Add( xgui_temp )
 	end
 	if cmd.helpStr then --If the command has a string for help
-		local xgui_temp = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true }
+		local xgui_temp = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true, textcolor=color_black }
 		xgui_temp.xguiIgnore = true
 		cmds.argslist:Add( xgui_temp )
 	end
@@ -270,23 +270,24 @@ end
 cmds.refresh = function( permissionChanged )
 	local lastcmd = cmds.selcmd
 	cmds.cmds:Clear()
-	cmds.cmd_cats = {}
+	cmds.cmd_contents = {}
 	cmds.expandedcat = nil
 	cmds.selcmd = nil
 	cmds.permissionChanged = true
 	
+	local newcategories = {}
 	local matchedCmdFound = false
 	for cmd, data in pairs( ULib.cmds.translatedCmds ) do
 		local opposite = data.opposite or ""
 		if opposite ~= cmd and ( LocalPlayer():query( data.cmd ) or LocalPlayer():query( opposite ) ) then
 			local catname = data.category
 			if catname == nil or catname == "" then catname = "Uncategorized" end
-			if not cmds.cmd_cats[catname] then
+			if not cmds.cmd_contents[catname] then
 				--Make a new category
-				cmds.cmd_cats[catname] = xlib.makelistview{ headerheight=0, multiselect=false, h=136 }
-				cmds.cmd_cats[catname].OnRowSelected = function( self, LineID ) cmds.setselected( self, LineID ) end
-				cmds.cmd_cats[catname]:AddColumn( "" )
-				local cat = xlib.makecat{ label=catname, contents=cmds.cmd_cats[catname], expanded=false }
+				cmds.cmd_contents[catname] = xlib.makelistview{ headerheight=0, multiselect=false, h=136 }
+				cmds.cmd_contents[catname].OnRowSelected = function( self, LineID ) cmds.setselected( self, LineID ) end
+				cmds.cmd_contents[catname]:AddColumn( "" )
+				local cat = xlib.makecat{ label=catname, contents=cmds.cmd_contents[catname], expanded=false, parent=cmds.cmds }
 				function cat.Header:OnMousePressed( mcode )
 					if ( mcode == MOUSE_LEFT ) then
 						self:GetParent():Toggle()
@@ -303,12 +304,12 @@ cmds.refresh = function( permissionChanged )
 					end
 					return self:GetParent():OnMousePressed( mcode )
 				end
-				cmds.cmds:Add( cat )
+				newcategories[catname] = cat
 			end
-			local line = cmds.cmd_cats[catname]:AddLine( string.gsub( data.cmd, "ulx ", "" ), data.cmd )
+			local line = cmds.cmd_contents[catname]:AddLine( string.gsub( data.cmd, "ulx ", "" ), data.cmd )
 			if data.cmd == lastcmd then
-				cmds.cmd_cats[catname]:SelectItem( line )
-				cmds.expandedcat = cmds.cmd_cats[catname]:GetParent()
+				cmds.cmd_contents[catname]:SelectItem( line )
+				cmds.expandedcat = cmds.cmd_contents[catname]:GetParent()
 				cmds.expandedcat:SetExpanded( true )
 				matchedCmdFound = true
 			end
@@ -324,10 +325,11 @@ cmds.refresh = function( permissionChanged )
 		end
 	end
 	
-	table.sort( cmds.cmds:GetChildren(), function( a,b ) return a.Header:GetValue() < b.Header:GetValue() end )
-	for _, cat in pairs( cmds.cmd_cats ) do
-		cat:SortByColumn( 1 )
-		cat:SetHeight( 17*#cat:GetLines() )
+	table.sort( newcategories )
+	for _, cat in pairs( newcategories ) do
+		cmds.cmds:Add( cat )
+		cat.Contents:SortByColumn( 1 )
+		cat.Contents:SetHeight( 17*#cat.Contents:GetLines() )
 	end
 	cmds.permissionChanged = nil
 end

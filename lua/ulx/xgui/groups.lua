@@ -79,7 +79,7 @@ function groups.pnlG1:Close()
 	end
 	self:closeAnim()
 end
-xlib.makelabel{ x=5, y=5, label="Users in group:", parent=groups.pnlG1, textcolor=color_black }
+xlib.makelabel{ x=5, y=5, label="Users in group:",  textcolor=color_black, parent=groups.pnlG1 }
 groups.players = xlib.makelistview{ x=5, y=20, w=160, h=190, parent=groups.pnlG1 }
 groups.players:AddColumn( "Name" )
 groups.players.OnRowSelected = function( self, LineID, Line )
@@ -118,7 +118,7 @@ groups.cplayer.DoClick = function()
 		menu:Open()
 	end
 end
-xlib.makelabel{ x=5, y=240, label="Team:", parent=groups.pnlG1, textcolor=color_black }
+xlib.makelabel{ x=5, y=240, label="Team:", textcolor=color_black, parent=groups.pnlG1}
 groups.teams = xlib.makecombobox{ x=5, y=255, w=160, disabled=not ULib.isSandbox(), parent=groups.pnlG1 }
 groups.teams.OnSelect = function( self, index, value, data )
 	if value == "<None>" then value = "" end
@@ -416,10 +416,11 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 			groups.teamctrl:SetColor( Color( tempcolor[1], tempcolor[2], tempcolor[3] ) )
 			groups.teammodspace:Add( groups.teamctrl )
 		elseif Line:GetColumnText(1) == "model" then
+			groups.updateModelPanel()
 			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2) }
 			groups.teamctrl.OnEnter = function( self )
 				applybtn.DoClick()
-				for i, v in ipairs( groups.modelList.Items ) do
+				for i, v in ipairs( groups.modelList:GetChildren() ) do
 					if v.name == self:GetValue() or v.model == self:GetValue() then
 						groups.modelList:SelectPanel( v )
 						break
@@ -431,7 +432,7 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 				groups.teamctrl:SetText( name )
 				applybtn.DoClick()
 			end
-			for _, item in pairs( groups.modelList.Items ) do
+			for _, item in pairs( groups.modelList:GetChildren() ) do
 				if Line:GetColumnText(2) == item.name or Line:GetColumnText(2) == item.model then
 					groups.modelList:SelectPanel( item )
 					break
@@ -565,7 +566,7 @@ function groups.populateAccesses()
 				if foundAccess then
 					line.Columns[2]:SetDisabled( true )
 				else
-					line.Columns[1]:SetColor( Color( 255,255,255,90 ) )
+					line.Columns[1]:SetColor( Color( 55,55,55,90 ) )
 					line.Columns[2]:SetDisabled( false )
 				end
 			end
@@ -579,7 +580,7 @@ function groups.populateAccesses()
 			line.Columns[2]:SetValue( foundAccess )
 			if foundAccess then
 				if restrictionString == "" then
-					line.Columns[1]:SetColor( Color( 255,255,255,255 ) )
+					line.Columns[1]:SetColor( Color( 55,55,55,255 ) )
 				else
 					line.Columns[1]:SetColor( Color( 255,185,80,255 ) )
 				end
@@ -1029,7 +1030,8 @@ function groups.updateAccessPanel()
 	groups.accesses:Clear()
 	groups.access_cats = {}
 	groups.access_lines = {}
-
+	
+	local newcategories = {}
 	local function processAccess( access, data )
 		local catname = data.cat or "Uncategorized"
 		if catname == "Command" then
@@ -1086,8 +1088,8 @@ function groups.updateAccessPanel()
 				return rety
 			end
 			groups.access_cats[catname] = list
-			local cat = xlib.makecat{ label=catname, contents=list, expanded=false }
-			groups.accesses:Add( cat )
+			local cat = xlib.makecat{ label=catname, contents=list, expanded=false, parent=groups.accesses }
+			newcategories[catname] = cat
 			function cat.Header:OnMousePressed( mcode )
 				if ( mcode == MOUSE_LEFT ) then
 					self:GetParent():Toggle()
@@ -1122,10 +1124,11 @@ function groups.updateAccessPanel()
 	--This results in the possibility of the end user seeing lines appearing as he's looking at the menus, but I believe that a few seconds of lines appearing is better than 150+ms of freeze time.
 	
 	local function finalSort()
-		table.sort( groups.accesses:GetChildren(), function( a,b ) return a.Header:GetValue() < b.Header:GetValue() end )
-		for _, cat in pairs( groups.access_cats ) do
-			cat:SortByColumn( 1 )
-			cat:SetHeight( 17*#cat:GetLines() )
+		table.sort( newcategories )
+		for _, cat in pairs( newcategories ) do
+			groups.accesses:Add( cat )
+			cat.Contents:SortByColumn( 1 )
+			cat.Contents:SetHeight( 17*#cat.Contents:GetLines() )
 		end
 		groups.accesses:InvalidateLayout()
 		groups.populateAccesses()
@@ -1186,28 +1189,13 @@ function groups.showAccessOptions( line )
 	menu:Open()
 end
 
-groups.modelList = vgui.Create( "DPanelSelect", xgui.null )
+groups.modelList = vgui.Create( "DModelSelect", xgui.null )
 groups.modelList:SetHeight( 168 )
 function groups.updateModelPanel()
-	groups.modelList:Clear()
-	local modelsSorted = {}
-    for k,_ in pairs( xgui.data.playermodels ) do table.insert( modelsSorted, k ) end
-    table.sort( modelsSorted, function( a,b ) return string.lower( a ) < string.lower( b ) end )
-	
-	for _, name in ipairs( modelsSorted ) do
-		xgui.queueFunctionCall( groups.addToModelPanel, "playermodels", name )
-	end
-end
-function groups.setTeamModel( model ) end --Create a dummy function that will be created with proper settings later.
-function groups.addToModelPanel( name )
-	local icon = vgui.Create( "SpawnIcon", xgui.null )
-	icon:SetModel( xgui.data.playermodels[name] )
-	icon:SetSize( 64, 64 )
-	icon:SetTooltip( name )
-	icon.name = name
-	icon.model = xgui.data.playermodels[name]
-	icon.DoClick = function( self ) groups.modelList:SelectPanel( self ) groups.setTeamModel( icon.name ) end
-	groups.modelList:Add( icon )
+	groups.modelList:Clear( true )	--TODO: This function appears to be broken at the moment.
+	local models = {}
+    for k,v in pairs( xgui.data.playermodels ) do models[v] = k end
+	groups.modelList:SetModelList( models, nil, false, true )
 end
 
 --------------

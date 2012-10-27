@@ -419,7 +419,7 @@ local function xgui_helpers()
 
 	--Load control interpretations for ULib argument types
 	function ULib.cmds.BaseArg.x_getcontrol( arg, argnum )
-		return xlib.makelabel{ label="Not Supported" }
+		return xlib.makelabel{ label="Not Supported", textcolor=color_black }
 	end
 	
 	function ULib.cmds.NumArg.x_getcontrol( arg, argnum )
@@ -552,7 +552,7 @@ local function xgui_helpers()
 	end
 	
 	function ULib.cmds.CallingPlayerArg.x_getcontrol( arg, argnum )
-		return xlib.makelabel{ label=arg.hint or "CallingPlayer" }
+		return xlib.makelabel{ label=arg.hint or "CallingPlayer", textcolor=color_black }
 	end
 	
 	function ULib.cmds.BoolArg.x_getcontrol( arg, argnum )
