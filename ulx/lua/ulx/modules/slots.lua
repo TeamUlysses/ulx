@@ -1,6 +1,6 @@
-ulx.convar( "rslotsMode", "0", " - Sets the slots mode. See server.ini for more information.", ULib.ACCESS_ADMIN )
+ulx.convar( "rslotsMode", "0", " - Sets the slots mode. See config for more information.", ULib.ACCESS_ADMIN )
 ulx.convar( "rslots", "2", " - Sets the number of reserved slots, only applicable for modes 1 and 2.", ULib.ACCESS_ADMIN )
-ulx.convar( "rslotsVisible", "1", " - Sets whether slots are visible. See server.ini for more information.", ULib.ACCESS_ADMIN )
+ulx.convar( "rslotsVisible", "1", " - Sets whether slots are visible. See config for more information.", ULib.ACCESS_ADMIN )
 
 local access = "ulx reservedslots" -- Access string needed for reserved slots
 ULib.ucl.registerAccess( access, ULib.ACCESS_ADMIN, "Access to reserved slots", "Other" ) -- Give admins access to reserved slots by default

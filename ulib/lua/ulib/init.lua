@@ -11,7 +11,7 @@ if not ULib then
 
 	if not ULib.consoleCommand then ULib.consoleCommand = game.ConsoleCommand end -- In case they remove our module or it doesn't load
 	
-	file.CreateDir( "ULib" )
+	file.CreateDir( "ulib" )
 
 	Msg( "///////////////////////////////\n" )
 	Msg( "//      Ulysses Library      //\n" )

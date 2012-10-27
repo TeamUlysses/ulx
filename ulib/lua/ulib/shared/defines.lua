@@ -220,11 +220,11 @@ ULib.HOOK_PLAYER_NAME_CHANGED = "ULibPlayerNameChanged"
 ]]
 if SERVER then
 ULib.UCL_LOAD_DEFAULT = true -- Set this to false to ignore the SetUserGroup() call.
-ULib.UCL_USERS = "ULib/users.txt"
-ULib.UCL_GROUPS = "ULib/groups.txt"
-ULib.UCL_REGISTERED = "ULib/misc_registered.txt" -- Holds access strings that ULib has already registered
-ULib.BANS_FILE = "ULib/bans.txt"
-ULib.VERSION_FILE = "ULib/version.txt"
+ULib.UCL_USERS = "ulib/users.txt"
+ULib.UCL_GROUPS = "ulib/groups.txt"
+ULib.UCL_REGISTERED = "ulib/misc_registered.txt" -- Holds access strings that ULib has already registered
+ULib.BANS_FILE = "ulib/bans.txt"
+ULib.VERSION_FILE = "ulib/version.txt"
 
 ULib.DEFAULT_GRANT_ACCESS = { allow={}, deny={}, guest=true }
 
