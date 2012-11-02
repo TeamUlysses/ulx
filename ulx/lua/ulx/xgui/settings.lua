@@ -3,10 +3,7 @@
 
 local settings = xlib.makepanel{ parent=xgui.null }
 
-xgui.settings_tabs = vgui.Create( "DPropertySheet", settings )
-xgui.settings_tabs:SetSize( 600, 368 )
-xgui.settings_tabs:SetPos( -5, 6 )
-
+xgui.settings_tabs = xlib.makepropertysheet{ x=-5, y=6, w=600, h=368, parent=settings, offloadparent=xgui.null }
 function xgui.settings_tabs:SetActiveTab( active, ignoreAnim )
 	if ( self.m_pActiveTab == active ) then return end
 	if ( self.m_pActiveTab ) then

@@ -104,7 +104,6 @@ local function xlib_init()
 
 	function xlib.makespecialbutton( t )
 		--local pnl = vgui.Create( "DSysButton", t.parent ) pnl:SetType( t.btype )
-		
 		local pnl = vgui.Create( "DButton", t.parent )
 		pnl:SetSize( t.w, t.h or 20 )
 		pnl:SetPos( t.x, t.y )
@@ -124,6 +123,24 @@ local function xlib_init()
 		if t.showclose ~= nil then pnl:ShowCloseButton( t.showclose ) end
 		if t.skin then pnl:SetSkin( t.skin ) end
 		if t.visible ~= nil then pnl:SetVisible( t.visible ) end
+		return pnl
+	end
+
+	function xlib.makepropertysheet( t )
+		local pnl = vgui.Create( "DPropertySheet", t.parent )
+		pnl:SetPos( t.x, t.y )
+		pnl:SetSize( t.w, t.h )
+		--Clears all of the tabs in the base, new parent set to xgui.null.
+		function pnl:Clear()
+			for _, Sheet in ipairs( self.Items ) do
+				Sheet.Panel:SetParent( t.offloadparent )
+				Sheet.Tab:Remove()
+			end
+			self.m_pActiveTab = nil
+			self:SetActiveTab( nil )
+			self.tabScroller.Panels = {}
+			self.Items = {}
+		end
 		return pnl
 	end
 
@@ -384,6 +401,14 @@ local function xlib_init()
 		local pnl = vgui.Create( "DTree", t.parent )
 		pnl:SetPos( t.x, t.y )
 		pnl:SetSize( t.w, t.h )
+
+		function pnl:Clear() --Clears the DTree.
+			if self.RootNode.ChildNodes then
+				self.RootNode.ChildNodes:Remove()
+				self.m_pSelectedItem = nil
+				self:InvalidateLayout()
+			end
+		end
 		return pnl
 	end
 
@@ -592,8 +617,8 @@ local function xlib_init()
 		end
 		return pnl
 	end
-	
-	
+
+
 	-----------------------------------------
 	--A stripped-down customized DPanel allowing for textbox input!
 	-----------------------------------------
@@ -607,8 +632,8 @@ local function xlib_init()
 	end
 
 	derma.DefineControl( "xlib_Panel", "", PANEL, "EditablePanel" )
-	
-	
+
+
 	-----------------------------------------
 	--A copy of Garry's ColorCtrl used in the sandbox spawnmenu, with the following changes:
 	-- -Doesn't use convars whatsoever
@@ -788,7 +813,7 @@ local function xlib_init()
 		self.txtG:SetPos( 150, 32 )
 		self.txtB:SetPos( 150, 57 )
 	end
-	
+
 	function PANEL:AlphaModeTwo()
 		self:SetSize( 156, 135 )
 		self.AlphaBar:SetPos( 28,5 )
@@ -831,7 +856,7 @@ local function xlib_init()
 	end
 
 	function PANEL:SetBaseColor( color )
-        self.ColorCube:SetBaseRGB( color )
+		self.ColorCube:SetBaseRGB( color )
 
 		self.txtR:SetText(self.ColorCube.m_OutRGB.r)
 		self.txtG:SetText(self.ColorCube.m_OutRGB.g)
@@ -884,6 +909,176 @@ local function xlib_init()
 
 	vgui.Register( "xlibColorPanel", PANEL, "DPanel" )
 
+
+
+	-------------------------
+	--Custom Animation System
+	-------------------------
+	--This is a heavily edited version of Garry's derma animation stuff with the following differences:
+		--Allows for animation chains (one animation to begin right after the other)
+		--Can call functions anywhere during the animation cycle.
+		--Reliably calls a start/end function for each animation so the animations always shows/ends properly.
+		--Animations can be completely disabled by setting 0 for the animation time.
+	local xlibAnimation = {}
+	xlibAnimation.__index = xlibAnimation
+
+	function xlib.anim( runFunc, startFunc, endFunc )
+		local anim = {}
+		anim.runFunc = runFunc
+		anim.startFunc = startFunc
+		anim.endFunc = endFunc
+		setmetatable( anim, xlibAnimation )
+		return anim
+	end
+
+	xlib.animTypes = {}
+	xlib.registerAnimType = function( name, runFunc, startFunc, endFunc )
+		xlib.animTypes[name] = xlib.anim( runFunc, startFunc, endFunc )
+	end
+
+	function xlibAnimation:Start( Length, Data )
+		self.startFunc( Data )
+		if ( Length == 0 ) then
+			self.endFunc( Data )
+			xlib.animQueue_call()
+		else
+			self.Length = Length
+			self.StartTime = SysTime()
+			self.EndTime = SysTime() + Length
+			self.Data = Data
+			table.insert( xlib.activeAnims, self )
+		end
+	end
+
+	function xlibAnimation:Stop()
+		self.runFunc( 1, self.Data )
+		self.endFunc( self.Data )
+		for i, v in ipairs( xlib.activeAnims ) do
+			if v == self then table.remove( xlib.activeAnims, i ) break end
+		end
+		xlib.animQueue_call()
+	end
+
+	function xlibAnimation:Run()
+		local CurTime = SysTime()
+		local delta = (CurTime - self.StartTime) / self.Length
+		if ( CurTime > self.EndTime ) then
+			self:Stop()
+		else
+			self.runFunc( delta, self.Data )
+		end
+	end
+
+	--Animation Ticker
+	xlib.activeAnims = {}
+	xlib.animRun = function()
+		for _, v in ipairs( xlib.activeAnims ) do
+			v.Run( v )
+		end
+	end
+	hook.Add( "XLIBDoAnimation", "xlib_runAnims", xlib.animRun )
+
+	-------------------------
+	--Animation chain manager
+	-------------------------
+	xlib.animQueue = {}
+	xlib.animBackupQueue = {}
+
+	--This will allow us to make animations run faster when linked together 
+	--Makes sure the entire animation length = animationTime (~0.2 sec by default)
+	xlib.animStep = 0
+
+	--Call this to begin the animation chain
+	xlib.animQueue_start = function()
+		if xlib.animRunning then --If a new animation is starting while one is running, then we should instantly stop the old one.
+			xlib.animQueue_forceStop()
+			return --The old animation should be finished now, and the new one should be starting
+		end
+		xlib.curAnimStep = xlib.animStep
+		xlib.animStep = 0
+		xlib.animQueue_call()
+	end
+
+	xlib.animQueue_forceStop = function()
+		--This will trigger the currently chained animations to run at 0 seconds.
+		xlib.curAnimStep = -1
+		if type( xlib.animRunning ) == "table" then xlib.animRunning:Stop() end
+	end
+
+	xlib.animQueue_call = function()
+		if #xlib.animQueue > 0 then
+			local func = xlib.animQueue[1]
+			table.remove( xlib.animQueue, 1 )
+			func()
+		else
+			xlib.animRunning = nil
+			--Check for queues in the backup that haven't been started.
+			if #xlib.animBackupQueue > 0 then
+				xlib.animQueue = table.Copy( xlib.animBackupQueue )
+				xlib.animBackupQueue = {}
+				xlib.animQueue_start()
+			end
+		end
+	end	
+
+	xlib.addToAnimQueue = function( obj, ... )
+		local arg = { ... }
+		--If there is an animation running, then we need to store the new animation stuff somewhere else temporarily.
+		--Also, if ignoreRunning is true, then we'll add the anim to the regular queue regardless of running status.
+		local outTable = xlib.animRunning and xlib.animBackupQueue or xlib.animQueue
+			
+		if type( obj ) == "function" then
+			table.insert( outTable, function() xlib.animRunning = true  obj( unpack( arg ) )  xlib.animQueue_call() end )
+		elseif type( obj ) == "string" and xlib.animTypes[obj] then
+			--arg[1] should be data table, arg[2] should be length
+			length = arg[2] or xgui.settings.animTime
+			xlib.animStep = xlib.animStep + 1
+			table.insert( outTable, function() xlib.animRunning = xlib.animTypes[obj]  xlib.animRunning:Start( ( xlib.curAnimStep ~= -1 and ( length/xlib.curAnimStep ) or 0 ), arg[1] ) end )
+		else
+			Msg( "Error: XGUI recieved an invalid animation call! TYPE:" .. type( obj ) .. " VALUE:" .. tostring( obj ) .. "\n" )
+		end
+	end
+
+	-------------------------
+	--Default Animation Types
+	-------------------------
+	--Slide animation
+	local function slideAnim_run( delta, data )
+		--data.panel, data.startx, data.starty, data.endx, data.endy, data.setvisible
+		data.panel:SetPos( data.startx+((data.endx-data.startx)*delta), data.starty+((data.endy-data.starty)*delta) )
+	end
+
+	local function slideAnim_start( data )
+		data.panel:SetPos( data.startx, data.starty )
+		if data.setvisible == true then
+			data.panel:SetVisible( true )
+		end
+	end
+
+	local function slideAnim_end( data )
+		data.panel:SetPos( data.endx, data.endy )
+		if data.setvisible == false then
+			data.panel:SetVisible( false )
+		end
+	end
+	xlib.registerAnimType( "pnlSlide", slideAnim_run, slideAnim_start, slideAnim_end )
+
+	--Fade animation
+	local function fadeAnim_run( delta, data )
+		if data.panelOut then data.panelOut:SetAlpha( 255-(delta*255) ) data.panelOut:SetVisible( true ) end
+		if data.panelIn then data.panelIn:SetAlpha( 255 * delta ) data.panelIn:SetVisible( true ) end
+	end
+
+	local function fadeAnim_start( data )
+		if data.panelOut then data.panelOut:SetAlpha( 255 ) data.panelOut:SetVisible( true ) end
+		if data.panelIn then data.panelIn:SetAlpha( 0 ) data.panelIn:SetVisible( true ) end
+	end
+
+	local function fadeAnim_end( data )
+		if data.panelOut then data.panelOut:SetVisible( false ) end
+		if data.panelIn then data.panelIn:SetAlpha( 255 ) end
+	end
+	xlib.registerAnimType( "pnlFade", fadeAnim_run, fadeAnim_start, fadeAnim_end )
 end
 
 hook.Add( "ULibLocalPlayerReady", "InitXLIB", xlib_init, -20 )
