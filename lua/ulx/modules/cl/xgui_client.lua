@@ -78,7 +78,7 @@ function xgui.init( authedply )
 	RunConsoleCommand( "_xgui", "getInstalled" )
 
 	--Initiate the base window (see xgui_helpers.lua for code)
-	x_makeXGUIbase{}
+	xgui.makeXGUIbase{}
 
 	--Create the bottom infobar
 	xgui.infobar = xlib.makepanel{ x=10, y=399, w=580, h=20, parent=xgui.base }

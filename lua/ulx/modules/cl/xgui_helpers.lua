@@ -2,27 +2,6 @@
 --A set of generic functions to help with various XGUI-related things.
 
 local function xgui_helpers()
-	--Clears all of the tabs in a DPropertySheet, parents removed panels to xgui.null.
-	function DPropertySheet:Clear()
-		for _, Sheet in ipairs( self.Items ) do
-			Sheet.Panel:SetParent( xgui.null )
-			Sheet.Tab:Remove()
-		end
-		self.m_pActiveTab = nil
-		self:SetActiveTab( nil )
-		self.tabScroller.Panels = {}
-		self.Items = {}
-	end
-	
-	--Clears a DTree.
-	function DTree:Clear()
-		if self.RootNode.ChildNodes then
-			self.RootNode.ChildNodes:Remove()
-			self.m_pSelectedItem = nil
-			self:InvalidateLayout()
-		end
-	end
-	
 	--These handle keyboard focus for textboxes within XGUI.
 	local function getKeyboardFocus( pnl )
 		if pnl:HasParent( xgui.base ) then
@@ -33,7 +12,7 @@ local function xgui_helpers()
 		end
 	end
 	hook.Add( "OnTextEntryGetFocus", "XGUI_GetKeyboardFocus", getKeyboardFocus )	--TODO: Hook no longer valid?
-	
+
 	local function loseKeyboardFocus( pnl )
 		if pnl:HasParent( xgui.base ) then
 			xgui.anchor:SetKeyboardInputEnabled( false )
@@ -41,190 +20,18 @@ local function xgui_helpers()
 	end
 	hook.Add( "OnTextEntryLoseFocus", "XGUI_LoseKeyboardFocus", loseKeyboardFocus )
 		
-	-------------------------
-	--Custom Animation System
-	-------------------------
-	--This is a heavily edited version of Garry's derma animation stuff with the following differences:
-		--Allows for animation chains (one animation to begin right after the other)
-		--Can call functions anywhere during the animation cycle.
-		--Reliably calls a start/end function for each animation so the animations always shows/ends properly.
-		--Animations can be completely disabled by setting 0 for the animation time.	
-	local xlibAnimation = {}
-	xlibAnimation.__index = xlibAnimation
-	
-	function xlib.anim( runFunc, startFunc, endFunc )
-		local anim = {}
-		anim.runFunc = runFunc
-		anim.startFunc = startFunc
-		anim.endFunc = endFunc
-		setmetatable( anim, xlibAnimation )
-		return anim
-	end
-	
-	xlib.animTypes = {}
-	xlib.registerAnimType = function( name, runFunc, startFunc, endFunc )
-		xlib.animTypes[name] = xlib.anim( runFunc, startFunc, endFunc )
-	end
-	
-	function xlibAnimation:Start( Length, Data )
-		self.startFunc( Data )
-		if ( Length == 0 ) then
-			self.endFunc( Data )
-			xlib.animQueue_call()
-		else
-			self.Length = Length
-			self.StartTime = SysTime()
-			self.EndTime = SysTime() + Length
-			self.Data = Data
-			table.insert( xlib.activeAnims, self )
-		end
-	end
-	
-	function xlibAnimation:Stop()
-		self.runFunc( 1, self.Data )
-		self.endFunc( self.Data )
-		for i, v in ipairs( xlib.activeAnims ) do
-			if v == self then table.remove( xlib.activeAnims, i ) break end
-		end
-		xlib.animQueue_call()
-	end
-	
-	function xlibAnimation:Run()
-		local CurTime = SysTime()
-		local delta = (CurTime - self.StartTime) / self.Length
-		if ( CurTime > self.EndTime ) then
-			self:Stop()
-		else
-			self.runFunc( delta, self.Data )
-		end
-	end
-	
-	--Animation Ticker
-	xlib.activeAnims = {}
-	xlib.animRun = function()
-		for _, v in ipairs( xlib.activeAnims ) do
-			v.Run( v )
-		end
-	end
-	hook.Add( "XLIBDoAnimation", "xlib_runAnims", xlib.animRun )
-	
-	-------------------------
-	--Animation chain manager
-	-------------------------
-	xlib.animQueue = {}
-	xlib.animBackupQueue = {}
-	
-	--This will allow us to make animations run faster when linked together 
-	--Makes sure the entire animation length = animationTime (~0.2 sec by default)
-	xlib.animStep = 0
-	
-	--Call this to begin the animation chain
-	xlib.animQueue_start = function()
-		if xlib.animRunning then --If a new animation is starting while one is running, then we should instantly stop the old one.
-			xlib.animQueue_forceStop()
-			return --The old animation should be finished now, and the new one should be starting
-		end
-		xlib.curAnimStep = xlib.animStep
-		xlib.animStep = 0
-		xlib.animQueue_call()
-	end
-	
-	xlib.animQueue_forceStop = function()
-		--This will trigger the currently chained animations to run at 0 seconds.
-		xlib.curAnimStep = -1
-		if type( xlib.animRunning ) == "table" then xlib.animRunning:Stop() end
-	end
-	
-	xlib.animQueue_call = function()
-		if #xlib.animQueue > 0 then
-			local func = xlib.animQueue[1]
-			table.remove( xlib.animQueue, 1 )
-			func()
-		else
-			xlib.animRunning = nil
-			--Check for queues in the backup that haven't been started.
-			if #xlib.animBackupQueue > 0 then
-				xlib.animQueue = table.Copy( xlib.animBackupQueue )
-				xlib.animBackupQueue = {}
-				xlib.animQueue_start()
-			end
-		end
-	end	
-	
-	xlib.addToAnimQueue = function( obj, ... )
-		local arg = { ... }
-		--If there is an animation running, then we need to store the new animation stuff somewhere else temporarily.
-		--Also, if ignoreRunning is true, then we'll add the anim to the regular queue regardless of running status.
-		local outTable = xlib.animRunning and xlib.animBackupQueue or xlib.animQueue
-			
-		if type( obj ) == "function" then
-			table.insert( outTable, function() xlib.animRunning = true  obj( unpack( arg ) )  xlib.animQueue_call() end )
-		elseif type( obj ) == "string" and xlib.animTypes[obj] then
-			--arg[1] should be data table, arg[2] should be length
-			length = arg[2] or xgui.settings.animTime
-			xlib.animStep = xlib.animStep + 1
-			table.insert( outTable, function() xlib.animRunning = xlib.animTypes[obj]  xlib.animRunning:Start( ( xlib.curAnimStep ~= -1 and ( length/xlib.curAnimStep ) or 0 ), arg[1] ) end )
-		else
-			Msg( "Error: XGUI recieved an invalid animation call! TYPE:" .. type( obj ) .. " VALUE:" .. tostring( obj ) .. "\n" )
-		end
-	end
-	
-	-------------------------
-	--Default Animation Types
-	-------------------------
-	--Slide animation
-	local function slideAnim_run( delta, data )
-		--data.panel, data.startx, data.starty, data.endx, data.endy, data.setvisible
-		data.panel:SetPos( data.startx+((data.endx-data.startx)*delta), data.starty+((data.endy-data.starty)*delta) )
-	end
-	
-	local function slideAnim_start( data )
-		data.panel:SetPos( data.startx, data.starty )
-		if data.setvisible == true then
-			data.panel:SetVisible( true )
-		end
-	end
-	
-	local function slideAnim_end( data )
-		data.panel:SetPos( data.endx, data.endy )
-		if data.setvisible == false then
-			data.panel:SetVisible( false )
-		end
-	end
-	xlib.registerAnimType( "pnlSlide", slideAnim_run, slideAnim_start, slideAnim_end )
-	
-	--Fade animation
-	local function fadeAnim_run( delta, data )
-		if data.panelOut then data.panelOut:SetAlpha( 255-(delta*255) ) data.panelOut:SetVisible( true ) end
-		if data.panelIn then data.panelIn:SetAlpha( 255 * delta ) data.panelIn:SetVisible( true ) end
-	end
-	
-	local function fadeAnim_start( data )
-		if data.panelOut then data.panelOut:SetAlpha( 255 ) data.panelOut:SetVisible( true ) end
-		if data.panelIn then data.panelIn:SetAlpha( 0 ) data.panelIn:SetVisible( true ) end
-	end
-	
-	local function fadeAnim_end( data )
-		if data.panelOut then data.panelOut:SetVisible( false ) end
-		if data.panelIn then data.panelIn:SetAlpha( 255 ) end
-	end
-	xlib.registerAnimType( "pnlFade", fadeAnim_run, fadeAnim_start, fadeAnim_end )
-	
 
 	---------------------------------
 	--Code for creating the XGUI base
 	---------------------------------
-	function x_makeXGUIbase()
-		xgui.base = vgui.Create( "DPropertySheet" )
+	function xgui.makeXGUIbase()
 		xgui.anchor = xlib.makeXpanel{ w=600, h=470, x=ScrW()/2-300, y=ScrH()/2-270 }
 		xgui.anchor:SetVisible( false )
 		xgui.anchor:SetKeyboardInputEnabled( false )
 		xgui.anchor.Paint = function( self, w, h ) hook.Call( "XLIBDoAnimation" ) end
 		xgui.anchor:SetAlpha( 0 )
-		xgui.base:SetParent( xgui.anchor )
-		xgui.base:SetPos( 0, 70 )
-		xgui.base:SetSize( 600, 400 )
-
+		
+		xgui.base = xlib.makepropertysheet{ x=0, y=70, w=600, h=400, parent=xgui.anchor, offloadparent=xgui.null }
 		xgui.base.animOpen = function() --First 4 are fade animations, last (or invalid choice) is the default fade animation.
 			xgui.settings.animIntype = tonumber( xgui.settings.animIntype )
 			if xgui.settings.animIntype == 2 then
@@ -345,7 +152,7 @@ local function xgui_helpers()
 			self.m_pActiveTab = active
 			self:InvalidateLayout()
 		end
-	
+		
 		--Progress bar
 		xgui.chunkbox = xlib.makeframe{ label="XGUI is receiving data!", w=200, h=60, x=200, y=5, visible=false, nopopup=true, draggable=false, showclose=false, skin=xgui.settings.skin, parent=xgui.anchor }
 		xgui.chunkbox.progress = xlib.makeprogressbar{ x=10, y=30, w=180, h=20, parent=xgui.chunkbox }
@@ -361,7 +168,7 @@ local function xgui_helpers()
 			end
 		end
 	end
-	
+
 	------------------------
 	--XGUI QueueFunctionCall
 	------------------------
@@ -407,8 +214,8 @@ local function xgui_helpers()
 			table.remove( stack, removeIndecies[i] )
 		end
 	end
-	
-	
+
+
 	-------------------
 	--ULIB XGUI helpers
 	-------------------
@@ -421,7 +228,7 @@ local function xgui_helpers()
 	function ULib.cmds.BaseArg.x_getcontrol( arg, argnum )
 		return xlib.makelabel{ label="Not Supported", textcolor=color_black }
 	end
-	
+
 	function ULib.cmds.NumArg.x_getcontrol( arg, argnum )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
@@ -482,7 +289,7 @@ local function xgui_helpers()
 			return xlib.makeslider{ min=restrictions.min, max=maxvalue, value=defvalue, label=arg.hint or "NumArg" }
 		end
 	end
-	
+
 	function ULib.cmds.NumArg.getTime( arg )
 		if arg == nil or arg == "" then return nil, nil end
 		
@@ -505,7 +312,7 @@ local function xgui_helpers()
 		return "Minutes", ULib.stringTimeToSeconds( arg )
 	end
 
-	
+
 	function ULib.cmds.StringArg.x_getcontrol( arg, argnum )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
@@ -531,7 +338,7 @@ local function xgui_helpers()
 			return xlib.maketextbox{ text=arg.hint or "StringArg", selectall=true }
 		end
 	end
-	
+
 	function ULib.cmds.PlayerArg.x_getcontrol( arg, argnum )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
@@ -550,11 +357,11 @@ local function xgui_helpers()
 		end
 		return xgui_temp
 	end
-	
+
 	function ULib.cmds.CallingPlayerArg.x_getcontrol( arg, argnum )
 		return xlib.makelabel{ label=arg.hint or "CallingPlayer", textcolor=color_black }
 	end
-	
+
 	function ULib.cmds.BoolArg.x_getcontrol( arg, argnum )
 		-- There are actually not any restrictions possible on a boolarg...
 		local xgui_temp = xlib.makecheckbox{ label=arg.hint or "BoolArg" }
