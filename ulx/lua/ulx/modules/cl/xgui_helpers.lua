@@ -1,7 +1,7 @@
 --xgui_helpers -- by Stickly Man!
 --A set of generic functions to help with various XGUI-related things.
 
-local function xgui_helpers()
+function xgui.load_helpers()
 	--These handle keyboard focus for textboxes within XGUI.
 	local function getKeyboardFocus( pnl )
 		if pnl:HasParent( xgui.base ) then
@@ -371,5 +371,3 @@ local function xgui_helpers()
 		return xgui_temp
 	end
 end
-
-hook.Add( "ULibLocalPlayerReady", "InitXguiHelpers", xgui_helpers, -15 )

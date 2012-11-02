@@ -72,7 +72,10 @@ if not xgui.settings.animOuttype then xgui.settings.animOuttype = 1 end
 
 
 function xgui.init( authedply )
+	if not authedply then authedply = LocalPlayer() end
 	if authedply ~= LocalPlayer() then return end
+	
+	xgui.load_helpers()
 
 	--Check if the server has XGUI installed
 	RunConsoleCommand( "_xgui", "getInstalled" )
