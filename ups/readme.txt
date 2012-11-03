@@ -12,7 +12,7 @@ Group: Author
 
 UPS is brought to you by..
 
-* Brett "Megiddo" Smith - Contact: <megiddo@meg-tech.com>
+* Brett "Megiddo" Smith - Contact: <megiddo@ulyssesmod.net>
 
 Group: Requirements
 
