@@ -320,7 +320,6 @@ local function localPlayerReady( ply )
 	local players = ULib.getAllReadyPlayers()
 	for i=1, #players do
 		rp:AddPlayer( players[ i ] )
-		print( ply, players[ i ] )
 	end
 
 	umsg.Start( "ups_readnames", rp )
