@@ -210,7 +210,7 @@ function ulx.freeze( calling_ply, target_plys, should_unfreeze )
 	local affected_plys = {}
 	for i=1, #target_plys do
 		if not should_unfreeze and ulx.getExclusive( target_plys[ i ], calling_ply ) then
-			ULib.tsayError( calling_ply, ulx.getExclusive( v, calling_ply ), true )
+			ULib.tsayError( calling_ply, ulx.getExclusive( target_plys[ i ], calling_ply ), true )
 		else
 			local v = target_plys[ i ]
 			if v:InVehicle() then
