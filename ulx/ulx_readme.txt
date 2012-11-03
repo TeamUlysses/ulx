@@ -66,6 +66,7 @@ v3.60 - *(00/00/00)*
 	* [CHANGE] ULX ban now supports restricting of time/string formats.
 	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
 	* [FIX] Garry breakages in GM13.
+	* [FIX] An exclusivity bug in "ulx freeze" (Thanks infinitywraith).
 
 v3.54 - *(04/27/12)*
 	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
