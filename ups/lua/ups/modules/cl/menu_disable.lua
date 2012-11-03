@@ -28,7 +28,6 @@ UPS.addToMenu( UPS.ID_MCLIENT, buildCMenu )
 
 local function buildAMenu( panel ) -- Admin menu
 	panel:ClearControls()
-	panel:AddHeader()
 	
 	-- Global
 	panel:AddControl( "Label", { Text = "Disable for EVERYONE:" } )
@@ -62,6 +61,6 @@ local function buildAMenu( panel ) -- Admin menu
 end
 
 local function spawnMenuOpen()
-	buildAMenu( GetControlPanel( "UPSDisable" ) )
+	buildAMenu( controlpanel.Get( "UPSDisable" ) )
 end
 hook.Add( "SpawnMenuOpen", "UPSAdminDisableSpawnMenuOpen", spawnMenuOpen )

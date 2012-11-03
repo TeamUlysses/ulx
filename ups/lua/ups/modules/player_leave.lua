@@ -75,7 +75,7 @@ local function onTimeToClear( uid )
 	local deletetime = cTimeToDelete:GetInt()
 
 	if deletetime ~= -1 and cleartime < deletetime then
-		timer.Simple( deletetime - cleartime, onTimeToDelete, uid )
+		timer.Simple( deletetime - cleartime, function() onTimeToDelete( uid ) end )
 	end
 end
 
@@ -90,11 +90,11 @@ local function onLeave( ply )
 
 	if cleartime == -1 or (deletetime ~= -1 and cleartime >= deletetime) then
 		if deletetime ~= -1 and (not ply:IsAdmin() or cDelAdminProps:GetBool()) then
-			timer.Simple( deletetime, onTimeToDelete, uid )
+			timer.Simple( deletetime, function() onTimeToDelete( uid ) end )
 		end
 	else
 		if not ply:IsAdmin() or cDelAdminProps:GetBool() then
-			timer.Simple( cleartime, onTimeToClear, uid )
+			timer.Simple( cleartime, function() onTimeToClear( uid ) end )
 		end
 	end
 end

@@ -22,7 +22,7 @@ end
 
 -- The following code used to be triggered when the player was ready, but this file isn't even /loaded/ until the player is ready now... so go ahead and do it now.
 --local function onLocalPlayerReady()
-	for i=1, MaxPlayers() do
+	for i=1, game.MaxPlayers() do
 		local cvar = cvarprefix .. i
 		CreateClientConVar( cvar, "0", false, false )
 		RunConsoleCommand( cvar, "0" )
@@ -33,7 +33,7 @@ end
 
 local function onEntCreated( ent )
 	if ent:IsValid() and ent:IsPlayer() and ent ~= LocalPlayer() then
-		local friends = ULib.parseKeyValues( file.Read( FRIENDFILE ) or "" )
+		local friends = ULib.parseKeyValues( file.Read( FRIENDFILE, "DATA" ) or "" )
 		
 		if friends[ ent:SteamID() ] then
 			RunConsoleCommand( cvarprefix .. ent:EntIndex(), "1" )
@@ -54,9 +54,8 @@ end
 
 local function buildCP( cpanel )
 	cpanel:ClearControls()
-	cpanel:AddHeader()
 	cpanel:AddControl( "Label", { Text = "Friends:" } )
-	for i=1, MaxPlayers() do
+	for i=1, game.MaxPlayers() do
 		local ply = Entity( i )
 		if ply:IsValid() and ply ~= LocalPlayer() and ply:IsPlayer() then
 			cpanel:AddControl( "Checkbox", { Label = ply:Nick(), Command = cvarprefix .. i } )
@@ -65,6 +64,6 @@ local function buildCP( cpanel )
 end
 
 local function spawnMenuOpen()
-	buildCP( GetControlPanel( "UPSFriends" ) )
+	buildCP( controlpanel.Get( "UPSFriends" ) )
 end
 hook.Add( "SpawnMenuOpen", "UPSFriendsSpawnMenuOpen", spawnMenuOpen )

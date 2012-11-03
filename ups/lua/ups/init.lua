@@ -6,9 +6,9 @@
 
 module( "UPS", package.seeall )
 
-local sv_modules = file.FindInLua( "ups/modules/*.lua" )
-local sh_modules = file.FindInLua( "ups/modules/sh/*.lua" )
-local cl_modules = file.FindInLua( "ups/modules/cl/*.lua" )
+local sv_modules = file.Find( "ups/modules/*.lua", "LUA" )
+local sh_modules = file.Find( "ups/modules/sh/*.lua", "LUA" )
+local cl_modules = file.Find( "ups/modules/cl/*.lua", "LUA" )
 
 Msg( "/=================================\\\n" )
 Msg( "||    Ulysses Prop Share(UPS)    ||\n" )

@@ -1,4 +1,4 @@
-if not SinglePlayer() then
+if not game.SinglePlayer() then
 	if SERVER then
 		include( "ups/init.lua" )
 	else

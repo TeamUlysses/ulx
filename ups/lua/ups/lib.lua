@@ -169,6 +169,6 @@ end
 
 -- This function is called whenever a prop changes ownership
 local function updateOwnershipCallback( ply, ent )
-	timer.Simple( 0.15, updateOwnership, ply, (ply and ply:IsValid()), ent )
+	timer.Simple( 0.15, function() updateOwnership( ply, (ply and ply:IsValid()), ent ) end )
 end
 hook.Add( "UPSAssignOwnership", "UPSInvalidateOwnership", updateOwnershipCallback, 20 )

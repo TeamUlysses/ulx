@@ -49,9 +49,8 @@ function addToMenu( menuid, callback )
 end
 
 local function spawnMenuOpen()
-	local admin = GetControlPanel( "UPSAdmin" )
+	local admin = controlpanel.Get( "UPSAdmin" )
 	admin:ClearControls()
-	admin:AddHeader()
 	for _, callback in ipairs( adminMenuContents ) do
 		-- Call hook function
 		b, retval = pcall( callback, admin )
@@ -61,9 +60,8 @@ local function spawnMenuOpen()
 		end
 	end
 	
-	local client = GetControlPanel( "UPSClient" )
+	local client = controlpanel.Get( "UPSClient" )
 	client:ClearControls()
-	client:AddHeader()
 	for _, callback in ipairs( clientMenuContents ) do
 		-- Call hook function
 		b, retval = pcall( callback, client )

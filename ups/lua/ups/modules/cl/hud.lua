@@ -61,7 +61,7 @@ function think()
 	local ent
 	-- If they're physgunning a prop don't bother tracing, just use what they're gunning.
 	if curWep ~= "weapon_physgun" or not LocalPlayer():KeyDown( IN_ATTACK ) then
-		local tr = utilx.GetPlayerTrace( LocalPlayer(), LocalPlayer():GetCursorAimVector() )
+		local tr = util.GetPlayerTrace( LocalPlayer(), LocalPlayer():GetAimVector() )
 		local trace = util.TraceLine( tr )
 		ent = trace.Entity
 	else
@@ -160,7 +160,6 @@ vgui.Register( "UPSHUDOwner", PANEL, "Panel" )
 
 local function buildCP( cpanel )
 	cpanel:ClearControls()
-	cpanel:AddHeader()
 	cpanel:AddControl( "Slider", { Label = "Position X", Command = "ups_pos_x", Type = "Float", Min = "0", Max = "100" }  )
 	cpanel:AddControl( "Slider", { Label = "Position Y", Command = "ups_pos_y", Type = "Float", Min = "0", Max = "100" }  )	
 	cpanel:AddControl( "Color", { Label = "Background Color", Red = "ups_hudcolor_r", Green = "ups_hudcolor_g", Blue = "ups_hudcolor_b", ShowAlpha = "0", ShowHSV = "1", ShowRGB = "1", Multiplier = "255" }  )
@@ -177,12 +176,12 @@ local function resetCvars()
 	RunConsoleCommand( "ups_hudtext_b", "225" )
 	RunConsoleCommand( "ups_pos_x", "98" )	
 	RunConsoleCommand( "ups_pos_y", "98" )	
-	buildCP( GetControlPanel( "UPSHUD" ) )
+	buildCP( controlpanel.Get( "UPSHUD" ) )
 end
 concommand.Add( "upshud_reset", resetCvars )
 
 local function spawnMenuOpen()
-	buildCP( GetControlPanel( "UPSHUD" ) )
+	buildCP( controlpanel.Get( "UPSHUD" ) )
 end
 hook.Add( "SpawnMenuOpen", "UPSHUDSpawnMenuOpen", spawnMenuOpen )
 

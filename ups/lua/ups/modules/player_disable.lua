@@ -6,7 +6,7 @@ local clientcvarprefix = "ups_cl_disableplayer"
 local serverglobalcvarprefix = "ups_disableglobal"
 local clientglobalcvarprefix = "ups_cl_disableglobal"
 
-UPSDisabledPlayers = ULib.parseKeyValues( file.Read( DISABLEDFILE ) or "" )
+UPSDisabledPlayers = ULib.parseKeyValues( file.Read( DISABLEDFILE, "DATA" ) or "" )
 local disableAccess = "ups disableplayers"
 ULib.ucl.registerAccess( disableAccess, UPS_ADMIN, "Gives the ability to disable portions of UPS or disable UPS for players", "UPS" )
 local globalDisableAccess = "ups globaldisable"
@@ -21,7 +21,7 @@ local function totallyDisabledCvarChanged( cvar, oldvalue, newvalue )
 	local ent = Entity( id )
 	if not ent:IsValid() or not ent:IsPlayer() then return end -- Error, ignore
 
-	UPSDisabledPlayers = ULib.parseKeyValues( file.Read( DISABLEDFILE ) or "" )
+	UPSDisabledPlayers = ULib.parseKeyValues( file.Read( DISABLEDFILE, "DATA" ) or "" )
 	local steamid = ent:SteamID()
 	UPSDisabledPlayers[ steamid ] = UPSDisabledPlayers[ steamid ] or {}
 	if bool ~= 0 then
@@ -51,7 +51,7 @@ local function disabledCvarChanged( cvar, oldvalue, newvalue )
 	local ent = Entity( id )
 	if not ent:IsValid() or not ent:IsPlayer() then return end -- Error, ignore
 
-	UPSDisabledPlayers = ULib.parseKeyValues( file.Read( DISABLEDFILE ) or "" )
+	UPSDisabledPlayers = ULib.parseKeyValues( file.Read( DISABLEDFILE, "DATA" ) or "" )
 	local steamid = ent:SteamID()
 	UPSDisabledPlayers[ steamid ] = UPSDisabledPlayers[ steamid ] or {}
 	if bool ~= 0 then
@@ -67,7 +67,7 @@ end
 
 
 -- Create necessary cvars
-for i=1, MaxPlayers() do
+for i=1, game.MaxPlayers() do
 	ULib.replicatedWritableCvar( servercvarprefix .. i, clientcvarprefix .. i, "0", false, false, disableAccess )
 	ULib.queueFunctionCall( game.ConsoleCommand, servercvarprefix .. i .. " 0\n" ) -- We overload console if not queued
 	cvars.AddChangeCallback( servercvarprefix .. i, totallyDisabledCvarChanged )

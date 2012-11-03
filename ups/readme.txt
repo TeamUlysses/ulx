@@ -1,6 +1,6 @@
 Title: UPS Readme
 
-*UPS v0.97 (released 00/00/00)*
+*UPS v1.00 (released 00/00/00)*
 
 UPS is an prop protection mod for GMod (<http://garrysmod.com/>).
 
@@ -36,7 +36,7 @@ Group: Usage
 After you've restarted your server, if you are an admin, the UPS control panel will appear under utilities in the spawn menu. You should also see owner info on props when you're looking at props with the physgun or toolgun equipped.
 
 Group: Changelog
-v0.97 - *(00/00/00)*
+v1.00 - *(00/00/00)*
 	* [FIX] Fixes for garry breakages.
 
 v0.96 - *(07/05/11)*

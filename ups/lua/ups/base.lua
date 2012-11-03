@@ -6,8 +6,8 @@
 module( "UPS", package.seeall )
 
 local values_from_file = {}
-if file.Exists( CONFIGFILE ) then
-	values_from_file = ULib.parseKeyValues( file.Read( CONFIGFILE ) )
+if file.Exists( CONFIGFILE, "DATA" ) then
+	values_from_file = ULib.parseKeyValues( file.Read( CONFIGFILE, "DATA" ) )
 end
 
 local tracked_cvars = {}

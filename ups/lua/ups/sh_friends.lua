@@ -30,7 +30,7 @@ function playermeta:UPSAddFriend( ply )
 		gamemode.Call( "UPSFriendsChanged", self, self.UPSFriends )
 		
 		if CLIENT then
-			local friends = ULib.parseKeyValues( file.Read( FRIENDFILE ) or "" )
+			local friends = ULib.parseKeyValues( file.Read( FRIENDFILE, "DATA" ) or "" )
 			friends[ ply:SteamID() ] = {} -- TODO: Table is for future use
 			file.Write( FRIENDFILE, ULib.makeKeyValues( friends ) )
 		end
@@ -46,7 +46,7 @@ function playermeta:UPSRemoveFriend( ply )
 		gamemode.Call( "UPSFriendsChanged", self, self.UPSFriends )
 		
 		if CLIENT then
-			local friends = ULib.parseKeyValues( file.Read( FRIENDFILE ) or "" )
+			local friends = ULib.parseKeyValues( file.Read( FRIENDFILE, "DATA" ) or "" )
 			friends[ ply:SteamID() ] = nil
 			file.Write( FRIENDFILE, ULib.makeKeyValues( friends ) )		
 		end
