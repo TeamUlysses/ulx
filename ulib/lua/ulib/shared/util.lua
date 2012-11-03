@@ -177,14 +177,7 @@ end
 
 -- Helper function for <queueFunctionCall()>
 local stack = {}
-local think_enabled = false
 local function onThink()
-	if not think_enabled then
-		if hook.isInHook( "Think" ) then
-			think_enabled = true
-		end
-	end
-
 	local num = #stack
 	if num > 0 then
 		local b, e = pcall( stack[ 1 ].fn, unpack( stack[ 1 ], 1, stack[ 1 ].n ) )

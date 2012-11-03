@@ -998,7 +998,7 @@ function meta:SetUserGroup( group, dontCall )
 		self.tmp_group = group
 	end
 
-	if not dontCall and self:GetUserGroup() ~= oldGroup and not hook.isInHook( "PlayerAuthed" ) then -- Changed! If we're not currently in auth phase, inform the masses of the change
+	if not dontCall and self:GetUserGroup() ~= oldGroup then -- Changed! Inform the masses of the change
 		hook.Call( ULib.HOOK_UCLAUTH, _, self )
 	end
 end

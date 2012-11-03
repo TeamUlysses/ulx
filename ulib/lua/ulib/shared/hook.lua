@@ -10,17 +10,17 @@
 -- This file is coded a little awkwardly because we're trying to implement a new behavior while remaining as true to the old behavior as possible.
 
 -- Globals that we are going to use
-local ipairs = ipairs
-local pairs = pairs
-local ErrorNoHalt = ErrorNoHalt
-local pcall = pcall
-local tostring = tostring
-local concommand = concommand
-local CLIENT = CLIENT
-local type = type
-local table = table
+local gmod          = gmod
+local pairs         = pairs
+local isfunction    = isfunction
+local isstring      = isstring
+
+-- Needed due to our modifications
+local table         = table
+local ipairs         = ipairs
 
 --[[ Needed for tests, below
+local CLIENT = CLIENT
 local print = print
 local assert = assert
 local error = error --]]
@@ -38,14 +38,13 @@ module( "hook" )
 -- Local variables
 local Hooks = {}
 local BackwardsHooks = {} -- A table fully to garry's spec for aVoN
-local currentHooks = {} -- Used to track what hooks are currently running
 
 local function sortHooks( event_name )
 	table.sort( Hooks[ event_name ], function( a, b ) -- Sort by priority, then name
 		if a == nil then return false -- Move nil to end
 		elseif b == nil then return true -- Keep nil at end
 		elseif a.priority < b.priority then return true
-		elseif a.priority == b.priority and tostring( a.name ) < tostring( b.name ) then return true
+		elseif a.priority == b.priority and a.name < b.name then return true
 		else return false end
 	end )
 end
@@ -79,6 +78,10 @@ end
 		priority - *(Optional, defaults to 0)* Priority from -20 to 20. Remember that -20 and 20 are read-only.
 ]]
 function Add( event_name, name, func, priority )
+	if not isfunction( func ) then return end
+	if not isstring( event_name ) then return end
+	if not isstring( name ) then return end
+	
 	if not Hooks[ event_name ] then
 		BackwardsHooks[ event_name ] = {}
 		Hooks[ event_name ] = {}
@@ -103,6 +106,11 @@ end
 		name - The unique name of your hook. Use the same name you used in hook.Add()
 ]]
 function Remove( event_name, name )
+	if not isstring( event_name ) then return end
+	if not isstring( name ) then return end
+	
+	if not Hooks[ event_name ] then return end
+	
 	for index, value in ipairs( Hooks[ event_name ] ) do
 		if value.name == name then
 			table.remove( Hooks[ event_name ], index )
@@ -128,7 +136,7 @@ end
 		2.50 - Created to match GM13 API
 ]]
 function Run( name, ... )
-	return Call( name, GAMEMODE, ... )
+	return Call( name, nil, ... )
 end
 
 --[[
@@ -143,133 +151,41 @@ end
 		... - Any other params to pass
 ]]
 function Call( name, gm, ... )
-	table.insert( currentHooks, name )
+	-- If called from hook.Run then gm will be nil.
+	if gm == nil and gmod ~= nil then
+		gm = gmod.GetGamemode()
+	end
 
-	local b, rA, rB, rC, rD, rE, rF, rG, rH
 	local HookTable = Hooks[ name ]
-	local HookRemoved = false -- Keep track of whether or not a hook was removed
 
 	if HookTable then
 		for k=1, #HookTable do
 			v = HookTable[ k ]
 			if not v then
-				HookRemoved = true -- Trigger a resort
-			elseif not v.fn then
-				ErrorNoHalt( "ERROR: Hook '" .. tostring( v.name ) .. "' tried to call a nil function!\n" )
-				ErrorNoHalt( "Removing Hook '" .. tostring( v.name ) .. "'\n" )
-				HookTable[ k ] = nil -- remove this hook
-				BackwardsHooks[ name ][ v.name ] = nil
-				HookRemoved = true
-				break
-
+				-- Nothing
 			else
 				-- Call hook function
-				b, rA, rB, rC, rD, rE, rF, rG, rH = pcall( v.fn, ... )
+				a, b, c = v.fn( ... )
 
-				if not b then
-					ErrorNoHalt( "ERROR: Hook '" .. tostring( v.name ) .. "' Failed: " .. tostring( rA ) .. "\n" )
-					ErrorNoHalt( "Removing Hook '" .. tostring( v.name ) .. "'\n" )
-					HookTable[ k ] = nil -- remove this hook
-					BackwardsHooks[ name ][ v.name ] = nil
-					HookRemoved = true
-
-				else
+				if a ~= nil then
 					-- Allow hooks to override return values if it's within the limits (-20 and 20 are read only)
-					if rA ~= nil and v.priority > -20 and v.priority < 20 then
-						table.remove( currentHooks ) -- Pop
-						if HookRemoved then
-							sortHooks( name )
-						end
-						return rA, rB, rC, rD, rE, rF, rG, rH
+					if v.priority > -20 and v.priority < 20 then
+						return a, b, c
 					end
 				end
 			end
 		end
 	end
 
-	if gm then
-		local GamemodeFunction = gm[ name ]
-		if not GamemodeFunction then
-			table.remove( currentHooks ) -- Pop
-			if HookRemoved then
-				sortHooks( name )
-			end
-			return nil
-		end
-
-		if type( GamemodeFunction ) ~= "function" then
-			Msg( "Calling Non Function!? ", GamemodeFunction, "\n" )
-		end
-
-		-- This calls the actual gamemode function - after all the hooks have had chance to override
-		b, rA, rB, rC, rD, rE, rF, rG, rH = pcall( GamemodeFunction, gm, ... )
-
-		if not b then
-			gm[ name .. "_ERRORCOUNT" ] = gm[ name .. "_ERRORCOUNT" ] or 0
-			gm[ name .. "_ERRORCOUNT" ] = gm[ name .. "_ERRORCOUNT" ] + 1
-			ErrorNoHalt( "ERROR: GAMEMODE:'" .. tostring( name ) .. "' Failed: " .. tostring( rA ) .. "\n" )
-
-			table.remove( currentHooks ) -- Pop
-			if HookRemoved then
-				sortHooks( name )
-			end
-			return nil
-		end
-
-		table.remove( currentHooks ) -- Pop
-		if HookRemoved then
-			sortHooks( name )
-		end
-		return rA, rB, rC, rD, rE, rF, rG, rH
+	if not gm then return end
+	
+	local GamemodeFunction = gm[ name ]
+	if not GamemodeFunction then
+		return
 	end
 
-	table.remove( currentHooks ) -- Pop
-	if HookRemoved then
-		sortHooks( name )
-	end
-end
-
---[[
-	Function: hook.getCurrentHooks
-
-	Returns the hooks that are currently processing, if any.
-
-	Returns:
-
-		A table of the current hooks that are processing, starting with the ones that started first.
-		The table is empty if no hooks are currently executing.
-
-	Revisions:
-
-		v2.40 - Initial.
-]]
-function getCurrentHooks()
-	return currentHooks
-end
-
---[[
-	Function: hook.isInHook
-
-	Returns true if the specified hook is currently processing
-
-	Parameters:
-
-		name - The name of the hook to check
-
-	Returns:
-
-		true if the hook is executing, false otherwise
-
-	Revisions:
-
-		v2.40 - Initial.
-]]
-local failed = false
-local shouldFail = false
-local i, t
-
-function isInHook( name )
-	return table.HasValue( currentHooks, name )
+	-- This calls the actual gamemode function - after all the hooks have had chance to override
+	return GamemodeFunction( gm, ... )
 end
 
 -- Bring in all the old hooks
@@ -281,6 +197,10 @@ end
 
 
 --[[
+local failed = false
+local shouldFail = false
+local i, t
+
 -- Since the correctness of this file is so important, we've made a little test suite
 local function appendGenerator( n )
 	return function( t )

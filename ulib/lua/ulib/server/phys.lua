@@ -70,7 +70,7 @@ function ULib.applyForce( ent, magnitude, direction, dTime )
 		local mass = ent:GetPhysicsObject():GetMass()
 		if not mass then
 			mass = 1
-			ULib.debug( "applyForce was called with a non-physics entity that doesn't have a mass. To continue calculations, we're assuming it has a mass of one. This could very well produce unrealistic looking physics!\n")
+			Msg( "applyForce was called with a non-physics entity that doesn't have a mass. To continue calculations, we're assuming it has a mass of one. This could very well produce unrealistic looking physics!\n")
 		end
 		-- f = m*a, so divide it by mass to get the accel
 		local accel = force * 1/mass
