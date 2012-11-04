@@ -93,7 +93,10 @@ function canTool( ply, tr, toolmode, second )
 end
 hook.Add( "CanTool", "UPSCanTool", canTool, -15 )
 
-function canDamage( ent, inflictor, attacker, amount, dmginfo )
+function canDamage( ent, dmginfo )
+	local inflicter = dmginfo:GetInflictor()
+	local attacker = dmginfo:GetAttacker()
+	
 	if not ent or not ent:IsValid() or not inflictor or not inflictor:IsValid() then -- Something deleted it along the way
 		return
 	end
