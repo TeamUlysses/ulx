@@ -338,10 +338,10 @@ function ULib.refreshBans()
 	end
 
 	local default_bans = ""
-	if file.Exists( "cfg/banned_user.cfg", "DATA" ) then
-		ULib.execFile( "cfg/banned_user.cfg", "DATA" )
+	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
+		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
 		ULib.queueFunctionCall( game.ConsoleCommand, "writeid\n" )
-		default_bans = file.Read( "cfg/banned_user.cfg", "DATA" )
+		default_bans = file.Read( "cfg/banned_user.cfg", "GAME" )
 	end
 
 	--default_bans = ULib.makePatternSafe( default_bans )

@@ -335,23 +335,3 @@ function ULib.pcallError( ... )
 	
 	return unpack( returns )	
 end
-
---- TEMP fix for garry's broken API (Hopefully he fixes this soon, still broken as of official GM13 release)
-
-local oldExists = file.Exists
-function file.Exists( path, option )
-	if option == "DATA" then
-		option = "GAME"
-		path = "data/" .. path
-	end
-	return oldExists( path, option )
-end
-
-local oldRead = file.Read
-function file.Read( path, option )
-	if option == "DATA" then
-		option = "GAME"
-		path = "data/" .. path
-	end
-	return oldRead( path, option )
-end
