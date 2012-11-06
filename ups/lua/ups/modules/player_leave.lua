@@ -37,7 +37,7 @@ local function onTimeToDelete( uid )
 	end
 
 	local txt = "Removing " .. name .. "'s props"
-	if isDedicatedServer() then
+	if game.IsDedicated() then
 		Msg( txt .. "\n" )
 	end
 	ULib.tsay( _, txt )
@@ -60,7 +60,7 @@ local function onTimeToClear( uid )
 	end
 
 	local txt = name .. "'s props are now up for grabs."
-	if isDedicatedServer() then
+	if game.IsDedicated() then
 		Msg( txt .. "\n" )
 	end
 	ULib.tsay( _, txt )
