@@ -90,8 +90,14 @@ end
 		ply - The player to kick.
 		reason - *(Optional)* The reason to give for kicking.
 ]]
-function ULib.kick( ply, reason )
-	ply:Kick( reason or "[ULX] Kicked from server" )
+function ULib.kick( ply, reason, calling_ply )
+	if reason and calling_ply ~= nil then
+		local nick = IsValid( calling_ply ) and calling_ply:IsPlayer( ) and
+			string.format("%s(%s)", calling_ply:Nick( ), calling_ply:SteamID( ) ) or "Console"
+		ply:Kick( string.format( "Kicked by %s (%s)", nick, reason or "[ULX] Kicked from server" ) )
+	else
+		ply:Kick( reason or "[ULX] Kicked from server" )
+	end
 end
 
 
@@ -176,12 +182,12 @@ function ULib.addBan( steamid, time, reason, name, admin )
 	local players = player.GetAll()
 	for i=1, #players do
 		if players[ i ]:SteamID() == steamid then
-			ULib.kick( players[ i ], reason )
+			local strTime = time ~= 0 and string.format( "for %s minute(s)", time ) or "permanently"
+			ULib.kick( players[ i ], string.format( "Banned %s: %s", strTime, reason ), admin )
 		end
 	end
 
-	game.ConsoleCommand( string.format( "kickid %s %s\n", steamid, reason or "" ) )
-	game.ConsoleCommand( string.format( "banid %f %s kick\n", time, steamid ) )
+	game.ConsoleCommand( string.format( "banid %f %s\n", time, steamid ) )
 	game.ConsoleCommand( "writeid\n" )
 
 	local admin_name
