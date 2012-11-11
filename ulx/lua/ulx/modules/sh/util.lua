@@ -42,7 +42,7 @@ function ulx.kick( calling_ply, target_ply, reason )
 		reason = nil
 		ulx.fancyLogAdmin( calling_ply, "#A kicked #T", target_ply )
 	end
-	ULib.kick( target_ply, reason )
+	ULib.kick( target_ply, reason, calling_ply )
 end
 local kick = ulx.command( CATEGORY_NAME, "ulx kick", ulx.kick, "!kick" )
 kick:addParam{ type=ULib.cmds.PlayerArg }
