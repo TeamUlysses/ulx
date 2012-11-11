@@ -92,8 +92,7 @@ end
 ]]
 function ULib.kick( ply, reason, calling_ply )
 	if reason and calling_ply ~= nil then
-		local nick = IsValid( calling_ply ) and calling_ply:IsPlayer( ) and
-			string.format("%s(%s)", calling_ply:Nick( ), calling_ply:SteamID( ) ) or "Console"
+		local nick = calling_ply:IsValid() and string.format( "%s(%s)", calling_ply:Nick(), calling_ply:SteamID() ) or "Console"
 		ply:Kick( string.format( "Kicked by %s (%s)", nick, reason or "[ULX] Kicked from server" ) )
 	else
 		ply:Kick( reason or "[ULX] Kicked from server" )
@@ -179,15 +178,19 @@ end
 		2.40 - If the steamid is connected, kicks them with the reason given
 ]]
 function ULib.addBan( steamid, time, reason, name, admin )
+	local strTime = time ~= 0 and string.format( "for %s minute(s)", time ) or "permanently"
+	local showReason = string.format( "Banned %s: %s", strTime, reason )
+	
 	local players = player.GetAll()
 	for i=1, #players do
-		if players[ i ]:SteamID() == steamid then
-			local strTime = time ~= 0 and string.format( "for %s minute(s)", time ) or "permanently"
-			ULib.kick( players[ i ], string.format( "Banned %s: %s", strTime, reason ), admin )
+		if players[ i ]:SteamID() == steamid then			
+			ULib.kick( players[ i ], showReason, admin )
 		end
 	end
 
-	game.ConsoleCommand( string.format( "banid %f %s\n", time, steamid ) )
+	-- This redundant kick code is to ensure they're kicked -- even if they're joining
+	game.ConsoleCommand( string.format( "kickid %s %s\n", steamid, showReason or "" ) )
+	game.ConsoleCommand( string.format( "banid %f %s kick\n", time, steamid ) )
 	game.ConsoleCommand( "writeid\n" )
 
 	local admin_name

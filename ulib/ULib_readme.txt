@@ -46,6 +46,7 @@ Rest easy!
 Group: Changelog
 v2.50 - *(00/00/00)*
 	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.
+	* [ADD] Shows reasons to kicked person upon kick or ban (Thanks FPtje!)
 	* [FIX] The usual assortment of garry breakages.
 	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
 	* [CHANGE] Lots of changes to match GM13.
