@@ -165,12 +165,12 @@ function Call( name, gm, ... )
 				-- Nothing
 			else
 				-- Call hook function
-				a, b, c = v.fn( ... )
+				a, b, c, d, e, f = v.fn( ... )
 
 				if a ~= nil then
 					-- Allow hooks to override return values if it's within the limits (-20 and 20 are read only)
 					if v.priority > -20 and v.priority < 20 then
-						return a, b, c
+						return a, b, c, d, e, f
 					end
 				end
 			end
