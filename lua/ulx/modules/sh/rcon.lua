@@ -51,7 +51,7 @@ function ulx.exec( calling_ply, config )
 		return
 	end
 
-	ULib.execFile( "cfg/" .. config, true )
+	ULib.execFile( "cfg/" .. config, "GAME" )
 	ulx.fancyLogAdmin( calling_ply, "#A executed file #s", config )
 end
 local exec = ulx.command( CATEGORY_NAME, "ulx exec", ulx.exec )
