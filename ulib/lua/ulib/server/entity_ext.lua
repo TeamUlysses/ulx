@@ -40,6 +40,12 @@ ULib.delWhitelist = -- White list for objects that can't be deleted
 	"statue",
 	"weld_ez",
 	"axis",
+	
+	-- Properties
+	"gravity",
+	"collision",
+	--"keepupright", -- Already above
+	"persist",
 }
 
 -- Are you a STOOL author who's angry that your tool isn't on this list?
@@ -54,6 +60,10 @@ ULib.moveWhitelist = -- White list for objects that can't be moved
 	"eyeposer",
 	"faceposer",
 	"remover",
+	
+	-- Properties
+	--"remover", -- Already above
+	"persist",
 }
 
 function meta:DisallowMoving( bool )
@@ -110,6 +120,21 @@ local function tool( ply, tr, toolmode, second )
 	end
 end
 hook.Add( "CanTool", "ULibEntToolCheck", tool, -10 )
+
+local function property( ply, propertymode, ent )
+	if ent.NoMoving then
+		if not table.HasValue( ULib.moveWhitelist, toolmode ) then
+			return false
+		end
+	end
+	
+	if ent.NoDeleting then
+		if not table.HasValue( ULib.delWhitelist, toolmode ) then
+			return false
+		end
+	end
+end
+hook.Add( "CanProperty", "ULibEntPropertyCheck", property, -19 )
 
 local function physgun( ply, ent )
 	if ent.NoMoving then return false end

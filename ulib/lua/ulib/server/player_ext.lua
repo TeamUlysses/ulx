@@ -59,8 +59,9 @@ hook.Add( "PlayerSpawnSENT", "ULibSpawnBlock", spawnblock )
 hook.Add( "PlayerGiveSWEP", "ULibSpawnBlock", spawnblock )
 
 local function vehicleblock( ply, ent )
-	if ply.NoVehicles and ent and ent:IsValid() and ent:IsVehicle() then
+	if ply.NoVehicles then
 		return false
 	end
 end
-hook.Add( "PlayerUse", "ULibVehicleBlock", vehicleblock, -10 )
+hook.Add( "CanPlayerEnterVehicle", "ULibVehicleBlock", vehicleblock, -10 )
+hook.Add( "CanDrive", "ULibVehicleDriveBlock", vehicleblock, -10 )
