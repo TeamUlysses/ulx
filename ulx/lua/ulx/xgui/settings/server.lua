@@ -5,16 +5,17 @@ local server = xlib.makepanel{ parent=xgui.null }
 
 --------------------------GMOD Settings--------------------------
 xlib.makecheckbox{ x=10, y=10, label="Enable Voice Chat", repconvar="rep_sv_voiceenable", parent=server, textcolor=color_black }
-xlib.makecheckbox{ x=10, y=30, label="Enable Alltalk", repconvar="rep_sv_alltalk", parent=server, textcolor=color_black }
-xlib.makecheckbox{ x=10, y=50, label="Disable AI", repconvar="rep_ai_disabled", parent=server, textcolor=color_black }
-xlib.makecheckbox{ x=10, y=70, label="AI Ignore Players", repconvar="rep_ai_ignoreplayers", parent=server, textcolor=color_black }
+xlib.makelabel{ x=10, y=33, label="Alltalk setting:", textcolor=color_black, parent=server }
+xlib.makecombobox{ x=10, y=50, w=120, repconvar="rep_sv_alltalk", isNumberConvar=true, choices={ "Team only", "Team only", "Everyone near you", "Everyone" }, parent=server }
+xlib.makecheckbox{ x=10, y=75, label="Disable AI", repconvar="rep_ai_disabled", parent=server, textcolor=color_black }
+xlib.makecheckbox{ x=10, y=95, label="AI Ignore Players", repconvar="rep_ai_ignoreplayers", parent=server, textcolor=color_black }
 local offset = 0
 if game.SinglePlayer() then
 	offset = 20
-	xlib.makecheckbox{ x=10, y=90, label="Keep AI Ragdolls", repconvar="rep_ai_keepragdolls", parent=server, textcolor=color_black }
+	xlib.makecheckbox{ x=10, y=115, label="Keep AI Ragdolls", repconvar="rep_ai_keepragdolls", parent=server, textcolor=color_black }
 end
-xlib.makeslider{ x=10, y=90+offset, w=125, label="sv_gravity", min=-1000, max=1000, repconvar="rep_sv_gravity", parent=server, textcolor=color_black }
-xlib.makeslider{ x=10, y=130+offset, w=125, label="phys_timescale", min=0, max=4, decimal=2, repconvar="rep_phys_timescale", parent=server, textcolor=color_black }
+xlib.makeslider{ x=10, y=115+offset, w=125, label="sv_gravity", min=-1000, max=1000, repconvar="rep_sv_gravity", parent=server, textcolor=color_black }
+xlib.makeslider{ x=10, y=155+offset, w=125, label="phys_timescale", min=0, max=4, decimal=2, repconvar="rep_phys_timescale", parent=server, textcolor=color_black }
 
 ------------------------ULX Category Menu------------------------
 server.panel = xlib.makepanel{ x=300, y=5, w=285, h=327, parent=server }
