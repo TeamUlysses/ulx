@@ -93,6 +93,21 @@ function canTool( ply, tr, toolmode, second )
 end
 hook.Add( "CanTool", "UPSCanTool", canTool, -15 )
 
+local function canProperty( ply, propertymode, ent )
+	if not table.HasValue( moveWhitelist, propertymode ) then
+		if canPhysgun( ply, ent ) == false then
+			return false	
+		end
+	end
+	
+	if not table.HasValue( delWhitelist, propertymode ) then
+		if not query( ply, ent, ACTID_REMOVE ) then
+			return false	
+		end
+	end
+end
+hook.Add( "CanProperty", "UPSCanProperty", canProperty, -15 )
+
 function canDamage( ent, dmginfo )
 	local inflicter = dmginfo:GetInflictor()
 	local attacker = dmginfo:GetAttacker()

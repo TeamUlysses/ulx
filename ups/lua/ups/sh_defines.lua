@@ -56,6 +56,12 @@ delWhitelist =
 	"statue",
 	"weld_ez",
 	"axis",
+	
+	-- Properties
+	"gravity",
+	"collision",
+	--"keepupright", -- Already above
+	"persist",
 }
 
 --[[
@@ -76,6 +82,10 @@ moveWhitelist =
 	"eyeposer",
 	"faceposer",
 	"remover",
+	
+	-- Properties
+	--"remover", -- Already above
+	"persist",
 }
 
 
