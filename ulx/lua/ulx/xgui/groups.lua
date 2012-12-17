@@ -79,7 +79,7 @@ function groups.pnlG1:Close()
 	end
 	self:closeAnim()
 end
-xlib.makelabel{ x=5, y=5, label="Users in group:",  textcolor=color_black, parent=groups.pnlG1 }
+xlib.makelabel{ x=5, y=5, label="Users in group:", parent=groups.pnlG1 }
 groups.players = xlib.makelistview{ x=5, y=20, w=160, h=190, parent=groups.pnlG1 }
 groups.players:AddColumn( "Name" )
 groups.players.OnRowSelected = function( self, LineID, Line )
@@ -118,7 +118,7 @@ groups.cplayer.DoClick = function()
 		menu:Open()
 	end
 end
-xlib.makelabel{ x=5, y=240, label="Team:", textcolor=color_black, parent=groups.pnlG1}
+xlib.makelabel{ x=5, y=240, label="Team:", parent=groups.pnlG1}
 groups.teams = xlib.makecombobox{ x=5, y=255, w=160, disabled=not ULib.isSandbox(), parent=groups.pnlG1 }
 groups.teams.OnSelect = function( self, index, value, data )
 	if value == "<None>" then value = "" end
@@ -135,7 +135,7 @@ groups.teambutton.DoClick = function( self )
 	end
 	xlib.animQueue_start()
 end
-groups.accessbutton = xlib.makebutton{ x=5, y=310, w=160, label="Manage Permissions >>", parent=groups.pnlG1 }
+groups.accessbutton = xlib.makebutton{ x=5, y=305, w=160, label="Manage Permissions >>", parent=groups.pnlG1 }
 groups.accessbutton.DoClick = function( self )
 	if not groups.pnlG4:IsVisible() then
 		self:SetText( "Manage Permissions <<" )
@@ -249,9 +249,9 @@ groups.newgroup.DoClick = function()
 		Derma_Message( "A group with that name already exists!", "XGUI NOTICE" );
 	end
 end
-xlib.makelabel{ x=145, y=8, label="Name:", textcolor=color_black, parent=groups.pnlG2 }
-xlib.makelabel{ x=145, y=33, label="Inherits from:", textcolor=color_black, parent=groups.pnlG2 }
-xlib.makelabel{ x=145, y=58, label="Can Target:", textcolor=color_black, parent=groups.pnlG2 }
+xlib.makelabel{ x=145, y=8, label="Name:", parent=groups.pnlG2 }
+xlib.makelabel{ x=145, y=33, label="Inherits from:", parent=groups.pnlG2 }
+xlib.makelabel{ x=145, y=58, label="Can Target:", parent=groups.pnlG2 }
 groups.gname = xlib.maketextbox{ x=180, y=5, w=165, text="new_group", selectall=true, parent=groups.pnlG2 }
 groups.ginherit = xlib.makecombobox{ x=215, y=30, w=130, text="user", parent=groups.pnlG2 }
 groups.gcantarget = xlib.maketextbox{ x=205, y=55, w=140, text="", selectall=true, parent=groups.pnlG2 }
@@ -443,8 +443,8 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 	else
 		local defvalues = xgui.allowedTeamModifiers[Line:GetColumnText(1)]
 		if type( defvalues ) ~= "table" then defvalues = { defvalues } end
-		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4] or 0, textcolor=color_black, value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1) }
-		groups.teamctrl.Wang.OnEnter = function( self )
+		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4] or 0, value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1) }
+		groups.teamctrl.TextArea.OnEnter = function( self )
 			applybtn.DoClick()
 		end
 		groups.teammodspace:Add( groups.teamctrl )
@@ -547,7 +547,7 @@ function groups.pnlG4:Close()
 	end
 	self:closeAnim()
 end
-xlib.makelabel{ x=5, y=5, label="Has access to:", textcolor=color_black, parent=groups.pnlG4 }
+xlib.makelabel{ x=5, y=5, label="Has access to:", parent=groups.pnlG4 }
 groups.accesses = xlib.makelistlayout{ x=5, y=20, w=190, h=310, padding=1, spacing=1, parent=groups.pnlG4 }
 
 groups.access_cats = {}
@@ -629,7 +629,7 @@ function groups.pnlG5:Close()
 	end
 end
 groups.rArgList = xlib.makelistlayout{ x=5, y=20, w=190, h=308, parent=groups.pnlG5 }
-xlib.makelabel{ x=5, y=5, label="Restrict command arguments:", textcolor=color_black, parent=groups.pnlG5 }
+xlib.makelabel{ x=5, y=5, label="Restrict command arguments:", parent=groups.pnlG5 }
 
 function groups.populateRestrictionArgs( cmd, accessStr )
 	if not accessStr then accessStr = groups.access_lines[cmd]:GetColumnText(3) end
@@ -651,7 +651,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 					local ignoreCanTarget = ( restrictions[argnum] and string.sub( restrictions[argnum], 1, 1 ) == "$" )
 					local outPanel = xlib.makepanel{ h=50 }
 					outPanel.type = "ply"
-					outPanel.cantarget = xlib.makecheckbox{ x=5, y=5, label="Ignore can_target", textcolor=color_black, value=ignoreCanTarget or 0, parent=outPanel }
+					outPanel.cantarget = xlib.makecheckbox{ x=5, y=5, label="Ignore can_target", value=ignoreCanTarget or 0, parent=outPanel }
 					outPanel.txtfield = xlib.maketextbox{ x=5, y=25, w=170, text=ignoreCanTarget and string.sub( restrictions[argnum], 2 ) or restrictions[argnum] or "*", parent=outPanel }
 					--Handle change in width due to scrollbar
 					local tempfunc = outPanel.PerformLayout
@@ -671,8 +671,8 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						if rmin == "" then rmin = nil end
 						if rmax == "" then rmax = nil end
 					end
-					outPanel.hasmin = xlib.makecheckbox{ x=5, y=15, value=( rmin~=nil ), parent=outPanel }
-					outPanel.hasmax = xlib.makecheckbox{ x=5, y=55, value=( rmax~=nil ), parent=outPanel }
+					outPanel.hasmin = xlib.makecheckbox{ x=5, y=8, value=( rmin~=nil ), parent=outPanel }
+					outPanel.hasmax = xlib.makecheckbox{ x=5, y=48, value=( rmax~=nil ), parent=outPanel }
 					if table.HasValue( arg, ULib.cmds.allowTimeString ) then
 						outPanel.type = "time"
 						
@@ -683,9 +683,9 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						
 						local curinterval = ( irmin or iargmin or "Permanent" )
 						local curval = vrmin or vargmin or 0
-						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
-						outPanel.min.Wang:SetText( curval ) --Set the value of the textentry manually to show decimals even though decimal=0.
-						outPanel.minterval = xlib.makecombobox{ x=50, y=5, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmin==nil ), parent=outPanel }
+						outPanel.min = xlib.makeslider{ x=25, y=25, w=150, label="<--->", min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
+						outPanel.min:SetValue( curval ) --Set the value of the textentry manually to show decimals even though decimal=0.
+						outPanel.minterval = xlib.makecombobox{ x=105, y=5, w=50, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmin==nil ), parent=outPanel }
 						outPanel.minterval.OnSelect = function( self, index, value, data )
 							outPanel.min:SetDisabled( value == "Permanent" )
 						end
@@ -696,9 +696,9 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						
 						local curinterval = ( irmax or iargmax or "Permanent" )
 						local curval = vrmax or vargmax or 0
-						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
-						outPanel.max.Wang:SetText( curval )
-						outPanel.maxterval = xlib.makecombobox{ x=50, y=45, w=60, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmax==nil ), parent=outPanel }
+						outPanel.max = xlib.makeslider{ x=25, y=65, w=150, label="<--->", min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
+						outPanel.max:SetValue( curval )
+						outPanel.maxterval = xlib.makecombobox{ x=105, y=45, w=50, text=curinterval, choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, disabled=( rmax==nil ), parent=outPanel }
 						outPanel.maxterval.OnSelect = function( self, index, value, data )
 							outPanel.max:SetDisabled( value == "Permanent" )
 						end
@@ -707,23 +707,23 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 							outPanel.maxterval:SetDisabled( not bVal )
 						end
 						
-						xlib.makelabel{ x=25, y=8, label="Min", textcolor=color_black, parent=outPanel }
-						xlib.makelabel{ x=25, y=48, label="Max", textcolor=color_black, parent=outPanel }
+						xlib.makelabel{ x=25, y=8, label="Limit Minimum", parent=outPanel }
+						xlib.makelabel{ x=25, y=48, label="Limit Maximum", parent=outPanel }
 						
 						--Handle change in width due to scrollbar
 						local tempfunc = outPanel.PerformLayout
 						outPanel.PerformLayout = function( self )
 							tempfunc( self )
 							local w = self:GetWide() - 10
-							outPanel.min:SetWide( w-20 )
-							outPanel.max:SetWide( w-20 )
-							outPanel.minterval:SetWide( w-90 )
-							outPanel.maxterval:SetWide( w-90 )
+							outPanel.min:SetWide( w-15 )
+							outPanel.max:SetWide( w-15 )
+							outPanel.minterval:SetWide( w-95 )
+							outPanel.maxterval:SetWide( w-95 )
 						end
 					else
 						outPanel.type = "num"
-						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, value=( rmin or arg.min or 0 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Min", textcolor=color_black, disabled=( rmin==nil ), parent=outPanel }
-						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, value=( rmax or arg.max or 100 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Max", textcolor=color_black, disabled=( rmax==nil ), parent=outPanel }
+						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, value=( rmin or arg.min or 0 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Min", disabled=( rmin==nil ), parent=outPanel }
+						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, value=( rmax or arg.max or 100 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Max", disabled=( rmax==nil ), parent=outPanel }
 						outPanel.hasmin.OnChange = function( self, bVal )
 							outPanel.min:SetDisabled( not bVal )
 						end
@@ -746,7 +746,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 				elseif arg.type == ULib.cmds.BoolArg then
 					local outPanel = xlib.makepanel{ h=25 }
 					outPanel.type = "bool"
-					outPanel.checkbox = xlib.makecheckbox{ x=5, y=5, value=restrictions[argnum] or false, label="Must be: True (1), False (0)", textcolor=color_black, parent=outPanel }
+					outPanel.checkbox = xlib.makecheckbox{ x=5, y=5, value=restrictions[argnum] or false, label="Must be: True (1), False (0)", parent=outPanel }
 					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "bool value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel }
 				---String Argument---
 				elseif arg.type == ULib.cmds.StringArg then
@@ -815,10 +815,11 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 	groups.applyButton.DoClick = function( self )
 		local outstr = ""
 		local outtmp = ""
-		for _, panel in ipairs( groups.rArgList.Items ) do
+		for _, panel in ipairs( groups.rArgList:GetChildren() ) do
+		--for _, panel in ipairs( groups.rArgList.Items ) do
 			local pnl = panel.Contents
 			
-			if panel.GetExpanded then
+			if panel.GetExpanded then --Weed out panels that we're not interested in
 				if panel:GetExpanded() then
 					if pnl.type == "ply" then
 						outstr = outstr .. outtmp .. " " .. ( pnl.cantarget:GetChecked() and "$" or "" ) .. ( pnl.txtfield:GetValue() ~= "" and pnl.txtfield:GetValue() or "*" )

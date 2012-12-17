@@ -13,7 +13,13 @@ function xlib.makecheckbox( t )
 	pnl:SizeToContents()
 	pnl:SetValue( t.value or 0 )
 	if t.convar then pnl:SetConVar( t.convar ) end
-	if t.textcolor then pnl:SetTextColor( t.textcolor ) end
+	
+	if t.textcolor then
+		pnl:SetTextColor( t.textcolor )
+	else
+		pnl:SetTextColor( pnl.m_Skin.text_dark )
+	end
+	
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
 		if t.tooltipwidth ~= 0 then
@@ -21,7 +27,9 @@ function xlib.makecheckbox( t )
 		end
 		pnl:SetToolTip( t.tooltip )
 	end
+	
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
+	
 	--Replicated Convar Updating
 	if t.repconvar then
 		xlib.checkRepCvarCreated( t.repconvar )
@@ -41,11 +49,11 @@ function xlib.makecheckbox( t )
 		pnl.ConVarChanged = function() end
 	end
 	--We need to set the enabled/disabled state of the checkbox whenever PerformLayout is called, otherwise if it's disabled before PerformLayout is first called, it won't look like it is.
-	local tempfunc = pnl.PerformLayout
-	pnl.PerformLayout = function( self )
-		tempfunc( self )
-		pnl:SetDisabled( pnl:GetDisabled() )
-	end
+	--local tempfunc = pnl.PerformLayout
+	--pnl.PerformLayout = function( self )
+	--	tempfunc( self )
+	--	pnl:SetDisabled( pnl:GetDisabled() )
+	--end
 	return pnl
 end
 
@@ -69,7 +77,11 @@ function xlib.makelabel( t )
 	pnl:SizeToContents()
 	if t.w then pnl:SetWidth( t.w ) end
 	if t.h then pnl:SetHeight( t.h ) end
-	if t.textcolor then pnl:SetTextColor( t.textcolor ) end
+	if t.textcolor then
+		pnl:SetTextColor( t.textcolor )
+	else
+		pnl:SetTextColor( pnl.m_Skin.text_dark )
+	end
 
 	return pnl
 end
@@ -82,8 +94,6 @@ function xlib.makelistlayout( t )
 	pnl.scroll:SetSize( t.w, t.h )
 	pnl:SetSize( t.w, t.h )
 	pnl.scroll:AddItem( pnl )
-	--pnl:SetSpacing( t.spacing or 5 ) TODO? :DockMargin( int, int, int, int )
-	--pnl:SetPadding( t.padding or 5 )
 	
 	function pnl:PerformLayout()
 		self:SetWide( self.scroll:GetWide() - ( self.scroll.VBar.Enabled and 16 or 0 ) )
@@ -102,7 +112,6 @@ function xlib.makebutton( t )
 end
 
 function xlib.makespecialbutton( t )
-	--local pnl = vgui.Create( "DSysButton", t.parent ) pnl:SetType( t.btype )
 	local pnl = vgui.Create( "DButton", t.parent )
 	pnl:SetSize( t.w, t.h or 20 )
 	pnl:SetPos( t.x, t.y )
@@ -161,9 +170,7 @@ function xlib.maketextbox( t )
 		pnl:SetToolTip( t.tooltip )
 	end
 
-	pnl.enabled = true
 	function pnl:SetDisabled( val ) --Do some funky stuff to simulate enabling/disabling of a textbox
-		pnl.enabled = not val
 		pnl:SetEnabled( not val )
 		pnl:SetPaintBackgroundEnabled( val )
 	end
@@ -277,32 +284,45 @@ function xlib.makecombobox( t )
 	local pnl = vgui.Create( "DComboBox", t.parent )
 	t.w = t.w or 100
 	t.h = t.h or 20
-	pnl:SetText( t.text or "" )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
-
+	
+	--Create a textbox to use in place of the button
 	if ( t.enableinput == true ) then
 		pnl.TextEntry = vgui.Create( "DTextEntry", pnl )
-		pnl.TextEntry:SetSize( t.w-20, t.h )
 		pnl.TextEntry.selectAll = t.selectall
 		pnl.TextEntry:SetEditable( true )
 		
-		pnl.TextEntry.OnMousePressed = function( button, mcode )
-			--hook.Call( "OnTextEntryGetFocus", nil, self )
-		end
-	
-		pnl.DropButton.OnMousePressed = function( button, mcode )
-			--hook.Call( "OnTextEntryLoseFocus", nil, pnl.TextEntry )
-			pnl:OpenMenu( pnl.DropButton )
-		end
-		
-		pnl.TextEntry.OnLoseFocus = function( self )
-			--hook.Call( "OnTextEntryLoseFocus", nil, self )
-			self:UpdateConvarValue()
+		pnl.TextEntry.OnGetFocus = function( self ) --Close the menu when the textbox is clicked, IF the menu was open.
+			hook.Run( "OnTextEntryGetFocus", self )
+			if ( pnl.Menu ) then
+				pnl.Menu:Remove()
+				pnl.Menu = nil
+			end
 		end
 		
+		--Override GetValue/SetValue to get/set the text from the TextEntry instead of itself.
+		pnl.GetValue = function( self ) return self.TextEntry:GetValue() end
+		pnl.SetText = function( self, val ) self.TextEntry:SetValue( val ) end
 		
+		pnl.ChooseOption = function( self, value, index ) --Update the text of the TextEntry when an option is selected.
+			if ( self.Menu ) then
+				self.Menu:Remove()
+				self.Menu = nil
+			end
+			self.TextEntry:SetText( value )
+			self:OnSelect( index, value, self.Data[index] )
+		end
+		
+		pnl.PerformLayout = function( self ) --Update the size of the textbox when the combobox's PerformLayout is called.
+			self.DropButton:SetSize( 15, 15 )
+			self.DropButton:AlignRight( 4 )
+			self.DropButton:CenterVertical()
+			self.TextEntry:SetSize( self:GetWide()-20, self:GetTall() )
+		end
 	end
+	
+	pnl:SetText( t.text or "" )
 
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
@@ -318,29 +338,18 @@ function xlib.makecombobox( t )
 		end
 	end
 
-	pnl.enabled = true
-	function pnl:SetDisabled( val ) --Do some funky stuff to simulate enabling/disabling of a textbox
-		self.enabled = not val
-		--self.TextEntry:SetEnabled( not val )
-		--self.TextEntry:SetPaintBackgroundEnabled( val )
-		self.DropButton:SetDisabled( val )
-		self.DropButton:SetMouseInputEnabled( not val )
+	function pnl:SetDisabled( val ) --enabling/disabling of a textbox
 		self:SetMouseInputEnabled( not val )
+		self:SetAlpha( val and 128 or 255 )
 	end
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
 
-	--Add support for Spacers
-	function pnl:OpenMenu( pControlOpener ) --Garrys function with no comments, just adding a few things.
-		if ( pControlOpener ) then
-			if ( pControlOpener == self.TextEntry ) then
-				return
-			end
-		end
+	--Garrys function with no comments, just adding support for Spacers
+	function pnl:OpenMenu()
 		if ( #self.Choices == 0 ) then return end
-		if ( self.Menu ) then
+		if ( IsValid( self.Menu ) ) then
 			self.Menu:Remove()
 			self.Menu = nil
-			return
 		end
 		self.Menu = DermaMenu()
 			for k, v in pairs( self.Choices ) do
@@ -353,7 +362,6 @@ function xlib.makecombobox( t )
 			local x, y = self:LocalToScreen( 0, self:GetTall() )
 			self.Menu:SetMinimumWidth( self:GetWide() )
 			self.Menu:Open( x, y, false, self )
-		ULib.queueFunctionCall( self.RequestFocus, self ) --Force the menu to request focus when opened, to prevent the menu being open, but the focus being to the controls behind it.
 	end
 
 	--Replicated Convar Updating
@@ -393,6 +401,7 @@ function xlib.makecombobox( t )
 			end
 		end
 	end
+	
 	return pnl
 end
 
@@ -487,19 +496,27 @@ function xlib.checkRepCvarCreated( cvar )
 	end
 end
 
---------------------------------------------------
---Megiddo and I are sick of number sliders and their spam of updating convars. Lets modify the NumSlider so that it only sets the value when the mouse is released! (And allows for textbox input)
---------------------------------------------------
 function xlib.makeslider( t )
 	local pnl = vgui.Create( "DNumSlider", t.parent )
-	if t.fixclip ~= false then --Fixes clipping errors on the Knob by default, but disables it if specified.
-		pnl.Slider.Knob:SetSize( 13, 13 )
-		pnl.Slider.Knob:SetPos( 0, 0 )
-		pnl.Slider.Knob:NoClipping( false )
-	end
+	pnl:SetPos( t.x, t.y )
+	pnl:SetWide( t.w or 100 )
+	pnl:SetTall( t.h or 20 )
 	pnl:SetText( t.label or "" )
 	pnl:SetMinMax( t.min or 0, t.max or 100 )
 	pnl:SetDecimals( t.decimal or 0 )
+	pnl.TextArea:SetDrawBackground( true )
+	pnl.TextArea.selectAll = t.selectall
+	if t.value then pnl:SetValue( t.value ) end
+	pnl.Label:SizeToContents()
+	
+	if t.textcolor then
+		pnl.Label:SetTextColor( t.textcolor )
+	else
+		pnl.Label:SetTextColor( pnl.m_Skin.text_dark )
+	end
+	
+	if t.fixclip then pnl.Slider.Knob:NoClipping( false ) end --Fixes clipping on the knob, an example is the sandbox limit sliders.
+	
 	if t.convar then pnl:SetConVar( t.convar ) end
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
@@ -508,99 +525,14 @@ function xlib.makeslider( t )
 		end
 		pnl:SetToolTip( t.tooltip )
 	end
-	pnl:SetPos( t.x, t.y )
-	pnl:SetWidth( t.w )
-	pnl:SizeToContents()
-	pnl.Label:SetTextColor( t.textcolor )
-	pnl.Wang.selectAll = t.selectall
-	if t.value then pnl:SetValue( t.value ) end
-
-	pnl.Wang.OnLoseFocus = function( self )
-		hook.Call( "OnTextEntryLoseFocus", nil, self )
-		self:UpdateConvarValue()
-		pnl.Wang:SetValue( pnl.Wang:GetValue() )
-	end
-
-	--Slider update stuff (Most of this code is copied from the default DNumSlider)
-	pnl.Slider.TranslateValues = function( self, x, y )
-		--Store the value and update the textbox to the new value
-		pnl_x = x
-		local val = pnl.Wang.m_numMin + ( ( pnl.Wang.m_numMax - pnl.Wang.m_numMin ) * x )
-		if pnl.Wang.m_iDecimals == 0 then
-			val = Format( "%i", val )
-		else
-			val = Format( "%." .. pnl.Wang.m_iDecimals .. "f", val )
-			-- Trim trailing 0's and .'s 0 this gets rid of .00 etc
-			val = string.TrimRight( val, "0" )
-			val = string.TrimRight( val, "." )
-		end
-		pnl.Wang:SetText( val )
-		return x, y
-	end
-	pnl.Slider.OnMouseReleased = function( self, mcode )
-		pnl.Slider:SetDragging( false )
-		pnl.Slider:MouseCapture( false )
-		--Update the actual value to the value we stored earlier
-		pnl.Wang:SetFraction( pnl_x )
-	end
-
-	--This makes it so the value doesnt change while you're typing in the textbox
-	pnl.Wang.OnTextChanged = function() end
-
-	--NumberWang update stuff(Most of this code is copied from the default DNumberWang)
-	pnl.Wang.OnCursorMoved = function( self, x, y )
-		if ( not self.Dragging ) then return end
-		local fVal = self:GetFloatValue()
-		local y = gui.MouseY()
-		local Diff = y - self.HoldPos
-		local Sensitivity = math.abs(Diff) * 0.025
-		Sensitivity = Sensitivity / ( self:GetDecimals() + 1 )
-		fVal = math.Clamp( fVal + Diff * Sensitivity, self.m_numMin, self.m_numMax )
-		self:SetFloatValue( fVal )
-		local x, y = self.Wanger:LocalToScreen( self.Wanger:GetWide() * 0.5, 0 )
-		input.SetCursorPos( x, self.HoldPos )
-		--Instead of updating the value, we're going to store it for later
-		pnl_fVal = fVal
-
-		if ( ValidPanel( self.IndicatorT ) ) then self.IndicatorT:InvalidateLayout() end
-		if ( ValidPanel( self.IndicatorB ) ) then self.IndicatorB:InvalidateLayout() end
-
-		--Since we arent updating the value, we need to manually set the value of the textbox. YAY!!
-		val = tonumber( fVal )
-		val = val or 0
-		if ( self.m_iDecimals == 0 ) then
-			val = Format( "%i", val )
-		elseif ( val ~= 0 ) then
-			val = Format( "%."..self.m_iDecimals.."f", val )
-			val = string.TrimRight( val, "0" )
-			val = string.TrimRight( val, "." )
-		end
-		self:SetText( val )
-	end
-
-	pnl.Wang.OnMouseReleased = function( self, mousecode )
-		if ( self.Dragging ) then
-			self:EndWang()
-			self:SetValue( pnl_fVal )
-		return end
-	end
-
-	pnl.enabled = true
-	pnl.SetDisabled = function( self, bval )
-		self.enabled = not bval
-		self:SetMouseInputEnabled( not bval )
-		self.Slider.Knob:SetVisible( not bval )
-		self.Wang:SetPaintBackgroundEnabled( bval )
-	end
-	if t.disabled then pnl:SetDisabled( t.disabled ) end
-
+	
 	--Replicated Convar Updating
 	if t.repconvar then
 		xlib.checkRepCvarCreated( t.repconvar )
 		pnl:SetValue( GetConVar( t.repconvar ):GetFloat() )
 		function pnl.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 			if cl_cvar == t.repconvar:lower() then
-				if ( IsValid( pnl ) ) then	--Prevents random errors when joining. TODO: Remove this when sliders are.. better?
+				if ( IsValid( pnl ) ) then	--Prevents random errors when joining.
 					pnl:SetValue( new_val )
 				end
 			end
@@ -609,14 +541,92 @@ function xlib.makeslider( t )
 		function pnl:OnValueChanged( val )
 			RunConsoleCommand( t.repconvar, tostring( val ) )
 		end
-		pnl.Wang.ConVarStringThink = function() end --Override think functions to remove Garry's convar check to (hopefully) speed things up
+		--Override think functions to remove Garry's convar check to (hopefully) speed things up
 		pnl.ConVarNumberThink = function() end
 		pnl.ConVarStringThink = function() end
 		pnl.ConVarChanged = function() end
 	end
+	
+	--Support for enabling/disabling slider
+	pnl.SetDisabled = function( self, val )
+		pnl:SetAlpha( val and 128 or 255 )
+		pnl:SetEnabled( not val )
+		pnl.TextArea:SetEnabled( not val )
+		pnl.TextArea:SetMouseInputEnabled( not val )
+		pnl.Scratch:SetMouseInputEnabled( not val )
+		pnl.Slider:SetMouseInputEnabled( not val )
+	end
+	if t.disabled then pnl:SetDisabled( t.disabled ) end
+	
+	pnl:SizeToContents()
+	
+
+	--The following code bits are basically copies of Garry's code with changes to prevent the slider from sending updates so often
+	function pnl.TextArea:ValueUpdated( value )
+		self:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", value) )
+	end
+	
+	pnl.TextArea.OnTextChanged = function() end
+	function pnl.TextArea:OnLoseFocus()
+		pnl:SetValue( pnl.TextArea:GetText() )
+	end
+	
+	
+	local pnl_val
+	function pnl:TranslateSliderValues( x, y )
+		pnl_val = self.Scratch:GetMin() + (x * self.Scratch:GetRange()) --Store the value and update the textbox to the new value
+		pnl.TextArea:ValueUpdated( pnl_val )
+		self.Scratch:SetFraction( x )
+    
+		return self.Scratch:GetFraction(), y
+	end
+	local tmpfunc = pnl.Slider.Knob.OnMouseReleased
+	pnl.Slider.Knob.OnMouseReleased = function( self, mcode )
+		tmpfunc( self, mcode )
+		pnl.Slider:OnMouseReleased( mcode )
+	end
+	pnl.Slider.OnMouseReleased = function( self, mcode )
+		self:SetDragging( false )
+		self:MouseCapture( false )
+		pnl:SetValue( pnl.TextArea:GetText() )
+	end
+	
+	
+	function pnl.Scratch:OnCursorMoved( x, y )
+		if ( !self:GetActive() ) then return end
+
+		x = x - math.floor( self:GetWide() * 0.5 )
+		y = y - math.floor( self:GetTall() * 0.5 )
+
+		local zoom = self:GetZoom()
+		local ControlScale = 100 / zoom;
+		local maxzoom = 20
+		if ( self:GetDecimals() ) then
+			maxzoom = 10000
+		end
+		zoom = math.Clamp( zoom + ((y * -0.6) / ControlScale), 0.01, maxzoom );
+		self:SetZoom( zoom )
+
+		local value = self:GetFloatValue()
+		value = math.Clamp( value + (x * ControlScale * 0.002), self:GetMin(), self:GetMax() );
+		self:SetFloatValue( value )
+		pnl_val = value --Store value for later
+		pnl.TextArea:ValueUpdated( pnl_val )
+		
+		self:LockCursor()
+	end
+	pnl.Scratch.OnMouseReleased = function( self, mousecode )
+		g_Active = nil
+
+		self:SetActive( false )
+		self:MouseCapture( false )
+		self:SetCursor( "sizewe" )
+		
+		pnl:SetValue( pnl.TextArea:GetText() )
+	end
+	
 	return pnl
 end
-
 
 -----------------------------------------
 --A stripped-down customized DPanel allowing for textbox input!

@@ -6,13 +6,13 @@ xgui.prepareDataType( "sbans" )
 
 local xbans = xlib.makepanel{ parent=xgui.null }
 xbans.isPopulating = 0
-xbans.showperma = xlib.makecheckbox{ x=445, y=10, value=1, label="Show Permabans", textcolor=color_black, parent=xbans }
+xbans.showperma = xlib.makecheckbox{ x=445, y=10, value=1, label="Show Permabans", parent=xbans }
 function xbans.showperma:OnChange()
 	xbans.clearbans()
 	xbans.populateBans()
 end
 
-xbans.banlist = xlib.makelistview{ x=5, y=30, w=580, h=315, multiselect=false, parent=xbans }
+xbans.banlist = xlib.makelistview{ x=5, y=30, w=572, h=310, multiselect=false, parent=xbans }
 	xbans.banlist:AddColumn( "Name/SteamID" )
 	xbans.banlist:AddColumn( "Banned By" )
 	xbans.banlist:AddColumn( "Unban Date" )
@@ -28,9 +28,9 @@ xbans.banlist.OnRowRightClick = function( self, LineID, line )
 	menu:Open()
 end
 
-xlib.makelabel{ x=200, y=10, label="Right-click on a ban for more options", parent=xbans, textcolor=color_black }
-xbans.freezeban = xlib.makecheckbox{ x=140, y=348, label="Use Freezeban", tooltip="Freezes a player you have selected for banning while editing ban information (!fban in chat)", value=1, parent=xbans, textcolor=color_black}
-xlib.makebutton{ x=5, y=345, w=130, label="Add Ban...", parent=xbans }.DoClick = function()
+xlib.makelabel{ x=200, y=10, label="Right-click on a ban for more options", parent=xbans }
+xbans.freezeban = xlib.makecheckbox{ x=140, y=343, label="Use Freezeban", tooltip="Freezes a player you have selected for banning while editing ban information (!fban in chat)", value=1, parent=xbans }
+xlib.makebutton{ x=5, y=340, w=130, label="Add Ban...", parent=xbans }.DoClick = function()
 	local menu = DermaMenu()
 	for k, v in ipairs( player.GetAll() ) do	
 		menu:AddOption( v:Nick(), function() xgui.ShowBanWindow( v:Nick(), v:SteamID(), xbans.freezeban:GetChecked() ) end )
@@ -39,7 +39,7 @@ xlib.makebutton{ x=5, y=345, w=130, label="Add Ban...", parent=xbans }.DoClick =
 	if LocalPlayer():query("ulx banid") then menu:AddOption( "Ban by STEAMID...", function() xgui.ShowBanWindow() end ) end
 	menu:Open()
 end
-xlib.makebutton{ x=455, y=345, w=130, label="View Source Bans...", parent=xbans }.DoClick = function()
+xlib.makebutton{ x=447, y=340, w=130, label="View Source Bans...", parent=xbans }.DoClick = function()
 	if xbans.sbanWindow and xbans.sbanWindow:IsVisible() then return end
 	xbans.sbanWindow = xlib.makeframe{ w=160, h=400, label="Bans added via banid", skin=xgui.settings.skin }
 	xbans.sbanWindow.bans = xlib.makelistview{ x=5, y=50, w=150, h=323, headerheight=0, parent=xbans.sbanWindow }
@@ -203,7 +203,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 		xlib.makelabel{ x=28, y=83, label="Reason:", parent=xgui_banwindow }
 		xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
 		local reason = xlib.makecombobox{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
-		local bantime = xlib.makeslider{ x=75, y=105, w=200, value=0, min=0, max=360, decimal=0, disabled=true, parent=xgui_banwindow }
+		local bantime = xlib.makeslider{ x=150, y=105, w=125, value=0, min=0, max=360, decimal=0, disabled=true, parent=xgui_banwindow }
 		local interval = xlib.makecombobox{ x=75, y=105, w=75, text="Permanent", choices={ "Permanent", "Minutes", "Hours", "Days", "Weeks", "Years" }, parent=xgui_banwindow }
 		interval.OnSelect = function( self, index, value, data )
 			bantime:SetDisabled( value == "Permanent" )

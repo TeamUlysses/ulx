@@ -3,9 +3,9 @@
 
 local client = xlib.makepanel{ parent=xgui.null }
 
-client.panel = xlib.makepanel{ x=160, y=5, w=425, h=327, parent=client }
+client.panel = xlib.makepanel{ x=160, y=5, w=425, h=322, parent=client }
 
-client.catList = xlib.makelistview{ x=5, y=5, w=150, h=307, parent=client }
+client.catList = xlib.makelistview{ x=5, y=5, w=150, h=302, parent=client }
 client.catList:AddColumn( "Clientside Settings" )
 client.catList.Columns[1].DoClick = function() end
 client.catList.OnRowSelected = function( self, LineID, Line )
@@ -28,7 +28,7 @@ client.catList.OnRowSelected = function( self, LineID, Line )
 	if nPanel.onOpen then nPanel.onOpen() end --If the panel has it, call a function when it's opened
 end
 
-xlib.makebutton{ x=5, y=312, w=150, label="Save Clientside Settings", parent=client }.DoClick=function()
+xlib.makebutton{ x=5, y=307, w=150, label="Save Clientside Settings", parent=client }.DoClick=function()
 	xgui.saveClientSettings()
 end
 
@@ -69,15 +69,16 @@ xlib.makebutton{ x=10, y=30, w=150, label="Refresh Server Data", parent=xguipnl 
 		timer.Simple( 30, function() self:SetDisabled( false ) end )
 	end
 end
-xlib.makeslider{ x=10, y=55, w=150, label="Anim transition time", max=2, value=xgui.settings.animTime, decimal=2, parent=xguipnl, textcolor=color_black }.OnValueChanged = function( self, val )
+xlib.makelabel{ x=10, y=55, label="Anim transition time", parent=xguipnl }
+xlib.makeslider{ x=10, y=70, w=150, label="<--->", max=2, value=xgui.settings.animTime, decimal=2, parent=xguipnl }.OnValueChanged = function( self, val )
 	local testval = math.Clamp( tonumber( val ), 0, 2 )
 	if testval ~= tonumber( val ) then self:SetValue( testval ) end
 	xgui.settings.animTime = tonumber( val )
 end
-xlib.makecheckbox{ x=10, y=97, w=150, label="Show Startup Messages", value=xgui.settings.showLoadMsgs, parent=xguipnl, textcolor=color_black }.OnChange = function( self, bVal )
+xlib.makecheckbox{ x=10, y=97, w=150, label="Show Startup Messages", value=xgui.settings.showLoadMsgs, parent=xguipnl }.OnChange = function( self, bVal )
 	xgui.settings.showLoadMsgs = bVal
 end
-xlib.makelabel{ x=10, y=120, label="Infobar color:", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=10, y=120, label="Infobar color:", parent=xguipnl }
 
 xlib.makecolorpicker{ x=10, y=135, color=xgui.settings.infoColor, addalpha=true, alphamodetwo=true, parent=xguipnl }.OnChangeImmediate = function( self, color )
 	xgui.settings.infoColor = color
@@ -90,7 +91,7 @@ end
 for _, file in ipairs( file.Find( "skins/*.lua", "LUA" ) ) do
 	include( "skins/" .. file )
 end
-xlib.makelabel{ x=10, y=273, label="Derma Theme:", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=10, y=273, label="Derma Theme:", parent=xguipnl }
 xguipnl.skinselect = xlib.makecombobox{ x=10, y=290, w=150, parent=xguipnl }
 if not derma.SkinList[xgui.settings.skin] then
 	xgui.settings.skin = "Default"
@@ -177,7 +178,7 @@ end
 --------------------
 --XGUI POSITIONING--
 --------------------
-xlib.makelabel{ x=175, y=145, label="XGUI Positioning:", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=175, y=145, label="XGUI Positioning:", parent=xguipnl }
 local pos = tonumber( xgui.settings.xguipos.pos )
 xguipnl.b7 = xlib.makespecialbutton{ x=175, y=160, w=20, btype="none", disabled=pos==7, parent=xguipnl }
 xguipnl.b7.DoClick = function( self ) xguipnl.updatePos( 7 ) end
@@ -228,7 +229,7 @@ xguipnl.xwang.OnLoseFocus = function( self )
 	hook.Call( "OnTextEntryLoseFocus", nil, self )
 	self:OnEnter()
 end
-xlib.makelabel{ x=300, y=169, label="X Offset", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=300, y=169, label="X Offset", parent=xguipnl }
 
 xguipnl.ywang = xlib.makenumberwang{ x=245, y=193, w=50, min=-1000, max=1000, value=xgui.settings.xguipos.yoff, decimal=0, parent=xguipnl }
 xguipnl.ywang.OnValueChanged = function( self, val )
@@ -243,19 +244,19 @@ xguipnl.ywang.OnLoseFocus = function( self )
 	hook.Call( "OnTextEntryLoseFocus", nil, self )
 	self:OnEnter()
 end
-xlib.makelabel{ x=300, y=195, label="Y Offset", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=300, y=195, label="Y Offset", parent=xguipnl }
 
 -------------------------
 --OPEN/CLOSE ANIMATIONS--
 -------------------------
-xlib.makelabel{ x=175, y=229, label="XGUI Animations:", textcolor=color_black, parent=xguipnl }
-xlib.makelabel{ x=175, y=247, label="On Open:", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=175, y=229, label="XGUI Animations:", parent=xguipnl }
+xlib.makelabel{ x=175, y=247, label="On Open:", parent=xguipnl }
 xguipnl.inAnim = xlib.makecombobox{ x=225, y=245, w=150, choices={ "Fade In", "Slide From Top", "Slide From Left", "Slide From Bottom", "Slide From Right" }, parent=xguipnl }
 xguipnl.inAnim:ChooseOptionID( tonumber( xgui.settings.animIntype ) )
 function xguipnl.inAnim:OnSelect( index, value, data )
 	xgui.settings.animIntype = index
 end
-xlib.makelabel{ x=175, y=272, label="On Close:", textcolor=color_black, parent=xguipnl }
+xlib.makelabel{ x=175, y=272, label="On Close:", parent=xguipnl }
 xguipnl.outAnim = xlib.makecombobox{ x=225, y=270, w=150, choices={ "Fade Out", "Slide To Top", "Slide To Left", "Slide To Bottom", "Slide To Right" }, parent=xguipnl }
 xguipnl.outAnim:ChooseOptionID( tonumber( xgui.settings.animOuttype ) )
 function xguipnl.outAnim:OnSelect( index, value, data )

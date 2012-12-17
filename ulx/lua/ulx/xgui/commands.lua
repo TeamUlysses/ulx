@@ -3,8 +3,8 @@
 
 local cmds = xlib.makepanel{ parent=xgui.null }
 cmds.selcmd = nil
-cmds.mask = xlib.makepanel{ x=160, y=30, w=425, h=335, parent=cmds }
-cmds.argslist = xlib.makelistlayout{ w=170, h=335, parent=cmds.mask }
+cmds.mask = xlib.makepanel{ x=160, y=30, w=425, h=330, parent=cmds }
+cmds.argslist = xlib.makelistlayout{ w=165, h=330, parent=cmds.mask }
 cmds.argslist.secondaryPos = nil
 
 function cmds.argslist.IsVisible( self )
@@ -25,7 +25,7 @@ end
 function cmds.argslist:Close()
 	self:closeAnim( self.secondaryPos )
 end
-cmds.plist = xlib.makelistview{ w=250, h=335, multiselect=true, parent=cmds.mask }
+cmds.plist = xlib.makelistview{ w=250, h=330, multiselect=true, parent=cmds.mask }
 function cmds.plist:Open( arg )
 	if cmds.argslist.secondaryPos == true then cmds.argslist:Close()
 	elseif self:IsVisible() then self:Close() end
@@ -54,7 +54,7 @@ cmds.plist:SetVisible( false )
 cmds.plist:AddColumn( "Name" )
 cmds.plist:AddColumn( "Group" )
 
-cmds.cmds = xlib.makelistlayout{ x=5, y=30, w=150, h=335, parent=cmds, padding=1, spacing=1 }
+cmds.cmds = xlib.makelistlayout{ x=5, y=30, w=150, h=330, parent=cmds, padding=1, spacing=1 }
 cmds.setselected = function( selcat, LineID )
 	if selcat.Lines[LineID]:GetColumnText(2) == cmds.selcmd then 
 		selcat:ClearSelection()
@@ -215,7 +215,7 @@ function cmds.buildArgsList( cmd )
 		--panel:SizeToChildren()
 		cmds.argslist:Add( panel )
 	elseif curitem and curitem.type == ULib.cmds.NumArg then
-		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].Wang.OnEnter = function( self )
+		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].TextArea.OnEnter = function( self )
 			cmds.runCmd( cmd.cmd )
 		end
 	elseif curitem and curitem.type == ULib.cmds.StringArg then
@@ -240,7 +240,7 @@ function cmds.buildArgsList( cmd )
 		cmds.argslist:Add( xgui_temp )
 	end
 	if cmd.helpStr then --If the command has a string for help
-		local xgui_temp = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true, textcolor=color_black }
+		local xgui_temp = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true }
 		xgui_temp.xguiIgnore = true
 		cmds.argslist:Add( xgui_temp )
 	end

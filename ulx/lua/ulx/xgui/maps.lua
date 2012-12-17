@@ -5,11 +5,11 @@ ulx.votemaps = {}
 xgui.prepareDataType( "votemaps", ulx.votemaps )
 local maps = xlib.makepanel{ parent=xgui.null }
 
-maps.maplabel = xlib.makelabel{ x=10, y=13, label="Server Votemaps: (Votemaps are highlighted)", textcolor=color_black, parent=maps }
-xlib.makelabel{ x=10, y=348, label="Gamemode:", parent=maps, textcolor=color_black }
-maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", parent=maps, textcolor=color_black }
+maps.maplabel = xlib.makelabel{ x=10, y=13, label="Server Votemaps: (Votemaps are highlighted)", parent=maps }
+xlib.makelabel{ x=10, y=343, label="Gamemode:", parent=maps }
+maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", parent=maps }
 
-maps.list = xlib.makelistview{ x=5, y=30, w=175, h=315, multiselect=true, parent=maps, headerheight=0 } --Remember to enable/disable multiselect based on admin status?
+maps.list = xlib.makelistview{ x=5, y=30, w=175, h=310, multiselect=true, parent=maps, headerheight=0 } --Remember to enable/disable multiselect based on admin status?
 maps.list:AddColumn( "Map Name" )
 maps.list.OnRowSelected = function( self, LineID, Line )
 	if ( file.Exists( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png", "GAME" ) ) then 
@@ -24,7 +24,7 @@ maps.list.Think = function()
 	if maps.list.checkVotemaps then
 		for _,line in ipairs( maps.list.Lines ) do
 			if line.isNotVotemap then
-				timer.Simple( 0.01, function() line.Columns[1]:SetTextColor( Color( 55,55,55,90 ) ) end ) --Srsly, wtf derma? This doesn't show properly unless it's called on a think AND delayed?
+				line:SetAlpha( 152 )
 			end
 		end
 		maps.list.checkVotemaps = nil
@@ -36,7 +36,7 @@ maps.disp:SetPos( 185, 30 )
 maps.disp:SetMaterial( "../maps/noicon.png" )
 maps.disp:SetSize( 192, 192 )
 
-maps.gamemode = xlib.makecombobox{ x=70, y=345, w=110, h=20, text="<default>", parent=maps }
+maps.gamemode = xlib.makecombobox{ x=70, y=340, w=110, h=20, text="<default>", parent=maps }
 
 maps.vote = xlib.makebutton{ x=185, y=245, w=192, h=20, label="Vote to play this map!", parent=maps }
 maps.vote.DoClick = function()
