@@ -226,7 +226,7 @@ function xgui.load_helpers()
 
 	--Load control interpretations for ULib argument types
 	function ULib.cmds.BaseArg.x_getcontrol( arg, argnum )
-		return xlib.makelabel{ label="Not Supported", textcolor=color_black }
+		return xlib.makelabel{ label="Not Supported" }
 	end
 
 	function ULib.cmds.NumArg.x_getcontrol( arg, argnum )
@@ -239,9 +239,10 @@ function xgui.load_helpers()
 			local min = restrictions.min or 0
 			local max = restrictions.max or 10 * 60 * 24 * 365 --default slider max 10 years
 			
-			outPanel = xlib.makepanel{ h=35 }
-			outPanel.val = xlib.makeslider{ w=160, min=min, max=max, value=min, decimal=0, parent=outPanel }
-			outPanel.interval = xlib.makecombobox{ w=75, parent=outPanel }
+			outPanel = xlib.makepanel{ h=40 }
+			xlib.makelabel{ x=5, y=3, label="Ban Length:", parent=outPanel }
+			outPanel.interval = xlib.makecombobox{ x=90, w=75, parent=outPanel }
+			outPanel.val = xlib.makeslider{ w=165, y=20, label="<--->", min=min, max=max, value=min, decimal=0, parent=outPanel }
 			
 			local divisor = {}
 			local sensiblemax = {}
@@ -259,14 +260,15 @@ function xgui.load_helpers()
 				outPanel.val:SetMax( outPanel.val.maxvalue )
 				outPanel.val:SetMin( outPanel.val.minvalue )
 				outPanel.val:SetValue( math.Clamp( tonumber( outPanel.val:GetValue() ), outPanel.val.minvalue, outPanel.val.maxvalue ) )
-				--outPanel.val:PerformLayout() --TODO: Sliders broken
 			end
 			
 			function outPanel.val:ValueChanged( val )
 				val = math.Clamp( tonumber( val ), self.minvalue, self.maxvalue )
-				self.Slider:SetSlideX( self.Wang:GetFraction( val ) )
+				self.Slider:SetSlideX( self.Scratch:GetFraction( val ) )
+				if ( self.TextArea != vgui.GetKeyboardFocus() ) then
+					self.TextArea:SetValue( self.Scratch:GetTextValue() )
+				end
 				self:OnValueChanged( val )
-				self.Wang:SetText( val )
 			end
 			
 			outPanel.interval:ChooseOptionID( 1 )
@@ -359,7 +361,7 @@ function xgui.load_helpers()
 	end
 
 	function ULib.cmds.CallingPlayerArg.x_getcontrol( arg, argnum )
-		return xlib.makelabel{ label=arg.hint or "CallingPlayer", textcolor=color_black }
+		return xlib.makelabel{ label=arg.hint or "CallingPlayer" }
 	end
 
 	function ULib.cmds.BoolArg.x_getcontrol( arg, argnum )
