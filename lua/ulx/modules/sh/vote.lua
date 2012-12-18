@@ -351,7 +351,7 @@ function ulx.voteban( calling_ply, target_ply, minutes, reason )
 end
 local voteban = ulx.command( CATEGORY_NAME, "ulx voteban", ulx.voteban, "!voteban" )
 voteban:addParam{ type=ULib.cmds.PlayerArg }
-voteban:addParam{ type=ULib.cmds.NumArg, min=0, default=1440, hint="minutes", ULib.cmds.round, ULib.cmds.optional }
+voteban:addParam{ type=ULib.cmds.NumArg, min=0, default=1440, hint="minutes", ULib.cmds.allowTimeString, ULib.cmds.optional }
 voteban:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.cmds.takeRestOfLine, completes=ulx.common_kick_reasons }
 voteban:defaultAccess( ULib.ACCESS_ADMIN )
 voteban:help( "Starts a public ban vote against target." )
