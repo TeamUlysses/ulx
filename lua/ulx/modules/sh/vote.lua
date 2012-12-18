@@ -89,7 +89,7 @@ function ulx.voteDone()
 
 	local vip = voteInProgress
 	voteInProgress = nil
-	ULib.pcallError( vip.callback, vip, unpack( vip.args ) )
+	ULib.pcallError( vip.callback, vip, unpack( vip.args, 1, 10 ) ) -- Unpack is explicit in length to avoid odd LuaJIT quirk.
 end
 -- End our helper functions
 
@@ -168,7 +168,7 @@ local function voteMapDone( t, argv, ply )
 	if (#argv < 2 and winner ~= 1) or not winner or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: Vote was unsuccessful."
 	else
-		str = "Vote results: Option '" .. t.options[ winner ] .. "' won, changemap pending admin approval. (" .. winnernum .. "/" .. t.voters .. ")"
+		str = "Vote results: Option '" .. t.options[ winner ] .. "' won, changemap pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
 
 		-- Figure out the map to change to.
 		if #argv > 1 then
@@ -252,7 +252,7 @@ local function voteKickDone( t, target, time, ply, reason )
 	if winner ~= 1 or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: User will not be kicked. (" .. (results[ 1 ] or "0") .. "/" .. t.voters .. ")"
 	else
-		str = "Vote results: User will now be kicked, pending admin approval. (" .. winnernum .. "/" .. t.voters .. ")"
+		str = "Vote results: User will now be kicked, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
 		ulx.doVote( "Accept result and kick " .. target:Nick() .. "?", { "Yes", "No" }, voteKickDone2, 30000, { ply }, true, target, time, ply, reason )
 	end
 
@@ -322,7 +322,7 @@ local function voteBanDone( t, target, time, ply, reason )
 	if winner ~= 1 or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: User will not be banned. (" .. (results[ 1 ] or "0") .. "/" .. t.voters .. ")"
 	else
-		str = "Vote results: User will now be banned for " .. time .. " minutes, pending admin approval. (" .. winnernum .. "/" .. t.voters .. ")"
+		str = "Vote results: User will now be banned for " .. time .. " minutes, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
 		ulx.doVote( "Accept result and ban " .. target:Nick() .. "?", { "Yes", "No" }, voteBanDone2, 30000, { ply }, true, target, time, ply, reason )
 	end
 
