@@ -65,8 +65,8 @@ local function playerAccess( ply )
 			local players = player.GetAll()
 			for _, player in ipairs( players ) do
 				if not ULib.ucl.query( player, access ) then
-					if player.Created > shortesttime then
-						shortesttime = player.Created
+					if player:TimeConnected() > shortesttime then
+						shortesttime = player:TimeConnected()
 						shortestply = player
 					end
 				end

@@ -229,10 +229,9 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 
 	local players = player.GetAll()
-	str = str .. string.format( "Currently connected players:\nNick%s steamid%s uid%s id lsh created\n", str.rep( " ", 27 ), str.rep( " ", 11 ), str.rep( " ", 7 ) )
+	str = str .. string.format( "Currently connected players:\nNick%s steamid%s uid%s id lsh\n", str.rep( " ", 27 ), str.rep( " ", 11 ), str.rep( " ", 7 ) )
 	for _, ply in ipairs( players ) do
 		local id = string.format( "%i", ply:EntIndex() )
-		local created = string.format( "%i", ply.Created )
 		local steamid = ply:SteamID()
 		local uid = tostring( ply:UniqueID() )
 
@@ -245,7 +244,6 @@ function ulx.debuginfo( calling_ply )
 		else
 			plyline = plyline .. "n	  "
 		end
-		plyline = plyline .. created -- Seconds from server start the player connected
 
 		str = str .. plyline .. "\n"
 	end
