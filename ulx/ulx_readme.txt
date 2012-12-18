@@ -68,6 +68,7 @@ v3.60 - *(00/00/00)*
 	* [FIX] Garry breakages in GM13.
 	* [FIX] An exclusivity bug in "ulx freeze" (Thanks infinitywraith).
 	* [FIX] A console bug when trying to ulx teleport another player (Thanks infinitywraith).
+	* [FIX] "ulx gimp" not obeying chat anti-spam (Thanks ruok2bu).
 
 v3.54 - *(04/27/12)*
 	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
