@@ -36,6 +36,7 @@ All client config is done in game under "utilities". To disable the welcome mess
 
 v1.42 - *(00/00/00)*
 	* [ADD] utime_welcome cvar to disable welcome message.
+	* [FIX] Regular slew of bugs introduced by Garry (MAJOR thanks TweaK!).
 
 v1.41 - *(08/06/10)*
 	* [FIX] A a few bugs some people were getting preventing the GUI from showing correctly.
