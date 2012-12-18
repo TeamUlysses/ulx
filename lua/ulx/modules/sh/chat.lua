@@ -212,7 +212,7 @@ local function gimpCheck( ply, strText )
 		return gimpSays[ math.random( #gimpSays ) ]
 	end
 end
-hook.Add( "PlayerSay", "ULXGimpCheck", gimpCheck, 15 ) -- Very low priority
+hook.Add( "PlayerSay", "ULXGimpCheck", gimpCheck, 18 ) -- Very low priority
 
 ------------------------------ Gag ------------------------------
 function ulx.gag( calling_ply, target_plys, should_ungag )
@@ -270,7 +270,7 @@ local function playerSay( ply )
 		return
 	end
 end
-hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, 19 )
+hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, 17 )
 
 local function meCheck( ply, strText, bPublic )
 	if ply.gimp or GAMEMODE.Name ~= "Sandbox" then return end -- Don't mess
