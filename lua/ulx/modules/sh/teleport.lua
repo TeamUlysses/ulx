@@ -196,8 +196,8 @@ send:defaultAccess( ULib.ACCESS_ADMIN )
 send:help( "Goto target." )
 
 function ulx.teleport( calling_ply, target_ply )
-	if not target_ply:IsValid() then
-		Msg( "You are the console, you can't teleport since you can't see the world!\n" )
+	if not calling_ply:IsValid() then
+		Msg( "You are the console, you can't teleport or teleport others since you can't see the world!\n" )
 		return
 	end
 

@@ -67,6 +67,7 @@ v3.60 - *(00/00/00)*
 	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
 	* [FIX] Garry breakages in GM13.
 	* [FIX] An exclusivity bug in "ulx freeze" (Thanks infinitywraith).
+	* [FIX] A console bug when trying to ulx teleport another player (Thanks infinitywraith).
 
 v3.54 - *(04/27/12)*
 	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
