@@ -14,10 +14,12 @@ local gmod          = gmod
 local pairs         = pairs
 local isfunction    = isfunction
 local isstring      = isstring
+local IsValid       = IsValid
 
 -- Needed due to our modifications
 local table         = table
-local ipairs         = ipairs
+local ipairs        = ipairs
+local tostring      = tostring
 
 --[[ Needed for tests, below
 local CLIENT = CLIENT
@@ -40,11 +42,18 @@ local Hooks = {}
 local BackwardsHooks = {} -- A table fully to garry's spec for aVoN
 
 local function sortHooks( event_name )
+	for i=#Hooks[ event_name ], 1, -1 do
+		local name = Hooks[ event_name ][ i ].name
+		if not isstring( name ) and not IsValid( name ) then
+			Remove( event_name, name )
+		end
+	end
+	
 	table.sort( Hooks[ event_name ], function( a, b ) -- Sort by priority, then name
 		if a == nil then return false -- Move nil to end
 		elseif b == nil then return true -- Keep nil at end
 		elseif a.priority < b.priority then return true
-		elseif a.priority == b.priority and a.name < b.name then return true
+		elseif a.priority == b.priority and tostring(a.name) < tostring(b.name) then return true
 		else return false end
 	end )
 end
@@ -80,7 +89,6 @@ end
 function Add( event_name, name, func, priority )
 	if not isfunction( func ) then return end
 	if not isstring( event_name ) then return end
-	if not isstring( name ) then return end
 	
 	if not Hooks[ event_name ] then
 		BackwardsHooks[ event_name ] = {}
@@ -93,8 +101,8 @@ function Add( event_name, name, func, priority )
 	Remove( event_name, name )
 
 	table.insert( Hooks[ event_name ], { name=name, fn=func, priority=priority } )
-	sortHooks( event_name )
 	BackwardsHooks[ event_name ][ name ] = func -- Keep the classic style too so we won't break anything
+	sortHooks( event_name )
 end
 
 --[[
@@ -107,7 +115,6 @@ end
 ]]
 function Remove( event_name, name )
 	if not isstring( event_name ) then return end
-	if not isstring( name ) then return end
 	
 	if not Hooks[ event_name ] then return end
 	
@@ -139,6 +146,7 @@ function Run( name, ... )
 	return Call( name, nil, ... )
 end
 
+local resort = {}
 --[[
 	Function: hook.Call
 
@@ -151,6 +159,11 @@ end
 		... - Any other params to pass
 ]]
 function Call( name, gm, ... )
+	for i = 1, #resort do
+		sortHooks( resort[ i ] )
+	end
+	resort = {}
+	
 	-- If called from hook.Run then gm will be nil.
 	if gm == nil and gmod ~= nil then
 		gm = gmod.GetGamemode()
@@ -159,13 +172,23 @@ function Call( name, gm, ... )
 	local HookTable = Hooks[ name ]
 
 	if HookTable then
+		local a, b, c, d, e, f
 		for k=1, #HookTable do
 			v = HookTable[ k ]
 			if not v then
 				-- Nothing
 			else
 				-- Call hook function
-				a, b, c, d, e, f = v.fn( ... )
+				if isstring( v.name ) then
+					a, b, c, d, e, f = v.fn( ... )
+				else
+					-- Assume it is an entity
+					if IsValid( v.name ) then
+						a, b, c, d, e, f = v.fn( v.name, ... )
+					else
+						table.insert( resort, name )
+					end
+				end
 
 				if a ~= nil then
 					-- Allow hooks to override return values if it's within the limits (-20 and 20 are read only)
