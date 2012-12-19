@@ -162,7 +162,7 @@ local repCvarServerChanged
 	Parameters:
 
 		sv_cvar - The string of server side cvar.
-		cl_cvar - The string of the client side cvar. *THIS MUST BE DIFFERENT FROM THE sv_cvar VALUE*.
+		cl_cvar - The string of the client side cvar. *THIS MUST BE DIFFERENT FROM THE sv_cvar VALUE IF YOU'RE PIGGY BACKING AN EXISTING REPLICATED CVAR (like sv_gravity)*.
 		default_value - The string of the default value for the cvar.
 		save - Boolean of whether or not the value is persistent across map changes.
 			This uses garry's way, which has lots of issues. We recommend you watch the cvar for changes and handle saving yourself.
@@ -176,16 +176,13 @@ local repCvarServerChanged
 	Revisions:
 
 		v2.40 - Initial.
+		v2.50 - Changed to not depend on the replicated cvars themselves due to Garry-breakage.
 ]]
 function ULib.replicatedWritableCvar( sv_cvar, cl_cvar, default_value, save, notify, access )
 	sv_cvar = sv_cvar:lower()
 	cl_cvar = cl_cvar:lower()
-	if sv_cvar == cl_cvar then
-		ErrorNoHalt( "Bad input for ULib.replicatedWritableCvar" )
-		return
-	end
 
-	local flags = FCVAR_REPLICATED
+	local flags = 0
 	if save then
 		flags = flags + FCVAR_ARCHIVE
 	end
@@ -193,7 +190,7 @@ function ULib.replicatedWritableCvar( sv_cvar, cl_cvar, default_value, save, not
 		flags = flags + FCVAR_NOTIFY
 	end
 
-	local cvar_obj = CreateConVar( sv_cvar, default_value, flags )
+	local cvar_obj = GetConVar( sv_cvar ) or CreateConVar( sv_cvar, default_value, flags )
 
 	umsg.Start( "ulib_repWriteCvar" ) -- Send to everyone connected
 		umsg.String( sv_cvar )
@@ -202,7 +199,7 @@ function ULib.replicatedWritableCvar( sv_cvar, cl_cvar, default_value, save, not
 		umsg.String( cvar_obj:GetString() )
 	umsg.End()
 
-	repcvars[ sv_cvar ] = { access=access, default=default_value, cl_cvar=cl_cvar }
+	repcvars[ sv_cvar ] = { access=access, default=default_value, cl_cvar=cl_cvar, cvar_obj=cvar_obj }
 	cvars.AddChangeCallback( sv_cvar, repCvarServerChanged )
 
 	hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, cl_cvar, nil, nil, cvar_obj:GetString() )
@@ -216,7 +213,7 @@ local function repCvarOnJoin( ply )
 			umsg.String( sv_cvar )
 			umsg.String( v.cl_cvar )
 			umsg.String( v.default )
-			umsg.String( GetConVarString( sv_cvar ) )
+			umsg.String( v.cvar_obj:GetString() )
 		umsg.End()
 	end
 end
@@ -227,18 +224,20 @@ local function clientChangeCvar( ply, command, argv )
 	local sv_cvar = argv[ 1 ]
 	local newvalue = argv[ 2 ]
 
-	if not sv_cvar or not newvalue  or not repcvars[ sv_cvar:lower() ] then -- Bad value, ignore
+	if not sv_cvar or not newvalue or not repcvars[ sv_cvar:lower() ] then -- Bad value, ignore
 		return
 	end
 
 	sv_cvar = sv_cvar:lower()
-	local oldvalue = GetConVarString( sv_cvar )
+	cvar_obj = repcvars[ sv_cvar ].cvar_obj
+	local oldvalue = cvar_obj:GetString()
 	if oldvalue == newvalue then return end -- Agreement
 
 	local access = repcvars[ sv_cvar ].access
 	if not ply:query( access ) then
 		ULib.tsayError( ply, "You do not have access to this cvar (" .. sv_cvar .. "), " .. ply:Nick() .. "." )
 		umsg.Start( "ulib_repChangeCvar", ply )
+			umsg.Entity( ply )
 			umsg.String( repcvars[ sv_cvar ].cl_cvar )
 			umsg.String( oldvalue )
 			umsg.String( oldvalue ) -- No change
@@ -246,7 +245,7 @@ local function clientChangeCvar( ply, command, argv )
 		return
 	end
 
-	repcvars[ sv_cvar ].ignore = true -- Flag other hook not to go off. Flag will be removed at hook.
+	repcvars[ sv_cvar ].ignore = ply -- Flag other hook not to go off. Flag will be removed at hook.
 	RunConsoleCommand( sv_cvar, newvalue )
 	hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, repcvars[ sv_cvar ].cl_cvar, ply, oldvalue, newvalue )
 end
@@ -258,6 +257,7 @@ repCvarServerChanged = function( sv_cvar, oldvalue, newvalue )
 	end
 
 	umsg.Start( "ulib_repChangeCvar" ) -- Tell clients to reset to new value
+		umsg.Entity( repcvars[ sv_cvar ].ignore or Entity( 0 ) )
 		umsg.String( repcvars[ sv_cvar ].cl_cvar )
 		umsg.String( oldvalue )
 		umsg.String( newvalue )

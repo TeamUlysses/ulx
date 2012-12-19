@@ -95,13 +95,14 @@ ULib.HOOK_UCLCHANGED = "UCLChanged"
 
 		sv_cvar - The name of the server-side cvar.
 		cl_cvar - The name of the client-side cvar.
-		ply - The player changing the cvar or nil on initial value. *ALWAYS nil client side*.
+		ply - The player changing the cvar or nil on initial value.
 		old_value - The previous value of the cvar, nil if this call is to set the initial value.
 		new_value - The new value of the cvar.
 
 	Revisions:
 
 		v2.40 - Initial
+		v2.50 - Removed nil on client side restriction.
 ]]
 ULib.HOOK_REPCVARCHANGED = "ULibReplicatedCvarChanged"
 

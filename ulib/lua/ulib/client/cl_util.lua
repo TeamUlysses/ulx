@@ -116,9 +116,6 @@ local function readCvar( um )
 	cvarinfo[ sv_cvar ] = GetConVar( cl_cvar ) or CreateClientConVar( cl_cvar, default_value, false, false ) -- Make sure it's created one way or another (second case is most common)
 	reversecvar[ cl_cvar ] = { sv_cvar=sv_cvar }
 
-	-- CreateConVar( sv_cvar, default_value, FCVAR_REPLICATED ) -- Can't do it this way (the proper way) due to garry-bug
-	CreateConVar( sv_cvar, current_value, FCVAR_REPLICATED )
-
 	ULib.queueFunctionCall( function() -- Queued to ensure we don't overload the client console
 		hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, cl_cvar, nil, nil, current_value )
 		if cvarinfo[ sv_cvar ]:GetString() ~= current_value then
@@ -127,13 +124,13 @@ local function readCvar( um )
 		end
 	end )
 
-	-- cvars.AddChangeCallback( sv_cvar, svCvarChanged ) -- Doesn't work for some reason under certain circumstances, moved logic into changeCvar
 	cvars.AddChangeCallback( cl_cvar, clCvarChanged )
 end
 usermessage.Hook( "ulib_repWriteCvar", readCvar )
 
 -- This is called when they've attempted to change a cvar they don't have access to.
 local function changeCvar( um )
+	local ply = um:ReadEntity()
 	local cl_cvar = um:ReadString()
 	local oldvalue = um:ReadString()
 	local newvalue = um:ReadString()
@@ -147,7 +144,7 @@ local function changeCvar( um )
 
 	ULib.queueFunctionCall( function() -- Queued so we won't overload the client console and so that changes are always going to be called via the hook AFTER the initial hook is called
 		if changed then
-			hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, cl_cvar, nil, oldvalue, newvalue )
+			hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, cl_cvar, ply, oldvalue, newvalue )
 		end
 
 		if GetConVarString( cl_cvar ) ~= newvalue then
