@@ -27,7 +27,8 @@ function ulx.convar( command, value, help, access )
 
 	local nospaceCommand = command:gsub( " ", "_" )
 	ulx.cvars[ command:lower() ] = { help=help, cvar=nospaceCommand, original=command }
-	local obj = ULib.replicatedWritableCvar( "ulx_" .. nospaceCommand, "ulx_cl_" .. nospaceCommand, value, false, false, "ulx " .. command )
+	local cvarName = "ulx_" .. nospaceCommand
+	local obj = ULib.replicatedWritableCvar( cvarName, cvarName, value, false, false, "ulx " .. command )
 
 	return obj
 end

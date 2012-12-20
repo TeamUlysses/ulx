@@ -11,7 +11,7 @@ function xgui.load_helpers()
 			pnl:SelectAllText()
 		end
 	end
-	hook.Add( "OnTextEntryGetFocus", "XGUI_GetKeyboardFocus", getKeyboardFocus )	--TODO: Hook no longer valid?
+	hook.Add( "OnTextEntryGetFocus", "XGUI_GetKeyboardFocus", getKeyboardFocus )
 
 	local function loseKeyboardFocus( pnl )
 		if pnl:HasParent( xgui.base ) then

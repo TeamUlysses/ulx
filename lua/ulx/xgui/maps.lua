@@ -154,7 +154,7 @@ end
 
 --Enable/Disable the votemap button when ulx_votemapEnabled changes
 function maps.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-	if cl_cvar == "ulx_cl_votemapenabled" then
+	if cl_cvar == "ulx_votemapenabled" then
 		if tonumber( new_val ) == 1 then
 			maps.accessVotemap = true
 		else

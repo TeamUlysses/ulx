@@ -275,7 +275,7 @@ function settings.postinit()
 	settings.updatevotemaps()
 
 	local function votemapCvarUpdate( sv_cvar, cl_cvar, ply, old_val, new_val )
-		if cl_cvar == "ulx_cl_votemapmapmode" then
+		if cl_cvar == "ulx_votemapmapmode" then
 			settings.saveVotemaps( tonumber( new_val ) )
 		end
 	end
