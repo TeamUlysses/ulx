@@ -82,9 +82,9 @@ xgui.addSettingModule( "Server", server, "icon16/server.png", "xgui_svsettings" 
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Admin Votemap Settings" } )
 plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept a mapchange" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_cl_votemap2Successratio" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_votemap2Successratio" } )
 plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept a mapchange" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_cl_votemap2Minvotes" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_votemap2Minvotes" } )
 xgui.addSubModule( "ULX Admin Votemaps", plist, nil, "server" )
 
 -----------------------------Adverts-----------------------------
@@ -378,33 +378,33 @@ xgui.addSubModule( "ULX Adverts", adverts, nil, "server" )
 ------------------------------Echo-------------------------------
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Command/Event echo settings" } )
-plist:Add( xlib.makecheckbox{ label="Echo players vote choices", repconvar="ulx_cl_voteEcho" } )
-plist:Add( xlib.makecombobox{ repconvar="ulx_cl_logEcho", isNumberConvar=true, choices={ "Do not echo admin commands", "Echo admin commands anonymously", "Echo commands and identify admin" } } )
-plist:Add( xlib.makecombobox{ repconvar="ulx_cl_logSpawnsEcho", isNumberConvar=true, choices={ "Do not echo spawns", "Echo spawns to admins only", "Echo spawns to everyone" } } )
-plist:Add( xlib.makecheckbox{ label="Enable colored event echoes", repconvar="ulx_cl_logEchoColors" } )
+plist:Add( xlib.makecheckbox{ label="Echo players vote choices", repconvar="ulx_voteEcho" } )
+plist:Add( xlib.makecombobox{ repconvar="ulx_logEcho", isNumberConvar=true, choices={ "Do not echo admin commands", "Echo admin commands anonymously", "Echo commands and identify admin" } } )
+plist:Add( xlib.makecombobox{ repconvar="ulx_logSpawnsEcho", isNumberConvar=true, choices={ "Do not echo spawns", "Echo spawns to admins only", "Echo spawns to everyone" } } )
+plist:Add( xlib.makecheckbox{ label="Enable colored event echoes", repconvar="ulx_logEchoColors" } )
 
 plist:Add( xlib.makelabel{ label="Default text color" } )
-plist:Add( xlib.makecolorpicker{ repconvar="ulx_cl_logEchoColorDefault", noalphamodetwo=true } )
+plist:Add( xlib.makecolorpicker{ repconvar="ulx_logEchoColorDefault", noalphamodetwo=true } )
 plist:Add( xlib.makelabel{ label="Color for console" } )
-plist:Add( xlib.makecolorpicker{ repconvar="ulx_cl_logEchoColorConsole", noalphamodetwo=true } )
+plist:Add( xlib.makecolorpicker{ repconvar="ulx_logEchoColorConsole", noalphamodetwo=true } )
 plist:Add( xlib.makelabel{ label="Color for self" } )
-plist:Add( xlib.makecolorpicker{ repconvar="ulx_cl_logEchoColorSelf", noalphamodetwo=true } )
+plist:Add( xlib.makecolorpicker{ repconvar="ulx_logEchoColorSelf", noalphamodetwo=true } )
 plist:Add( xlib.makelabel{ label="Color for everyone" } )
-plist:Add( xlib.makecolorpicker{ repconvar="ulx_cl_logEchoColorEveryone", noalphamodetwo=true } )
-plist:Add( xlib.makecheckbox{ label="Show team colors for players", repconvar="ulx_cl_logEchoColorPlayerAsGroup" } )
+plist:Add( xlib.makecolorpicker{ repconvar="ulx_logEchoColorEveryone", noalphamodetwo=true } )
+plist:Add( xlib.makecheckbox{ label="Show team colors for players", repconvar="ulx_logEchoColorPlayerAsGroup" } )
 plist:Add( xlib.makelabel{ label="Color for players (when above is disabled)" } )
-plist:Add( xlib.makecolorpicker{ repconvar="ulx_cl_logEchoColorPlayer", noalphamodetwo=true } )
+plist:Add( xlib.makecolorpicker{ repconvar="ulx_logEchoColorPlayer", noalphamodetwo=true } )
 plist:Add( xlib.makelabel{ label="Color for everything else" } )
-plist:Add( xlib.makecolorpicker{ repconvar="ulx_cl_logEchoColorMisc", noalphamodetwo=true } )
+plist:Add( xlib.makecolorpicker{ repconvar="ulx_logEchoColorMisc", noalphamodetwo=true } )
 
 xgui.addSubModule( "ULX Command/Event Echoes", plist, nil, "server" )
 
 ------------------------General Settings-------------------------
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="General ULX Settings" } )
-plist:Add( xlib.makeslider{ label="Chat spam time", min=0, max=5, decimal=1, repconvar="ulx_cl_chattime" } )
+plist:Add( xlib.makeslider{ label="Chat spam time", min=0, max=5, decimal=1, repconvar="ulx_chattime" } )
 plist:Add( xlib.makelabel{ label="\nMOTD Settings" } )
---Very custom convar handling for ulx_cl_showMotd
+--Very custom convar handling for ulx_showMotd
 plist.motdEnabled = xlib.makecheckbox{ label="Show MOTD when players join" }
 function plist.motdEnabled:Toggle() self.Button:DoClick() end
 plist.motdEnabled.Button.DoClick = function( self )
@@ -412,12 +412,12 @@ plist.motdEnabled.Button.DoClick = function( self )
 	local bVal = self:GetChecked()
 	if bVal == true then
 		if plist.motdURLEnabled:GetChecked() then
-			RunConsoleCommand( "ulx_cl_showMotd", plist.motdURLText:GetValue() )
+			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
 		else
-			RunConsoleCommand( "ulx_cl_showMotd", "1" )
+			RunConsoleCommand( "ulx_showMotd", "1" )
 		end
 	else
-		RunConsoleCommand( "ulx_cl_showMotd", "0" )
+		RunConsoleCommand( "ulx_showMotd", "0" )
 	end
 end
 plist.motdURLEnabled = xlib.makecheckbox{ label="Get MOTD from URL instead of motd.txt:" }
@@ -428,23 +428,23 @@ plist.motdURLEnabled.Button.DoClick = function( self )
 	local bVal = self:GetChecked()
 	if bVal == true then
 		if plist.motdURLText:GetValue() ~= "" then
-			RunConsoleCommand( "ulx_cl_showMotd", plist.motdURLText:GetValue() )
+			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
 		end
 		plist.motdURLText:SetDisabled( false )
 	else
-		RunConsoleCommand( "ulx_cl_showMotd", "1" )
+		RunConsoleCommand( "ulx_showMotd", "1" )
 		plist.motdURLText:SetDisabled( true )
 	end
 end
 plist.motdURLText = xlib.maketextbox{ selectall=true }
 function plist.motdURLText:UpdateConvarValue()
 	if plist.motdURLText:GetValue() ~= "" then
-		RunConsoleCommand( "ulx_cl_showMotd", self:GetValue() )
+		RunConsoleCommand( "ulx_showMotd", self:GetValue() )
 	end
 end
 function plist.motdURLText:OnEnter() self:UpdateConvarValue() end
 function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-	if cl_cvar == "ulx_cl_showmotd" then
+	if cl_cvar == "ulx_showmotd" then
 		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL 
 			plist.motdEnabled:SetValue( 1 )
 			plist.motdURLEnabled:SetValue( 1 )
@@ -464,22 +464,22 @@ function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 		end
 	end
 end
-hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_cl_showMotd", plist.ConVarUpdated )
+hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated )
 
 plist:Add( plist.motdEnabled )
 plist:Add( plist.motdURLEnabled )
 plist:Add( plist.motdURLText )
 plist:Add( xlib.makelabel{ label="\nWelcome Message" } )
-plist:Add( xlib.maketextbox{ repconvar="ulx_cl_welcomemessage", selectall=true } )
+plist:Add( xlib.maketextbox{ repconvar="ulx_welcomemessage", selectall=true } )
 plist:Add( xlib.makelabel{ label="Allowed variables: %curmap%, %host%" } )
 plist:Add( xlib.makelabel{ label="\nAuto Name-Changing Kicker" } )
 plist:Add( xlib.makelabel{ label="Number of name changes till kicked (0 disables)" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, decimal=0, repconvar="ulx_cl_kickAfterNameChanges" } )
-plist:Add( xlib.makeslider{ label="Cooldown time (seconds)", min=0, max=600, decimal=0, repconvar="ulx_cl_kickAfterNameChangesCooldown" } )
-plist:Add( xlib.makecheckbox{ label="Warn players how many name-changes remain", repconvar="ulx_cl_kickAfterNameChangesWarning" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, decimal=0, repconvar="ulx_kickAfterNameChanges" } )
+plist:Add( xlib.makeslider{ label="Cooldown time (seconds)", min=0, max=600, decimal=0, repconvar="ulx_kickAfterNameChangesCooldown" } )
+plist:Add( xlib.makecheckbox{ label="Warn players how many name-changes remain", repconvar="ulx_kickAfterNameChangesWarning" } )
 
-xlib.checkRepCvarCreated( "ulx_cl_showMotd" )
-plist.ConVarUpdated( nil, "ulx_cl_showMotd", nil, nil, GetConVar( "ulx_cl_showMotd" ):GetString() )
+xlib.checkRepCvarCreated( "ulx_showMotd" )
+plist.ConVarUpdated( nil, "ulx_showMotd", nil, nil, GetConVar( "ulx_showMotd" ):GetString() )
 
 xgui.addSubModule( "ULX General Settings", plist, nil, "server" )
 
@@ -560,21 +560,21 @@ xgui.addSubModule( "ULX Kick/Ban Reasons", panel, "xgui_managebans", "server" )
 --------------------------Log Settings---------------------------
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Logging Settings" } )
-plist:Add( xlib.makecheckbox{ label="Enable Logging to Files", repconvar="ulx_cl_logFile" } )
-plist:Add( xlib.makecheckbox{ label="Log Chat", repconvar="ulx_cl_logChat" } )
-plist:Add( xlib.makecheckbox{ label="Log Player Events (Connects, Deaths, etc.)", repconvar="ulx_cl_logEvents" } )
-plist:Add( xlib.makecheckbox{ label="Log Spawns (Props, Effects, Ragdolls, etc.)", repconvar="ulx_cl_logSpawns" } )
+plist:Add( xlib.makecheckbox{ label="Enable Logging to Files", repconvar="ulx_logFile" } )
+plist:Add( xlib.makecheckbox{ label="Log Chat", repconvar="ulx_logChat" } )
+plist:Add( xlib.makecheckbox{ label="Log Player Events (Connects, Deaths, etc.)", repconvar="ulx_logEvents" } )
+plist:Add( xlib.makecheckbox{ label="Log Spawns (Props, Effects, Ragdolls, etc.)", repconvar="ulx_logSpawns" } )
 plist:Add( xlib.makelabel{ label="Save log files to this directory:" } )
 local logdirbutton = xlib.makebutton{}
-xlib.checkRepCvarCreated( "ulx_cl_logdir" )
-logdirbutton:SetText( "data/" .. GetConVar( "ulx_cl_logDir" ):GetString() )
+xlib.checkRepCvarCreated( "ulx_logdir" )
+logdirbutton:SetText( "data/" .. GetConVar( "ulx_logDir" ):GetString() )
 
 function logdirbutton.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-	if cl_cvar == "ulx_cl_logdir" then
+	if cl_cvar == "ulx_logdir" then
 		logdirbutton:SetText( "data/" .. new_val )
 	end
 end
-hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_cl_logDir", logdirbutton.ConVarUpdated )
+hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_logDir", logdirbutton.ConVarUpdated )
 plist:Add( logdirbutton )
 xgui.addSubModule( "ULX Logs", plist, nil, "server" )
 
@@ -618,7 +618,7 @@ panel.add.DoClick = function()
 	end
 	RunConsoleCommand( "xgui", "addVotemaps", unpack( temp ) )
 end
-panel.votemapmode = xlib.makecombobox{ y=307, w=285, repconvar="ulx_cl_votemapMapmode", isNumberConvar=true, numOffset=0, choices={ "Include new maps by default", "Exclude new maps by default" }, parent=panel }
+panel.votemapmode = xlib.makecombobox{ y=307, w=285, repconvar="ulx_votemapMapmode", isNumberConvar=true, numOffset=0, choices={ "Include new maps by default", "Exclude new maps by default" }, parent=panel }
 panel.updateList = function()
 	if #ulx.maps ~= 0 then
 		panel.votemaps:Clear()
@@ -640,25 +640,25 @@ xgui.addSubModule( "ULX Player Votemap List", panel, nil, "server" )
 ---------------------Player Votemap Settings---------------------
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Player Votemap Settings" } )
-plist:Add( xlib.makecheckbox{ label="Enable Player Votemaps", repconvar="ulx_cl_votemapEnabled" } )
+plist:Add( xlib.makecheckbox{ label="Enable Player Votemaps", repconvar="ulx_votemapEnabled" } )
 plist:Add( xlib.makelabel{ label="Time (min) before a user can vote for a map" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=300, repconvar="ulx_cl_votemapMintime" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=300, repconvar="ulx_votemapMintime" } )
 plist:Add( xlib.makelabel{ label="Time (min) until a user can change their vote" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=60, decimal=1, repconvar="ulx_cl_votemapWaittime" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=60, decimal=1, repconvar="ulx_votemapWaittime" } )
 plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept mapchange" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_cl_votemapSuccessratio" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_votemapSuccessratio" } )
 plist:Add( xlib.makelabel{ label="Minimum votes for a successful mapchange" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_cl_votemapMinvotes" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_votemapMinvotes" } )
 plist:Add( xlib.makelabel{ label="Time (sec) for an admin to veto a mapchange" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=300, repconvar="ulx_cl_votemapVetotime" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=300, repconvar="ulx_votemapVetotime" } )
 xgui.addSubModule( "ULX Player Votemap Settings", plist, nil, "server" )
 
 -------------------------Reserved Slots--------------------------
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Reserved Slots Settings" } )
-plist:Add( xlib.makecombobox{ repconvar="ulx_cl_rslotsMode", isNumberConvar=true, choices={ "0 - Reserved slots disabled", "1 - Admins fill slots", "2 - Admins don't fill slots", "3 - Admins kick newest player" } } )
-plist:Add( xlib.makeslider{ label="Number of Reserved Slots", min=0, max=game.MaxPlayers(), repconvar="ulx_cl_rslots" } )
-plist:Add( xlib.makecheckbox{ label="Reserved Slots Visible", repconvar="ulx_cl_rslotsVisible" } )
+plist:Add( xlib.makecombobox{ repconvar="ulx_rslotsMode", isNumberConvar=true, choices={ "0 - Reserved slots disabled", "1 - Admins fill slots", "2 - Admins don't fill slots", "3 - Admins kick newest player" } } )
+plist:Add( xlib.makeslider{ label="Number of Reserved Slots", min=0, max=game.MaxPlayers(), repconvar="ulx_rslots" } )
+plist:Add( xlib.makecheckbox{ label="Reserved Slots Visible", repconvar="ulx_rslotsVisible" } )
 plist:Add( xlib.makelabel{ w=265, wordwrap=true, label="Reserved slots mode info:\n1 - Set a certain number of slots reserved for admins-- As admins join, they will fill up these slots.\n2 - Same as #1, but admins will not fill the slots-- they'll be freed when players leave.\n3 - Always keep 1 slot open for admins, and, if full, kick the user with the shortest connection time when an admin joins, thus keeping 1 slot open.\n\nReserved Slots Visible:\nWhen enabled, if there are no regular player slots available in your server, it will appear that the server is full. The major downside to this is that admins can't connect to the server using the 'find server' dialog. Instead, they have to go to console and use the command 'connect <ip>'" } )
 xgui.addSubModule( "ULX Reserved Slots", plist, nil, "server" )
 
@@ -666,12 +666,12 @@ xgui.addSubModule( "ULX Reserved Slots", plist, nil, "server" )
 local plist = xlib.makelistlayout{ w=275, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Votekick Settings" } )
 plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept votekick" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_cl_votekickSuccessratio" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_votekickSuccessratio" } )
 plist:Add( xlib.makelabel{ label="Minimum votes required for a successful votekick" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_cl_votekickMinvotes" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_votekickMinvotes" } )
 plist:Add( xlib.makelabel{ label="\nVoteban Settings" } )
 plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept voteban" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_cl_votebanSuccessratio" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_votebanSuccessratio" } )
 plist:Add( xlib.makelabel{ label="Minimum votes required for a successful voteban" } )
-plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_cl_votebanMinvotes" } )
+plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_votebanMinvotes" } )
 xgui.addSubModule( "ULX Votekick/Voteban", plist, nil, "server" )

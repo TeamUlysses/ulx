@@ -569,6 +569,7 @@ function xlib.makeslider( t )
 	pnl.TextArea.OnTextChanged = function() end
 	function pnl.TextArea:OnLoseFocus()
 		pnl:SetValue( pnl.TextArea:GetText() )
+		hook.Call( "OnTextEntryLoseFocus", nil, self )
 	end
 	
 	
