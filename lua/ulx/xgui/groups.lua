@@ -816,7 +816,6 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 		local outstr = ""
 		local outtmp = ""
 		for _, panel in ipairs( groups.rArgList:GetChildren() ) do
-		--for _, panel in ipairs( groups.rArgList.Items ) do
 			local pnl = panel.Contents
 			
 			if panel.GetExpanded then --Weed out panels that we're not interested in
