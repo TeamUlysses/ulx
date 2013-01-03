@@ -90,7 +90,7 @@ function xgui.init( authedply )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
 	local version_type = ulx.revision and ( ulx.revision > 0 and " SVN " .. ulx.revision or " Release") or (" N/A")
-	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v12.12.16 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
+	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v13.1.2 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
 	xgui.thetime = xlib.makelabel{ x=515, y=-10, label="", parent=xgui.infobar }
 	xgui.thetime:NoClipping( true )
 	xgui.thetime.check = function()
@@ -278,23 +278,40 @@ function xgui.processModules()
 end
 
 function xgui.checkNotInstalled( tabname )
-	xgui.wait = xlib.makeframe{ label="XGUI", w=235, h=50, nopopup=true, showclose=false, skin=xgui.settings.skin }
-	xgui.wait.tabname = tabname
-	xlib.makelabel{ label="Waiting for server confimation... (5 seconds)", x=10, y=30, parent=xgui.wait }
-	timer.Simple( 5, function( tabname )
-		if xgui.isInstalled == nil then
-			xgui.wait:Remove()
-			xgui.wait = nil
-			gui.EnableScreenClicker( true )
-			RestoreCursorPosition( )
-			xgui.notInstalledWarning = xlib.makeframe{ label="Warning!", w=375, h=110, nopopup=true, showclose=false, skin=xgui.settings.skin }
-			xlib.makelabel{ x=10, y=30, wordwrap=true, w=365, label="XGUI is not installed or has had a major error during startup on this server! XGUI will now run in offline mode. Some features may not work, and information will be missing.", parent=xgui.notInstalledWarning }
-			xlib.makebutton{ x=147, y=83, w=80, label="OK", parent=xgui.notInstalledWarning }.DoClick = function()
-				xgui.notInstalledWarning:Remove()
-				xgui.show( tabname )
-			end
+	gui.EnableScreenClicker( true )
+	RestoreCursorPosition()
+	notInstalledWarning = xlib.makeframe{ label="XGUI Warning!", w=375, h=110, nopopup=true, showclose=false, skin=xgui.settings.skin }
+	xlib.makelabel{ x=10, y=30, wordwrap=true, w=365, label="XGUI has not initialized properly with the server. This could be caused by a heavy server load after a mapchange, a major error during XGUI server startup, or XGUI not being installed.", parent=notInstalledWarning }
+	
+	xlib.makebutton{ x=37, y=83, w=80, label="Offline Mode", parent=notInstalledWarning }.DoClick = function()
+		notInstalledWarning:Remove()
+		offlineWarning = xlib.makeframe{ label="XGUI Warning!", w=375, h=110, nopopup=true, showclose=false, skin=xgui.settings.skin }
+		xlib.makelabel{ x=10, y=30, wordwrap=true, w=365, label="XGUI will run locally in offline mode. Some features will not work, and information will be missing. You can attempt to reconnect to the server using the 'Refresh Server Data' button in the XGUI client menu.", parent=offlineWarning }
+		xlib.makebutton{ x=77, y=83, w=80, label="OK", parent=offlineWarning }.DoClick = function()
+			offlineWarning:Remove()
+			xgui.offlineMode = true
+			xgui.show( tabname )
 		end
-	end)
+		xlib.makebutton{ x=217, y=83, w=80, label="Cancel", parent=offlineWarning }.DoClick = function()
+			offlineWarning:Remove()
+		end
+	end
+	
+	xlib.makebutton{ x=257, y=83, w=80, label="Close", parent=notInstalledWarning }.DoClick = function()
+		notInstalledWarning:Remove()
+	end
+	
+	xlib.makebutton{ x=147, y=83, w=80, label="Try Again", parent=notInstalledWarning }.DoClick = function( self )
+		notInstalledWarning:Remove()
+		RememberCursorPosition()
+		gui.EnableScreenClicker( false )
+		local reattempt = xlib.makeframe{ label="XGUI: Attempting reconnection...", w=200, h=20, nopopup=true, showclose=false, skin=xgui.settings.skin }
+		timer.Simple( 1, function()
+			RunConsoleCommand( "_xgui", "getInstalled" )
+			reattempt:Remove()
+			timer.Simple( 0.5, function() xgui.show( tabname ) end )
+		end )
+	end
 end
 
 function xgui.show( tabname )
@@ -302,8 +319,7 @@ function xgui.show( tabname )
 	if not xgui.initialized then return end
 
 	--Check if XGUI is not installed, display the warning if hasn't been shown yet.
-	if xgui.wait then return end
-	if xgui.isInstalled == nil and xgui.notInstalledWarning == nil then
+	if not xgui.isInstalled and not xgui.offlineMode then
 		xgui.checkNotInstalled( tabname )
 		return
 	end
@@ -453,7 +469,7 @@ end
 function xgui.callUpdate( dtype, event, data )
 	--Run any functions that request to be called when "curtable" is updated
 	if not xgui.hook[dtype] or ( event and not xgui.hook[dtype][event] ) then
-		Msg( "XGUI: Attemped to call nonexistant type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
+		Msg( "XGUI: Attemped to call nonexistent type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
 	else
 		if not event then
 			for _, func in ipairs( xgui.hook[dtype] ) do func( data ) end
@@ -479,12 +495,7 @@ function xgui.getInstalled()
 	if not xgui.isInstalled then
 		RunConsoleCommand( "xgui", "refreshdata" )
 		xgui.isInstalled = true
-		if xgui.wait then
-			local tab = xgui.wait.tabname
-			xgui.wait:Remove()
-			xgui.wait = nil
-			xgui.show( tab )
-		end
+		xgui.offlineMode = false
 	end
 end
 

@@ -97,7 +97,6 @@ function xlib.makelistlayout( t )
 	
 	function pnl:PerformLayout()
 		self:SetWide( self.scroll:GetWide() - ( self.scroll.VBar.Enabled and 16 or 0 ) )
-		self:SizeToChildren( false, true )
 	end
 	return pnl
 end

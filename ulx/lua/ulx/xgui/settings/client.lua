@@ -62,11 +62,18 @@ local xguipnl = xlib.makepanel{ parent=xgui.null }
 xlib.makebutton{ x=10, y=10, w=150, label="Refresh XGUI Modules", parent=xguipnl }.DoClick=function()
 	xgui.processModules()
 end
-xlib.makebutton{ x=10, y=30, w=150, label="Refresh Server Data", parent=xguipnl }.DoClick=function( self )
-	if xgui.isInstalled then  --We can't be in offline mode to do this
+local databutton = xlib.makebutton{ x=10, y=30, w=150, label="Refresh Server Data", parent=xguipnl }
+databutton.DoClick=function( self )
+	if xgui.offlineMode then
 		self:SetDisabled( true )
-		RunConsoleCommand( "xgui", "refreshdata" )
-		timer.Simple( 30, function() self:SetDisabled( false ) end )
+		RunConsoleCommand( "_xgui", "getInstalled" )
+		timer.Simple( 10, function() self:SetDisabled( false ) end )
+	else
+		if xgui.isInstalled then  --We can't be in offline mode to do this
+			self:SetDisabled( true )
+			RunConsoleCommand( "xgui", "refreshdata" )
+			timer.Simple( 30, function() self:SetDisabled( false ) end )
+		end
 	end
 end
 xlib.makelabel{ x=10, y=55, label="Anim transition time", parent=xguipnl }
