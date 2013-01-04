@@ -421,6 +421,52 @@ jail:defaultAccess( ULib.ACCESS_ADMIN )
 jail:help( "Jails target(s)." )
 jail:setOpposite( "ulx unjail", {_, _, _, true}, "!unjail" )
 
+------------------------------ Jail TP ------------------------------
+function ulx.jailtp( calling_ply, target_ply, seconds )
+	local t = {}
+	t.start = calling_ply:GetPos() + Vector( 0, 0, 32 ) -- Move them up a bit so they can travel across the ground
+	t.endpos = calling_ply:GetPos() + calling_ply:EyeAngles():Forward() * 16384
+	t.filter = target_ply
+	if target_ply ~= calling_ply then
+		t.filter = { target_ply, calling_ply }
+	end
+	local tr = util.TraceEntity( t, target_ply )
+
+	local pos = tr.HitPos
+
+	--if target_ply == calling_ply and pos:Distance( target_ply:GetPos() ) < 64 then -- Laughable distance
+	--	return
+	--end
+	
+	if ulx.getExclusive( target_ply, calling_ply ) then
+		ULib.tsayError( calling_ply, ulx.getExclusive( target_ply, calling_ply ), true )
+		return
+	elseif not target_ply:Alive() then
+		ULib.tsayError( calling_ply, target_ply:Nick() .. " is dead!", true )
+		return
+	else
+		if target_ply:InVehicle() then
+			target_ply:ExitVehicle()
+		end
+		
+		target_ply:SetPos( pos )
+		target_ply:SetLocalVelocity( Vector( 0, 0, 0 ) ) -- Stop!
+							
+		doJail( target_ply, seconds )
+	end
+
+	local str = "#A teleported and jailed #T"
+	if seconds > 0 then
+		str = str .. " for #i seconds"
+	end
+	ulx.fancyLogAdmin( calling_ply, str, target_ply, seconds )
+end
+local jailtp = ulx.command( CATEGORY_NAME, "ulx jailtp", ulx.jailtp, "!jailtp" )
+jailtp:addParam{ type=ULib.cmds.PlayerArg }
+jailtp:addParam{ type=ULib.cmds.NumArg, min=0, default=0, hint="seconds, 0 is forever", ULib.cmds.round, ULib.cmds.optional }
+jailtp:defaultAccess( ULib.ACCESS_ADMIN )
+jailtp:help( "Teleports, then jails target(s)." )
+
 local function jailCheck()
 	local remove_timer = true
 	local players = player.GetAll()
