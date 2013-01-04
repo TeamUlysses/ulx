@@ -67,7 +67,8 @@ end
 
 		target - A string of what you'd like to target. Accepts a comma separated list.
 		enable_keywords - *(Optional, defaults to false)* If true, the keywords "*" for all players, "^" for self,
-			"@" for picker (person in front of you), and "%<group>" for targetting groups will be activated.
+			"@" for picker (person in front of you), "#<group>" for those inside a specific group, 
+			and "%<group>" for users inside a group (counting inheritance) will be activated.
 			Any of these can be negated with "!" before it. IE, "!^" targets everyone but yourself.
 		ply - *(Optional)* Player needing getUsers, this is necessary for some of the keywords.
 
@@ -78,6 +79,7 @@ end
 	Revisions:
 
 		v2.40 - Rewrite, added more keywords, removed immunity.
+		v2.50 - Added "#" keyword, removed special exception for "%user" (replaced by "#user").
 ]]
 function ULib.getUsers( target, enable_keywords, ply )
 	local players = player.GetAll()
@@ -119,19 +121,18 @@ function ULib.getUsers( target, enable_keywords, ply )
 							table.insert( tmpTargets, player )
 						end
 					end
+				elseif piece:sub( 1, 1 ) == "#" and ULib.ucl.groups[ piece:sub( 2 ) ] then
+					local group = piece:sub( 2 )
+					for _, player in ipairs( players ) do
+						if player:GetUserGroup() == group then
+							table.insert( tmpTargets, player )
+						end
+					end
 				elseif piece:sub( 1, 1 ) == "%" and ULib.ucl.groups[ piece:sub( 2 ) ] then
 					local group = piece:sub( 2 )
-					if group == ULib.ACCESS_ALL then -- Special handling
-						for _, player in ipairs( players ) do
-							if player:GetUserGroup() == group then
-								table.insert( tmpTargets, player )
-							end
-						end
-					else
-						for _, player in ipairs( players ) do
-							if player:CheckGroup( group ) then
-								table.insert( tmpTargets, player )
-							end
+					for _, player in ipairs( players ) do
+						if player:CheckGroup( group ) then
+							table.insert( tmpTargets, player )
 						end
 					end
 				end
