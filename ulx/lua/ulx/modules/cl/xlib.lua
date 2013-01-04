@@ -478,7 +478,7 @@ end
 
 function xlib.makeprogressbar( t )
 	pnl = vgui.Create( "DProgress", t.parent )
-	pnl.Label = vgui.Create( "DLabel", pnl )
+	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), textcolor=t.parent.m_Skin.text_dark, parent=pnl }
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
 	pnl:SetFraction( t.value or 0 )

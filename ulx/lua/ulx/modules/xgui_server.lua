@@ -274,4 +274,4 @@ function xgui.init()
 	ulx.addToHelpManually( "Menus", "xgui", "<show, hide, toggle> - Opens and/or closes XGUI. (say: !xgui)" )
 end
 --Init the code after ULX is done loading, to prevent strange errors
-hook.Add( ulx.HOOK_ULXDONELOADING, "XGUI_InitServer", xgui.init )
+hook.Add( "Initialize", "XGUI_InitServer", xgui.init, -1 )
