@@ -50,6 +50,7 @@ v2.50 - *(00/00/00)*
 	* [ADD] Operator to target only a specific group, ignoring inheritance ('#').
 	* [FIX] The usual assortment of garry breakages.
 	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
+	* [FIX] Error with returning from invisibility when the player has no weapons (Thanks HellFox).
 	* [CHANGE] Lots of changes to match GM13.
 	* [CHANGE] NumArg now allows for time string format.
 	* [CHANGE] Hook library to match garry's. hook.isInHook was removed, no longer able to support with garry's changes.

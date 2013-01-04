@@ -299,7 +299,7 @@ function ULib.invisible( ply, bool, visibility )
 		ply:Fire( "alpha", visibility, 0 )
 		ply:GetTable().invis = { vis=visibility, wep=ply:GetActiveWeapon() }
 
-		if ply:GetActiveWeapon():IsValid() then
+		if IsValid( ply:GetActiveWeapon() ) then
 			ply:GetActiveWeapon():SetRenderMode( RENDERMODE_TRANSALPHA )
 			ply:GetActiveWeapon():Fire( "alpha", visibility, 0 )
 			ply:GetActiveWeapon():SetMaterial( "models/effects/vol_light001" )
@@ -316,9 +316,12 @@ function ULib.invisible( ply, bool, visibility )
 		ply:SetMaterial( "" )
 		ply:SetRenderMode( RENDERMODE_NORMAL )
 		ply:Fire( "alpha", 255, 0 )
-		ply:GetActiveWeapon():SetRenderMode( RENDERMODE_NORMAL )
-		ply:GetActiveWeapon():Fire( "alpha", 255, 0 )
-		ply:GetActiveWeapon():SetMaterial( "" )
+		local activeWeapon = ply:GetActiveWeapon()
+		if IsValid( activeWeapon ) then
+			activeWeapon:SetRenderMode( RENDERMODE_NORMAL )
+			activeWeapon:Fire( "alpha", 255, 0 )
+			activeWeapon:SetMaterial( "" )
+		end
 		ply:GetTable().invis = nil
 	end
 end
