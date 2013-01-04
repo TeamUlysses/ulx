@@ -196,7 +196,7 @@ function ulx.userdeny( calling_ply, target_ply, access_string, should_use_neutra
 
 	if should_use_neutral then
 		if success then
-			return true, "#1s made access to #3s neutral for #2s"
+			ulx.fancyLogAdmin( calling_ply, "#A made access #q neutral to #T", access_string, target_ply )
 		else
 			ULib.tsayError( calling_ply, string.format( "User \"%s\" isn't denied or allowed access to \"%s\"", target_ply:Nick(), access_string ), true )
 		end
