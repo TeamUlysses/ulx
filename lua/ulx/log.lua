@@ -187,7 +187,7 @@ end
 hook.Add( "PlayerConnect", "ULXLogConnect", playerConnect, -20 )
 
 local function playerInitialSpawn( ply )
-	local txt = string.format( "Client \"%s\" spawned in server (%s)<%s>.", ply:Nick(), ply:IPAddress(), ply:SteamID() )
+	local txt = string.format( "Client \"%s\" spawned in server (%s)<%s>.", ply:Nick(), not ply:IsBot() and ply:IPAddress() or "BOT", ply:SteamID() )
 	if logEvents:GetBool() then
 		ulx.logString( txt )
 	end
