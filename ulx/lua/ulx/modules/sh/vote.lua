@@ -263,7 +263,7 @@ end
 
 function ulx.votekick( calling_ply, target_ply, reason )
 	if voteInProgress then
-		ULib.tsayError( ply, "There is already a vote in progress. Please wait for the current one to end.", true )
+		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
 	end
 
