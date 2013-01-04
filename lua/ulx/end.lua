@@ -13,6 +13,11 @@ local function doMainCfg( path )
 end
 
 local function doDownloadCfg( path )
+	-- Does the module exist for this?
+	if not ulx.addForcedDownload then
+		return
+	end
+	
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
@@ -23,6 +28,11 @@ local function doDownloadCfg( path )
 end
 
 local function doGimpCfg( path )
+	-- Does the module exist for this?
+	if not ulx.clearGimpSays then
+		return
+	end
+	
 	ulx.clearGimpSays()
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
@@ -34,6 +44,11 @@ local function doGimpCfg( path )
 end
 
 local function doAdvertCfg( path )
+	-- Does the module exist for this?
+	if not ulx.addAdvert then
+		return
+	end
+	
 	local data_root, err = ULib.parseKeyValues( ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	if not data_root then Msg( "[ULX] Error in advert config: " .. err .. "\n" ) return end
 
@@ -53,6 +68,11 @@ local function doAdvertCfg( path )
 end
 
 local function doVotemapsCfg( path )
+	-- Does the module exist for this?
+	if not ulx.clearVotemaps then
+		return
+	end
+	
 	ulx.clearVotemaps()
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
@@ -64,6 +84,11 @@ local function doVotemapsCfg( path )
 end
 
 local function doReasonsCfg( path )
+	-- Does the module exist for this?
+	if not ulx.addKickReason then
+		return
+	end
+	
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
