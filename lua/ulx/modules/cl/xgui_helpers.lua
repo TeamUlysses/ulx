@@ -159,7 +159,7 @@ function xgui.load_helpers()
 		function xgui.chunkbox:Progress( datatype )
 			self.value = self.value + 1
 			self.progress:SetFraction( self.value / self.max )
-			self.progress.Label:SetText( datatype .. " - " .. self.progress.Label:GetValue() )
+			self.progress.Label:SetText( datatype .. " - " .. string.format("%.2f", (self.value / self.max) * 100) .. "%" )
 			if self.value == self.max then
 				xgui.expectingdata = nil
 				self.progress.Label:SetText( "Waiting for clientside processing" )
