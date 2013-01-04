@@ -15,7 +15,7 @@ end
 --Set up various hooks modules can "hook" into.
 function xgui.hookEvent( dtype, event, func )
 	if not xgui.hook[dtype] or ( event and not xgui.hook[dtype][event] ) then
-		Msg( "XGUI: Attemped to add to invalid type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
+		Msg( "XGUI: Attempted to add to invalid type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
 	else
 		if not event then
 			table.insert( xgui.hook[dtype], func )
