@@ -167,9 +167,9 @@ local function echoToAdmins( txt )
 	end
 end
 
-local function playerSay( ply, text, public )
+local function playerSay( ply, text, private )
 	if logChat:GetBool() then
-		if not public then
+		if private then
 			ulx.logString( string.format( "(TEAM) %s: %s", ply:Nick(), text ) )
 		else
 			ulx.logString( string.format( "%s: %s", ply:Nick(), text ) )

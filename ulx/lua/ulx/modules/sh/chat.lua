@@ -272,12 +272,12 @@ local function playerSay( ply )
 end
 hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, 17 )
 
-local function meCheck( ply, strText, bPublic )
-	if ply.gimp or GAMEMODE.Name ~= "Sandbox" then return end -- Don't mess
+local function meCheck( ply, strText, bTeam )
+	if ply.gimp or not ULib.isSandbox() then return end -- Don't mess
 
 	if strText:sub( 1, 4 ) == "/me " then
 		strText = string.format( "*** %s %s", ply:Nick(), strText:sub( 5 ) )
-		if bPublic then
+		if not bTeam then
 			ULib.tsay( _, strText )
 		else
 			strText = "(TEAM) " .. strText

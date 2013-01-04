@@ -20,13 +20,13 @@ ULib.sayCmds = {}
 
 		ply - The player.
 		strText - The text.
-		bPublic - Public say.
+		bTeam - Team say.
 
 	Revisions:
 
 		v2.10 - Made case-insensitive
 ]]
-local function sayCmdCheck( ply, strText, bPublic )
+local function sayCmdCheck( ply, strText, bTeam )
 	local match
 	for str, data in pairs( ULib.sayCmds ) do
 		local str2 = str
