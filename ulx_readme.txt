@@ -72,6 +72,7 @@ v3.60 - *(00/00/00)*
 	* [FIX] "ulx userdeny" not logging properly in some cases.
 	* [FIX] An echo incorrectly going to all users for "ulx votekick" (Thanks JackYack13).
 	* [FIX] Module cross-contamination in end.lua (Thanks Pon-3).
+	* [FIX] Team vs public chat doing the opposite of what it should for logs and "/me" actions. Wonder how long ago Garry needlessly changed that API without us noticing.
 
 v3.54 - *(04/27/12)*
 	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
