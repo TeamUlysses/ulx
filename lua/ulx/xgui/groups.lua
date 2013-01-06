@@ -1175,9 +1175,9 @@ end
 function groups.showAccessOptions( line )
 	local access = line:GetColumnText(1)
 	local menu = DermaMenu()
-	if line.Columns[2]:GetValue() then
+	if line.Columns[2]:GetChecked() then
 		if line.Columns[2]:GetDisabled() then
-			menu:AddOption( "Grant access on top of inherited", function() groups.accessChanged( access, true ) end )
+			menu:AddOption( "Grant access at " .. groups.list:GetValue() .. " level", function() groups.accessChanged( access, true ) end )
 			
 			menu:AddOption( "Revoke access from " .. line:GetColumnText(4), function() groups.accessChanged( access, false, line:GetColumnText(4) ) end )
 		else

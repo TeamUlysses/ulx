@@ -10,43 +10,29 @@ local function init()
 		ULib.replicatedWritableCvar( "sbox_godmode", "rep_sbox_godmode", GetConVarNumber( "sbox_godmode" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_plpldamage", "rep_sbox_plpldamage", GetConVarNumber( "sbox_plpldamage" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_weapons", "rep_sbox_weapons", GetConVarNumber( "sbox_weapons" ), false, false, "xgui_gmsettings" )
-		
-		--Get the list of known Sandbox Cvar Limits
-		local function httpcallback( contents, size, headers, code )
-			if size and size > 2900 then --This means that we didn't get a 404, HTTP error, or the server is not down!
-				file.Write( "ulx/sbox_limits.txt", contents )
-			end
-			xgui.processCvars()
-		end
-		
-		http.Fetch( "http://ulyssesmod.net/xgui/sbox_cvars.txt", httpcallback, httpcallback )
-		
-		
+
 		--Process the list of known Sandbox Cvar Limits and check if they exist
-		function xgui.processCvars()
-			xgui.sboxLimits = {}
-			if ULib.isSandbox() then
-				local curgroup
-				local f = file.Read( "ulx/sbox_limits.txt", "DATA" )
-				if f == nil then Msg( "XGUI ERROR: Sandbox Cvar limits file was needed but could not be found!\n" ) return end
-				local lines = string.Explode( "\n", f )
-				for i,v in ipairs( lines ) do
-					if v:sub( 1,1 ) ~= ";" then
-						if v:sub( 1,1 ) == "|" then
-							curgroup = table.insert( xgui.sboxLimits, {} )
-							xgui.sboxLimits[curgroup].title = v:sub( 2 )
-						else
-							local data = string.Explode( " ", v ) --Split Convar name from max limit
-							if ConVarExists( data[1] ) then
-								--We need to create a replicated cvar so the clients can manipulate/view them:
-								ULib.replicatedWritableCvar( data[1], "rep_" .. data[1], GetConVarNumber( data[1] ), false, false, "xgui_gmsettings" )
-								--Add to the list of cvars to send to the client
-								table.insert( xgui.sboxLimits[curgroup], v )
-							end
+		xgui.sboxLimits = {}
+		if ULib.isSandbox() then
+			local curgroup
+			local f = file.Read( "ulx/sbox_limits.txt", "DATA" )
+			if f == nil then Msg( "XGUI ERROR: Sandbox Cvar limits file was needed but could not be found!\n" ) return end
+			local lines = string.Explode( "\n", f )
+			for i,v in ipairs( lines ) do
+				if v:sub( 1,1 ) ~= ";" then
+					if v:sub( 1,1 ) == "|" then
+						curgroup = table.insert( xgui.sboxLimits, {} )
+						xgui.sboxLimits[curgroup].title = v:sub( 2 )
+					else
+						local data = string.Explode( " ", v ) --Split Convar name from max limit
+						if ConVarExists( data[1] ) then
+							--We need to create a replicated cvar so the clients can manipulate/view them:
+							ULib.replicatedWritableCvar( data[1], "rep_" .. data[1], GetConVarNumber( data[1] ), false, false, "xgui_gmsettings" )
+							--Add to the list of cvars to send to the client
+							table.insert( xgui.sboxLimits[curgroup], v )
 						end
 					end
 				end
-				xgui.sendDataTable( {}, "sboxlimits" ) --Send to all players
 			end
 		end
 	end

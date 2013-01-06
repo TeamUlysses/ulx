@@ -1,8 +1,7 @@
 --XLIB -- by Stickly Man!
 --A library of helper functions used by XGUI for creating derma controls with a single line of code.
 
---Currently a bit disorganized and unstandardized, (just put in things as I needed them). I'm hoping to fix that soon.
---Also has a few ties into XGUI for keyboard focus stuff.
+--Currently a bit disorganized and unstandardized, (just put in things as I needed them). I'm hoping to fix that sometime.
 
 xlib = {}
 
@@ -48,12 +47,6 @@ function xlib.makecheckbox( t )
 		pnl.ConVarStringThink = function() end
 		pnl.ConVarChanged = function() end
 	end
-	--We need to set the enabled/disabled state of the checkbox whenever PerformLayout is called, otherwise if it's disabled before PerformLayout is first called, it won't look like it is.
-	--local tempfunc = pnl.PerformLayout
-	--pnl.PerformLayout = function( self )
-	--	tempfunc( self )
-	--	pnl:SetDisabled( pnl:GetDisabled() )
-	--end
 	return pnl
 end
 
@@ -96,6 +89,7 @@ function xlib.makelistlayout( t )
 	pnl.scroll:AddItem( pnl )
 	
 	function pnl:PerformLayout()
+		self:SizeToChildren( false, true )
 		self:SetWide( self.scroll:GetWide() - ( self.scroll.VBar.Enabled and 16 or 0 ) )
 	end
 	return pnl
@@ -137,7 +131,7 @@ function xlib.makepropertysheet( t )
 	local pnl = vgui.Create( "DPropertySheet", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
-	--Clears all of the tabs in the base, new parent set to xgui.null.
+	--Clears all of the tabs in the base.
 	function pnl:Clear()
 		for _, Sheet in ipairs( self.Items ) do
 			Sheet.Panel:SetParent( t.offloadparent )
@@ -482,10 +476,6 @@ function xlib.makeprogressbar( t )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
 	pnl:SetFraction( t.value or 0 )
-	--if t.percent then
-	--	pnl.m_bLabelAsPercentage = true
-	--	pnl:UpdateText()
-	--end
 	return pnl
 end
 
@@ -559,25 +549,36 @@ function xlib.makeslider( t )
 	
 	pnl:SizeToContents()
 	
-
+	--
 	--The following code bits are basically copies of Garry's code with changes to prevent the slider from sending updates so often
-	function pnl.TextArea:ValueUpdated( value )
-		self:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", value) )
+	function pnl.SetValue( self, val )
+		val = math.Clamp( tonumber( val ) or 0, self:GetMin(), self:GetMax() )
+		if ( val == nil ) then return end
+		self.Scratch:SetValue( val )
+		self.ValueUpdated( val )
+		self:ValueChanged( self:GetValue() )
 	end
 	
+	--Textbox
+	function pnl.ValueUpdated( value )
+		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", value) )
+	end
 	pnl.TextArea.OnTextChanged = function() end
 	function pnl.TextArea:OnLoseFocus()
-		pnl:SetValue( pnl.TextArea:GetText() )
+		pnl.ValueUpdated( pnl.TextArea:GetText() )
+		if ( pnl:GetValue() ~= tonumber(pnl.TextArea:GetText()) ) then
+			pnl:SetValue( pnl.TextArea:GetText() )
+		end
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
 	end
 	
-	
+	--Slider
 	local pnl_val
 	function pnl:TranslateSliderValues( x, y )
 		pnl_val = self.Scratch:GetMin() + (x * self.Scratch:GetRange()) --Store the value and update the textbox to the new value
-		pnl.TextArea:ValueUpdated( pnl_val )
+		pnl.ValueUpdated( pnl_val )
 		self.Scratch:SetFraction( x )
-    
+		
 		return self.Scratch:GetFraction(), y
 	end
 	local tmpfunc = pnl.Slider.Knob.OnMouseReleased
@@ -585,13 +586,17 @@ function xlib.makeslider( t )
 		tmpfunc( self, mcode )
 		pnl.Slider:OnMouseReleased( mcode )
 	end
+	local tmpfunc = pnl.Slider.SetDragging
+	pnl.Slider.SetDragging = function( self, bval )
+		tmpfunc( self, bval )
+		if ( !bval ) then pnl:SetValue( pnl.TextArea:GetText() ) end
+	end
 	pnl.Slider.OnMouseReleased = function( self, mcode )
 		self:SetDragging( false )
 		self:MouseCapture( false )
-		pnl:SetValue( pnl.TextArea:GetText() )
 	end
 	
-	
+	--Scratch
 	function pnl.Scratch:OnCursorMoved( x, y )
 		if ( !self:GetActive() ) then return end
 
@@ -611,7 +616,7 @@ function xlib.makeslider( t )
 		value = math.Clamp( value + (x * ControlScale * 0.002), self:GetMin(), self:GetMax() );
 		self:SetFloatValue( value )
 		pnl_val = value --Store value for later
-		pnl.TextArea:ValueUpdated( pnl_val )
+		pnl.ValueUpdated( pnl_val )
 		
 		self:LockCursor()
 	end
@@ -624,6 +629,8 @@ function xlib.makeslider( t )
 		
 		pnl:SetValue( pnl.TextArea:GetText() )
 	end
+	--End code changes
+	--
 	
 	return pnl
 end
@@ -1040,11 +1047,11 @@ xlib.addToAnimQueue = function( obj, ... )
 		table.insert( outTable, function() xlib.animRunning = true  obj( unpack( arg ) )  xlib.animQueue_call() end )
 	elseif type( obj ) == "string" and xlib.animTypes[obj] then
 		--arg[1] should be data table, arg[2] should be length
-		length = arg[2] or xgui.settings.animTime
+		length = arg[2] or xgui.settings.animTime or 1
 		xlib.animStep = xlib.animStep + 1
 		table.insert( outTable, function() xlib.animRunning = xlib.animTypes[obj]  xlib.animRunning:Start( ( xlib.curAnimStep ~= -1 and ( length/xlib.curAnimStep ) or 0 ), arg[1] ) end )
 	else
-		Msg( "Error: XGUI recieved an invalid animation call! TYPE:" .. type( obj ) .. " VALUE:" .. tostring( obj ) .. "\n" )
+		Msg( "Error: XLIB recieved an invalid animation call! TYPE:" .. type( obj ) .. " VALUE:" .. tostring( obj ) .. "\n" )
 	end
 end
 
