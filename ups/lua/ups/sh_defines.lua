@@ -151,6 +151,9 @@ FRIENDFILE = "ups/friends.txt"
 DISABLEDFILE = "ups/disabledplayers.txt"
 CONFIGFILE = "ups/config.txt"
 
+-- Ensure it's created
+file.CreateDir( "ups" )
+
 --[[
 	Variable: OWNERID_DEFER
 
