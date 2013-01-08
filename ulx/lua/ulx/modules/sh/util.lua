@@ -283,6 +283,45 @@ end
 local debuginfo = ulx.command( CATEGORY_NAME, "ulx debuginfo", ulx.debuginfo )
 debuginfo:help( "Dump some debug information." )
 
+function ulx.resettodefaults( calling_ply, param )
+	if param ~= "FORCE" then
+		local str = "Are you SURE about this? It will remove ulx-created temporary bans, configs, groups, EVERYTHING!"
+		local str2 = "If you're sure, type \"ulx resettodefaults FORCE\""
+		if calling_ply:IsValid() then
+			ULib.tsayError( calling_ply, str, true )
+			ULib.tsayError( calling_ply, str2, true )			
+		else
+			Msg( str .. "\n" )
+			Msg( str2 .. "\n" )
+		end
+		return
+	end
+	
+	file.Delete( "ulx/adverts.txt" )
+	file.Delete( "ulx/banreasons.txt" )
+	file.Delete( "ulx/config.txt" )
+	file.Delete( "ulx/downloads.txt" )
+	file.Delete( "ulx/gimps.txt" )
+	file.Delete( "ulx/sbox_limits.txt" )
+	file.Delete( "ulx/votemaps.txt" )
+	file.Delete( "ulib/bans.txt" )
+	file.Delete( "ulib/groups.txt" )
+	file.Delete( "ulib/misc_registered.txt" )
+	file.Delete( "ulib/users.txt" )
+	
+	local str = "Please change levels to finish the reset"
+	if calling_ply:IsValid() then
+		ULib.tsayError( calling_ply, str, true )
+	else
+		Msg( str .. "\n" )
+	end
+	
+	ulx.fancyLogAdmin( calling_ply, "#A reset all ULX and ULib configuration" )
+end
+local resettodefaults = ulx.command( CATEGORY_NAME, "ulx resettodefaults", ulx.resettodefaults )
+resettodefaults:addParam{ type=ULib.cmds.StringArg, ULib.cmds.optional }
+resettodefaults:help( "Resets ALL ULX and ULib configuration!" )
+
 if SERVER then
 	local ulx_kickAfterNameChanges = 			ulx.convar( "kickAfterNameChanges", "0", "<number> - Players can only change their name x times every ulx_kickAfterNameChangesCooldown seconds. 0 to disable.", ULib.ACCESS_ADMIN )
 	local ulx_kickAfterNameChangesCooldown = 	ulx.convar( "kickAfterNameChangesCooldown", "60", "<time> - Players can change their name ulx_kickAfterXNameChanges times every x seconds.", ULib.ACCESS_ADMIN )
