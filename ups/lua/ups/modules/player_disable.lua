@@ -69,12 +69,12 @@ end
 -- Create necessary cvars
 for i=1, game.MaxPlayers() do
 	ULib.replicatedWritableCvar( servercvarprefix .. i, clientcvarprefix .. i, "0", false, false, disableAccess )
-	ULib.queueFunctionCall( game.ConsoleCommand, servercvarprefix .. i .. " 0\n" ) -- We overload console if not queued
+	ULib.namedQueueFunctionCall( "UPS", game.ConsoleCommand, servercvarprefix .. i .. " 0\n" ) -- We overload console if not queued
 	cvars.AddChangeCallback( servercvarprefix .. i, totallyDisabledCvarChanged )
 
 	for _, id in ipairs( accessIds ) do
 		ULib.replicatedWritableCvar( servercvarprefix .. "_" .. id .. i, clientcvarprefix .. "_" .. id .. i, "0", false, false, disableAccess )
-		ULib.queueFunctionCall( game.ConsoleCommand, servercvarprefix .. "_" .. id .. i .. " 0\n" ) -- We overload console if not queued
+		ULib.namedQueueFunctionCall( "UPS", game.ConsoleCommand, servercvarprefix .. "_" .. id .. i .. " 0\n" ) -- We overload console if not queued
 		cvars.AddChangeCallback( servercvarprefix .. "_" .. id .. i, disabledCvarChanged )
 	end
 end
@@ -133,9 +133,9 @@ local function onSpawn( ply )
 
 	for _, id in ipairs( accessIds ) do
 		if not UPSDisabledPlayers[ steamid ] or not UPSDisabledPlayers[ steamid ][ id ] then
-			ULib.queueFunctionCall( game.ConsoleCommand, servercvarprefix .. "_" .. id .. entid .. " 0\n" ) -- Queue just to be safe
+			ULib.namedQueueFunctionCall( "UPS", game.ConsoleCommand, servercvarprefix .. "_" .. id .. entid .. " 0\n" ) -- Queue just to be safe
 		else
-			ULib.queueFunctionCall( game.ConsoleCommand, servercvarprefix .. "_" .. id .. entid .. " 1\n" ) -- Queue just to be safe
+			ULib.namedQueueFunctionCall( "UPS", game.ConsoleCommand, servercvarprefix .. "_" .. id .. entid .. " 1\n" ) -- Queue just to be safe
 		end
 	end
 end

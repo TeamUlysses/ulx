@@ -176,16 +176,22 @@ end
 
 
 -- Helper function for <queueFunctionCall()>
-local stack = {}
+local stacks = {}
 local function onThink()
-	local num = #stack
-	if num > 0 then
-		local b, e = pcall( stack[ 1 ].fn, unpack( stack[ 1 ], 1, stack[ 1 ].n ) )
-		if not b then
-			ErrorNoHalt( "ULib queue error: " .. tostring( e ) .. "\n" )
+	local remove = true
+	for queueName, stack in pairs( stacks ) do
+		local num = #stack
+		if num > 0 then
+			remove = false
+			local b, e = pcall( stack[ 1 ].fn, unpack( stack[ 1 ], 1, stack[ 1 ].n ) )
+			if not b then
+				ErrorNoHalt( "ULib queue error: " .. tostring( e ) .. "\n" )
+			end
+			table.remove( stack, 1 ) -- Remove the first inserted item. This is FIFO
 		end
-		table.remove( stack, 1 ) -- Remove the first inserted item. This is FIFO
-	else
+	end
+	
+	if remove then
 		hook.Remove( "Think", "ULibQueueThink" )
 		if game.IsDedicated() then
 			hook.Remove( "GetGameDescription", "ULibQueueThink" )
@@ -215,7 +221,32 @@ function ULib.queueFunctionCall( fn, ... )
 		return
 	end
 
-	table.insert( stack, { fn=fn, n=select( "#", ... ), ... } )
+	ULib.namedQueueFunctionCall( "defaultQueueName", fn, ... )
+end
+
+--[[
+	Function: namedQueueFunctionCall
+
+	Exactly like <queueFunctionCall()>, but allows for separately running queues to exist.
+	
+	Parameters:
+
+		queueName - The unique name of the queue (the queue group)
+		fn - The function to call
+		... - *(Optional)* The parameters to pass to the function
+
+	Revisions:
+
+		v2.50 - Initial.
+]]
+function ULib.namedQueueFunctionCall( queueName, fn, ... )
+	if type( fn ) ~= "function" then
+		error( "queueFunctionCall received a bad function", 2 )
+		return
+	end
+
+	stacks[ queueName ] = stacks[ queueName ] or {}
+	table.insert( stacks[ queueName ], { fn=fn, n=select( "#", ... ), ... } )
 	hook.Add( "Think", "ULibQueueThink", onThink, -20 )
 	if game.IsDedicated() then -- If it's a ded server we need another hook to make sure stuff runs even before players join
 		hook.Add( "GetGameDescription", "ULibQueueThink", onThink, -20 )

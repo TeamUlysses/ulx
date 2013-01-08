@@ -38,6 +38,7 @@ After you've restarted your server, if you are an admin, the UPS control panel w
 Group: Changelog
 v1.00 - *(00/00/00)*
 	* [FIX] Fixes for garry breakages.
+	* [FIX] UPS overloading the ULib queued function call queue.
 
 v0.96 - *(07/05/11)*
 	* [ADD] Global disables.
