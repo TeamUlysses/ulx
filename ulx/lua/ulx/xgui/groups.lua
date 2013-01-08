@@ -350,11 +350,6 @@ groups.teamlist.OnRowSelected = function( self, LineID, Line )
 			break
 		end
 	end
-	if lastmod == true then --A row was found and selected
-		groups.teammodremove:SetDisabled( false )
-	else
-		groups.teammodremove:SetDisabled( true )
-	end
 	groups.teammodifiers:SortByColumn( 1, false )
 	if not groups.teammodifiers:GetSelectedLine() then
 		groups.teammodspace:Clear()
@@ -416,27 +411,29 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 			groups.teamctrl:SetColor( Color( tempcolor[1], tempcolor[2], tempcolor[3] ) )
 			groups.teammodspace:Add( groups.teamctrl )
 		elseif Line:GetColumnText(1) == "model" then
-			groups.updateModelPanel()
 			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2) }
 			groups.teamctrl.OnEnter = function( self )
 				applybtn.DoClick()
-				for i, v in ipairs( groups.modelList:GetChildren() ) do
-					if v.name == self:GetValue() or v.model == self:GetValue() then
-						groups.modelList:SelectPanel( v )
+				for _, item in ipairs( groups.modelList.Items ) do
+					if item.ConVars == self:GetValue() or item.Model == self:GetValue() then
+						groups.modelList:SelectPanel( item )
 						break
 					end
 				end
 			end
 			groups.teammodspace:Add( groups.teamctrl )
-			groups.setTeamModel = function( name ) --This func is called when any of the spawnicons in the playerlist are pressed.
-				groups.teamctrl:SetText( name )
-				applybtn.DoClick()
-			end
-			for _, item in pairs( groups.modelList:GetChildren() ) do
-				if Line:GetColumnText(2) == item.name or Line:GetColumnText(2) == item.model then
+			groups.modelList = vgui.Create( "DModelSelect" )
+			temp = groups.modelList
+			groups.updateModelPanel()
+			for _, item in ipairs( groups.modelList.Items ) do
+				if item.ConVars == Line:GetColumnText(2) or item.Model == Line:GetColumnText(2) then
 					groups.modelList:SelectPanel( item )
 					break
 				end
+			end
+			function groups.modelList:OnActivePanelChanged( pnlOld, pnlNew )
+				groups.teamctrl:SetText( pnlNew.ConVars or pnlNew.Model )
+				applybtn.DoClick()
 			end
 			groups.teammodspace:Add( groups.modelList )
 		end
@@ -477,7 +474,7 @@ xgui.allowedTeamModifiers = {
 	jumpPower = 200,
 	maxHealth = 100,
 	--maxSpeed = 250, --Pointless setting?
-	model = "kleiner",
+	model = "scientist",
 	runSpeed = { 500, 1, nil },
 	stepSize = { 18, 0, 512, 2 },
 	unDuckSpeed = { 0.2, 0, 10, 2 },
@@ -518,8 +515,7 @@ groups.teammodremove.DoClick = function()
 	local modifier = groups.teammodifiers:GetSelected()[1]:GetColumnText(1)
 	RunConsoleCommand( "xgui", "updateTeamValue", team, modifier, "" )
 end
-groups.teammodspace = xlib.makelistlayout{ x=265, y=5, w=140, h=195, padding=1, parent=groups.pnlG3 }
-groups.teammodspace.Paint = function( self, w, h ) end
+groups.teammodspace = xlib.makelistlayout{ x=265, y=5, w=135, h=195, padding=1, parent=groups.pnlG3 }
 
 ----------------------------------------
 ------Groups Panel 4 (Access Management)
@@ -1189,13 +1185,14 @@ function groups.showAccessOptions( line )
 	menu:Open()
 end
 
-groups.modelList = vgui.Create( "DModelSelect", xgui.null )
-groups.modelList:SetHeight( 168 )
 function groups.updateModelPanel()
-	groups.modelList:Clear( true )	--TODO: This function appears to be broken at the moment.
-	local models = {}
-    for k,v in pairs( xgui.data.playermodels ) do models[v] = k end
-	groups.modelList:SetModelList( models, nil, false, true )
+	if groups.modelList and groups.modelList:IsValid() then
+		groups.modelList:Clear()
+		local models = {}
+		for k,v in pairs( xgui.data.playermodels ) do models[v] = k end
+		groups.modelList:SetModelList( models, nil, false, true )
+		groups.modelList:SetHeight( 2.63 )
+	end
 end
 
 --------------

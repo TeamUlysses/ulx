@@ -145,7 +145,7 @@ function groups.init()
 		jumpPower = 200,
 		maxHealth = 100,
 		--maxSpeed = 250, --Pointless setting?
-		model = "kleiner",
+		model = "scientist",
 		runSpeed = { 500, 1, nil },
 		stepSize = { 18, 0, 512 },
 		unDuckSpeed = 0.2,
