@@ -132,7 +132,10 @@ function ulx.userallow( calling_ply, target_ply, access_string, access_tag )
 		accessTable = { access_string }
 	end
 
-	local success = ULib.ucl.userAllow( target_ply:UniqueID(), accessTable )
+	local id = ULib.ucl.getUserRegisteredID( target_ply )
+	if not id then id = target_ply:SteamID() end
+	
+	local success = ULib.ucl.userAllow( id, accessTable )
 	if not success then
 		ULib.tsayError( calling_ply, string.format( "User \"%s\" already has access to \"%s\"", target_ply:Nick(), access_string ), true )
 	else

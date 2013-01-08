@@ -638,8 +638,7 @@ end
 
 	Parameters:
 
-		id - The SteamID, IP, or UniqueID of the user to change. Must be a valid, existing ID.
-			The unique id of a connected user is always valid.
+		id - The SteamID, IP, or UniqueID of the user to change. Must be a valid, existing ID, or an ID of a connected player.
 		access - The string of the access or a table of accesses to add or remove. Access tags can be specified in values in the table for allows.
 		revoke - *(Optional, defaults to false)* A boolean of whether the access tag should be added or removed
 			from the allow or deny list. If true, it's removed.
@@ -653,6 +652,7 @@ end
 	Revisions:
 
 		v2.40 - Initial.
+		v2.50 - Relaxed restrictions on id parameter.
 ]]
 function ucl.userAllow( id, access, revoke, deny )
 	ULib.checkArg( 1, "ULib.ucl.userAllow", "string", id )
@@ -663,7 +663,13 @@ function ucl.userAllow( id, access, revoke, deny )
 	id = id:upper() -- In case of steamid, needs to be upper case
 	if type( access ) == "string" then access = { access } end
 
-	local userInfo = ucl.users[ id ] or ucl.authed[ id ] -- Check both tables
+	local uid = id
+	if not ucl.authed[ uid ] then -- Check to see if it's a steamid or IP
+		local ply = getPlyByID( id )
+		uid = ply:UniqueID()
+	end
+	
+	local userInfo = ucl.users[ id ] or ucl.authed[ uid ] -- Check both tables
 	if not userInfo then return error( "User id does not exist for changing access (" .. id .. ")", 2 ) end
 
 	-- If they're connected but don't exist in the ULib user database, add them.
