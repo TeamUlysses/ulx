@@ -39,11 +39,11 @@ hook.Add( "InitPostEntity", "UtimeInitialize", initialize )
 function think()
 	if not LocalPlayer():IsValid() then return end
 	
-	if not utime_enable:GetBool() or
-	   (LocalPlayer():GetActiveWeapon():IsValid() and LocalPlayer():GetActiveWeapon():GetClass() == "gmod_camera") then
-			gpanel:SetVisible( false )
+	if not utime_enable:GetBool() or not IsValid( LocalPlayer() ) or 
+			(IsValid( LocalPlayer():GetActiveWeapon() ) and LocalPlayer():GetActiveWeapon():GetClass() == "gmod_camera") then
+		gpanel:SetVisible( false )
 	else
-			gpanel:SetVisible( true )
+		gpanel:SetVisible( true )
 	end
    
 	--gpanel:SetPos( ScrW() - gpanel:GetWide() - 20, 20 )  
