@@ -64,6 +64,7 @@ Check out the configs folder in ulx for some more goodies.
 Group: Changelog
 v3.60 - *(00/00/00)*
 	* [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
+	* [ADD] "ulx resettodefaults" - Resets ULX and ULib config to defaults.
 	* [CHANGE] ULX ban now supports restricting of time/string formats.
 	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
 	* [FIX] Garry breakages in GM13.
