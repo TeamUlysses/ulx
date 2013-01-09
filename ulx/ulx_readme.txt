@@ -76,6 +76,7 @@ v3.60 - *(00/00/00)*
 	* [FIX] Module cross-contamination in end.lua (Thanks Pon-3).
 	* [FIX] Team vs public chat doing the opposite of what it should for logs and "/me" actions. Wonder how long ago Garry needlessly changed that API without us noticing.
 	* [FIX] Promotion bug after using "ulx userallow" on a regular user. (Thanks JackYack13).
+	* [FIX] Server crash when jail is placed inside trigger_remove brush. (Thanks HellFox).
 
 v3.54 - *(04/27/12)*
 	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
