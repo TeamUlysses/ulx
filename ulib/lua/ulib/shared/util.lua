@@ -193,9 +193,6 @@ local function onThink()
 	
 	if remove then
 		hook.Remove( "Think", "ULibQueueThink" )
-		if game.IsDedicated() then
-			hook.Remove( "GetGameDescription", "ULibQueueThink" )
-		end
 	end
 end
 
@@ -248,9 +245,6 @@ function ULib.namedQueueFunctionCall( queueName, fn, ... )
 	stacks[ queueName ] = stacks[ queueName ] or {}
 	table.insert( stacks[ queueName ], { fn=fn, n=select( "#", ... ), ... } )
 	hook.Add( "Think", "ULibQueueThink", onThink, -20 )
-	if game.IsDedicated() then -- If it's a ded server we need another hook to make sure stuff runs even before players join
-		hook.Add( "GetGameDescription", "ULibQueueThink", onThink, -20 )
-	end
 end
 
 

@@ -26,7 +26,7 @@ function ULib.tsay( ply, msg, wait, wasValid )
 	ULib.checkArg( 2, "ULib.tsay", "string", msg )
 	ULib.checkArg( 3, "ULib.tsay", {"nil","boolean"}, wait )
 
-	if wait then ULib.queueFunctionCall( ULib.tsay, ply, msg, false, ply and ply:IsValid() ) return end -- Call next frame
+	if wait then ULib.namedQueueFunctionCall( "ULibChats", ULib.tsay, ply, msg, false, ply and ply:IsValid() ) return end -- Call next frame
 
 	if SERVER and ply and not ply:IsValid() then -- Server console
 		if wasValid then -- This means we had a valid player that left, so do nothing
@@ -159,7 +159,7 @@ end
 function ULib.tsayColor( ply, wait, ... )
 	if SERVER and ply and not ply:IsValid() then ply = serverConsole end -- Mark as server
 
-	if wait then ULib.queueFunctionCall( tsayColorCallback, ply, ... ) return end -- Call next frame
+	if wait then ULib.namedQueueFunctionCall( "ULibChats", tsayColorCallback, ply, ... ) return end -- Call next frame
 	tsayColorCallback( ply, ... )
 end
 
