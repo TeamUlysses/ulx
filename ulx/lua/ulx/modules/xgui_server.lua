@@ -268,10 +268,14 @@ function xgui.init()
 	--Initialize the server modules!
 	for _, v in ipairs( xgui.svmodules ) do	v.init() end
 
-	--Run code once all of the modules are done loading
-	for _, v in ipairs( xgui.svmodules ) do if v.postinit then v.postinit() end end
-
 	ulx.addToHelpManually( "Menus", "xgui", "<show, hide, toggle> - Opens and/or closes XGUI. (say: !xgui)" )
 end
---Init the code after ULX is done loading, to prevent strange errors
+
+--Init the code when the server is ready
 hook.Add( "Initialize", "XGUI_InitServer", xgui.init, -1 )
+
+--Call the modules postinit function when ULX is done loading. Should be called well after the Initialize hook.
+function xgui.postInit()
+	for _, v in ipairs( xgui.svmodules ) do if v.postinit then v.postinit() end end
+end
+hook.Add( ulx.HOOK_ULXDONELOADING, "XGUI_PostInitServer", xgui.postInit )

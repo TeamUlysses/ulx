@@ -377,14 +377,14 @@ groups.teamdelete.DoClick = function()
 		"Remove", function() RunConsoleCommand( "xgui", "removeTeam", team ) end,
 		"Cancel", function() end )
 end
-groups.upbtn = xlib.makespecialbutton{ x=85, y=160, w=20, btype="up", disabled=true, parent=groups.pnlG3 }
+groups.upbtn = xlib.makebutton{ x=85, y=160, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, disabled=true, parent=groups.pnlG3 }
 groups.upbtn.DoClick = function( self )
 	self:SetDisabled( true )
 	local lineID = groups.teamlist:GetSelectedLine()
 	RunConsoleCommand( "xgui", "updateTeamValue",  groups.teamlist.Lines[lineID]:GetColumnText(1), "order", lineID-1 )
 	RunConsoleCommand( "xgui", "updateTeamValue",  groups.teamlist.Lines[lineID-1]:GetColumnText(1), "order", lineID, "true" )
 end
-groups.downbtn = xlib.makespecialbutton{ x=85, y=180, w=20, btype="down", disabled=true, parent=groups.pnlG3 }
+groups.downbtn = xlib.makebutton{ x=85, y=180, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, disabled=true, parent=groups.pnlG3 }
 groups.downbtn.DoClick = function( self )
 	self:SetDisabled( true )
 	local lineID = groups.teamlist:GetSelectedLine()

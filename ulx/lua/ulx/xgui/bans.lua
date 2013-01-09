@@ -49,13 +49,13 @@ xlib.makebutton{ x=447, y=340, w=130, label="View Source Bans...", parent=xbans 
 		xbans.sbanWindow.sbanDetails:SetDisabled( false )
 	end
 	xlib.makelabel{ x=5, y=32, label="100 per page", parent=xbans.sbanWindow }
-	xbans.sbanWindow.pgleft = xlib.makespecialbutton{ x=80, y=30, w=20, btype="left", disabled=true, parent=xbans.sbanWindow }
+	xbans.sbanWindow.pgleft = xlib.makebutton{ x=80, y=30, w=20, icon="icon16/arrow_left.png", centericon=true, disabled=true, parent=xbans.sbanWindow }
 	xbans.sbanWindow.pgleft.DoClick = function()
 		local page = xbans.sbanWindow.sbanPage:GetValue()-1
 		xbans.sbanWindow.gotoPage( page )
 		xbans.sbanWindow.sbanPage:SetText( page )
 	end
-	xbans.sbanWindow.pgright = xlib.makespecialbutton{ x=100, y=30, w=20, btype="right", disabled=true, parent=xbans.sbanWindow }
+	xbans.sbanWindow.pgright = xlib.makebutton{ x=100, y=30, w=20, icon="icon16/arrow_right.png", centericon=true, disabled=true, parent=xbans.sbanWindow }
 	xbans.sbanWindow.pgright.DoClick = function()
 		local page = xbans.sbanWindow.sbanPage:GetValue()+1
 		xbans.sbanWindow.gotoPage( page )

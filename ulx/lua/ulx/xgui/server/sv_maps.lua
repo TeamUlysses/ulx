@@ -15,6 +15,5 @@ local function init()
 		end
 	end
 	hook.Add( "ULXVetoChanged", "XGUI_ServerCatchVeto", updateVetoState )
-	
 end
 xgui.addSVModule( "maps", init )

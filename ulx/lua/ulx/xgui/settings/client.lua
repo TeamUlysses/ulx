@@ -76,7 +76,7 @@ databutton.DoClick=function( self )
 		end
 	end
 end
-xlib.makelabel{ x=10, y=55, label="Anim transition time", parent=xguipnl }
+xlib.makelabel{ x=10, y=55, label="Animation transition time:", parent=xguipnl }
 xlib.makeslider{ x=10, y=70, w=150, label="<--->", max=2, value=xgui.settings.animTime, decimal=2, parent=xguipnl }.OnValueChanged = function( self, val )
 	local testval = math.Clamp( tonumber( val ), 0, 2 )
 	if testval ~= tonumber( val ) then self:SetValue( testval ) end
@@ -132,7 +132,7 @@ xguipnl.updateMainOrder = function()
 	end
 end
 xgui.hookEvent( "onProcessModules", nil, xguipnl.updateMainOrder )
-xguipnl.upbtnM = xlib.makespecialbutton{ x=250, y=120, w=20, btype="up", disabled=true, parent=xguipnl }
+xguipnl.upbtnM = xlib.makebutton{ x=250, y=120, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, disabled=true, parent=xguipnl }
 xguipnl.upbtnM.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.mainorder:GetSelectedLine()
@@ -140,7 +140,7 @@ xguipnl.upbtnM.DoClick = function( self )
 	table.remove( xgui.settings.moduleOrder, i+1 )
 	xgui.processModules()
 end
-xguipnl.downbtnM = xlib.makespecialbutton{ x=270, y=120, w=20, btype="down", disabled=true, parent=xguipnl }
+xguipnl.downbtnM = xlib.makebutton{ x=270, y=120, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, disabled=true, parent=xguipnl }
 xguipnl.downbtnM.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.mainorder:GetSelectedLine()
@@ -165,7 +165,7 @@ xguipnl.updateSettingOrder = function()
 	end
 end
 xgui.hookEvent( "onProcessModules", nil, xguipnl.updateSettingOrder )
-xguipnl.upbtnS = xlib.makespecialbutton{ x=395, y=120, w=20, btype="up", disabled=true, parent=xguipnl }
+xguipnl.upbtnS = xlib.makebutton{ x=395, y=120, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, disabled=true, parent=xguipnl }
 xguipnl.upbtnS.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.settingorder:GetSelectedLine()
@@ -173,7 +173,7 @@ xguipnl.upbtnS.DoClick = function( self )
 	table.remove( xgui.settings.settingOrder, i+1 )
 	xgui.processModules()
 end
-xguipnl.downbtnS = xlib.makespecialbutton{ x=375, y=120, w=20, btype="down", disabled=true, parent=xguipnl }
+xguipnl.downbtnS = xlib.makebutton{ x=375, y=120, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, disabled=true, parent=xguipnl }
 xguipnl.downbtnS.DoClick = function( self )
 	self:SetDisabled( true )
 	local i = xguipnl.settingorder:GetSelectedLine()
@@ -187,23 +187,23 @@ end
 --------------------
 xlib.makelabel{ x=175, y=145, label="XGUI Positioning:", parent=xguipnl }
 local pos = tonumber( xgui.settings.xguipos.pos )
-xguipnl.b7 = xlib.makespecialbutton{ x=175, y=160, w=20, btype="none", disabled=pos==7, parent=xguipnl }
+xguipnl.b7 = xlib.makebutton{ x=175, y=160, w=20, disabled=pos==7, parent=xguipnl }
 xguipnl.b7.DoClick = function( self ) xguipnl.updatePos( 7 ) end
-xguipnl.b8 = xlib.makespecialbutton{ x=195, y=160, w=20, btype="up",   disabled=pos==8, parent=xguipnl }
+xguipnl.b8 = xlib.makebutton{ x=195, y=160, w=20, icon="icon16/arrow_up.png", centericon=true, disabled=pos==8, parent=xguipnl }
 xguipnl.b8.DoClick = function( self ) xguipnl.updatePos( 8 ) end
-xguipnl.b9 = xlib.makespecialbutton{ x=215, y=160, w=20, btype="none", disabled=pos==9, parent=xguipnl }
+xguipnl.b9 = xlib.makebutton{ x=215, y=160, w=20, disabled=pos==9, parent=xguipnl }
 xguipnl.b9.DoClick = function( self ) xguipnl.updatePos( 9 ) end
-xguipnl.b4 = xlib.makespecialbutton{ x=175, y=180, w=20, btype="left", disabled=pos==4, parent=xguipnl }
+xguipnl.b4 = xlib.makebutton{ x=175, y=180, w=20, icon="icon16/arrow_left.png", centericon=true, disabled=pos==4, parent=xguipnl }
 xguipnl.b4.DoClick = function( self ) xguipnl.updatePos( 4 ) end
-xguipnl.b5 = xlib.makespecialbutton{ x=195, y=180, w=20, btype="updown", disabled=pos==5, parent=xguipnl }
+xguipnl.b5 = xlib.makebutton{ x=195, y=180, w=20, icon="icon16/bullet_green.png", centericon=true, disabled=pos==5, parent=xguipnl }
 xguipnl.b5.DoClick = function( self ) xguipnl.updatePos( 5 ) end
-xguipnl.b6 = xlib.makespecialbutton{ x=215, y=180, w=20, btype="right", disabled=pos==6, parent=xguipnl }
+xguipnl.b6 = xlib.makebutton{ x=215, y=180, w=20, icon="icon16/arrow_right.png", centericon=true, disabled=pos==6, parent=xguipnl }
 xguipnl.b6.DoClick = function( self ) xguipnl.updatePos( 6 ) end
-xguipnl.b1 = xlib.makespecialbutton{ x=175, y=200, w=20, btype="none", disabled=pos==1, parent=xguipnl }
+xguipnl.b1 = xlib.makebutton{ x=175, y=200, w=20, disabled=pos==1, parent=xguipnl }
 xguipnl.b1.DoClick = function( self ) xguipnl.updatePos( 1 ) end
-xguipnl.b2 = xlib.makespecialbutton{ x=195, y=200, w=20, btype="down", disabled=pos==2, parent=xguipnl }
+xguipnl.b2 = xlib.makebutton{ x=195, y=200, w=20, icon="icon16/arrow_down.png", centericon=true, disabled=pos==2, parent=xguipnl }
 xguipnl.b2.DoClick = function( self ) xguipnl.updatePos( 2 ) end
-xguipnl.b3 = xlib.makespecialbutton{ x=215, y=200, w=20, btype="none", disabled=pos==3, parent=xguipnl }
+xguipnl.b3 = xlib.makebutton{ x=215, y=200, w=20, disabled=pos==3, parent=xguipnl }
 xguipnl.b3.DoClick = function( self ) xguipnl.updatePos( 3 ) end
 
 function xguipnl.updatePos( position, xoffset, yoffset, ignoreanim )
