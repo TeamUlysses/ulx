@@ -383,6 +383,7 @@ blind:setOpposite( "ulx unblind", {_, _, _, true}, "!unblind" )
 
 ------------------------------ Jail ------------------------------
 local doJail
+local jailableArea
 function ulx.jail( calling_ply, target_plys, seconds, should_unjail )
 	local affected_plys = {}
 	for i=1, #target_plys do
@@ -391,6 +392,8 @@ function ulx.jail( calling_ply, target_plys, seconds, should_unjail )
 		if not should_unjail then
 			if ulx.getExclusive( v, calling_ply ) then
 				ULib.tsayError( calling_ply, ulx.getExclusive( v, calling_ply ), true )
+			elseif not jailableArea( v:GetPos() ) then
+				ULib.tsayError( calling_ply, v:Nick() .. " is not in an area where a jail can be placed!", true )
 			else
 				doJail( v, seconds )
 
@@ -433,16 +436,15 @@ function ulx.jailtp( calling_ply, target_ply, seconds )
 	local tr = util.TraceEntity( t, target_ply )
 
 	local pos = tr.HitPos
-
-	--if target_ply == calling_ply and pos:Distance( target_ply:GetPos() ) < 64 then -- Laughable distance
-	--	return
-	--end
 	
 	if ulx.getExclusive( target_ply, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( target_ply, calling_ply ), true )
 		return
 	elseif not target_ply:Alive() then
 		ULib.tsayError( calling_ply, target_ply:Nick() .. " is dead!", true )
+		return
+	elseif not jailableArea( pos ) then
+		ULib.tsayError( calling_ply, "That is not an area where a jail can be placed!", true )
 		return
 	else
 		if target_ply:InVehicle() then
@@ -488,6 +490,17 @@ local function jailCheck()
 	if remove_timer then
 		timer.Remove( "ULXJail" )
 	end
+end
+
+jailableArea = function( pos )
+	entList = ents.FindInBox( pos - Vector( 35, 35, 5 ), pos + Vector( 35, 35, 110 ) )
+	for i=1, #entList do
+		if entList[ i ]:GetClass() == "trigger_remove" then
+			return false
+		end
+	end
+	
+	return true
 end
 
 local mdl1 = Model( "models/props_c17/fence01b.mdl" )
