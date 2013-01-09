@@ -198,7 +198,7 @@ function xgui.processModules()
 		if module then
 			module = xgui.modules.tab[module]
 			if module.xbutton == nil then
-				module.xbutton = xlib.makespecialbutton{ x=565, y=5, w=20, btype="close", parent=module.panel }
+				module.xbutton = xlib.makebutton{ x=555, y=-5, w=32, h=32, btype="close", parent=module.panel }
 				module.xbutton.DoClick = function()
 					xgui.hide()
 				end

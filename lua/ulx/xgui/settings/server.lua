@@ -183,7 +183,7 @@ adverts.updatebutton.DoClick = function( node )
 		end
 	end
 end
-adverts.nodeup = xlib.makespecialbutton{ x=85, y=304, w=20, btype="up", parent=adverts, disabled=true }
+adverts.nodeup = xlib.makebutton{ x=85, y=304, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, parent=adverts, disabled=true }
 adverts.nodeup.DoClick = function()
 	adverts.nodedown:SetDisabled( true )
 	adverts.nodeup:SetDisabled( true )
@@ -214,7 +214,7 @@ adverts.nodeup.DoClick = function()
 		end
 	end
 end
-adverts.nodedown = xlib.makespecialbutton{ x=105, y=304, w=20, btype="down", parent=adverts, disabled=true }
+adverts.nodedown = xlib.makebutton{ x=105, y=304, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, parent=adverts, disabled=true }
 adverts.nodedown.DoClick = function()
 	adverts.nodedown:SetDisabled( true )
 	adverts.nodeup:SetDisabled( true )

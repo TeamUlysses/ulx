@@ -20,16 +20,6 @@ maps.list.OnRowSelected = function( self, LineID, Line )
 	maps.curmap:SetText( Line:GetColumnText(1) )
 	maps.updateButtonStates()
 end
-maps.list.Think = function()
-	if maps.list.checkVotemaps then
-		for _,line in ipairs( maps.list.Lines ) do
-			if line.isNotVotemap then
-				line:SetAlpha( 152 )
-			end
-		end
-		maps.list.checkVotemaps = nil
-	end
-end
 
 maps.disp = vgui.Create( "DImage", maps )
 maps.disp:SetPos( 185, 30 )
@@ -78,6 +68,7 @@ function maps.addMaptoList( mapname, lastselected )
 	end
 	line.isNotVotemap = nil
 	if not table.HasValue( ulx.votemaps, mapname ) then
+		line:SetAlpha( 128 )
 		line.isNotVotemap = true
 	end
 end
@@ -89,24 +80,26 @@ function maps.updateVoteMaps()
 	end
 	
 	maps.list:Clear()
-	xgui.flushQueue( "votemaps" )
 	
 	if LocalPlayer():query( "ulx map" ) then --Show all maps for admins who have access to change the level
+		if ( #ulx.maps == 0 ) then	--Check to see if ulx.maps table has arrived yet. Only applies when user is first granted access to ulx map.
+			timer.Simple( 0.1, function() maps.updateVoteMaps() end )
+			return
+		end
 		maps.maplabel:SetText( "Server Maps (Votemaps are highlighted)" )
 		for _,v in ipairs( ulx.maps ) do
-			xgui.queueFunctionCall( maps.addMaptoList, "votemaps", v, lastselected )
+			maps.addMaptoList( v, lastselected )
 		end
-		xgui.queueFunctionCall( function() maps.list.checkVotemaps = true end, "votemaps" ) --This will grey out votemaps as soon as maps.list Think function is called.
 	else
 		maps.maplabel:SetText( "Server Votemaps" )
 		for _,v in ipairs( ulx.votemaps ) do --Show the list of votemaps for users without access to "ulx map"
-			xgui.queueFunctionCall( maps.addMaptoList, "votemaps", v, lastselected )
+			maps.addMaptoList( v, lastselected )
 		end
 	end
 	if not maps.accessVotemap2 then  --Only select the first map if they don't have access to votemap2
-		xgui.queueFunctionCall( function()  local l = maps.list:GetSelected()[1]
-											maps.list:ClearSelection()
-											maps.list:SelectItem( l ) end, "votemaps" )
+		local l = maps.list:GetSelected()[1]
+		maps.list:ClearSelection()
+		maps.list:SelectItem( l )
 	end
 	maps.updateButtonStates()
 end

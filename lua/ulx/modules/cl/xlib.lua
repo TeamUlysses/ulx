@@ -97,20 +97,23 @@ end
 
 function xlib.makebutton( t )
 	local pnl = vgui.Create( "DButton", t.parent )
-	pnl:SetSize( t.w, t.h or 20 )
+	pnl:SetSize( t.w or 20, t.h or 20 )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetText( t.label or "" )
 	pnl:SetDisabled( t.disabled )
-	return pnl
-end
-
-function xlib.makespecialbutton( t )
-	local pnl = vgui.Create( "DButton", t.parent )
-	pnl:SetSize( t.w, t.h or 20 )
-	pnl:SetPos( t.x, t.y )
-	pnl:SetDisabled( t.disabled )
-	pnl:SetText( "" )
-	pnl.Paint = function( panel, w, h ) derma.SkinHook( "Paint", "WindowCloseButton", panel, w, h ) end
+	if t.icon then pnl:SetIcon( t.icon ) end
+	if t.btype and t.btype == "close" then 
+		pnl.Paint = function( panel, w, h ) derma.SkinHook( "Paint", "WindowCloseButton", panel, w, h ) end
+	end
+	if t.centericon then	--Place the image in the cetner of the button instead of the default layout.
+		function pnl:PerformLayout()
+			if ( IsValid( self.m_Image ) ) then
+				self.m_Image:SetPos( (self:GetWide() - self.m_Image:GetWide()) * 0.5, (self:GetTall() - self.m_Image:GetTall()) * 0.5 )
+				self:SetTextInset( self.m_Image:GetWide() + 16, 0 )
+			end
+			DLabel.PerformLayout( self )
+		end
+	end
 	return pnl
 end
 
