@@ -82,10 +82,6 @@ function maps.updateVoteMaps()
 	maps.list:Clear()
 	
 	if LocalPlayer():query( "ulx map" ) then --Show all maps for admins who have access to change the level
-		if ( #ulx.maps == 0 ) then	--Check to see if ulx.maps table has arrived yet. Only applies when user is first granted access to ulx map.
-			timer.Simple( 0.1, function() maps.updateVoteMaps() end )
-			return
-		end
 		maps.maplabel:SetText( "Server Maps (Votemaps are highlighted)" )
 		for _,v in ipairs( ulx.maps ) do
 			maps.addMaptoList( v, lastselected )
@@ -117,7 +113,7 @@ end
 function maps.updatePermissions()
 	maps.vetomap:SetDisabled( true )
 	RunConsoleCommand( "xgui", "getVetoState" ) --Get the proper enabled/disabled state of the veto button.
-	maps.accessVotemap = ( GetConVarNumber( "ulx_votemapEnabled" ) == 1 ) and true or false
+	maps.accessVotemap = ( GetConVarNumber( "ulx_votemapEnabled" ) == 1 )
 	maps.accessVotemap2 = LocalPlayer():query( "ulx votemap2" )
 	maps.accessMap = LocalPlayer():query( "ulx map" )
 	maps.updateGamemodes()
@@ -148,11 +144,7 @@ end
 --Enable/Disable the votemap button when ulx_votemapEnabled changes
 function maps.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 	if cl_cvar == "ulx_votemapenabled" then
-		if tonumber( new_val ) == 1 then
-			maps.accessVotemap = true
-		else
-			maps.accessVotemap = false
-		end
+		maps.accessVotemap = ( tonumber( new_val ) == 1 )
 		maps.updateButtonStates()
 	end
 end

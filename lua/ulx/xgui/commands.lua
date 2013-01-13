@@ -283,18 +283,19 @@ cmds.refresh = function( permissionChanged )
 	cmds.permissionChanged = true
 	
 	local newcategories = {}
+	local sortcategories = {}
 	local matchedCmdFound = false
 	for cmd, data in pairs( ULib.cmds.translatedCmds ) do
 		local opposite = data.opposite or ""
 		if opposite ~= cmd and ( LocalPlayer():query( data.cmd ) or LocalPlayer():query( opposite ) ) then
 			local catname = data.category
-			if catname == nil or catname == "" then catname = "Uncategorized" end
+			if catname == nil or catname == "" then catname = "_Uncategorized" end
 			if not cmds.cmd_contents[catname] then
 				--Make a new category
 				cmds.cmd_contents[catname] = xlib.makelistview{ headerheight=0, multiselect=false, h=136 }
 				cmds.cmd_contents[catname].OnRowSelected = function( self, LineID ) cmds.setselected( self, LineID ) end
 				cmds.cmd_contents[catname]:AddColumn( "" )
-				local cat = xlib.makecat{ label=catname, contents=cmds.cmd_contents[catname], expanded=false, parent=cmds.cmds }
+				local cat = xlib.makecat{ label=catname, contents=cmds.cmd_contents[catname], expanded=false, parent=xgui.null }
 				function cat.Header:OnMousePressed( mcode )
 					if ( mcode == MOUSE_LEFT ) then
 						self:GetParent():Toggle()
@@ -312,6 +313,7 @@ cmds.refresh = function( permissionChanged )
 					return self:GetParent():OnMousePressed( mcode )
 				end
 				newcategories[catname] = cat
+				table.insert( sortcategories, catname )
 			end
 			local line = cmds.cmd_contents[catname]:AddLine( string.gsub( data.cmd, "ulx ", "" ), data.cmd )
 			if data.cmd == lastcmd then
@@ -332,8 +334,9 @@ cmds.refresh = function( permissionChanged )
 		end
 	end
 	
-	table.sort( newcategories )
-	for _, cat in pairs( newcategories ) do
+	table.sort( sortcategories )
+	for _, catname in ipairs( sortcategories ) do
+		local cat = newcategories[catname]
 		cmds.cmds:Add( cat )
 		cat.Contents:SortByColumn( 1 )
 		cat.Contents:SetHeight( 17*#cat.Contents:GetLines() )

@@ -16,7 +16,7 @@ function xlib.makecheckbox( t )
 	if t.textcolor then
 		pnl:SetTextColor( t.textcolor )
 	else
-		pnl:SetTextColor( pnl.m_Skin.text_dark )
+		pnl:SetTextColor( SKIN.text_dark )
 	end
 	
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
@@ -27,7 +27,20 @@ function xlib.makecheckbox( t )
 		pnl:SetToolTip( t.tooltip )
 	end
 	
+	function pnl:SetDisabled( val )
+		pnl.disabled = val
+		pnl:SetMouseInputEnabled( not val )
+		pnl:SetAlpha( val and 128 or 255 )
+	end
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
+	
+	--Work around for bug where changing the parent of a disabled textbox reenables mouse input.
+	local tempfunc = pnl.SetParent
+	pnl.SetParent = function( self, parent )
+		local ret = tempfunc( self, parent )
+		self:SetDisabled( self.disabled )
+		return ret
+	end
 	
 	--Replicated Convar Updating
 	if t.repconvar then
@@ -73,7 +86,7 @@ function xlib.makelabel( t )
 	if t.textcolor then
 		pnl:SetTextColor( t.textcolor )
 	else
-		pnl:SetTextColor( pnl.m_Skin.text_dark )
+		pnl:SetTextColor( SKIN.text_dark )
 	end
 
 	return pnl
@@ -166,9 +179,10 @@ function xlib.maketextbox( t )
 		pnl:SetToolTip( t.tooltip )
 	end
 
-	function pnl:SetDisabled( val ) --Do some funky stuff to simulate enabling/disabling of a textbox
+	function pnl:SetDisabled( val ) --Simulate enabling/disabling of a textbox
 		pnl:SetEnabled( not val )
-		pnl:SetPaintBackgroundEnabled( val )
+		pnl:SetMouseInputEnabled( not val )
+		pnl:SetAlpha( val and 128 or 255 )
 	end
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
 
@@ -232,7 +246,7 @@ function xlib.makecat( t )
 		local tempfunc = pnl.PerformLayout
 		pnl.PerformLayout = function( self )
 			tempfunc( self )
-			self.checkBox:SetPos( self:GetWide()-18, 5 )
+			self.checkBox:SetPos( self:GetWide()-18, 2 )
 		end
 	end
 
@@ -475,7 +489,7 @@ end
 
 function xlib.makeprogressbar( t )
 	pnl = vgui.Create( "DProgress", t.parent )
-	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), textcolor=t.parent.m_Skin.text_dark, parent=pnl }
+	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), textcolor=SKIN.text_dark, parent=pnl }
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
 	pnl:SetFraction( t.value or 0 )
@@ -504,7 +518,7 @@ function xlib.makeslider( t )
 	if t.textcolor then
 		pnl.Label:SetTextColor( t.textcolor )
 	else
-		pnl.Label:SetTextColor( pnl.m_Skin.text_dark )
+		pnl.Label:SetTextColor( SKIN.text_dark )
 	end
 	
 	if t.fixclip then pnl.Slider.Knob:NoClipping( false ) end --Fixes clipping on the knob, an example is the sandbox limit sliders.
