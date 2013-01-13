@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"Uppl"
+	"version"			"1.0"
+	"up_date"			"06/02/07"
+	"author_name"			"Megiddo (Team Ulysses)"
+	"author_email"			"megiddo@meg-tech.com"
+	"author_url"			"http://www.ulyssesmod.net/"
+	"info"				"Ulysses Per Prop Limit"
+	"override"			"0"
+}

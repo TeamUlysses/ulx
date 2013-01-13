@@ -1,0 +1,64 @@
+// Add this to your server.cfg or ULX configs (IE, ULX per map config or per gamemode)
+
+///////////////
+//Prop Limits//
+///////////////
+
+// Explosives
+uppl_add models/props_c17/oildrum001_explosive.mdl 10
+uppl_add models/props_junk/propane_tank001a.mdl 10
+uppl_add models/props_junk/gascan001a.mdl 10
+
+// Misc
+uppl_add models/props_c17/utilitypole01d.mdl 16 // Restricted because some moron tried (but failed) to crash the Ulysses server with this.
+
+// Phx explosives
+uppl_add models/props_phx/misc/flakshell_big.mdl 10
+uppl_add models/props_phx/ww2bomb.mdl 10
+uppl_add models/props_phx/torpedo.mdl 10
+uppl_add models/props_phx/mk-82.mdl 10
+uppl_add models/props_phx/oildrum001_explosive.mdl 10
+uppl_add models/props_phx/ball.mdl 10
+
+
+// Big/annoying
+uppl_add models/props_buildings/building_002a.mdl 1
+uppl_add models/props_buildings/collapsedbuilding02b.mdl 4
+uppl_add models/props_buildings/collapsedbuilding02c.mdl 16
+uppl_add models/props_buildings/project_building01.mdl 1
+uppl_add models/props_buildings/project_building02.mdl 1 // I do believe this is the biggest prop in the game.
+uppl_add models/props_buildings/project_building03.mdl 1
+uppl_add models/props_buildings/project_destroyedbuildings01.mdl 1
+uppl_add models/props_buildings/row_church_fullscale.mdl 1
+uppl_add models/props_buildings/row_corner_1_fullscale.mdl 1
+uppl_add models/props_buildings/row_res_1_fullscale.mdl 1
+uppl_add models/props_buildings/row_res_2_ascend_fullscale.mdl 1
+uppl_add models/props_buildings/row_res_2_fullscale.mdl 1
+uppl_add models/props_buildings/watertower_001a.mdl 16
+uppl_add models/props_buildings/watertower_002a.mdl 8
+uppl_add models/props_canal/canal_bridge01.mdl 4
+uppl_add models/props_canal/canal_bridge02.mdl 4
+uppl_add models/props_canal/canal_bridge03a.mdl 10
+uppl_add models/props_canal/canal_bridge03b.mdl 5
+uppl_add models/props_combine/combine_citadel001.mdl
+uppl_add models/props_combine/combineinnerwallcluster1024_001a.mdl 4
+uppl_add models/props_combine/combineinnerwallcluster1024_002a.mdl 4
+uppl_add models/props_combine/combineinnerwallcluster1024_003a.mdl 2
+uppl_add models/props_wasteland/rockcliff_cluster01b.mdl 8
+uppl_add models/props_wasteland/rockcliff_cluster02a.mdl 8
+uppl_add models/props_wasteland/rockcliff_cluster02b.mdl 8
+uppl_add models/props_wasteland/rockcliff_cluster02c.mdl 8
+uppl_add models/props/de_nuke/storagetank.mdl 3
+uppl_add models/props/de_train/biohazardtank.mdl 0 // This gibs and never goes away
+
+// Phx big/annoying
+uppl_add models/props_phx/misc/big_ramp.mdl 2
+uppl_add models/props_phx/misc/small_ramp.mdl 4
+uppl_add models/props_phx/playfield.mdl 4
+uppl_add models/props_phx/huge/tower.mdl 1
+uppl_add models/props_phx/huge/evildisc_corp.mdl 1
+
+// Gmow3 big/annoying
+uppl_add models/trailer1.mdl 4
+uppl_add models/ramps/ramp1.mdl 4
+uppl_add models/ramps/ramp2.mdl 2
