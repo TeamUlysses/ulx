@@ -67,6 +67,7 @@ v3.60 - *(00/00/00)*
 	* [ADD] "ulx resettodefaults" - Resets ULX and ULib config to defaults.
 	* [CHANGE] ULX ban now supports restricting of time/string formats.
 	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
+	* [CHANGE] !teleport chat command is now also aliased as !tp.
 	* [FIX] Garry breakages in GM13.
 	* [FIX] An exclusivity bug in "ulx freeze" (Thanks infinitywraith).
 	* [FIX] A console bug when trying to ulx teleport another player (Thanks infinitywraith).

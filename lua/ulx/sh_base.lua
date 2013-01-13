@@ -24,7 +24,7 @@ function ulxCommand:getUsage( ply )
 			str = str .. " "
 		end
 		if self.say_cmd then
-			str = str .. "(say: " .. self.say_cmd .. ")"
+			str = str .. "(say: " .. self.say_cmd[1] .. ")"
 		end
 		if self.opposite and (self.helpStr or self.say_cmd) then
 			str = str .. " "
@@ -39,6 +39,7 @@ end
 
 ulx.cmdsByCategory = {}
 function ulx.command( category, command, fn, say_cmd, hide_say, nospace )
+    if type( say_cmd ) == "string" then say_cmd = { say_cmd } end
 	local obj = ulxCommand( command, fn, say_cmd, hide_say, nospace )
 	obj:addParam{ type=ULib.cmds.CallingPlayerArg }
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
