@@ -232,7 +232,6 @@ function xgui.load_helpers()
 	function ULib.cmds.NumArg.x_getcontrol( arg, argnum )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
-
 		ULib.cmds.NumArg.processRestrictions( restrictions, arg, ulx.getTagArgNum( tag, argnum ) )
 		
 		if table.HasValue( arg, ULib.cmds.allowTimeString ) then
@@ -280,7 +279,7 @@ function xgui.load_helpers()
 			end
 			
 			return outPanel
-		else		
+		else
 			local defvalue = arg.min
 			if table.HasValue( arg, ULib.cmds.optional ) then defvalue = arg.default end
 			if not defvalue then defvalue = 0 end --No default was set for this command, so we'll use 0.
@@ -288,7 +287,12 @@ function xgui.load_helpers()
 			local maxvalue = restrictions.max
 			if restrictions.max == nil and defvalue > 100 then maxvalue = defvalue end
 			
-			return xlib.makeslider{ min=restrictions.min, max=maxvalue, value=defvalue, label=arg.hint or "NumArg" }
+			outPanel = xlib.makepanel{ h=35 }
+			xlib.makelabel{ label=arg.hint or "NumArg", parent=outPanel }
+			outPanel.val = xlib.makeslider{ y=15, w=165, min=restrictions.min, max=maxvalue, value=defvalue, label="<--->", parent=outPanel }
+			outPanel.GetValue = function( self ) return outPanel.val.GetValue( outPanel.val ) end
+			outPanel.TextArea = outPanel.val.TextArea
+			return outPanel
 		end
 	end
 
@@ -365,8 +369,12 @@ function xgui.load_helpers()
 	end
 
 	function ULib.cmds.BoolArg.x_getcontrol( arg, argnum )
-		-- There are actually not any restrictions possible on a boolarg...
-		local xgui_temp = xlib.makecheckbox{ label=arg.hint or "BoolArg" }
+		local access, tag = LocalPlayer():query( arg.cmd )
+		local restrictions = {}
+		ULib.cmds.BoolArg.processRestrictions( restrictions, arg, ulx.getTagArgNum( tag, argnum ) )
+		
+		local xgui_temp = xlib.makecheckbox{ label=arg.hint or "BoolArg", value=restrictions.restrictedTo }
+		if restrictions.restrictedTo ~= nil then xgui_temp:SetDisabled( true ) end
 		xgui_temp.GetValue = function( self )
 			return self:GetChecked() and 1 or 0
 		end

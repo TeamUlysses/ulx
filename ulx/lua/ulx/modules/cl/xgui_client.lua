@@ -74,11 +74,8 @@ if not xgui.settings.animOuttype then xgui.settings.animOuttype = 1 end
 function xgui.init( authedply )
 	if not authedply then authedply = LocalPlayer() end
 	if authedply ~= LocalPlayer() then return end
-	
+
 	xgui.load_helpers()
-	
-	--Check if the server has XGUI installed
-	RunConsoleCommand( "_xgui", "getInstalled" )
 
 	--Initiate the base window (see xgui_helpers.lua for code)
 	xgui.makeXGUIbase{}
@@ -90,7 +87,7 @@ function xgui.init( authedply )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
 	local version_type = ulx.revision and ( ulx.revision > 0 and " SVN " .. ulx.revision or " Release") or (" N/A")
-	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v13.1.8 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
+	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v13.1.12 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
 	xgui.thetime = xlib.makelabel{ x=515, y=-10, label="", parent=xgui.infobar }
 	xgui.thetime:NoClipping( true )
 	xgui.thetime.check = function()
@@ -155,9 +152,9 @@ function xgui.init( authedply )
 	checkModulesOrder( xgui.modules.tab, xgui.settings.moduleOrder )
 	checkModulesOrder( xgui.modules.setting, xgui.settings.settingOrder )
 
-	--Hold off adding the hook to reprocess modules on re-authentication to prevent being called on first auth.
-	ULib.queueFunctionCall( hook.Add, "UCLAuthed", "XGUI_PermissionsChanged", xgui.PermissionsChanged )
-	
+	--Check if the server has XGUI installed
+	RunConsoleCommand( "_xgui", "getInstalled" )
+
 	hook.Remove( "UCLAuthed", "InitXGUI" )
 	xgui.initialized = true
 
@@ -203,19 +200,13 @@ function xgui.processModules()
 					xgui.hide()
 				end
 			end
-			if module.access then
-				if LocalPlayer():query( module.access ) then
-					xgui.base:AddSheet( module.name, module.panel, module.icon, false, false, module.tooltip )
-					module.tabpanel = xgui.base.Items[#xgui.base.Items].Tab
-					table.insert( xgui.tabcompletes, "xgui show " .. modname )
-				else
-					module.tabpanel = nil
-					module.panel:SetParent( xgui.null )
-				end
-			else
+			if LocalPlayer():query( module.access ) then
 				xgui.base:AddSheet( module.name, module.panel, module.icon, false, false, module.tooltip )
 				module.tabpanel = xgui.base.Items[#xgui.base.Items].Tab
 				table.insert( xgui.tabcompletes, "xgui show " .. modname )
+			else
+				module.tabpanel = nil
+				module.panel:SetParent( xgui.null )
 			end
 		end
 	end
@@ -225,19 +216,13 @@ function xgui.processModules()
 		local module = xgui.checkModuleExists( modname, xgui.modules.setting )
 		if module then
 			module = xgui.modules.setting[module]
-			if module.access then
-				if LocalPlayer():query( module.access ) then
-					xgui.settings_tabs:AddSheet( module.name, module.panel, module.icon, false, false, module.tooltip )
-					module.tabpanel = xgui.settings_tabs.Items[#xgui.settings_tabs.Items].Tab
-					table.insert( xgui.tabcompletes, "xgui show " .. modname )
-				else
-					module.tabpanel = nil
-					module.panel:SetParent( xgui.null )
-				end
-			else
+			if LocalPlayer():query( module.access ) then
 				xgui.settings_tabs:AddSheet( module.name, module.panel, module.icon, false, false, module.tooltip )
 				module.tabpanel = xgui.settings_tabs.Items[#xgui.settings_tabs.Items].Tab
 				table.insert( xgui.tabcompletes, "xgui show " .. modname )
+			else
+				module.tabpanel = nil
+				module.panel:SetParent( xgui.null )
 			end
 		end
 	end
@@ -245,7 +230,7 @@ function xgui.processModules()
 	--Call any functions that requested to be called when permissions change
 	xgui.callUpdate( "onProcessModules" )
 	table.sort( xgui.tabcompletes )
-	
+
 	local hasFound = false
 	if activetab then
 		for _, v in pairs( xgui.base.Items ) do
@@ -279,12 +264,12 @@ end
 
 function xgui.checkNotInstalled( tabname )
 	if xgui.notInstalledWarning then return end
-	
+
 	gui.EnableScreenClicker( true )
 	RestoreCursorPosition()
 	xgui.notInstalledWarning = xlib.makeframe{ label="XGUI Warning!", w=375, h=110, nopopup=true, showclose=false, skin=xgui.settings.skin }
 	xlib.makelabel{ x=10, y=30, wordwrap=true, w=365, label="XGUI has not initialized properly with the server. This could be caused by a heavy server load after a mapchange, a major error during XGUI server startup, or XGUI not being installed.", parent=xgui.notInstalledWarning }
-	
+
 	xlib.makebutton{ x=37, y=83, w=80, label="Offline Mode", parent=xgui.notInstalledWarning }.DoClick = function()
 		xgui.notInstalledWarning:Remove()
 		xgui.notInstalledWarning = nil
@@ -301,14 +286,14 @@ function xgui.checkNotInstalled( tabname )
 			gui.EnableScreenClicker( false )
 		end
 	end
-	
+
 	xlib.makebutton{ x=257, y=83, w=80, label="Close", parent=xgui.notInstalledWarning }.DoClick = function()
 		xgui.notInstalledWarning:Remove()
 		xgui.notInstalledWarning = nil
 		RememberCursorPosition()
 		gui.EnableScreenClicker( false )
 	end
-	
+
 	xlib.makebutton{ x=147, y=83, w=80, label="Try Again", parent=xgui.notInstalledWarning }.DoClick = function()
 		xgui.notInstalledWarning:Remove()
 		xgui.notInstalledWarning = nil
@@ -326,7 +311,7 @@ end
 function xgui.show( tabname )
 	if not xgui.anchor then return end
 	if not xgui.initialized then return end
-	
+
 	--Check if XGUI is not installed, display the warning if hasn't been shown yet.
 	if not xgui.isInstalled and not xgui.offlineMode then
 		xgui.checkNotInstalled( tabname )
@@ -426,11 +411,12 @@ function xgui.getChunk( flag, datatype, data )
 	if xgui.expectingdata then
 		--print( datatype, flag ) --Debug
 		xgui.chunkbox:Progress( datatype )
-		if flag == 0 then --Data should be purged
+		if flag == -1 then return --Ignore these chunks
+		elseif flag == 0 then --Data should be purged
 			table.Empty( xgui.data[datatype] )
 			xgui.flushQueue( datatype )
 			xgui.callUpdate( datatype, "clear" )
-		elseif flag == 1 then 
+		elseif flag == 1 then
 			if not xgui.mergeData then --A full data table is coming in
 				if not data then data = {} end --Failsafe for no table being sent
 				xgui.flushQueue( datatype )
@@ -491,7 +477,7 @@ end
 
 --If the player's group is changed, reprocess the XGUI modules for permissions, and request for extra data if needed
 function xgui.PermissionsChanged( ply )
-	if ply == LocalPlayer() then
+	if ply == LocalPlayer() and xgui.isInstalled then
 		xgui.processModules()
 		local types = {}
 		for dtype, data in pairs( xgui.data ) do
@@ -500,6 +486,7 @@ function xgui.PermissionsChanged( ply )
 		RunConsoleCommand( "xgui", "refreshdata", unpack( types ) )
 	end
 end
+hook.Add( "UCLAuthed", "XGUI_PermissionsChanged", xgui.PermissionsChanged )
 
 function xgui.getInstalled()
 	if not xgui.isInstalled then
@@ -507,9 +494,9 @@ function xgui.getInstalled()
 			xgui.notInstalledWarning:Remove()
 			xgui.notInstalledWarning = nil
 		end
-		RunConsoleCommand( "xgui", "refreshdata" )
 		xgui.isInstalled = true
 		xgui.offlineMode = false
+		RunConsoleCommand( "xgui", "getdata" )
 	end
 end
 

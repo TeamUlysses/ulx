@@ -559,29 +559,18 @@ function groups.populateAccesses()
 				line.Columns[2]:SetDisabled( false )
 			else --Access was not given to the group, check for inherited groups!
 				foundAccess, fromGroup, restrictionString = groups.checkInheritedAccess( ULib.ucl.groups[group].inherit_from, access )
-				if foundAccess then
-					line.Columns[2]:SetDisabled( true )
-				else
-					line.Columns[1]:SetColor( Color( 55,55,55,90 ) )
-					line.Columns[2]:SetDisabled( false )
-				end
+				line.Columns[2]:SetDisabled( foundAccess )
 			end
+			line.Columns[1]:SetColor((foundAccess and (restrictionString ~= "" and restrictionString ~= "*")) and SKIN.text_highlight or SKIN.text_dark )
+			line.Columns[1]:SetAlpha( foundAccess and 255 or 128 )
+			line.Columns[2]:SetValue( foundAccess )
+			line:SetColumnText( 3, restrictionString )
 			line:SetColumnText( 4, fromGroup )
 			if groups.selcmd == line:GetColumnText(1) then
 				if ( groups.access_lines[groups.selcmd].Columns[2]:GetDisabled() or fromGroup ) or line:GetColumnText(3) ~= restrictionString then
 					groups.populateRestrictionArgs( line:GetColumnText(1), restrictionString )
 				end
 			end
-			line:SetColumnText( 3, restrictionString )
-			line.Columns[2]:SetValue( foundAccess )
-			if foundAccess then
-				if restrictionString == "" then
-					line.Columns[1]:SetColor( Color( 55,55,55,255 ) )
-				else
-					line.Columns[1]:SetColor( Color( 255,185,80,255 ) )
-				end
-			end
-			line.col = line.Columns[1]:GetColor() --Since the color gets overridden the first time these are drawn, we're going to set the color in a separate value and set the color manually after PerformLayout().
 		end
 	end
 end
@@ -809,71 +798,84 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 	end
 	groups.applyButton = xlib.makebutton{ h=20, label="Apply restrictions" }
 	groups.applyButton.DoClick = function( self )
-		local outstr = ""
-		local outtmp = ""
-		for _, panel in ipairs( groups.rArgList:GetChildren() ) do
-			local pnl = panel.Contents
-			
-			if panel.GetExpanded then --Weed out panels that we're not interested in
-				if panel:GetExpanded() then
-					if pnl.type == "ply" then
-						outstr = outstr .. outtmp .. " " .. ( pnl.cantarget:GetChecked() and "$" or "" ) .. ( pnl.txtfield:GetValue() ~= "" and pnl.txtfield:GetValue() or "*" )
-						outtmp = ""
-					elseif pnl.type == "num" then
-						if pnl.hasmin:GetChecked() or pnl.hasmax:GetChecked() then
-							outstr = outstr .. outtmp .. " " .. ( pnl.hasmin:GetChecked() and pnl.min:GetValue() or "" ) .. ( pnl.hasmax:GetChecked() and ":" .. pnl.max:GetValue() or "" )
-							outtmp = ""
-						else
-							outtmp = outtmp .. " *"
-						end
-					elseif pnl.type == "time" then
-						if pnl.hasmin:GetChecked() or pnl.hasmax:GetChecked() then
-							if pnl.min:GetValue() == 0 then pnl.minterval:ChooseOptionID(1) end --Set to Permanent when 0 hours/mins/weeks/years is selected
-							if pnl.max:GetValue() == 0 then pnl.maxterval:ChooseOptionID(1) end
-							
-							local minchr = string.lower( pnl.minterval:GetValue():sub(1,1) )
-							if minchr == "m" or minchr == "p" then minchr = "" end
-							
-							local maxchr = string.lower( pnl.maxterval:GetValue():sub(1,1) )
-							if maxchr == "m" or maxchr == "p" then maxchr = "" end
-							
-							outstr = outstr .. outtmp .. " " .. 
-								( pnl.hasmin:GetChecked() and ( pnl.min:GetValue() .. minchr ) or "" ) ..
-								( pnl.hasmax:GetChecked() and ( ":" .. pnl.max:GetValue() .. maxchr ) or "" )
-							outtmp = ""
-						else
-							outtmp = outtmp .. " *"
-						end
-					
-					elseif pnl.type == "bool" then
-						outstr = outstr .. outtmp .. " " .. ( pnl.checkbox:GetChecked() and "1" or "0" )
-						outtmp = ""
-					elseif pnl.type == "str" then
-						if #pnl.list.Lines > 0 then
-							local strings = {}
-							for _, v in pairs( pnl.list.Lines ) do
-								table.insert( strings, v:GetColumnText(1) )
-							end
-							outstr = outstr .. outtmp .. " <" .. table.concat( strings, "," ) .. ">"
-						else
-							outtmp = outtmp .. " *"
-						end
-					end
-				else
-					outtmp = outtmp .. " *"
-				end
-			end
-		end
-		outstr = string.sub( outstr, 2 )
-		
 		if ( groups.access_lines[cmd].Columns[2]:GetDisabled() or groups.access_lines[cmd]:GetColumnText(4) == "" ) or outstr ~= accessStr then
-			RunConsoleCommand( "ulx", "groupallow", groups.list:GetValue(), cmd, outstr )
+			RunConsoleCommand( "ulx", "groupallow", groups.list:GetValue(), cmd, groups.generateAccessString() )
 		end
 	end
 	groups.rArgList:Add( groups.applyButton )
-	if ( groups.access_lines[cmd].Columns[2]:GetDisabled() or groups.access_lines[cmd]:GetColumnText(4) == "" ) then
+	
+	if not groups.access_lines[cmd].Columns[2]:GetChecked() then
 		groups.applyButton:SetText( "Apply access + restrictions" )
-	end	
+	elseif groups.access_lines[cmd].Columns[2]:GetDisabled() then
+		groups.applyInheritedButton = xlib.makebutton{ h=20 }
+		groups.applyInheritedButton.DoClick = function( self )
+			RunConsoleCommand( "ulx", "groupallow", groups.access_lines[cmd]:GetColumnText(4), cmd, groups.generateAccessString() )
+		end
+		groups.applyButton:SetText( "Apply access + restrictions" )
+		groups.applyInheritedButton:SetText( "Apply restrictions at \"" .. groups.access_lines[cmd]:GetColumnText(4) .. "\" level" )
+		groups.rArgList:Add( groups.applyInheritedButton )
+	end
+end
+
+function groups.generateAccessString()
+	local outstr = ""
+	local outtmp = ""
+	for _, panel in ipairs( groups.rArgList:GetChildren() ) do
+		local pnl = panel.Contents
+		
+		if panel.GetExpanded then --Weed out panels that we're not interested in
+			if panel:GetExpanded() then
+				if pnl.type == "ply" then
+					outstr = outstr .. outtmp .. " " .. ( pnl.cantarget:GetChecked() and "$" or "" ) .. ( pnl.txtfield:GetValue() ~= "" and pnl.txtfield:GetValue() or "*" )
+					outtmp = ""
+				elseif pnl.type == "num" then
+					if pnl.hasmin:GetChecked() or pnl.hasmax:GetChecked() then
+						outstr = outstr .. outtmp .. " " .. ( pnl.hasmin:GetChecked() and pnl.min:GetValue() or "" ) .. ( pnl.hasmax:GetChecked() and ":" .. pnl.max:GetValue() or "" )
+						outtmp = ""
+					else
+						outtmp = outtmp .. " *"
+					end
+				elseif pnl.type == "time" then
+					if pnl.hasmin:GetChecked() or pnl.hasmax:GetChecked() then
+						if pnl.min:GetValue() == 0 then pnl.minterval:ChooseOptionID(1) end --Set to Permanent when 0 hours/mins/weeks/years is selected
+						if pnl.max:GetValue() == 0 then pnl.maxterval:ChooseOptionID(1) end
+						
+						local minchr = string.lower( pnl.minterval:GetValue():sub(1,1) )
+						if minchr == "m" or minchr == "p" then minchr = "" end
+						
+						local maxchr = string.lower( pnl.maxterval:GetValue():sub(1,1) )
+						if maxchr == "m" or maxchr == "p" then maxchr = "" end
+						
+						outstr = outstr .. outtmp .. " " .. 
+							( pnl.hasmin:GetChecked() and ( pnl.min:GetValue() .. minchr ) or "" ) ..
+							( pnl.hasmax:GetChecked() and ( ":" .. pnl.max:GetValue() .. maxchr ) or "" )
+						outtmp = ""
+					else
+						outtmp = outtmp .. " *"
+					end
+				
+				elseif pnl.type == "bool" then
+					outstr = outstr .. outtmp .. " " .. ( pnl.checkbox:GetChecked() and "1" or "0" )
+					outtmp = ""
+				elseif pnl.type == "str" then
+					if #pnl.list.Lines > 0 then
+						local strings = {}
+						for _, v in pairs( pnl.list.Lines ) do
+							table.insert( strings, v:GetColumnText(1) )
+						end
+						outstr = outstr .. outtmp .. " <" .. table.concat( strings, "," ) .. ">"
+					else
+						outtmp = outtmp .. " *"
+					end
+				end
+			else
+				outtmp = outtmp .. " *"
+			end
+		end
+	end
+	outstr = string.sub( outstr, 2 )
+	if outstr == "*" then outstr = "" end
+	return outstr
 end
 
 
@@ -1026,19 +1028,19 @@ function groups.updateAccessPanel()
 	groups.accesses:Clear()
 	groups.access_cats = {}
 	groups.access_lines = {}
+	groups.access_expandedcat = nil
 	
 	local newcategories = {}
+	local sortcategories = {}
 	local function processAccess( access, data )
-		local catname = data.cat or "Uncategorized"
+		local catname = data.cat or "_Uncategorized"
 		if catname == "Command" then
 			if ULib.cmds.translatedCmds[access] and ULib.cmds.translatedCmds[access].category then
 				catname = "Cmds - " .. ULib.cmds.translatedCmds[access].category
 			else
-				catname = "Cmds - Uncategorized"
+				catname = "_Uncategorized Cmds"
 			end
 		end
-		groups.access_expandedcat = nil
-		
 		if not groups.access_cats[catname] then
 			--Make a new category
 			local list = xlib.makelistview{ headerheight=0, multiselect=false, h=136 }
@@ -1072,25 +1074,25 @@ function groups.updateAccessPanel()
 					xlib.animQueue_start()
 				end
 			end
-			--Hijack the DataLayout function to manually set the position of the checkboxes and color
+			--Hijack the DataLayout function to manually set the position of the checkboxes
 			local tempfunc = list.DataLayout
 			list.DataLayout = function( list )
 				local rety = tempfunc( list )
 				for _, Line in ipairs( list.Lines ) do
 					local x,y = Line:GetColumnText(2):GetPos()
 					Line.Columns[2]:SetPos( x-2, y+1 )
-					Line.Columns[1]:SetColor( Line.col )
 				end
 				return rety
 			end
 			groups.access_cats[catname] = list
-			local cat = xlib.makecat{ label=catname, contents=list, expanded=false, parent=groups.accesses }
+			local cat = xlib.makecat{ label=catname, contents=list, expanded=false, parent=xgui.null }
 			newcategories[catname] = cat
+			table.insert( sortcategories, catname )
 			function cat.Header:OnMousePressed( mcode )
 				if ( mcode == MOUSE_LEFT ) then
 					self:GetParent():Toggle()
 					--Use this to collapse the other categories.
-					if groups.access_expandedcat then
+					if groups.access_expandedcat then 
 						if groups.access_expandedcat ~= self:GetParent() then
 							groups.access_expandedcat:Toggle()
 						else
@@ -1120,8 +1122,9 @@ function groups.updateAccessPanel()
 	--This results in the possibility of the end user seeing lines appearing as he's looking at the menus, but I believe that a few seconds of lines appearing is better than 150+ms of freeze time.
 	
 	local function finalSort()
-		table.sort( newcategories )
-		for _, cat in pairs( newcategories ) do
+		table.sort( sortcategories )
+		for _, catname in ipairs( sortcategories ) do
+			local cat = newcategories[catname]
 			groups.accesses:Add( cat )
 			cat.Contents:SortByColumn( 1 )
 			cat.Contents:SetHeight( 17*#cat.Contents:GetLines() )
@@ -1173,9 +1176,9 @@ function groups.showAccessOptions( line )
 	local menu = DermaMenu()
 	if line.Columns[2]:GetChecked() then
 		if line.Columns[2]:GetDisabled() then
-			menu:AddOption( "Grant access at " .. groups.list:GetValue() .. " level", function() groups.accessChanged( access, true ) end )
+			menu:AddOption( "Grant access at \"" .. groups.list:GetValue() .. "\" level", function() groups.accessChanged( access, true ) end )
 			
-			menu:AddOption( "Revoke access from " .. line:GetColumnText(4), function() groups.accessChanged( access, false, line:GetColumnText(4) ) end )
+			menu:AddOption( "Revoke access from \"" .. line:GetColumnText(4) .. "\"", function() groups.accessChanged( access, false, line:GetColumnText(4) ) end )
 		else
 			menu:AddOption( "Revoke access", function() groups.accessChanged( access, false ) end )
 		end
