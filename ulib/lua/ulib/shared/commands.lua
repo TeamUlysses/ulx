@@ -1066,7 +1066,7 @@ cmds.TranslateCommand = inheritsFrom( nil )
 		cmd - The command you're creating. IE, "ulx slap".
 		fn - *(Optional on client since it's ignored)* The function callback for this command. The callback receives
 			the arguments you specify.
-		say_cmd - *(Optional)* Specify a say command to be tied in.
+		say_cmd - *(Optional)* Specify a say command or commands (as a table) to be tied in.
 		hide_say - *(Optional, defaults to false)* Hide the chat when the say
 			command is used?
 		no_space_in_say - *(Optional, defaults to false)* Is a space between
@@ -1079,7 +1079,7 @@ function cmds.TranslateCommand:instantiate( cmd, fn, say_cmd, hide_say, no_space
 	else
 		ULib.checkArg( 2, "ULib.cmds.TranslateCommand", {"nil", "function"}, fn, 5 )
 	end
-	ULib.checkArg( 3, "ULib.cmds.TranslateCommand", {"nil", "string"}, say_cmd, 5 )
+	ULib.checkArg( 3, "ULib.cmds.TranslateCommand", {"nil", "string", "table"}, say_cmd, 5 )
 	ULib.checkArg( 4, "ULib.cmds.TranslateCommand", {"nil", "boolean"}, hide_say, 5 )
 	ULib.checkArg( 5, "ULib.cmds.TranslateCommand", {"nil", "boolean"}, no_space_in_say, 5 )
 
@@ -1386,7 +1386,8 @@ end
 		access_string - *(Optional)* Access required for use this command. It's
 			only used for autocomplete purposes and is NOT validated at the
 			server.
-		say_cmd - *(Optional)* Specify a say command to be tied in.
+		say_cmd - *(Optional)* Specify a say command or say commands as a table
+			to be tied in.
 		hide_say - *(Optional, defaults to false)* Hide the chat when the say
 			command is used?
 		no_space_in_say - *(Optional, defaults to false)* Is a space between
@@ -1423,7 +1424,7 @@ function cmds.addCommand( cmd, fn, autocomplete, access_string, say_cmd, hide_sa
 	end
 	ULib.checkArg( 3, "ULib.cmds.addCommand", {"nil", "function"}, autocomplete )
 	ULib.checkArg( 4, "ULib.cmds.addCommand", {"nil", "string"}, access_string )
-	ULib.checkArg( 5, "ULib.cmds.addCommand", {"nil", "string"}, say_cmd )
+	ULib.checkArg( 5, "ULib.cmds.addCommand", {"nil", "string", "table"}, say_cmd )
 	ULib.checkArg( 6, "ULib.cmds.addCommand", {"nil", "boolean"}, hide_say )
 	ULib.checkArg( 7, "ULib.cmds.addCommand", {"nil", "boolean"}, no_space_in_say )
 
@@ -1445,12 +1446,16 @@ function cmds.addCommand( cmd, fn, autocomplete, access_string, say_cmd, hide_sa
 	concommand.Add( prefix, routedCommandCallback, autocompleteCallback )
 
 	if SERVER and say_cmd then
-		local t = {}
-		sayCmds[ say_cmd ] = t
-		t.__fn = fn
-		t.__cmd = cmd
+		if type( say_cmd ) == "string" then say_cmd = { say_cmd } end
 
-		ULib.addSayCommand( say_cmd, sayCommandCallback, cmd, hide_say, no_space_in_say )
+		for i=1, #say_cmd do
+			local t = {}
+			sayCmds[ say_cmd[ i ] ] = t
+			t.__fn = fn
+			t.__cmd = cmd
+
+			ULib.addSayCommand( say_cmd[ i ], sayCommandCallback, cmd, hide_say, no_space_in_say )
+		end
 	end
 end
 

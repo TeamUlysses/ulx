@@ -237,7 +237,7 @@ function ulx.teleport( calling_ply, target_ply )
 		ulx.fancyLogAdmin( calling_ply, "#A teleported #T", target_ply ) -- We don't want to log otherwise
 	end
 end
-local teleport = ulx.command( CATEGORY_NAME, "ulx teleport", ulx.teleport, "!teleport" )
+local teleport = ulx.command( CATEGORY_NAME, "ulx teleport", ulx.teleport, {"!tp", "!teleport"} )
 teleport:addParam{ type=ULib.cmds.PlayerArg, ULib.cmds.optional }
 teleport:defaultAccess( ULib.ACCESS_ADMIN )
 teleport:help( "Teleports target." )

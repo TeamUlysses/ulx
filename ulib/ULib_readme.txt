@@ -45,10 +45,11 @@ Rest easy!
 
 Group: Changelog
 v2.50 - *(00/00/00)*
-	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.	
+	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.
 	* [ADD] Shows reasons to kicked person upon kick or ban (Thanks FPtje!).
 	* [ADD] Operator to target only a specific group, ignoring inheritance ('#').
 	* [ADD] ULib.namedQueueFunctionCall to allow scripts to create their own queues separate of the main one.
+	* [ADD] The ability to have aliased chat commands.
 	* [FIX] The usual assortment of garry breakages.
 	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
 	* [FIX] Error with returning from invisibility when the player has no weapons (Thanks HellFox).

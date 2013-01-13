@@ -921,9 +921,9 @@ end
 hook.Add( "PlayerInitialSpawn", "ULibSendAuthToClients", botCheck, -20 )
 
 local function sendAuthToClients( ply )
-	ULib.clientRPC( _, "authPlayerIfReady", ply, ply:UserID() ) -- Call on client--
+	ULib.clientRPC( _, "authPlayerIfReady", ply, ply:UserID() ) -- Call on client
 end
-hook.Add( ULib.HOOK_UCLAUTH, "ULibSendAuthToClients", sendAuthToClients, -20 )
+hook.Add( ULib.HOOK_UCLAUTH, "ULibSendAuthToClients", sendAuthToClients, 20 )
 
 local function sendUCLDataToClient( ply )
 	ULib.clientRPC( ply, "ULib.ucl.initClientUCL", ucl.authed, ucl.groups ) -- Send all UCL data (minus offline users) to all loaded users
