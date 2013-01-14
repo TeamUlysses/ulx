@@ -440,8 +440,8 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 	else
 		local defvalues = xgui.allowedTeamModifiers[Line:GetColumnText(1)]
 		if type( defvalues ) ~= "table" then defvalues = { defvalues } end
-		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4] or 0, value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1) }
-		groups.teamctrl.TextArea.OnEnter = function( self )
+		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4], value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1) }
+		groups.teamctrl.OnEnter = function( self )
 			applybtn.DoClick()
 		end
 		groups.teammodspace:Add( groups.teamctrl )
@@ -459,7 +459,12 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 			RunConsoleCommand( "xgui", "updateTeamValue", groups.teamlist:GetSelected()[1]:GetColumnText(1), Line:GetColumnText(1), groups.teamctrl:GetValue() )
 		end
 	end
-	if Line:GetColumnText(1) ~= "model" then groups.teammodspace:Add( applybtn ) end
+	if Line:GetColumnText(1) ~= "model" then
+		groups.teammodspace:Add( applybtn )
+	else
+		applybtn:SetSize(0,0)
+		groups.teammodspace:Add( applybtn )
+	end
 end
 	
 --Default, Min, Max, Decimals

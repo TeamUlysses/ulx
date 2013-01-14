@@ -512,7 +512,6 @@ function xlib.makeslider( t )
 	pnl:SetDecimals( t.decimal or 0 )
 	pnl.TextArea:SetDrawBackground( true )
 	pnl.TextArea.selectAll = t.selectall
-	if t.value then pnl:SetValue( t.value ) end
 	pnl.Label:SizeToContents()
 	
 	if t.textcolor then
@@ -532,27 +531,6 @@ function xlib.makeslider( t )
 		pnl:SetToolTip( t.tooltip )
 	end
 	
-	--Replicated Convar Updating
-	if t.repconvar then
-		xlib.checkRepCvarCreated( t.repconvar )
-		pnl:SetValue( GetConVar( t.repconvar ):GetFloat() )
-		function pnl.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-			if cl_cvar == t.repconvar:lower() then
-				if ( IsValid( pnl ) ) then	--Prevents random errors when joining.
-					pnl:SetValue( new_val )
-				end
-			end
-		end
-		hook.Add( "ULibReplicatedCvarChanged", "XLIB_" .. t.repconvar, pnl.ConVarUpdated )
-		function pnl:OnValueChanged( val )
-			RunConsoleCommand( t.repconvar, tostring( val ) )
-		end
-		--Override think functions to remove Garry's convar check to (hopefully) speed things up
-		pnl.ConVarNumberThink = function() end
-		pnl.ConVarStringThink = function() end
-		pnl.ConVarChanged = function() end
-	end
-	
 	--Support for enabling/disabling slider
 	pnl.SetDisabled = function( self, val )
 		pnl:SetAlpha( val and 128 or 255 )
@@ -568,12 +546,23 @@ function xlib.makeslider( t )
 	
 	--
 	--The following code bits are basically copies of Garry's code with changes to prevent the slider from sending updates so often
+	pnl.GetValue = function( self ) return self.TextArea:GetValue() end
 	function pnl.SetValue( self, val )
-		val = math.Clamp( tonumber( val ) or 0, self:GetMin(), self:GetMax() )
 		if ( val == nil ) then return end
+		if t.clampmin then val = math.max( tonumber( val ) or 0, self:GetMin() ) end
+		if t.clampmax then val = math.min( tonumber( val ) or 0, self:GetMax() ) end
 		self.Scratch:SetValue( val )
 		self.ValueUpdated( val )
-		self:ValueChanged( self:GetValue() )
+		self:ValueChanged( val )
+	end
+	function pnl.ValueChanged( self, val )
+		if t.clampmin then val = math.max( tonumber( val ) or 0, self:GetMin() ) end
+		if t.clampmax then val = math.min( tonumber( val ) or 0, self:GetMax() ) end
+		self.Slider:SetSlideX( self.Scratch:GetFraction( val ) )
+		if ( self.TextArea != vgui.GetKeyboardFocus() ) then
+			self.TextArea:SetValue( self.Scratch:GetTextValue() )
+		end
+		self:OnValueChanged( val )
 	end
 	
 	--Textbox
@@ -581,11 +570,12 @@ function xlib.makeslider( t )
 		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", value) )
 	end
 	pnl.TextArea.OnTextChanged = function() end
+	function pnl.TextArea:OnEnter()
+		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", pnl.TextArea:GetText()) )
+		if pnl.OnEnter then pnl:OnEnter() end
+	end
 	function pnl.TextArea:OnLoseFocus()
-		pnl.ValueUpdated( pnl.TextArea:GetText() )
-		if ( pnl:GetValue() ~= tonumber(pnl.TextArea:GetText()) ) then
-			pnl:SetValue( pnl.TextArea:GetText() )
-		end
+		pnl:SetValue( pnl.TextArea:GetText() )
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
 	end
 	
@@ -648,6 +638,29 @@ function xlib.makeslider( t )
 	end
 	--End code changes
 	--
+	
+	if t.value then pnl:SetValue( t.value ) end
+	
+	--Replicated Convar Updating
+	if t.repconvar then
+		xlib.checkRepCvarCreated( t.repconvar )
+		pnl:SetValue( GetConVar( t.repconvar ):GetFloat() )
+		function pnl.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
+			if cl_cvar == t.repconvar:lower() then
+				if ( IsValid( pnl ) ) then	--Prevents random errors when joining.
+					pnl:SetValue( new_val )
+				end
+			end
+		end
+		hook.Add( "ULibReplicatedCvarChanged", "XLIB_" .. t.repconvar, pnl.ConVarUpdated )
+		function pnl:OnValueChanged( val )
+			RunConsoleCommand( t.repconvar, tostring( val ) )
+		end
+		--Override think functions to remove Garry's convar check to (hopefully) speed things up
+		pnl.ConVarNumberThink = function() end
+		pnl.ConVarStringThink = function() end
+		pnl.ConVarChanged = function() end
+	end
 	
 	return pnl
 end
