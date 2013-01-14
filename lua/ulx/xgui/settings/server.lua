@@ -20,7 +20,8 @@ xlib.makelabel{ x=10, y=165+offset, label="phys_timescale", parent=server }
 xlib.makeslider{ x=10, y=180+offset, label="<--->", w=125, min=0, max=4, decimal=2, repconvar="rep_phys_timescale", parent=server }
 
 ------------------------ULX Category Menu------------------------
-server.panel = xlib.makepanel{ x=300, y=5, w=285, h=322, parent=server }
+server.mask = xlib.makepanel{ x=295, y=5, w=290, h=322, parent=server }
+server.panel = xlib.makepanel{ x=5, w=285, h=322, parent=server.mask }
 
 server.catList = xlib.makelistview{ x=145, y=5, w=150, h=322, parent=server }
 server.catList:AddColumn( "Server Setting Modules" )
@@ -28,21 +29,26 @@ server.catList.Columns[1].DoClick = function() end
 server.catList.OnRowSelected = function( self, LineID, Line )
 	local nPanel = xgui.modules.submodule[Line:GetValue(2)].panel
 	if nPanel ~= server.curPanel then
-		nPanel:SetZPos( 0 )
-		xlib.addToAnimQueue( "pnlSlide", { panel=nPanel, startx=-295, starty=0, endx=0, endy=0, setvisible=true } )
 		if server.curPanel then
-			server.curPanel:SetZPos( -1 )
-			xlib.addToAnimQueue( server.curPanel.SetVisible, server.curPanel, false )
+			--Close before opening new one
+			xlib.addToAnimQueue( "pnlSlide", { panel=server.panel, startx=5, starty=0, endx=-285, endy=0, setvisible=false } )
+			xlib.addToAnimQueue( function()	server.curPanel:SetVisible( false ) end )
 		end
-		xlib.animQueue_start()
-		server.curPanel = nPanel
+		--Open
+		xlib.addToAnimQueue( function() nPanel:SetVisible( true )
+										server.curPanel = nPanel
+							end )
+		if nPanel.onOpen then xlib.addToAnimQueue( nPanel.onOpen ) end --If the panel has it, call a function when it's opened
+		xlib.addToAnimQueue( "pnlSlide", { panel=server.panel, startx=-285, starty=0, endx=5, endy=0, setvisible=true } )
 	else
-		xlib.addToAnimQueue( "pnlSlide", { panel=nPanel, startx=0, starty=0, endx=-295, endy=0, setvisible=false } )
-		self:ClearSelection()
-		server.curPanel = nil
-		xlib.animQueue_start()
+		--Close
+		xlib.addToAnimQueue( "pnlSlide", { panel=server.panel, startx=5, starty=0, endx=-285, endy=0, setvisible=false } )
+		xlib.addToAnimQueue( function() nPanel:SetVisible( false )
+										server.curPanel = nil
+										self:ClearSelection()
+							end )
 	end
-	if nPanel.onOpen then nPanel.onOpen() end --If the panel has it, call a function when it's opened
+	xlib.animQueue_start()
 end
 
 --Process modular settings
@@ -50,9 +56,15 @@ function server.processModules()
 	server.catList:Clear()
 	for i, module in ipairs( xgui.modules.submodule ) do
 		if module.mtype == "server" and ( not module.access or LocalPlayer():query( module.access ) ) then
-			local x,y = module.panel:GetSize()
-			if x == y and y == 0 then module.panel:SetSize( 285, 322 ) end
+			local w,h = module.panel:GetSize()
+			if w == h and h == 0 then module.panel:SetSize( 275, 322 ) end
+			
+			if module.panel.scroll then --For DListLayouts
+				module.panel.scroll.panel = module.panel
+				module.panel = module.panel.scroll
+			end
 			module.panel:SetParent( server.panel )
+			
 			local line = server.catList:AddLine( module.name, i )
 			if ( module.panel == server.curPanel ) then
 				server.curPanel = nil
@@ -65,9 +77,6 @@ function server.processModules()
 	server.catList:SortByColumn( 1, false )
 end
 server.processModules()
-
-
-
 
 xgui.hookEvent( "onProcessModules", nil, server.processModules )
 xgui.addSettingModule( "Server", server, "icon16/server.png", "xgui_svsettings" )
@@ -90,10 +99,7 @@ xgui.addSubModule( "ULX Admin Votemaps", plist, nil, "server" )
 -----------------------------Adverts-----------------------------
 xgui.prepareDataType( "adverts" )
 local adverts = xlib.makepanel{ parent=xgui.null }
-adverts.Paint = function( self, w, h )
-	draw.RoundedBox( 4, 0, 0, 285, 322, Color( 111, 111, 111, 255 ) )	
-end
-adverts.tree = xlib.maketree{ x=5, y=5, w=120, h=296, parent=adverts }
+adverts.tree = xlib.maketree{ w=120, h=296, parent=adverts }
 adverts.tree.DoClick = function( self, node )
 	adverts.removebutton:SetDisabled( false )
 	if node.data then
@@ -121,15 +127,15 @@ adverts.tree.DoClick = function( self, node )
 	end
 end
 function adverts.isBottomNode( node )
-	local panellist = node:GetParent():GetParent().Items
-	local parentnode = node:GetParent():GetParent():GetParent()
-	local parentpanellist = node:GetParent():GetParent():GetParent():GetParent():GetParent().Items
-	if parentpanellist then
-		return panellist[#panellist] == node and parentpanellist[#parentpanellist] == parentnode
+	local parentnode = node:GetParentNode()
+	local parentchildren = parentnode.ChildNodes:GetChildren()
+	
+	if parentnode:GetParentNode().ChildNodes then --Is node within a subgroup?
+		local parentparentchildren = parentnode:GetParentNode().ChildNodes:GetChildren()
+		return parentchildren[#parentchildren] == node and parentparentchildren[#parentparentchildren] == parentnode
 	else
-		return not adverts.hasGroups or panellist[#panellist] == node
+		return not adverts.hasGroups or parentchildren[#parentchildren] == node
 	end
-	return false
 end
 --0 middle, 1 bottom, 2, top, 3 top and bottom
 function adverts.getNodePos( node )
@@ -150,23 +156,26 @@ adverts.tree.DoRightClick = function( self, node )
 	menu:Open()
 end
 adverts.seloffset = 0
-adverts.message = xlib.maketextbox{ x=130, y=5, w=150, h=20, text="Enter a message...", parent=adverts, selectall=true }
-adverts.time = xlib.makeslider{ x=130, y=30, w=150, label="Repeat Time", value=60, min=1, max=1000, tooltip="Time in seconds till the advert is shown/repeated.", parent=adverts }
-adverts.group = xlib.makecombobox{ x=130, y=70, w=150, enableinput=true, parent=adverts, tooltip="Select or create a new advert group." }
-adverts.color = xlib.makecolorpicker{ x=140, y=95, parent=adverts }
-local panel = xlib.makelistlayout{ h=45, spacing=4, parent=adverts }
-adverts.display = xlib.makeslider{ label="Display Time (seconds)", min=1, max=60, value=10, tooltip="The time in seconds the CSay advert is displayed" }
+adverts.message = xlib.maketextbox{ x=125, w=150, h=20, text="Enter a message...", parent=adverts, selectall=true }
+xlib.makelabel{ x=125, y=25, label="Time until advert repeats:", parent=adverts }
+adverts.time = xlib.makeslider{ x=125, y=40, w=150, label="<--->", value=60, min=1, max=1000, tooltip="Time in seconds till the advert is shown/repeated.", parent=adverts }
+adverts.group = xlib.makecombobox{ x=125, y=65, w=150, enableinput=true, parent=adverts, tooltip="Select or create a new advert group." }
+adverts.color = xlib.makecolorpicker{ x=135, y=90, parent=adverts }
+local panel = xlib.makelistlayout{ w=150, h=45, spacing=4, parent=xgui.null }
+panel:Add( xlib.makelabel{ label="Display Time (seconds)" } )
+adverts.display = xlib.makeslider{ label="<--->", min=1, max=60, value=10, tooltip="The time in seconds the CSay advert is displayed" }
 panel:Add( adverts.display )
-adverts.csay = xlib.makecat{ x=130, y=234, w=150, label="Display in center", checkbox=true, contents=panel, parent=adverts, expanded=false }
-xlib.makebutton{ x=205, y=304, w=75, label="Create", parent=adverts }.DoClick = function()
+adverts.csay = xlib.makecat{ x=125, y=230, w=150, label="Display in center", checkbox=true, contents=panel, parent=adverts, expanded=false }
+xlib.makebutton{ x=200, y=302, w=75, label="Create", parent=adverts }.DoClick = function()
 	local col = adverts.color:GetColor()
-	RunConsoleCommand( "xgui", "addAdvert", adverts.message:GetValue(), ( adverts.time:GetValue() < 0.1 ) and 0.1 or adverts.time:GetValue(), adverts.group:GetValue(), col.r, col.g, col.b, adverts.csay:GetExpanded() and adverts.display:GetValue() or nil)
+	local rpt = tonumber( adverts.time:GetValue() )
+	RunConsoleCommand( "xgui", "addAdvert", adverts.message:GetValue(), ( rpt < 0.1 ) and 0.1 or rpt, adverts.group:GetValue(), col.r, col.g, col.b, adverts.csay:GetExpanded() and adverts.display:GetValue() or nil)
 end
-adverts.removebutton = xlib.makebutton{ x=5, y=304, w=75, label="Remove", disabled=true, parent=adverts }
+adverts.removebutton = xlib.makebutton{ y=302, w=75, label="Remove", disabled=true, parent=adverts }
 adverts.removebutton.DoClick = function( node )
 	adverts.removeAdvert( adverts.tree:GetSelectedItem() )
 end
-adverts.updatebutton = xlib.makebutton{ x=130, y=304, w=75, label="Update", parent=adverts, disabled=true }
+adverts.updatebutton = xlib.makebutton{ x=125, y=302, w=75, label="Update", parent=adverts, disabled=true }
 adverts.updatebutton.DoClick = function( node )
 	local node = adverts.tree:GetSelectedItem()
 	local col = adverts.color:GetColor()
@@ -183,7 +192,7 @@ adverts.updatebutton.DoClick = function( node )
 		end
 	end
 end
-adverts.nodeup = xlib.makebutton{ x=85, y=304, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, parent=adverts, disabled=true }
+adverts.nodeup = xlib.makebutton{ x=80, y=302, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, parent=adverts, disabled=true }
 adverts.nodeup.DoClick = function()
 	adverts.nodedown:SetDisabled( true )
 	adverts.nodeup:SetDisabled( true )
@@ -214,7 +223,7 @@ adverts.nodeup.DoClick = function()
 		end
 	end
 end
-adverts.nodedown = xlib.makebutton{ x=105, y=304, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, parent=adverts, disabled=true }
+adverts.nodedown = xlib.makebutton{ x=100, y=302, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, parent=adverts, disabled=true }
 adverts.nodedown.DoClick = function()
 	adverts.nodedown:SetDisabled( true )
 	adverts.nodeup:SetDisabled( true )
@@ -485,7 +494,7 @@ xgui.addSubModule( "ULX General Settings", plist, nil, "server" )
 ------------------------------Gimps------------------------------
 xgui.prepareDataType( "gimps" )
 local gimps = xlib.makepanel{ parent=xgui.null }
-gimps.textbox = xlib.maketextbox{ w=230, h=20, parent=gimps, selectall=true }
+gimps.textbox = xlib.maketextbox{ w=225, h=20, parent=gimps, selectall=true }
 gimps.textbox.OnEnter = function( self )
 	if self:GetValue() then
 		RunConsoleCommand( "xgui", "addGimp", self:GetValue() )
@@ -497,7 +506,7 @@ gimps.textbox.OnGetFocus = function( self )
 	self:SelectAllText()
 	xgui.anchor:SetKeyboardInputEnabled( true )
 end
-gimps.button = xlib.makebutton{ x=230, w=50, label="Add", parent=gimps }
+gimps.button = xlib.makebutton{ x=225, w=50, label="Add", parent=gimps }
 gimps.button.DoClick = function( self )
 	if self:GetValue() == "Add" then
 		gimps.textbox:OnEnter()
@@ -505,7 +514,7 @@ gimps.button.DoClick = function( self )
 		RunConsoleCommand( "xgui", "removeGimp", gimps.list:GetSelected()[1]:GetColumnText(1) )
 	end
 end
-gimps.list = xlib.makelistview{ y=20, w=280, h=302, multiselect=false, headerheight=0, parent=gimps }
+gimps.list = xlib.makelistview{ y=20, w=275, h=302, multiselect=false, headerheight=0, parent=gimps }
 gimps.list:AddColumn( "Gimp Sayings" )
 gimps.list.OnRowSelected = function( self, LineID, Line )
 	gimps.button:SetText( "Remove" )
@@ -522,7 +531,7 @@ xgui.addSubModule( "ULX Gimps", gimps, nil, "server" )
 ------------------------Kick/Ban Reasons-------------------------
 xgui.prepareDataType( "banreasons", ulx.common_kick_reasons )
 local panel = xlib.makepanel{ parent=xgui.null }
-panel.textbox = xlib.maketextbox{ w=230, h=20, parent=panel, selectall=true }
+panel.textbox = xlib.maketextbox{ w=225, h=20, parent=panel, selectall=true }
 panel.textbox.OnEnter = function( self )
 	if self:GetValue() then
 		RunConsoleCommand( "xgui", "addBanReason", self:GetValue() )
@@ -534,7 +543,7 @@ panel.textbox.OnGetFocus = function( self )
 	self:SelectAllText()
 	xgui.anchor:SetKeyboardInputEnabled( true )
 end
-panel.button = xlib.makebutton{ x=230, w=50, label="Add", parent=panel }
+panel.button = xlib.makebutton{ x=225, w=50, label="Add", parent=panel }
 panel.button.DoClick = function( self )
 	if self:GetValue() == "Add" then
 		panel.textbox:OnEnter()
@@ -542,7 +551,7 @@ panel.button.DoClick = function( self )
 		RunConsoleCommand( "xgui", "removeBanReason", panel.list:GetSelected()[1]:GetColumnText(1) )
 	end
 end
-panel.list = xlib.makelistview{ y=20, w=280, h=302, multiselect=false, headerheight=0, parent=panel }
+panel.list = xlib.makelistview{ y=20, w=275, h=302, multiselect=false, headerheight=0, parent=panel }
 panel.list:AddColumn( "Kick/Ban Reasons" )
 panel.list.OnRowSelected = function()
 	panel.button:SetText( "Remove" )
@@ -580,26 +589,23 @@ xgui.addSubModule( "ULX Logs", plist, nil, "server" )
 -----------------------Player Votemap List-----------------------
 xgui.prepareDataType( "votemaps", ulx.votemaps )
 local panel = xlib.makepanel{ w=285, h=322, parent=xgui.null }
-panel.Paint = function( self, w, h )
-	draw.RoundedBox( 4, 0, 0, 285, 322, Color( 111, 111, 111, 255 ) )	
-end
 xlib.makelabel{ label="Allowed Votemaps", x=5, y=3, parent=panel }
 xlib.makelabel{ label="Excluded Votemaps", x=150, y=3, parent=panel }
-panel.votemaps = xlib.makelistview{ y=20, w=140, h=267, multiselect=true, headerheight=0, parent=panel }
+panel.votemaps = xlib.makelistview{ y=20, w=135, h=262, multiselect=true, headerheight=0, parent=panel }
 panel.votemaps:AddColumn( "" )
 panel.votemaps.OnRowSelected = function( self, LineID, Line )
 	panel.add:SetDisabled( true )
 	panel.remove:SetDisabled( false )
 	panel.remainingmaps:ClearSelection()
 end
-panel.remainingmaps = xlib.makelistview{ x=145, y=20, w=140, h=267, multiselect=true, headerheight=0, parent=panel }
+panel.remainingmaps = xlib.makelistview{ x=140, y=20, w=135, h=262, multiselect=true, headerheight=0, parent=panel }
 panel.remainingmaps:AddColumn( "" )
 panel.remainingmaps.OnRowSelected = function( self, LineID, Line )
 	panel.add:SetDisabled( false )
 	panel.remove:SetDisabled( true )
 	panel.votemaps:ClearSelection()
 end
-panel.remove = xlib.makebutton{ y=287, w=140, label="Remove -->", disabled=true, parent=panel }
+panel.remove = xlib.makebutton{ y=282, w=135, label="Remove -->", disabled=true, parent=panel }
 panel.remove.DoClick = function()
 	panel.remove:SetDisabled( true )
 	local temp = {}
@@ -608,7 +614,7 @@ panel.remove.DoClick = function()
 	end
 	RunConsoleCommand( "xgui", "removeVotemaps", unpack( temp ) )
 end
-panel.add = xlib.makebutton{ x=145, y=287, w=140, label="<-- Add", disabled=true, parent=panel }
+panel.add = xlib.makebutton{ x=140, y=282, w=135, label="<-- Add", disabled=true, parent=panel }
 panel.add.DoClick = function()
 	panel.add:SetDisabled( true )
 	local temp = {}
@@ -617,7 +623,7 @@ panel.add.DoClick = function()
 	end
 	RunConsoleCommand( "xgui", "addVotemaps", unpack( temp ) )
 end
-panel.votemapmode = xlib.makecombobox{ y=307, w=285, repconvar="ulx_votemapMapmode", isNumberConvar=true, numOffset=0, choices={ "Include new maps by default", "Exclude new maps by default" }, parent=panel }
+panel.votemapmode = xlib.makecombobox{ y=302, w=275, repconvar="ulx_votemapMapmode", isNumberConvar=true, numOffset=0, choices={ "Include new maps by default", "Exclude new maps by default" }, parent=panel }
 panel.updateList = function()
 	if #ulx.maps ~= 0 then
 		panel.votemaps:Clear()
