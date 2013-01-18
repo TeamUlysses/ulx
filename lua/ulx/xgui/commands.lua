@@ -160,89 +160,97 @@ end
 
 function cmds.buildArgsList( cmd )
 	cmds.argslist:Clear()
+	cmds.curargs = {}
 	local argnum = 0
-	local curitem
-	if cmd.args[2] then
-		expectingplayers = ( cmd.args[2].type == ULib.cmds.PlayersArg ) or ( cmd.args[2].type == ULib.cmds.PlayerArg )
-	else
-		expectingplayers = false
-	end
+	local expectingplayers = cmd.args[2] and ( ( cmd.args[2].type == ULib.cmds.PlayersArg ) or ( cmd.args[2].type == ULib.cmds.PlayerArg ) ) or false
 	for _, arg in ipairs( cmd.args ) do
 		if not arg.type.invisible then
 			argnum = argnum + 1
 			if not ( argnum == 1 and expectingplayers ) then
 				if arg.invisible ~= true then
-					curitem = arg
-					cmds.argslist:Add( arg.type.x_getcontrol( arg, argnum ) )
+					local curitem = arg
+					if curitem.repeat_min then --This command repeats!
+						local panel = xlib.makepanel{ h=20 }
+						local choices = {}
+						panel.argnum = argnum
+						panel.xguiIgnore = true
+						panel.arg = curitem
+						panel.addbutton = xlib.makebutton{ label="Add", w=83, parent=panel }
+						panel.addbutton.DoClick = function( self )
+							local parent = self:GetParent()
+							local ctrl = parent.arg.type.x_getcontrol( parent.arg, parent.argnum )
+							cmds.argslist:Add( ctrl )
+							ctrl:MoveToAfter( choices[#choices] )
+							table.insert( choices, ctrl )
+							table.insert( cmds.curargs, ctrl )
+							panel.removebutton:SetDisabled( false )
+							if parent.arg.repeat_max and #choices >= parent.arg.repeat_max then self:SetDisabled( true ) end
+						end
+						panel.removebutton = xlib.makebutton{ label="Remove", x=83, w=82, disabled=true, parent=panel }
+						panel.removebutton.DoClick = function( self )
+							local parent = self:GetParent()
+							local ctrl = choices[#choices]
+							ctrl:Remove()
+							table.remove( choices )
+							table.remove( cmds.curargs )
+							panel.addbutton:SetDisabled( false )
+							if #choices <= parent.arg.repeat_min then self:SetDisabled( true ) end
+						end
+						cmds.argslist:Add( panel )
+						for i=1,curitem.repeat_min do
+							local ctrl = arg.type.x_getcontrol( arg, argnum )
+							cmds.argslist:Add( ctrl )
+							table.insert( choices, ctrl )
+							table.insert( cmds.curargs, ctrl )
+						end
+						cmds.argrptadd = panel.addbutton --For hacky workaround, see below
+						cmds.argrptrem = panel.removebutton
+					else
+						local panel = arg.type.x_getcontrol( arg, argnum )
+						table.insert( cmds.curargs, panel )
+						if curitem.type == ULib.cmds.NumArg then
+							panel.TextArea.OnEnter = function( self )
+								cmds.runCmd( cmd.cmd )
+							end
+						elseif curitem.type == ULib.cmds.StringArg then
+							panel.OnEnter = function( self )
+								cmds.runCmd( cmd.cmd )
+							end
+						end
+						cmds.argslist:Add( panel )
+						cmds.argrptadd = nil --For hacky workaround, see below
+						cmds.argrptrem = nil
+					end
 				end
 			end
 		end
 	end
-	if curitem and curitem.repeat_min then --This command repeats!
-		local panel = xlib.makepanel{ h=20 }
-		panel.numItems = 0
-		for i=2,curitem.repeat_min do --Start at 2 because the first one is already there
-			cmds.argslist:Add( curitem.type.x_getcontrol( curitem, argnum ) )
-			panel.numItems = panel.numItems + 1
-		end
-		panel.argnum = argnum
-		panel.xguiIgnore = true
-		panel.arg = curitem
-		panel.insertPos = #cmds.argslist:GetChildren() + 1
-		panel.button = xlib.makebutton{ label="Add", w=80, parent=panel }
-		panel.button.DoClick = function( self )
-			local parent = self:GetParent()
-			--table.insert( cmds.argslist:GetChildren(), parent.insertPos, parent.arg.type.x_getcontrol( parent.arg, parent.argnum ) )
-			--cmds.argslist:GetChildren()[parent.insertPos]:SetParent( cmds.argslist.pnlCanvas )  --TODO: Broken
-			--cmds.argslist:GetChildren()[parent.insertPos]:SetParent( parent ) -- does this help?
-			cmds.argslist:InvalidateLayout()
-			panel.numItems = panel.numItems + 1
-			parent.insertPos = parent.insertPos + 1
-			if parent.arg.repeat_max and panel.numItems >= parent.arg.repeat_max - 1 then self:SetDisabled( true ) end
-			if panel.button2:GetDisabled() then panel.button2:SetDisabled( false ) end
-		end
-		panel.button2 = xlib.makebutton{ label="Remove", x=80, w=80, disabled=true, parent=panel }
-		panel.button2.DoClick = function( self )
-			local parent = self:GetParent()
-			--cmds.argslist:GetChildren()[parent.insertPos-1]:Remove()   --TODO: Broken
-			--table.remove( cmds.argslist:GetChildren(), parent.insertPos - 1 )
-			cmds.argslist:InvalidateLayout()
-			panel.numItems = panel.numItems - 1
-			parent.insertPos = parent.insertPos - 1
-			if panel.numItems < parent.arg.repeat_min then self:SetDisabled( true ) end
-			if panel.button:GetDisabled() then panel.button:SetDisabled( false ) end
-		end
-		--panel:SizeToChildren()
-		cmds.argslist:Add( panel )
-	elseif curitem and curitem.type == ULib.cmds.NumArg then
-		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].TextArea.OnEnter = function( self )
-			cmds.runCmd( cmd.cmd )
-		end
-	elseif curitem and curitem.type == ULib.cmds.StringArg then
-		cmds.argslist:GetChildren()[#cmds.argslist:GetChildren()].OnEnter = function( self )
-			cmds.runCmd( cmd.cmd )
-		end
-	end
 	if LocalPlayer():query( cmd.cmd ) then
-		local xgui_temp = xlib.makebutton{ label=cmd.cmd }
-		xgui_temp.xguiIgnore = true
-		xgui_temp.DoClick = function()
+		local panel = xlib.makebutton{ label=cmd.cmd }
+		panel.xguiIgnore = true
+		panel.DoClick = function()
 			cmds.runCmd( cmd.cmd )
 		end
-		cmds.argslist:Add( xgui_temp )
+		cmds.argslist:Add( panel )
 	end
 	if cmd.opposite and LocalPlayer():query( cmd.opposite ) then
-		local xgui_temp = xlib.makebutton{ label=cmd.opposite }
-		xgui_temp.DoClick = function()
+		local panel = xlib.makebutton{ label=cmd.opposite }
+		panel.DoClick = function()
 			cmds.runCmd( cmd.opposite )
 		end
-		xgui_temp.xguiIgnore = true
-		cmds.argslist:Add( xgui_temp )
+		panel.xguiIgnore = true
+		cmds.argslist:Add( panel )
 	end
 	if cmd.helpStr then --If the command has a string for help
-		local xgui_temp = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true }
-		xgui_temp.xguiIgnore = true
-		cmds.argslist:Add( xgui_temp )
+		local panel = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true }
+		panel.xguiIgnore = true
+		cmds.argslist:Add( panel )
+	end
+	
+	--Hacky workaround for bug where the order of panels in GetChildren() changes sometimes when a textbox is clicked...
+	if cmds.argrptadd and cmds.argrptadd:IsValid() then
+		cmds.argrptadd:DoClick()	--Simulate adding/removing an arg.
+		cmds.argrptrem:DoClick()	--I have no idea why this fixes the problem, either.
 	end
 end
 
@@ -258,7 +266,7 @@ function cmds.runCmd( cmd )
 		table.insert( cmd, table.concat( plys ) )
 	end
 	
-	for _, arg in ipairs( cmds.argslist:GetChildren() ) do
+	for _, arg in ipairs( cmds.curargs ) do
 		if not arg.xguiIgnore then
 			table.insert( cmd, arg:GetValue() )
 		end
