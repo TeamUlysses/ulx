@@ -38,11 +38,11 @@ end
 maps.svote = xlib.makebutton{ x=185, y=270, w=192, h=20, label="Server-wide vote of selected map(s)", parent=maps }
 maps.svote.DoClick = function()
 	if maps.curmap:GetValue() ~= "No Map Selected" then
-		local xgui_temp = {}
+		local votemaps = {}
 		for k, v in ipairs( maps.list:GetSelected() ) do
-			table.insert( xgui_temp, maps.list:GetSelected()[k]:GetColumnText(1))
+			table.insert( votemaps, maps.list:GetSelected()[k]:GetColumnText(1))
 		end
-		RunConsoleCommand( "ulx", "votemap2", unpack( xgui_temp ) )
+		RunConsoleCommand( "ulx", "votemap2", unpack( votemaps ) )
 	end
 end
 
@@ -98,6 +98,8 @@ function maps.updateVoteMaps()
 		maps.list:SelectItem( l )
 	end
 	maps.updateButtonStates()
+	
+	ULib.cmds.translatedCmds["ulx votemap"].args[2].completes = xgui.data.votemaps --Set concommand completes for the ulx votemap command. (Used by XGUI in the cmds tab)
 end
 
 function maps.updateGamemodes()

@@ -114,9 +114,9 @@ xlib.makebutton{ x=447, y=340, w=130, label="View Source Bans...", parent=xbans 
 end
 
 function xbans.RemoveBan( ID, noName )
-	local xgui_temp = "<Unknown>"
-	if not noName then xgui_temp = xgui.data.bans[ID].name or "<Unknown>" end
-	Derma_Query( "Are you sure you would like to unban " .. xgui_temp .. " - " .. ID .. "?", "XGUI WARNING", 
+	local tempstr = "<Unknown>"
+	if not noName then tempstr = xgui.data.bans[ID].name or "<Unknown>" end
+	Derma_Query( "Are you sure you would like to unban " .. tempstr .. " - " .. ID .. "?", "XGUI WARNING", 
 		"Remove", function()
 			RunConsoleCommand( "ulx", "unban", ID ) end,
 		"Cancel", function() end )
@@ -337,12 +337,12 @@ function xgui.ConvertTime( seconds )
 	seconds = seconds - ( hours * 3600 )
 	local minutes = math.floor( seconds/60 )
 	seconds = seconds - ( minutes * 60 )
-	local xgui_temp = ""
-	if years ~= 0 then xgui_temp = xgui_temp .. years .. " year" .. ( ( years > 1 ) and "s, " or ", " ) end
-	if days ~= 0 then xgui_temp = xgui_temp .. days .. " day" .. ( ( days > 1 ) and "s, " or ", " ) end
-	xgui_temp = xgui_temp .. ( ( hours < 10 ) and "0" or "" ) .. hours .. ":"
-	xgui_temp = xgui_temp .. ( ( minutes < 10 ) and "0" or "" ) .. minutes .. ":"
-	return xgui_temp .. ( ( seconds < 10 and "0" or "" ) .. seconds )
+	local curtime = ""
+	if years ~= 0 then curtime = curtime .. years .. " year" .. ( ( years > 1 ) and "s, " or ", " ) end
+	if days ~= 0 then curtime = curtime .. days .. " day" .. ( ( days > 1 ) and "s, " or ", " ) end
+	curtime = curtime .. ( ( hours < 10 ) and "0" or "" ) .. hours .. ":"
+	curtime = curtime .. ( ( minutes < 10 ) and "0" or "" ) .. minutes .. ":"
+	return curtime .. ( ( seconds < 10 and "0" or "" ) .. seconds )
 end
 
 

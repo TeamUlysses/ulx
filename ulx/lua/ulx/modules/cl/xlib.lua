@@ -1097,7 +1097,7 @@ end
 local function slideAnim_start( data )
 	data.panel:SetPos( data.startx, data.starty )
 	if data.setvisible == true then
-		data.panel:SetVisible( true )
+		ULib.queueFunctionCall( data.panel.SetVisible, data.panel, true )
 	end
 end
 
