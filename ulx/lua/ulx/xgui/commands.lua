@@ -7,28 +7,27 @@ cmds.mask = xlib.makepanel{ x=160, y=30, w=425, h=330, parent=cmds }
 cmds.argslist = xlib.makelistlayout{ w=165, h=330, parent=cmds.mask }
 cmds.argslist.secondaryPos = nil
 
-function cmds.argslist.IsVisible( self )
-	return self.scroll:IsVisible( self.scroll )
-end
 cmds.argslist.scroll:SetVisible( false )
 
 function cmds.argslist:Open( cmd, secondary )
 	if secondary then
-		if cmds.plist:IsVisible() then
+		if cmds.plist.open then
 			cmds.plist:Close()
-		elseif self:IsVisible() then
+		elseif self.open then
 			self:Close()
 		end
 	end
-	cmds.argslist:openAnim( cmd, secondary )
+	self:openAnim( cmd, secondary )
+	self.open = true
 end
 function cmds.argslist:Close()
 	self:closeAnim( self.secondaryPos )
+	self.open = false
 end
 cmds.plist = xlib.makelistview{ w=250, h=330, multiselect=true, parent=cmds.mask }
 function cmds.plist:Open( arg )
 	if cmds.argslist.secondaryPos == true then cmds.argslist:Close()
-	elseif self:IsVisible() then self:Close() end
+	elseif self.open then self:Close() end
 	self:openAnim( arg )
 	--Determine if the arguments should be visible after changing (If a valid player will be selected)
 	local targets = cmds.calculateValidPlayers( arg )
@@ -42,10 +41,12 @@ function cmds.plist:Open( arg )
 	if playerWillBeSelected then
 		cmds.argslist:Open( ULib.cmds.translatedCmds[arg.cmd], false )
 	end
+	self.open = true
 end
 function cmds.plist:Close()
-	if cmds.argslist:IsVisible() then cmds.argslist:Close() end
+	if cmds.argslist.open then cmds.argslist:Close() end
 	self:closeAnim()
+	self.open = false
 end
 cmds.plist.DoDoubleClick = function()
 	cmds.runCmd( cmds.selcmd )
@@ -58,7 +59,7 @@ cmds.cmds = xlib.makelistlayout{ x=5, y=30, w=150, h=330, parent=cmds, padding=1
 cmds.setselected = function( selcat, LineID )
 	if selcat.Lines[LineID]:GetColumnText(2) == cmds.selcmd then 
 		selcat:ClearSelection()
-		if cmds.plist:IsVisible() then cmds.plist:Close() else cmds.argslist:Close() end
+		if cmds.plist.open then cmds.plist:Close() else cmds.argslist:Close() end
 		xlib.animQueue_start()
 		cmds.selcmd = nil
 		return 
@@ -103,13 +104,13 @@ function cmds.refreshPlist( arg )
 		line.OnSelect = function()
 			if cmds.permissionChanged then return end
 			
-			if not xlib.animRunning and not cmds.argslist:IsVisible() then
+			if not xlib.animRunning and not cmds.argslist.open then
 				cmds.argslist:Open( ULib.cmds.translatedCmds[cmds.selcmd], false )
 				xlib.animQueue_start( )
 			else
 				if not cmds.clickedFlag then --Prevent this from happening multiple times.
 					cmds.clickedFlag = true
-					xlib.addToAnimQueue( function() if not cmds.argslist:IsVisible() then
+					xlib.addToAnimQueue( function() if not cmds.argslist.open then
 						cmds.argslist:Open( ULib.cmds.translatedCmds[cmds.selcmd], false ) end 
 						cmds.clickedFlag = nil end )
 				end
@@ -130,13 +131,13 @@ function cmds.refreshPlist( arg )
 	
 	if not cmds.plist:GetSelectedLine() then
 		if not xlib.animRunning then
-			if cmds.argslist:IsVisible() then
+			if cmds.argslist.open then
 				cmds.argslist:Close()
 				xlib.animQueue_start()
 			end
 		else
 			if cmds.permissionChanged then
-				xlib.addToAnimQueue( function() if cmds.argslist:IsVisible() and cmds.plist:IsVisible() then cmds.argslist:Close() end end )
+				xlib.addToAnimQueue( function() if cmds.argslist.open and cmds.plist.open then cmds.argslist:Close() end end )
 			end
 		end
 	end
@@ -333,10 +334,10 @@ cmds.refresh = function( permissionChanged )
 		end
 	end
 	if not matchedCmdFound then
-		if cmds.plist:IsVisible() then
+		if cmds.plist.open then
 			cmds.plist:Close()
 			xlib.animQueue_start()
-		elseif cmds.argslist:IsVisible() then
+		elseif cmds.argslist.open then
 			cmds.argslist:Close()
 			xlib.animQueue_start()
 		end
