@@ -422,7 +422,9 @@ function xlib.maketree( t )
 
 	function pnl:Clear() --Clears the DTree.
 		if self.RootNode.ChildNodes then
-			self.RootNode.ChildNodes:Remove()
+			for _, node in ipairs( self.RootNode.ChildNodes:GetChildren() ) do
+				node:Remove()
+			end
 			self.m_pSelectedItem = nil
 			self:InvalidateLayout()
 		end
@@ -546,7 +548,7 @@ function xlib.makeslider( t )
 	
 	--
 	--The following code bits are basically copies of Garry's code with changes to prevent the slider from sending updates so often
-	pnl.GetValue = function( self ) return self.TextArea:GetValue() end
+	pnl.GetValue = function( self ) return tonumber( self.TextArea:GetValue() ) end
 	function pnl.SetValue( self, val )
 		if ( val == nil ) then return end
 		if t.clampmin then val = math.max( tonumber( val ) or 0, self:GetMin() ) end
@@ -567,11 +569,11 @@ function xlib.makeslider( t )
 	
 	--Textbox
 	function pnl.ValueUpdated( value )
-		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", value) )
+		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", tonumber( value ) or 0) )
 	end
 	pnl.TextArea.OnTextChanged = function() end
 	function pnl.TextArea:OnEnter()
-		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", pnl.TextArea:GetText()) )
+		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", tonumber( pnl.TextArea:GetText() ) or 0) )
 		if pnl.OnEnter then pnl:OnEnter() end
 	end
 	function pnl.TextArea:OnLoseFocus()

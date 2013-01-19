@@ -30,23 +30,22 @@ server.catList.OnRowSelected = function( self, LineID, Line )
 	local nPanel = xgui.modules.submodule[Line:GetValue(2)].panel
 	if nPanel ~= server.curPanel then
 		if server.curPanel then
+			local temppanel = server.curPanel
 			--Close before opening new one
 			xlib.addToAnimQueue( "pnlSlide", { panel=server.panel, startx=5, starty=0, endx=-285, endy=0, setvisible=false } )
-			xlib.addToAnimQueue( function()	server.curPanel:SetVisible( false ) end )
+			xlib.addToAnimQueue( function()	temppanel:SetVisible( false ) end )
 		end
 		--Open
-		xlib.addToAnimQueue( function() nPanel:SetVisible( true )
-										server.curPanel = nPanel
-							end )
+		server.curPanel = nPanel
+		xlib.addToAnimQueue( function() nPanel:SetVisible( true ) end )
 		if nPanel.onOpen then xlib.addToAnimQueue( nPanel.onOpen ) end --If the panel has it, call a function when it's opened
 		xlib.addToAnimQueue( "pnlSlide", { panel=server.panel, startx=-285, starty=0, endx=5, endy=0, setvisible=true } )
 	else
 		--Close
+		server.curPanel = nil
+		self:ClearSelection()
 		xlib.addToAnimQueue( "pnlSlide", { panel=server.panel, startx=5, starty=0, endx=-285, endy=0, setvisible=false } )
-		xlib.addToAnimQueue( function() nPanel:SetVisible( false )
-										server.curPanel = nil
-										self:ClearSelection()
-							end )
+		xlib.addToAnimQueue( function() nPanel:SetVisible( false ) end )
 	end
 	xlib.animQueue_start()
 end
@@ -102,28 +101,17 @@ local adverts = xlib.makepanel{ parent=xgui.null }
 adverts.tree = xlib.maketree{ w=120, h=296, parent=adverts }
 adverts.tree.DoClick = function( self, node )
 	adverts.removebutton:SetDisabled( false )
+	adverts.updatebutton:SetDisabled( not node.data )
+	adverts.nodeup:SetDisabled( not node.data or type( node.group ) == "number" )
+	adverts.nodedown:SetDisabled( not node.data or not type( node.group ) == "number" or adverts.isBottomNode( node ) )
+	adverts.group:SetText( type(node.group) ~= "number" and node.group or "<No Group>" )
 	if node.data then
-		adverts.updatebutton:SetDisabled( false )
-		adverts.nodeup:SetDisabled( type( node.group ) == "number" )
-		adverts.nodedown:SetDisabled( not type( node.group ) == "number" )
-		if adverts.isBottomNode( node ) then adverts.nodedown:SetDisabled( true ) end
 		adverts.message:SetText( node.data.message )
 		adverts.time:SetValue( node.data.rpt )
-		adverts.group:SetText( type(node.group) ~= "number" and node.group or "<No Group>" )
 		adverts.color:SetColor( node.data.color )
-		if node.data.len then
-			adverts.csay:SetOpen( true )
-			adverts.csay:InvalidateLayout()
-			adverts.display:SetValue( node.data.len )
-		else
-			adverts.csay:SetOpen( false )
-			adverts.csay:InvalidateLayout()
-		end
-	else
-		adverts.updatebutton:SetDisabled( true )
-		adverts.nodeup:SetDisabled( true )
-		adverts.nodedown:SetDisabled( true )
-		adverts.group:SetText( node.group )
+		adverts.csay:SetOpen( node.data.len )
+		adverts.csay:InvalidateLayout()
+		adverts.display:SetValue( node.data.len or 10 )
 	end
 end
 function adverts.isBottomNode( node )
@@ -137,20 +125,20 @@ function adverts.isBottomNode( node )
 		return not adverts.hasGroups or parentchildren[#parentchildren] == node
 	end
 end
---0 middle, 1 bottom, 2, top, 3 top and bottom
+--0 middle, 1 bottom, 2 top, 3 top and bottom
 function adverts.getNodePos( node )
-	local panellist = node:GetParent():GetParent().Items
+	if type( node.group ) == "number" then return 1 end
+	local parentchildren = node:GetParentNode().ChildNodes:GetChildren()
 	local output = 0
-	if panellist[#panellist] == node then output = 1 end
-	if panellist[1] == node then output = output + 2 end
-	if type( node.group ) == "number" then output = 1 end
+	if parentchildren[#parentchildren] == node then output = 1 end
+	if parentchildren[1] == node then output = output + 2 end
 	return output
 end
 adverts.tree.DoRightClick = function( self, node )
 	self:SetSelectedItem( node )
 	local menu = DermaMenu()
-	if node.data == nil then
-		menu:AddOption( "Rename Group...", function() xgui.base.RenameAdvert( node:GetValue() ) end )
+	if not node.data then
+		menu:AddOption( "Rename Group...", function() adverts.RenameAdvert( node:GetValue() ) end )
 	end
 	menu:AddOption( "Delete", function() adverts.removeAdvert( node ) end )
 	menu:Open()
@@ -198,17 +186,17 @@ adverts.nodeup.DoClick = function()
 	adverts.nodeup:SetDisabled( true )
 	local node = adverts.tree:GetSelectedItem()
 	local state = adverts.getNodePos( node )
-	if state <= 1 then 
+	if state <= 1 then
 		RunConsoleCommand( "xgui", "moveAdvert", type( node.group ), node.group, node.number, node.number-1 )
 		adverts.seloffset = adverts.seloffset - 1
 	else
-		local parentpanellist = node:GetParent():GetParent():GetParent():GetParent():GetParent().Items
-		local parentnode = node:GetParent():GetParent():GetParent()
+		local parentnode = node:GetParentNode()
+		local parentparentchildren = parentnode:GetParentNode().ChildNodes:GetChildren()
 		local newgroup = "<No Group>"
-		for index,v in ipairs( parentpanellist ) do
+		for i,v in ipairs( parentparentchildren ) do
 			if v == parentnode then 
-				if parentpanellist[index-1] and type( parentpanellist[index-1].group ) ~= "number" then
-					newgroup = parentpanellist[index-1].group
+				if parentparentchildren[i-1] and type( parentparentchildren[i-1].group ) ~= "number" then
+					newgroup = parentparentchildren[i-1].group
 					adverts.selnewgroup = newgroup
 					adverts.seloffset = #xgui.data.adverts[newgroup]+1
 				end
@@ -230,17 +218,17 @@ adverts.nodedown.DoClick = function()
 	local node = adverts.tree:GetSelectedItem()
 	local state = adverts.getNodePos( node )
 	if state == 1 or state == 3 then
-		local parentpanellist = type( node.group ) == "string" and node:GetParent():GetParent():GetParent():GetParent():GetParent().Items or node:GetParent():GetParent().Items
-		local parentnode = type( node.group ) == "string" and node:GetParent():GetParent():GetParent() or node
+		local parentnode = type( node.group ) == "string" and node:GetParentNode() or node
+		local parentchildren = parentnode:GetParentNode().ChildNodes:GetChildren()
 		local newgroup = "<No Group>"
-		for index,v in ipairs( parentpanellist ) do
+		for index,v in ipairs( parentchildren ) do
 			if v == parentnode then
 				local temp = 1
-				while( type( parentpanellist[index+temp].group ) == "number" ) do
+				while( type( parentchildren[index+temp].group ) == "number" ) do
 					temp = temp + 1
 				end
-				if type( parentpanellist[index+temp].group ) ~= "number" then
-					newgroup = parentpanellist[index+temp].group
+				if type( parentchildren[index+temp].group ) ~= "number" then
+					newgroup = parentchildren[index+temp].group
 					adverts.selnewgroup = newgroup
 					adverts.seloffset = 1
 				end
@@ -268,7 +256,7 @@ function adverts.removeAdvert( node )
 		end, "Cancel", function() end )
 	end
 end
-function xgui.base.RenameAdvert( old )
+function adverts.RenameAdvert( old )
 	advertRename = xlib.makeframe{ label="Set Name of Advert Group - " .. old, w=400, h=80, showclose=true, skin=xgui.settings.skin }
 	advertRename.text = xlib.maketextbox{ x=10, y=30, w=380, h=20, text=old, parent=advertRename }
 	advertRename.text.OnEnter = function( self )
@@ -294,9 +282,11 @@ function adverts.updateAdverts()
 	end
 	--Check for any previously expanded group nodes
 	local groupStates = {}
-	for _, node in ipairs( adverts.tree.RootNode:GetChildren() ) do
-		if node.m_bExpanded then
-			groupStates[node:GetValue()] = true
+	if adverts.tree.RootNode.ChildNodes then
+		for _, node in ipairs( adverts.tree.RootNode.ChildNodes:GetChildren() ) do
+			if node.m_bExpanded then
+				groupStates[node:GetText()] = true
+			end
 		end
 	end
 	adverts.hasGroups = false
@@ -322,9 +312,8 @@ function adverts.updateAdverts()
 	for _, group in ipairs( sortGroups ) do
 		advertgroup = xgui.data.adverts[group]
 		adverts.hasGroups = true
-		local foldernode = adverts.tree:AddNode( group )
+		local foldernode = adverts.tree:AddNode( group, "icon16/folder.png" )
 		adverts.group:AddChoice( group )
-		foldernode.Icon:SetImage( "icon16/folder.png" )
 		foldernode.group = group
 		--Check if folder was previously selected
 		if lastNode and not lastNode.data and lastNode:GetValue() == group then
@@ -342,9 +331,9 @@ function adverts.updateAdverts()
 	local node = adverts.tree:GetSelectedItem()
 	if node then
 		if adverts.seloffset ~= 0 then
-			for i,v in ipairs( node:GetParent():GetParent().Items ) do
+			for i,v in ipairs( node:GetParentNode().ChildNodes:GetChildren() ) do
 				if v == node then
-					node = node:GetParent():GetParent().Items[i+adverts.seloffset]
+					node = node:GetParentNode().ChildNodes:GetChildren()[i+adverts.seloffset]
 					adverts.tree:SetSelectedItem( node )
 					break
 				end
@@ -356,16 +345,11 @@ function adverts.updateAdverts()
 	end
 end
 function adverts.createNode( parent, data, group, number, message, lastNode )
-	local node = parent:AddNode( message )
+	local node = parent:AddNode( message, data.len and "icon16/style.png" or "icon16/text_smallcaps.png" )
 	node.data = data
 	node.group = group
 	node.number = number
 	node:SetTooltip( xlib.wordWrap( message, 250, "Default" ) )
-	if data.len then --Is Tsay or Csay?
-		node.Icon:SetImage( "icon16/text_smallcaps.png" )
-	else
-		node.Icon:SetImage( "icon16/style.png" )
-	end
 	if lastNode and lastNode.data then
 		--Check if node was previously selected
 		if lastNode.group == group and lastNode.number == number then

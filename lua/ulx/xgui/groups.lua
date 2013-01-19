@@ -161,7 +161,7 @@ end
 
 function groups.changeUserGroup( ID, group )
 	if ID == "NULL" then
-		Derma_Message( "Cannot add/remove invalid players (Bots) using XGUI! Use ulx adduser/removeuser via console if you wish to change a Bot's group.", "XGUI NOTICE" )
+		Derma_Message( "Cannot add/remove invalid players (Bots) using XGUI!", "XGUI NOTICE" )
 	else
 		if group == "user" then
 			RunConsoleCommand( "ulx", "removeuserid", ID )
