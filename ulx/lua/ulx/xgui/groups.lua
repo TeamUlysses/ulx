@@ -572,7 +572,7 @@ function groups.populateAccesses()
 			line:SetColumnText( 3, restrictionString )
 			line:SetColumnText( 4, fromGroup )
 			if groups.selcmd == line:GetColumnText(1) then
-				if ( groups.access_lines[groups.selcmd].Columns[2]:GetDisabled() or fromGroup ) or line:GetColumnText(3) ~= restrictionString then
+				if ( groups.access_lines[groups.selcmd].Columns[2].disabled or fromGroup ) or line:GetColumnText(3) ~= restrictionString then
 					groups.populateRestrictionArgs( line:GetColumnText(1), restrictionString )
 				end
 			end
@@ -803,7 +803,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 	end
 	groups.applyButton = xlib.makebutton{ h=20, label="Apply restrictions" }
 	groups.applyButton.DoClick = function( self )
-		if ( groups.access_lines[cmd].Columns[2]:GetDisabled() or groups.access_lines[cmd]:GetColumnText(4) == "" ) or outstr ~= accessStr then
+		if ( groups.access_lines[cmd].Columns[2].disabled or groups.access_lines[cmd]:GetColumnText(4) == "" ) or outstr ~= accessStr then
 			RunConsoleCommand( "ulx", "groupallow", groups.list:GetValue(), cmd, groups.generateAccessString() )
 		end
 	end
@@ -811,7 +811,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 	
 	if not groups.access_lines[cmd].Columns[2]:GetChecked() then
 		groups.applyButton:SetText( "Apply access + restrictions" )
-	elseif groups.access_lines[cmd].Columns[2]:GetDisabled() then
+	elseif groups.access_lines[cmd].Columns[2].disabled then
 		groups.applyInheritedButton = xlib.makebutton{ h=20 }
 		groups.applyInheritedButton.DoClick = function( self )
 			RunConsoleCommand( "ulx", "groupallow", groups.access_lines[cmd]:GetColumnText(4), cmd, groups.generateAccessString() )
@@ -1180,7 +1180,7 @@ function groups.showAccessOptions( line )
 	local access = line:GetColumnText(1)
 	local menu = DermaMenu()
 	if line.Columns[2]:GetChecked() then
-		if line.Columns[2]:GetDisabled() then
+		if line.Columns[2].disabled then
 			menu:AddOption( "Grant access at \"" .. groups.list:GetValue() .. "\" level", function() groups.accessChanged( access, true ) end )
 			
 			menu:AddOption( "Revoke access from \"" .. line:GetColumnText(4) .. "\"", function() groups.accessChanged( access, false, line:GetColumnText(4) ) end )
