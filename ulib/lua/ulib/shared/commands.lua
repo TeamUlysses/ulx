@@ -1303,7 +1303,10 @@ if SERVER then
 			return error( "Say command \"" .. sayCommand .. "\" is not defined!" )
 		end
 
-		sayCmds[ sayCommand ].__fn( ply, sayCmds[ sayCommand ].__cmd, argv )
+		local return_value = hook.Call( ULib.HOOK_COMMAND_CALLED, _, ply, sayCmds[ sayCommand ].__cmd, argv )
+		if return_value ~= false then
+			sayCmds[ sayCommand ].__fn( ply, sayCmds[ sayCommand ].__cmd, argv )
+		end
 	end
 
 	local function hookRoute( ply, command, argv )
