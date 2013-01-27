@@ -9,7 +9,7 @@ end
 hook.Add( "Initialize", "ULXInitialize", init )
 
 local function doMainCfg( path )
-	ULib.execString( ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
+	ULib.execString( ULib.stripComments( file.Read( path, "DATA" ), ";" ), "ULXConfigExec" )
 end
 
 local function doDownloadCfg( path )
@@ -17,7 +17,7 @@ local function doDownloadCfg( path )
 	if not ulx.addForcedDownload then
 		return
 	end
-	
+
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
@@ -32,7 +32,7 @@ local function doGimpCfg( path )
 	if not ulx.clearGimpSays then
 		return
 	end
-	
+
 	ulx.clearGimpSays()
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
@@ -48,7 +48,7 @@ local function doAdvertCfg( path )
 	if not ulx.addAdvert then
 		return
 	end
-	
+
 	local data_root, err = ULib.parseKeyValues( ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	if not data_root then Msg( "[ULX] Error in advert config: " .. err .. "\n" ) return end
 
@@ -72,7 +72,7 @@ local function doVotemapsCfg( path )
 	if not ulx.clearVotemaps then
 		return
 	end
-	
+
 	ulx.clearVotemaps()
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
@@ -88,7 +88,7 @@ local function doReasonsCfg( path )
 	if not ulx.addKickReason then
 		return
 	end
-	
+
 	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
