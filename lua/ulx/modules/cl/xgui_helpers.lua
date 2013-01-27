@@ -25,13 +25,13 @@ function xgui.load_helpers()
 	--Code for creating the XGUI base
 	---------------------------------
 	function xgui.makeXGUIbase()
-		xgui.anchor = xlib.makeXpanel{ w=600, h=470, x=ScrW()/2-300, y=ScrH()/2-270 }
+		xgui.anchor = xlib.makeXpanel{ w=600, h=400, x=ScrW()/2-300, y=ScrH()/2-270 }
 		xgui.anchor:SetVisible( false )
 		xgui.anchor:SetKeyboardInputEnabled( false )
 		xgui.anchor.Paint = function( self, w, h ) hook.Call( "XLIBDoAnimation" ) end
 		xgui.anchor:SetAlpha( 0 )
 		
-		xgui.base = xlib.makepropertysheet{ x=0, y=70, w=600, h=400, parent=xgui.anchor, offloadparent=xgui.null }
+		xgui.base = xlib.makepropertysheet{ x=0, y=0, w=600, h=400, parent=xgui.anchor, offloadparent=xgui.null }
 		xgui.base.animOpen = function() --First 4 are fade animations, last (or invalid choice) is the default fade animation.
 			xgui.settings.animIntype = tonumber( xgui.settings.animIntype )
 			if xgui.settings.animIntype == 2 then
@@ -105,28 +105,25 @@ function xgui.load_helpers()
 			
 			if pos == 1 or pos == 2 or pos == 3 then --Bottom of the screen
 				if yoff < -ScrH()+430 then
-					yoff = -ScrH()+430	
-				elseif yoff > 10 then
-					yoff = 10
+					yoff = -ScrH()+430
+				elseif yoff > 30 then
+					yoff = 30
 				end
-				xgui.y = ScrH()-500+yoff
+				xgui.y = ScrH()-430+yoff
 			elseif pos == 7 or pos == 8 or pos == 9 then --Top of the screen
-				if yoff < -70 then
-					yoff = -70
-				elseif yoff > ScrH()-490 then
-					yoff = ScrH()-490
+				if yoff < -10 then
+					yoff = -10
+				elseif yoff > ScrH()-410 then
+					yoff = ScrH()-410
 				end
-				xgui.y = yoff
-			elseif pos == 4 or pos == 5 or pos == 6 then --Center
-				if yoff < -ScrH()/2+200 then
-					yoff = -ScrH()/2+200
-				elseif yoff > ScrH()/2-220 then
-					yoff = ScrH()/2-220
+				xgui.y = yoff+10
+			else --Center
+				if yoff < -ScrH()/2+210 then
+					yoff = -ScrH()/2+210
+				elseif yoff > ScrH()/2-190 then
+					yoff = ScrH()/2-190
 				end
-				xgui.y = ScrH()/2-270+yoff
-			else --Someone screwed something up!
-				xgui.x = ScrW()/2-300
-				xgui.y = ScrH()/2-270
+				xgui.y = ScrH()/2-210+yoff
 			end
 			if ignoreanim then
 				xgui.anchor:SetPos( xgui.x, xgui.y )
@@ -154,15 +151,14 @@ function xgui.load_helpers()
 		end
 		
 		--Progress bar
-		xgui.chunkbox = xlib.makeframe{ label="XGUI is receiving data!", w=200, h=60, x=200, y=5, visible=false, nopopup=true, draggable=false, showclose=false, skin=xgui.settings.skin, parent=xgui.anchor }
-		xgui.chunkbox.progress = xlib.makeprogressbar{ x=10, y=30, w=180, h=20, parent=xgui.chunkbox }
+		xgui.chunkbox = xlib.makeprogressbar{ x=420, w=180, h=20, visible=false, parent=xgui.anchor }
 		function xgui.chunkbox:Progress( datatype )
 			self.value = self.value + 1
-			self.progress:SetFraction( self.value / self.max )
-			self.progress.Label:SetText( datatype .. " - " .. string.format("%.2f", (self.value / self.max) * 100) .. "%" )
+			self:SetFraction( self.value / self.max )
+			self.Label:SetText( "Getting data: " .. datatype .. " - " .. string.format("%.2f", (self.value / self.max) * 100) .. "%" )
 			if self.value == self.max then
 				xgui.expectingdata = nil
-				self.progress.Label:SetText( "Waiting for clientside processing" )
+				self.Label:SetText( "Waiting for clientside processing..." )
 				xgui.queueFunctionCall( xgui.chunkbox.SetVisible, "chunkbox", xgui.chunkbox, false )
 				RunConsoleCommand( "_xgui", "dataComplete" )
 			end
