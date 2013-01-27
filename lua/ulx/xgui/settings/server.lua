@@ -6,7 +6,7 @@ local server = xlib.makepanel{ parent=xgui.null }
 --------------------------GMOD Settings--------------------------
 xlib.makecheckbox{ x=10, y=10, label="Enable Voice Chat", repconvar="rep_sv_voiceenable", parent=server }
 xlib.makelabel{ x=10, y=33, label="Alltalk setting:", parent=server }
-xlib.makecombobox{ x=10, y=50, w=120, repconvar="rep_sv_alltalk", isNumberConvar=true, choices={ "Team only", "Team only", "Everyone near you", "Everyone" }, parent=server }
+xlib.makecombobox{ x=10, y=50, w=120, repconvar="rep_sv_alltalk", isNumberConvar=true, choices={ "Team near you", "Team only", "Everyone near you", "Everyone" }, parent=server }
 xlib.makecheckbox{ x=10, y=75, label="Disable AI", repconvar="rep_ai_disabled", parent=server }
 xlib.makecheckbox{ x=10, y=95, label="AI Ignore Players", repconvar="rep_ai_ignoreplayers", parent=server }
 local offset = 0
