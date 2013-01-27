@@ -87,7 +87,7 @@ function xgui.init( authedply )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
 	local version_type = ulx.revision and ( ulx.revision > 0 and " SVN " .. ulx.revision or " Release") or (" N/A")
-	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v13.1.21 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
+	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v13.1.27 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
 	xgui.thetime = xlib.makelabel{ x=515, y=-10, label="", parent=xgui.infobar }
 	xgui.thetime:NoClipping( true )
 	xgui.thetime.check = function()
@@ -400,8 +400,8 @@ function xgui.expectChunks( numofchunks )
 		xgui.expectingdata = true
 		xgui.chunkbox.max = numofchunks
 		xgui.chunkbox.value = 0
-		xgui.chunkbox.progress:SetFraction( 0 )
-		xgui.chunkbox.progress.Label:SetText( "Waiting for server ..." )
+		xgui.chunkbox:SetFraction( 0 )
+		xgui.chunkbox.Label:SetText( "Getting data: Waiting for server..." )
 		xgui.chunkbox:SetVisible( true )
 		xgui.flushQueue( "chunkbox" ) --Remove the queue entry that would hide the chunkbox
 	end
