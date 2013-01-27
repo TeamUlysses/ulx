@@ -276,7 +276,7 @@ function xgui.init()
 	--Initialize the server modules!
 	for _, v in ipairs( xgui.svmodules ) do	v.init() end
 
-	ulx.addToHelpManually( "Menus", "xgui", "<show, hide, toggle> - Opens and/or closes XGUI. (say: !xgui)" )
+	ulx.addToHelpManually( "Menus", "xgui", "<show, hide, toggle> - Opens and/or closes XGUI. (say: !xgui, !menu) (alias: ulx menu)" )
 end
 
 --Init the code when the server is ready

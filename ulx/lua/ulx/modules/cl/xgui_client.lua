@@ -44,6 +44,7 @@ function xgui.addSubModule( name, panel, access, mtype )
 end
 --Set up a spot to store entries for autocomplete.
 xgui.tabcompletes = {}
+xgui.ulxmenucompletes = {}
 
 
 --Set up XGUI clientside settings, load settings from file if it exists
@@ -190,6 +191,7 @@ function xgui.processModules()
 
 	xgui.base:Clear() --We need to remove any existing tabs in the GUI
 	xgui.tabcompletes = {}
+	xgui.ulxmenucompletes = {}
 	for _, modname in ipairs( xgui.settings.moduleOrder ) do
 		local module = xgui.checkModuleExists( modname, xgui.modules.tab )
 		if module then
@@ -204,6 +206,7 @@ function xgui.processModules()
 				xgui.base:AddSheet( module.name, module.panel, module.icon, false, false, module.tooltip )
 				module.tabpanel = xgui.base.Items[#xgui.base.Items].Tab
 				table.insert( xgui.tabcompletes, "xgui show " .. modname )
+				table.insert( xgui.ulxmenucompletes, "ulx menu " .. modname )
 			else
 				module.tabpanel = nil
 				module.panel:SetParent( xgui.null )
@@ -220,6 +223,7 @@ function xgui.processModules()
 				xgui.settings_tabs:AddSheet( module.name, module.panel, module.icon, false, false, module.tooltip )
 				module.tabpanel = xgui.settings_tabs.Items[#xgui.settings_tabs.Items].Tab
 				table.insert( xgui.tabcompletes, "xgui show " .. modname )
+				table.insert( xgui.ulxmenucompletes, "ulx menu " .. modname )
 			else
 				module.tabpanel = nil
 				module.panel:SetParent( xgui.null )
@@ -230,6 +234,7 @@ function xgui.processModules()
 	--Call any functions that requested to be called when permissions change
 	xgui.callUpdate( "onProcessModules" )
 	table.sort( xgui.tabcompletes )
+	table.sort( xgui.ulxmenucompletes )
 
 	local hasFound = false
 	if activetab then
@@ -512,8 +517,14 @@ function xgui.tab_completes()
 	return xgui.tabcompletes
 end
 
+function xgui.ulxmenu_tab_completes()
+	return xgui.ulxmenucompletes
+end
+
 ULib.cmds.addCommandClient( "xgui", xgui.cmd_base )
 ULib.cmds.addCommandClient( "xgui show", function( ply, cmd, args ) xgui.show( args ) end, xgui.tab_completes )
 ULib.cmds.addCommandClient( "xgui hide", xgui.hide )
 ULib.cmds.addCommandClient( "xgui toggle", function() xgui.toggle() end )
-ULib.cmds.addCommandClient( "ulx menu", function( ply, cmd, args ) xgui.toggle( args ) end  )
+
+--local ulxmenu = ulx.command( CATEGORY_NAME, "ulx menu", ulx.menu, "!menu" )
+ULib.cmds.addCommandClient( "ulx menu", function( ply, cmd, args ) xgui.toggle( args ) end, xgui.ulxmenu_tab_completes )
