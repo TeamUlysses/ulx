@@ -14,19 +14,20 @@
 
 		f - The file, relative to the data folder.
 		option - An optional string stating where to pull the file from.
+		queueName - The queue name to ULib.namedQueueFunctionCall to use.
 
 	Revisions:
 
 		v2.40 - No longer strips comments, removed ability to execute on players.
-		v2.50 - Added option to conform to Garry's API changes.
+		v2.50 - Added option to conform to Garry's API changes and queueName to specify queue name to use.
 ]]
-function ULib.execFile( f, option )
+function ULib.execFile( f, option, queueName )
 	if not file.Exists( f, option ) then
 		ULib.error( "Called execFile with invalid file! " .. f )
 		return
 	end
 
-	ULib.execString( file.Read( f, option ) )
+	ULib.execString( file.Read( f, option ), queueName )
 end
 
 
@@ -38,13 +39,14 @@ end
 	Parameters:
 
 		f - The string.
-		ply - The player to execute on. Leave nil to execute on server. (Ignores this param on client)
+		queueName - The queue name to ULib.namedQueueFunctionCall to use.
 
 	Revisions:
 
 		v2.40 - Initial.
+		v2.50 - Added queueName to specify queue name to use. Removed ability to execute on players.
 ]]
-function ULib.execString( f, ply )
+function ULib.execString( f, queueName )
 	local lines = string.Explode( "\n", f )
 
 	local buffer = ""
@@ -55,13 +57,13 @@ function ULib.execString( f, ply )
 		if line:lower():sub( 1, exec:len() ) == exec then
 			local dummy, dummy, cfg = line:lower():find( "^exec%s+([%w%.]+)%s*/?/?.*$")
 			if not cfg:find( ".cfg", 1, true ) then cfg = cfg .. ".cfg" end -- Add it if it's not there
-			ULib.execFile( "../cfg/" .. cfg, ply )
+			ULib.execFile( "cfg/" .. cfg, "GAME", queueName )
 		elseif line ~= "" then
 			buffer = buffer .. line .. "\n"
 			buffer_lines = buffer_lines + 1
 
 			if buffer_lines >= 10 then
-				ULib.queueFunctionCall( ULib.consoleCommand, buffer )
+				ULib.namedQueueFunctionCall( queueName, ULib.consoleCommand, buffer )
 				buffer_lines = 0
 				buffer = ""
 			end
@@ -69,7 +71,7 @@ function ULib.execString( f, ply )
 	end
 
 	if buffer_lines > 0 then
-		ULib.queueFunctionCall( ULib.consoleCommand, buffer )
+		ULib.namedQueueFunctionCall( queueName, ULib.consoleCommand, buffer )
 	end
 end
 
@@ -190,7 +192,7 @@ local function onThink()
 			table.remove( stack, 1 ) -- Remove the first inserted item. This is FIFO
 		end
 	end
-	
+
 	if remove then
 		hook.Remove( "Think", "ULibQueueThink" )
 	end
@@ -225,7 +227,7 @@ end
 	Function: namedQueueFunctionCall
 
 	Exactly like <queueFunctionCall()>, but allows for separately running queues to exist.
-	
+
 	Parameters:
 
 		queueName - The unique name of the queue (the queue group)
@@ -237,6 +239,7 @@ end
 		v2.50 - Initial.
 ]]
 function ULib.namedQueueFunctionCall( queueName, fn, ... )
+	queueName = queueName or "defaultQueueName"
 	if type( fn ) ~= "function" then
 		error( "queueFunctionCall received a bad function", 2 )
 		return
@@ -335,8 +338,8 @@ end
 
 --[[
 	Function: pcallError
-	
-	An adaptation of a function that used to exist before GM13, allows you to 
+
+	An adaptation of a function that used to exist before GM13, allows you to
 	call functions safely and print errors (if it errors).
 
 	Parameters:
@@ -353,12 +356,12 @@ end
 ]]
 function ULib.pcallError( ... )
 	local returns = { pcall( ... ) }
-	
+
 	if not returns[ 1 ] then -- The status flag
 		ErrorNoHalt( returns[ 2 ] ) -- The error message
 	end
-	
-	return unpack( returns )	
+
+	return unpack( returns )
 end
 
 --- TEMP fix for garry's broken API (Hopefully he fixes this soon, still broken as of official GM13 release)
