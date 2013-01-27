@@ -265,7 +265,7 @@ function xlib.makepanel( t )
 	local pnl = vgui.Create( "DPanel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
-	if t.visible then pnl:SetVisible( t.visible ) end
+	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
 end
 
@@ -274,7 +274,7 @@ function xlib.makeXpanel( t )
 	pnl:MakePopup()
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
-	if t.visible then pnl:SetVisible( t.visible ) end
+	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
 end
 
@@ -495,7 +495,7 @@ function xlib.makeprogressbar( t )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
 	pnl:SetFraction( t.value or 0 ) 
-	if t.visible then pnl:SetVisible( t.visible ) end
+	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
 end
 
