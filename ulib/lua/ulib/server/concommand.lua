@@ -43,14 +43,24 @@ local function sayCmdCheck( ply, strText, bTeam )
 
 	if match then -- We've got a winner!
 		local data = ULib.sayCmds[ match ]
+
+		local args = string.Trim( strText:sub( match:len() + 1 ) ) -- Strip the caller command out
+		local argv = ULib.splitArgs( args )
+
+		-- ULib command callback
+		if data.__cmd then
+			local return_value = hook.Call( ULib.HOOK_COMMAND_CALLED, _, ply, data.__cmd, argv )
+			if return_value == false then
+				return nil
+			end
+		end
+
 		if not ULib.ucl.query( ply, data.access ) then
 			ULib.tsay( ply, "You do not have access to this command, " .. ply:Nick() .. "." )
 			-- Print their name to intimidate them :)
 			return "" -- Block from appearing
 		end
 
-		local args = string.Trim( strText:sub( match:len() + 1 ) ) -- Strip the caller command out
-		local argv = ULib.splitArgs( args )
 		local fn = data.fn
 		local hide = data.hide
 

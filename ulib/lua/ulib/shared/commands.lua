@@ -1303,10 +1303,7 @@ if SERVER then
 			return error( "Say command \"" .. sayCommand .. "\" is not defined!" )
 		end
 
-		local return_value = hook.Call( ULib.HOOK_COMMAND_CALLED, _, ply, sayCmds[ sayCommand ].__cmd, argv )
-		if return_value ~= false then
-			sayCmds[ sayCommand ].__fn( ply, sayCmds[ sayCommand ].__cmd, argv )
-		end
+		sayCmds[ sayCommand ].__fn( ply, sayCmds[ sayCommand ].__cmd, argv )
 	end
 
 	local function hookRoute( ply, command, argv )
@@ -1458,6 +1455,9 @@ function cmds.addCommand( cmd, fn, autocomplete, access_string, say_cmd, hide_sa
 			t.__cmd = cmd
 
 			ULib.addSayCommand( say_cmd[ i ], sayCommandCallback, cmd, hide_say, no_space_in_say )
+
+			local translatedCommand =  say_cmd[ i ] .. (no_space_in_say and "" or " ")
+			ULib.sayCmds[ translatedCommand ].__cmd = cmd -- Definitely needs refactoring at some point...
 		end
 	end
 end
