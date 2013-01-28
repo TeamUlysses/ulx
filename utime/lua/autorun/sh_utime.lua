@@ -40,8 +40,7 @@ function timeToStr( time )
 	local h = tmp % 24
 	tmp = math.floor( tmp / 24 )
 	local d = tmp % 7
-	--tmp = math.floor( tmp / 7 )
-	local w = tmp / 7
-	
+	local w = math.floor( tmp / 7 )
+
 	return string.format( "%02iw %id %02ih %02im %02is", w, d, h, m, s )
 end
