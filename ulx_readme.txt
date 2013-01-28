@@ -65,9 +65,15 @@ Group: Changelog
 v3.60 - *(01/27/13)*
 	* [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
 	* [ADD] "ulx resettodefaults" - Resets ULX and ULib config to defaults.
+	* [ADD] XGUI: Added ability to edit lower-level restrictions from a higher-level group.
 	* [CHANGE] ULX ban now supports restricting of time/string formats.
-	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
 	* [CHANGE] !teleport chat command is now also aliased as !tp.
+	* [CHANGE] XGUI: Utilizes ULib's more robust ID Targeting system. 
+	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
+	* [CHANGE] XGUI: No longer duplicates ULX replicated cvars (ulx_cl_) due to ULib changes. Uses the regular ulx_ cvars directly.
+	* [CHANGE] XGUI: Supports new values for sv_alltalk.
+	* [CHANGE] XGUI: A few changes to update look and feel. Matches Derma/GWEN skin colors better in some areas.
+	* [CHANGE] XGUI: No longer retrieves sandbox limits from the web. Included with download.
 	* [FIX] Garry breakages in GM13.
 	* [FIX] An exclusivity bug in "ulx freeze" (Thanks infinitywraith).
 	* [FIX] A console bug when trying to ulx teleport another player (Thanks infinitywraith).
@@ -78,6 +84,8 @@ v3.60 - *(01/27/13)*
 	* [FIX] Team vs public chat doing the opposite of what it should for logs and "/me" actions. Wonder how long ago Garry needlessly changed that API without us noticing.
 	* [FIX] Promotion bug after using "ulx userallow" on a regular user. (Thanks JackYack13).
 	* [FIX] Server crash when jail is placed inside trigger_remove brush. (Thanks HellFox).
+	* [FIX] XGUI: Changed startup code to initialize faster, handle strange server load scenarios better.
+	* [FIX] XGUI: BoolArgs in the Cmds tab now obey restrictions.
 
 v3.54 - *(04/27/12)*
 	* [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
