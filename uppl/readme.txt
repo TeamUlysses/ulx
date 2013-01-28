@@ -1,4 +1,4 @@
-Uppl v1.0 (06/02/07)
+Uppl v1.1 (01/27/13)
 By Megiddo (Team Ulysses)
 
 Installation:
@@ -16,7 +16,7 @@ Q: Does the normal duplicator, Adv Dup, and Overload's Stacker support this?
 A: The first two work out of the box with Uppl, but the Stacker STOOL needs some modification. See our thread for modification instructions.
 
 Changelog:
-v1.1 (00/00/00)
+v1.1 (01/27/13)
 	* [FIX] Garry breakages.
 
 v1.0 (06/02/07)

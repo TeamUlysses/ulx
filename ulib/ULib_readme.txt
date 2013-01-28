@@ -1,6 +1,6 @@
 Title: ULib Readme
 
-*ULib v2.50 (released 00/00/00)*
+*ULib v2.50 (released 01/27/13)*
 
 ULib is a developer library for GMod 10 (<http://garrysmod.com/>).
 
@@ -44,7 +44,7 @@ After installing ULib correctly, scripts that take advantage of ULib will take c
 Rest easy!
 
 Group: Changelog
-v2.50 - *(00/00/00)*
+v2.50 - *(01/27/13)*
 	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.
 	* [ADD] Shows reasons to kicked person upon kick or ban (Thanks FPtje!).
 	* [ADD] Operator to target only a specific group, ignoring inheritance ('#').

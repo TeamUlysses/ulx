@@ -2,13 +2,13 @@
 {
 	"name"		"Uclip"
 	"version"	"1.22"
-	"up_date"	"00/00/00"
+	"up_date"	"01/27/13"
 	"author_name"	"Team Ulysses and Ryno-SauruS"
 	"author_email"	"megiddo@ulyssesmod.net"
 	"author_url"	"http://ulyssesmod.net/"
-	
+
 	"info"		""
-	
+
 	// Won't be active unless the following GCFs are available and
 	// are mounted
 	"GCFRequires"

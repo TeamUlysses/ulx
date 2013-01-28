@@ -1,6 +1,6 @@
 Title: Utime Readme
 
-*Utime v1.42 (released 00/00/00)*
+*Utime v1.42 (released 01/27/13)*
 
 Utime keeps track of session and total time for players. All the colors and positions are customizable by each client.
 
@@ -34,9 +34,10 @@ Group: Config
 
 All client config is done in game under "utilities". To disable the welcome message, set utime_welcome to 0.
 
-v1.42 - *(00/00/00)*
+v1.42 - *(01/27/13)*
 	* [ADD] utime_welcome cvar to disable welcome message.
 	* [FIX] Regular slew of bugs introduced by Garry (MAJOR thanks TweaK!).
+	* [FIX] Time string calculations being incorrect (Thanks delagious).
 
 v1.41 - *(08/06/10)*
 	* [FIX] A a few bugs some people were getting preventing the GUI from showing correctly.

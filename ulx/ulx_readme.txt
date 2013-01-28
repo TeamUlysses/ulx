@@ -3,7 +3,7 @@ Title: ULX Readme
 __ULX__
 Version 3.60
 
-*ULX v3.60 (released 00/00/00)*
+*ULX v3.60 (released 01/27/13)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,7 +62,7 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
-v3.60 - *(00/00/00)*
+v3.60 - *(01/27/13)*
 	* [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
 	* [ADD] "ulx resettodefaults" - Resets ULX and ULib config to defaults.
 	* [CHANGE] ULX ban now supports restricting of time/string formats.

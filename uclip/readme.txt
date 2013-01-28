@@ -1,6 +1,6 @@
 Title: Uclip Readme
 
-*Uclip v1.22 (released 00/00/00)*
+*Uclip v1.22 (released 01/27/13)*
 
 Uclip is a noclip alternative. By this we mean it's similar but different in the fact that you can't noclip
 through anything but your own props (If you're running a prop protection). So, you can't noclip through the
@@ -42,7 +42,7 @@ Group: Config
 There is minimal config inside sh_uclip.lua but you will need basic knowledge of lua to use it.
 
 Group: Changelog
-v1.22 - *(00/00/00)*
+v1.22 - *(01/27/13)*
 	* [FIX] garry breakages
 
 v1.21 - *(06/10/11)*
