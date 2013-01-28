@@ -514,17 +514,17 @@ function cmds.PlayerArg:parseAndValidate( ply, arg, cmdInfo, plyRestrictions )
 		arg = cmdInfo.default or "^" -- Set it, needs to go through our process
 	end
 
-	local target = ULib.getUser( arg, true, ply )
+	local target, err_msg1 = ULib.getUser( arg, true, ply )
 
-	local return_value, err_msg = hook.Call( ULib.HOOK_PLAYER_TARGET, _, ply, cmdInfo.cmd, target )
+	local return_value, err_msg2 = hook.Call( ULib.HOOK_PLAYER_TARGET, _, ply, cmdInfo.cmd, target )
 	if return_value == false then
-		return nil, err_msg or "you cannot target this person"
+		return nil, err_msg2 or "you cannot target this person"
 	elseif type( return_value ) == "Player" then
 		target = return_value
 	end
 
 	if return_value ~= true then -- Go through our "normal" restriction process
-		if not target then return nil, "no target found" end
+		if not target then return nil, err_msg1 or "no target found" end
 
 		if self.restrictedTargets == false or (self.restrictedTargets and not table.HasValue( self.restrictedTargets, target )) then
 			return nil, "you cannot target this person"

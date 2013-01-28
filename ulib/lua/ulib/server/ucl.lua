@@ -222,23 +222,6 @@ local function reloadUsers()
 end
 reloadUsers()
 
--- Helper for finding a ply
-local function getPlyByID( id )
-	local Player = FindMetaTable( "Player" )
-	local checkIndexes = { Player.UniqueID, function( ply ) local ip = ULib.splitPort( ply:IPAddress() ) return ip end, Player.SteamID }
-
-	local players = player.GetAll()
-	for _, indexFn in ipairs( checkIndexes ) do
-		for _, ply in ipairs( players ) do
-			if indexFn( ply ) == id then
-				return ply
-			end
-		end
-	end
-
-	return nil
-end
-
 
 --[[
 	Function: ucl.addGroup
@@ -343,7 +326,7 @@ function ucl.groupAllow( name, access, revoke )
 
 	if changed then
 		for id, userInfo in pairs( ucl.authed ) do
-			local ply = getPlyByID( id )
+			local ply = ULib.getPlyByID( id )
 			if ply and ply:CheckGroup( name ) then
 				ULib.queueFunctionCall( hook.Call, ULib.HOOK_UCLAUTH, _, ply ) -- Inform the masses
 			end
@@ -389,7 +372,7 @@ function ucl.renameGroup( orig, new )
 	end
 
 	for id, userInfo in pairs( ucl.authed ) do
-		local ply = getPlyByID( id )
+		local ply = ULib.getPlyByID( id )
 		if ply and ply:CheckGroup( orig ) then
 			if ply:GetUserGroup() == orig then
 				ULib.queueFunctionCall( ply.SetUserGroup, ply, new ) -- Queued so group will be removed
@@ -458,7 +441,7 @@ function ucl.setGroupInheritance( group, inherit_from )
 	if old_inherit == inherit_from then return end -- Nothing to change
 
 	for id, userInfo in pairs( ucl.authed ) do
-		local ply = getPlyByID( id )
+		local ply = ULib.getPlyByID( id )
 		if ply and ply:CheckGroup( group ) then
 			ULib.queueFunctionCall( hook.Call, ULib.HOOK_UCLAUTH, _, ply ) -- Queued so group will be changed
 		end
@@ -533,7 +516,7 @@ function ucl.removeGroup( name )
 	end
 
 	for id, userInfo in pairs( ucl.authed ) do
-		local ply = getPlyByID( id )
+		local ply = ULib.getPlyByID( id )
 		if ply and ply:CheckGroup( name ) then
 			if ply:GetUserGroup() == name then
 				ULib.queueFunctionCall( ply.SetUserGroup, ply, inherits_from or ULib.ACCESS_ALL ) -- Queued so group will be removed
@@ -622,7 +605,7 @@ function ucl.addUser( id, allows, denies, group )
 
 	ucl.saveUsers()
 
-	local ply = getPlyByID( id )
+	local ply = ULib.getPlyByID( id )
 	if ply then
 		ucl.probe( ply )
 	else -- Otherwise this gets called twice
@@ -665,10 +648,10 @@ function ucl.userAllow( id, access, revoke, deny )
 
 	local uid = id
 	if not ucl.authed[ uid ] then -- Check to see if it's a steamid or IP
-		local ply = getPlyByID( id )
+		local ply = ULib.getPlyByID( id )
 		uid = ply:UniqueID()
 	end
-	
+
 	local userInfo = ucl.users[ id ] or ucl.authed[ uid ] -- Check both tables
 	if not userInfo then return error( "User id does not exist for changing access (" .. id .. ")", 2 ) end
 
@@ -735,7 +718,7 @@ function ucl.userAllow( id, access, revoke, deny )
 	end
 
 	if changed then
-		local ply = getPlyByID( id )
+		local ply = ULib.getPlyByID( id )
 		if ply then
 			ULib.queueFunctionCall( hook.Call, ULib.HOOK_UCLAUTH, _, ply ) -- Inform the masses
 		end
@@ -773,7 +756,7 @@ function ucl.removeUser( id )
 	local changed = false
 
 	if ucl.authed[ id ] and not ucl.users[ id ] then -- Different ids between offline and authed
-		local ply = getPlyByID( id )
+		local ply = ULib.getPlyByID( id )
 		if not ply then return error( "SANITY CHECK FAILED!" ) end -- Should never be invalid
 
 		local ip = ULib.splitPort( ply:IPAddress() )
@@ -795,7 +778,7 @@ function ucl.removeUser( id )
 		ucl.saveUsers()
 	end
 
-	local ply = getPlyByID( id )
+	local ply = ULib.getPlyByID( id )
 	if ply then
 		ply:SetUserGroup( ULib.ACCESS_ALL, true )
 		ucl.probe( ply ) -- Reprobe

@@ -5,7 +5,7 @@ function ulx.who( calling_ply )
 
 	local players = player.GetAll()
 	for _, player in ipairs( players ) do
-		local id = tostring( player:EntIndex() )
+		local id = tostring( player:UserID() )
 		local nick = player:Nick()
 		local text = string.format( "%i%s %s%s ", id, string.rep( " ", 2 - id:len() ), nick, string.rep( " ", 31 - nick:len() ) )
 
@@ -263,7 +263,7 @@ function ulx.debuginfo( calling_ply )
 			str = str .. string.format( "%s%s by %s, version %s (%s)\n", addon, str.rep( " ", 24 - addon:len() ), t.author_name, t.version, t.up_date )
 		end
 	end
-	
+
 	local f = file.Read( "workshop.vdf", "GAME" )
 	if f then
 		local addons = ULib.parseKeyValues( ULib.stripComments( f, "//" ) )
@@ -289,14 +289,14 @@ function ulx.resettodefaults( calling_ply, param )
 		local str2 = "If you're sure, type \"ulx resettodefaults FORCE\""
 		if calling_ply:IsValid() then
 			ULib.tsayError( calling_ply, str, true )
-			ULib.tsayError( calling_ply, str2, true )			
+			ULib.tsayError( calling_ply, str2, true )
 		else
 			Msg( str .. "\n" )
 			Msg( str2 .. "\n" )
 		end
 		return
 	end
-	
+
 	file.Delete( "ulx/adverts.txt" )
 	file.Delete( "ulx/banreasons.txt" )
 	file.Delete( "ulx/config.txt" )
@@ -308,14 +308,14 @@ function ulx.resettodefaults( calling_ply, param )
 	file.Delete( "ulib/groups.txt" )
 	file.Delete( "ulib/misc_registered.txt" )
 	file.Delete( "ulib/users.txt" )
-	
+
 	local str = "Please change levels to finish the reset"
 	if calling_ply:IsValid() then
 		ULib.tsayError( calling_ply, str, true )
 	else
 		Msg( str .. "\n" )
 	end
-	
+
 	ulx.fancyLogAdmin( calling_ply, "#A reset all ULX and ULib configuration" )
 end
 local resettodefaults = ulx.command( CATEGORY_NAME, "ulx resettodefaults", ulx.resettodefaults )

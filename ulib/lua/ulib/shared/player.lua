@@ -58,6 +58,71 @@ function ULib.getPicker( ply, radius )
 end
 
 
+local Player = FindMetaTable( "Player" )
+local checkIndexes = { Player.UniqueID, function( ply ) if CLIENT then return "" end local ip = ULib.splitPort( ply:IPAddress() ) return ip end, Player.SteamID, Player.UserID }
+--[[
+	Function: getPlyByID
+
+	Finds a user identified by the given ID.
+
+	Parameters:
+
+		id - The ID to try to match against connected players. Can be a unique id, ip address, steam id, or user id.
+
+	Returns:
+
+		The player matching the id given or nil if none match.
+
+	Revisions:
+
+		v2.50 - Initial.
+]]
+function ULib.getPlyByID( id )
+	id = id:upper()
+
+	local players = player.GetAll()
+	for _, indexFn in ipairs( checkIndexes ) do
+		for _, ply in ipairs( players ) do
+			if tostring( indexFn( ply ) ) == id then
+				return ply
+			end
+		end
+	end
+
+	return nil
+end
+
+
+--[[
+	Function: getUniqueIDForPly
+
+	Finds a unique ID for a player, suitable for use in getUsers or getUser to uniquely identify the given player.
+
+	Parameters:
+
+		ply - The player we want an ID for
+
+	Returns:
+
+		The id for the player or nil if none are unique.
+
+	Revisions:
+
+		v2.50 - Initial.
+]]
+function ULib.getUniqueIDForPlayer( ply )
+	local players = player.GetAll()
+	for _, indexFn in ipairs( checkIndexes ) do
+		local id = indexFn( ply )
+		if ULib.getUser( "$" .. id, true ) == ply then
+			return id
+		end
+	end
+
+	return nil
+end
+
+
 --[[
 	Function: getUsers
 
@@ -67,8 +132,9 @@ end
 
 		target - A string of what you'd like to target. Accepts a comma separated list.
 		enable_keywords - *(Optional, defaults to false)* If true, the keywords "*" for all players, "^" for self,
-			"@" for picker (person in front of you), "#<group>" for those inside a specific group, 
-			and "%<group>" for users inside a group (counting inheritance) will be activated.
+			"@" for picker (person in front of you), "#<group>" for those inside a specific group,
+			"%<group>" for users inside a group (counting inheritance), and "$<id>" for users matching a
+			particular ID will be activated.
 			Any of these can be negated with "!" before it. IE, "!^" targets everyone but yourself.
 		ply - *(Optional)* Player needing getUsers, this is necessary for some of the keywords.
 
@@ -79,7 +145,7 @@ end
 	Revisions:
 
 		v2.40 - Rewrite, added more keywords, removed immunity.
-		v2.50 - Added "#" keyword, removed special exception for "%user" (replaced by "#user").
+		v2.50 - Added "#" and '$' keywords, removed special exception for "%user" (replaced by "#user").
 ]]
 function ULib.getUsers( target, enable_keywords, ply )
 	local players = player.GetAll()
@@ -108,14 +174,23 @@ function ULib.getUsers( target, enable_keywords, ply )
 					piece = piece:sub( 2 )
 				end
 
-				if piece == "*" then -- All!
+				if piece:sub( 1, 1 ) == "$" then
+					local player = ULib.getPlyByID( piece:sub( 2 ) )
+					if player then
+						table.insert( tmpTargets,  player )
+					end
+				elseif piece == "*" then -- All!
 					table.Add( tmpTargets, players )
 				elseif piece == "^" then -- Self!
 					if ply then
-						table.insert( tmpTargets, ply )
+						if ply:IsValid() then
+							table.insert( tmpTargets, ply )
+						else
+							return false, "You cannot target yourself from console!"
+						end
 					end
 				elseif piece == "@" then
-					if ply and ply:IsValid() then
+					if IsValid( ply ) then
 						local player = ULib.getPicker( ply )
 						if player then
 							table.insert( tmpTargets, player )
@@ -186,8 +261,8 @@ end
 	Parameters:
 
 		target - A string of the user you'd like to target. IE, a partial player name.
-		enable_keywords - *(Optional, defaults to false)* If true, the keywords "^" for self and "@" for picker (person in
-			front of you) will be activated.
+		enable_keywords - *(Optional, defaults to false)* If true, the keywords "^" for self, "@" for picker (person in
+			front of you), and "$<id>" will be activated.
 		ply - *(Optional)* Player needing getUsers, this is necessary to use keywords.
 
 	Returns:
@@ -197,22 +272,37 @@ end
 	Revisions:
 
 		v2.40 - Rewrite, added keywords, removed immunity.
+		v2.50 - Added "$" keyword.
 ]]
 function ULib.getUser( target, enable_keywords, ply )
 	local players = player.GetAll()
 	target = target:lower()
 
+	local plyMatch
+	if enable_keywords and target:sub( 1, 1 ) == "$" then
+		possibleId = target:sub( 2 )
+		plyMatch = ULib.getPlyByID( possibleId )
+	end
+
 	-- First, do a full name match in case someone's trying to exploit our target system
 	for _, player in ipairs( players ) do
 		if target == player:Nick():lower() then
-			return player
+			if not plyMatch then
+				return player
+			else
+				return false, "Found multiple targets! Please choose a better string for the target. (EG, the whole name)"
+			end
 		end
 	end
 
 	if enable_keywords then
-		if target == "^" then
-			return ply
-		elseif target == "@" then
+		if target == "^"  and ply then
+			if ply:IsValid() then
+				return ply
+			else
+				return false, "You cannot target yourself from console!"
+			end
+		elseif IsValid( ply ) and target == "@" then
 			local player = ULib.getPicker( ply )
 			if not player then
 				return false, "No player found in the picker"
@@ -222,13 +312,18 @@ function ULib.getUser( target, enable_keywords, ply )
 		end
 	end
 
-	local plyMatch
 	for _, player in ipairs( players ) do
+		local nameMatch
 		if player:Nick():lower():find( target, 1, true ) then -- No patterns
-			if plyMatch then -- Already have one
-				return false, "Found multiple targets! Please choose a better string for the target. (IE, the whole name)"
-			end
-			plyMatch = player
+			nameMatch = player
+		end
+
+		print( plyMatch, nameMatch )
+		if plyMatch and nameMatch then -- Already have one
+			return false, "Found multiple targets! Please choose a better string for the target. (EG, the whole name)"
+		end
+		if nameMatch then
+			plyMatch = nameMatch
 		end
 	end
 
