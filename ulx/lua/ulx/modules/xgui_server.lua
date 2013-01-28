@@ -71,15 +71,7 @@ function xgui.init()
 	end
 
 	function xgui.getdata( ply, args )
-		if not xgui.initialized then
-			if not xgui.activeUsers[ply:UniqueID()] then	--In case the client requests data before we are ready (ulx configs, especially when large banfiles are loading)
-				xgui.activeUsers[ply:UniqueID()] = { tables={}, events={} }	--Inform the client we will be sending them a chunk of data, but don't send anything.
-				ULib.clientRPC( ply, "xgui.expectChunks", 1 ) 				--This will display a "waiting for server" message on the client.
-			end
-			timer.Simple( 0.5, function() xgui.getdata( ply, args ) end )	--Try again every 0.5 seconds
-		else
-			xgui.sendDataTable( ply, args )
-		end
+		xgui.sendDataTable( ply, args )
 	end
 	xgui.addCmd( "getdata", xgui.getdata )
 
@@ -285,7 +277,6 @@ hook.Add( "Initialize", "XGUI_InitServer", xgui.init, -1 )
 --Call the modules postinit function when ULX is done loading. Should be called well after the Initialize hook.
 function xgui.postInit()
 	for _, v in ipairs( xgui.svmodules ) do if v.postinit then v.postinit() end end
-	xgui.initialized = true
 	
 	--Fix any users who requested data before the server was ready
 	for _, ply in pairs( player.GetAll() ) do
