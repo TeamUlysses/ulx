@@ -32,8 +32,8 @@ xlib.makelabel{ x=200, y=10, label="Right-click on a ban for more options", pare
 xbans.freezeban = xlib.makecheckbox{ x=140, y=343, label="Use Freezeban", tooltip="Freezes a player you have selected for banning while editing ban information (!fban in chat)", value=1, parent=xbans }
 xlib.makebutton{ x=5, y=340, w=130, label="Add Ban...", parent=xbans }.DoClick = function()
 	local menu = DermaMenu()
-	for k, v in ipairs( player.GetAll() ) do	
-		menu:AddOption( v:Nick(), function() xgui.ShowBanWindow( v:Nick(), v:SteamID(), xbans.freezeban:GetChecked() ) end )
+	for k, v in ipairs( player.GetAll() ) do
+		menu:AddOption( v:Nick(), function() xgui.ShowBanWindow( v, v:SteamID(), xbans.freezeban:GetChecked() ) end )
 	end
 	menu:AddSpacer()
 	if LocalPlayer():query("ulx banid") then menu:AddOption( "Ban by STEAMID...", function() xgui.ShowBanWindow() end ) end
@@ -248,7 +248,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 
 		if doFreeze and ply then
 			if LocalPlayer():query( "ulx freeze" ) then
-				RunConsoleCommand( "ulx", "freeze", ply )
+				RunConsoleCommand( "ulx", "freeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
 				steamID:SetDisabled( true )
 				name:SetDisabled( true )
 				xgui_banwindow:ShowCloseButton( false )
@@ -258,7 +258,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 		end
 		xlib.makebutton{ x=165, y=150, w=75, label="Cancel", parent=xgui_banwindow }.DoClick = function()
 			if doFreeze and ply then
-				RunConsoleCommand( "ulx", "unfreeze", ply )
+				RunConsoleCommand( "ulx", "unfreeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
 			end
 			xgui_banwindow:Remove()
 		end
@@ -302,13 +302,13 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 						RunConsoleCommand( "xgui", "updateBan", steamID:GetValue(), calctime, reason:GetValue(), ( name:GetValue() ~= "" and name:GetValue() or nil ) )
 					end
 				else
-					RunConsoleCommand( "ulx", "ban", isOnline:Nick(), calctime, reason:GetValue() )
+					RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( isOnline ), calctime, reason:GetValue() )
 				end
 				xgui_banwindow:Remove()
 			else
 				local ply = ULib.getUser( name:GetValue() )
 				if ply then
-					RunConsoleCommand( "ulx", "ban", ply:Nick(), calctime, reason:GetValue() )
+					RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( ply ), calctime, reason:GetValue() )
 					xgui_banwindow:Remove()
 					return
 				end
@@ -316,7 +316,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 			end
 		end
 		
-		if ply then name:SetText( ply ) end
+		if ply then name:SetText( ply:Nick() ) end
 		if ID then steamID:SetText( ID ) else steamID:SetText( "STEAM_0:" ) end
 	end
 end
@@ -428,7 +428,7 @@ function xbans.xban( ply, cmd, args, dofreeze )
 	if args[1] and args[1] ~= "" then
 		local target = ULib.getUser( args[1] )
 		if target then
-			xgui.ShowBanWindow( target:Nick(), target:SteamID(), dofreeze )
+			xgui.ShowBanWindow( target, target:SteamID(), dofreeze )
 		end
 	else
 		xgui.ShowBanWindow()

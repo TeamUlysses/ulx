@@ -14,7 +14,7 @@ function bans.init()
 		if args[1] and args[1] ~= "" then
 			local target = ULib.getUser( args[1] )
 			if target then
-				ULib.clientRPC( ply, "xgui.ShowBanWindow", target:Nick(), target:SteamID(), doFreeze )
+				ULib.clientRPC( ply, "xgui.ShowBanWindow", target, target:SteamID(), doFreeze )
 			end
 		else
 			ULib.clientRPC( ply, "xgui.ShowBanWindow" )

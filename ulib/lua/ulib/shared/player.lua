@@ -318,7 +318,6 @@ function ULib.getUser( target, enable_keywords, ply )
 			nameMatch = player
 		end
 
-		print( plyMatch, nameMatch )
 		if plyMatch and nameMatch then -- Already have one
 			return false, "Found multiple targets! Please choose a better string for the target. (EG, the whole name)"
 		end
