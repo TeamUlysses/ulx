@@ -55,6 +55,7 @@ v2.50 - *(01/27/13)*
 	* [FIX] Changed away from our custom implementation of datastream to use Garry's new net library.
 	* [FIX] Error with returning from invisibility when the player has no weapons (Thanks HellFox).
 	* [FIX] "ULibCommandCalled" hook not being called on chat commands (Thanks Adult).
+	* [CHANGE] Replicated cvars aren't actually relying on source replication anymore since Garry broke it (but they function the same).
 	* [CHANGE] Lots of changes to match GM13.
 	* [CHANGE] NumArg now allows for time string format.
 	* [CHANGE] Hook library to match garry's. hook.isInHook was removed, no longer able to support with garry's changes.
