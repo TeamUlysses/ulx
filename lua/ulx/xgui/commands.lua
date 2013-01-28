@@ -259,8 +259,8 @@ function cmds.runCmd( cmd )
 	local cmd = string.Explode( " ", cmd )
 	if cmds.plist:IsVisible() then
 		local plys = {}
-		for _, arg in ipairs( cmds.plist:GetSelected() ) do
-			table.insert( plys, arg:GetColumnText(1) )
+		for _, line in ipairs( cmds.plist:GetSelected() ) do
+			table.insert( plys, "$" .. ULib.getUniqueIDForPlayer( line.ply ) )
 			table.insert( plys, "," )
 		end
 		table.remove( plys ) --Removes the final comma
