@@ -503,15 +503,16 @@ jailableArea = function( pos )
 	return true
 end
 
-local mdl1 = Model( "models/props_c17/fence01b.mdl" )
-local mdl2 = Model( "models/props_c17/fence02b.mdl" )
+local mdl1 = Model( "models/props_building_details/Storefront_Template001a_Bars.mdl" )
 local jail = {
-	{ pos = Vector( 35, 0, 60 ), ang = Angle( 0, 0, 0 ), mdl=mdl2 },
-	{ pos = Vector( -35, 0, 60 ), ang = Angle( 0, 0, 0 ), mdl=mdl2 },
-	{ pos = Vector( 0, 35, 60 ), ang = Angle( 0, 90, 0 ), mdl=mdl2 },
-	{ pos = Vector( 0, -35, 60 ), ang = Angle( 0, 90, 0 ), mdl=mdl2 },
-	{ pos = Vector( 0, 0, 110 ), ang = Angle( 90, 0, 0 ), mdl=mdl1 },
 	{ pos = Vector( 0, 0, -5 ), ang = Angle( 90, 0, 0 ), mdl=mdl1 },
+	{ pos = Vector( 0, 0, 97 ), ang = Angle( 90, 0, 0 ), mdl=mdl1 },
+	{ pos = Vector( 21, 31, 46 ), ang = Angle( 0, 90, 0 ), mdl=mdl1 },
+	{ pos = Vector( 21, -31, 46 ), ang = Angle( 0, 90, 0 ), mdl=mdl1 },
+	{ pos = Vector( -21, 31, 46 ), ang = Angle( 0, 90, 0 ), mdl=mdl1 },
+	{ pos = Vector( -21, -31, 46), ang = Angle( 0, 90, 0 ), mdl=mdl1 },
+	{ pos = Vector( -52, 0, 46 ), ang = Angle( 0, 0, 0 ), mdl=mdl1 },
+	{ pos = Vector( 52, 0, 46 ), ang = Angle( 0, 0, 0 ), mdl=mdl1 },
 }
 doJail = function( v, seconds )
 	if v.jail then -- They're already jailed
