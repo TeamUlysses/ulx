@@ -782,7 +782,7 @@ function cmds.StringArg:parseAndValidate( ply, arg, cmdInfo, plyRestrictions )
 	end
 
 	if table.HasValue( cmdInfo, cmds.restrictToCompletes ) or self.playerLevelRestriction then
-		if self.restrictedCompletes and not table.HasValue( self.restrictedCompletes, arg:lower() ) then
+		if self.restrictedCompletes and not table.HasValue( self.restrictedCompletes, arg ) then
 			if cmdInfo.error then
 				return nil, string.format( cmdInfo.error, arg ) -- If it has '%s', replace with arg
 			else

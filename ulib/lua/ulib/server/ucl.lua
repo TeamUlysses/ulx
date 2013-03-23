@@ -98,12 +98,6 @@ local function reloadGroups()
 					groupInfo.inherit_from = ULib.ACCESS_ALL -- Clean :)
 				end
 
-				-- Ensure it's lower case
-				if groupName ~= groupName:lower() then
-					ucl.groups[ groupName:lower() ] = groupInfo -- Copy!
-					ucl.groups[ groupName ] = nil
-				end
-
 				-- Lower case'ify
 				for k, v in pairs( groupInfo.allow ) do
 					if type( k ) == "string" and k:lower() ~= k then
@@ -187,7 +181,6 @@ local function reloadUsers()
 				end
 
 				if userInfo.group == "" then userInfo.group = nil end -- Clean :)
-				if userInfo.group then userInfo.group = userInfo.group:lower() end -- Ensure lower case
 
 				-- Lower case'ify
 				for k, v in pairs( userInfo.allow ) do
@@ -243,13 +236,11 @@ function ucl.addGroup( name, allows, inherit_from )
 	ULib.checkArg( 1, "ULib.ucl.addGroup", "string", name )
 	ULib.checkArg( 2, "ULib.ucl.addGroup", {"nil","table"}, allows )
 	ULib.checkArg( 3, "ULib.ucl.addGroup", {"nil","string"}, inherit_from )
-	name = name:lower()
 	allows = allows or {}
 	inherit_from = inherit_from or "user"
 
 	if ucl.groups[ name ] then return error( "Group already exists, cannot add again (" .. name .. ")", 2 ) end
 	if inherit_from then
-		inherit_from = inherit_from:lower()
 		if inherit_from == name then return error( "Group cannot inherit from itself", 2 ) end
 		if not ucl.groups[ inherit_from ] then return error( "Invalid group for inheritance (" .. tostring( inherit_from ) .. ")", 2 ) end
 	end
@@ -288,7 +279,6 @@ function ucl.groupAllow( name, access, revoke )
 	ULib.checkArg( 2, "ULib.ucl.groupAllow", {"string","table"}, access )
 	ULib.checkArg( 3, "ULib.ucl.groupAllow", {"nil","boolean"}, revoke )
 
-	name = name:lower()
 	if type( access ) == "string" then access = { access } end
 	if not ucl.groups[ name ] then return error( "Group does not exist for changing access (" .. name .. ")", 2 ) end
 
@@ -358,8 +348,6 @@ end
 function ucl.renameGroup( orig, new )
 	ULib.checkArg( 1, "ULib.ucl.renameGroup", "string", orig )
 	ULib.checkArg( 2, "ULib.ucl.renameGroup", "string", new )
-	orig = orig:lower()
-	new = new:lower()
 
 	if orig == ULib.ACCESS_ALL then return error( "This group (" .. orig .. ") cannot be renamed!", 2 ) end
 	if not ucl.groups[ orig ] then return error( "Group does not exist for renaming (" .. orig .. ")", 2 ) end
@@ -415,9 +403,7 @@ end
 function ucl.setGroupInheritance( group, inherit_from )
 	ULib.checkArg( 1, "ULib.ucl.renameGroup", "string", group )
 	ULib.checkArg( 2, "ULib.ucl.renameGroup", {"nil","string"}, inherit_from )
-	group = group:lower()
 	if inherit_from then
-		inherit_from = inherit_from:lower()
 		if inherit_from == ULib.ACCESS_ALL then inherit_from = nil end -- Implicitly inherited
 	end
 
@@ -472,7 +458,6 @@ end
 function ucl.setGroupCanTarget( group, can_target )
 	ULib.checkArg( 1, "ULib.ucl.setGroupCanTarget", "string", group )
 	ULib.checkArg( 2, "ULib.ucl.setGroupCanTarget", {"nil","string"}, can_target )
-	group = group:lower()
 	if not ucl.groups[ group ] then return error( "Group does not exist (" .. group .. ")", 2 ) end
 
 	if ucl.groups[ group ].can_target == can_target then return end -- Nothing to change
@@ -501,7 +486,6 @@ end
 ]]
 function ucl.removeGroup( name )
 	ULib.checkArg( 1, "ULib.ucl.removeGroup", "string", name )
-	name = name:lower()
 
 	if name == ULib.ACCESS_ALL then return error( "This group (" .. name .. ") cannot be removed!", 2 ) end
 	if not ucl.groups[ name ] then return error( "Group does not exist for removing (" .. name .. ")", 2 ) end

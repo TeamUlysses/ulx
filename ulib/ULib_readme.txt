@@ -45,7 +45,8 @@ Rest easy!
 
 Group: Changelog
 v2.51 - *(00/00/00)*
-	* [FIX] ULub.ucl.userAllow not working on disconnected players (Thanks, JackYack13).
+	* [FIX] ULib.ucl.userAllow not working on disconnected players (Thanks, JackYack13).
+	* [FIX] Issue with setting groups with capitals in the group name (Thanks, FPtje!).
 
 v2.50 - *(01/27/13)*
 	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.
