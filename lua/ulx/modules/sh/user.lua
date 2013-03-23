@@ -47,13 +47,11 @@ usermanagementhelp:defaultAccess( ULib.ACCESS_ALL )
 usermanagementhelp:help( "See the user management help." )
 
 function ulx.adduser( calling_ply, target_ply, group_name )
-	group_name = group_name:lower()
-
 	local userInfo = ULib.ucl.authed[ target_ply:UniqueID() ]
 
 	local id = ULib.ucl.getUserRegisteredID( target_ply )
 	if not id then id = target_ply:SteamID() end
-	
+
 	ULib.ucl.addUser( id, userInfo.allow, userInfo.deny, group_name )
 
 	ulx.fancyLogAdmin( calling_ply, "#A added #T to group #s", target_ply, group_name )
@@ -66,7 +64,6 @@ adduser:help( "Add a user to specified group." )
 
 function ulx.adduserid( calling_ply, id, group_name )
 	id = id:upper() -- Steam id needs to be upper
-	group_name = group_name:lower()
 
 	-- Check for valid and properly formatted ID
 	if not checkForValidId( calling_ply, id ) then return false end
@@ -134,7 +131,7 @@ function ulx.userallow( calling_ply, target_ply, access_string, access_tag )
 
 	local id = ULib.ucl.getUserRegisteredID( target_ply )
 	if not id then id = target_ply:SteamID() end
-	
+
 	local success = ULib.ucl.userAllow( id, accessTable )
 	if not success then
 		ULib.tsayError( calling_ply, string.format( "User \"%s\" already has access to \"%s\"", target_ply:Nick(), access_string ), true )
@@ -257,9 +254,6 @@ userdenyid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 userdenyid:help( "Remove from a user's access." )
 
 function ulx.addgroup( calling_ply, group_name, inherit_from )
-	group_name = group_name:lower()
-	inherit_from = inherit_from:lower()
-
 	if ULib.ucl.groups[ group_name ] ~= nil then
 		ULib.tsayError( calling_ply, "This group already exists!", true )
 		return
@@ -280,9 +274,6 @@ addgroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
 addgroup:help( "Create a new group with optional inheritance." )
 
 function ulx.renamegroup( calling_ply, current_group, new_group )
-	current_group = current_group:lower()
-	new_group = new_group:lower()
-
 	if ULib.ucl.groups[ new_group ] then
 		ULib.tsayError( calling_ply, "The target group already exists!", true )
 		return
@@ -298,8 +289,6 @@ renamegroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
 renamegroup:help( "Renames a group." )
 
 function ulx.setGroupCanTarget( calling_ply, group, can_target )
-	group = group:lower()
-
 	if can_target and can_target ~= "" and can_target ~= "*" then
 		ULib.ucl.setGroupCanTarget( group, can_target )
 		ulx.fancyLogAdmin( calling_ply, "#A changed group #s to only be able to target #s", group, can_target )
@@ -324,7 +313,6 @@ removegroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
 removegroup:help( "Removes a group. USE WITH CAUTION." )
 
 function ulx.groupallow( calling_ply, group_name, access_string, access_tag )
-	group_name = group_name:lower()
 	access_tag = access_tag:lower()
 
 	local accessTable
@@ -353,8 +341,6 @@ groupallow:defaultAccess( ULib.ACCESS_SUPERADMIN )
 groupallow:help( "Add to a group's access." )
 
 function ulx.groupdeny( calling_ply, group_name, access_string )
-	group_name = group_name:lower()
-
 	local accessTable
 	if access_tag and access_tag ~= "" then
 		accessTable = { [access_string]=access_tag:lower() }
