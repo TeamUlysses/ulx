@@ -636,6 +636,7 @@ end
 
 		v2.40 - Initial.
 		v2.50 - Relaxed restrictions on id parameter.
+		v2.51 - Fixed this function not working on disconnected players.
 ]]
 function ucl.userAllow( id, access, revoke, deny )
 	ULib.checkArg( 1, "ULib.ucl.userAllow", "string", id )
@@ -649,7 +650,9 @@ function ucl.userAllow( id, access, revoke, deny )
 	local uid = id
 	if not ucl.authed[ uid ] then -- Check to see if it's a steamid or IP
 		local ply = ULib.getPlyByID( id )
-		uid = ply:UniqueID()
+		if ply and ply:IsValid() then
+			uid = ply:UniqueID()
+		end
 	end
 
 	local userInfo = ucl.users[ id ] or ucl.authed[ uid ] -- Check both tables

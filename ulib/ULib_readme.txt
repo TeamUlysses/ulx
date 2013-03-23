@@ -1,6 +1,6 @@
 Title: ULib Readme
 
-*ULib v2.50 (released 01/27/13)*
+*ULib v2.51 (released 00/00/00)*
 
 ULib is a developer library for GMod 10 (<http://garrysmod.com/>).
 
@@ -20,7 +20,7 @@ ULib is brought to you by..
 
 Group: Requirements
 
-ULib requires a working copy of garrysmod 10, and that's it!
+ULib requires a working copy of the latest garrysmod, and that's it!
 
 Group: Installation
 
@@ -44,6 +44,9 @@ After installing ULib correctly, scripts that take advantage of ULib will take c
 Rest easy!
 
 Group: Changelog
+v2.51 - *(00/00/00)*
+	* [FIX] ULub.ucl.userAllow not working on disconnected players (Thanks, JackYack13).
+
 v2.50 - *(01/27/13)*
 	* [ADD] ULib.pcallError -- Does what global PCallError used to do before it was removed.
 	* [ADD] Shows reasons to kicked person upon kick or ban (Thanks FPtje!).

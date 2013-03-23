@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.60
+Version 3.61
 
-*ULX v3.60 (released 01/27/13)*
+*ULX v3.61 (released 00/00/00)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,13 +62,16 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
+v2.61 - *(00/00/00)*
+
+
 v3.60 - *(01/27/13)*
 	* [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
 	* [ADD] "ulx resettodefaults" - Resets ULX and ULib config to defaults.
 	* [ADD] XGUI: Added ability to edit lower-level restrictions from a higher-level group.
 	* [CHANGE] ULX ban now supports restricting of time/string formats.
 	* [CHANGE] !teleport chat command is now also aliased as !tp.
-	* [CHANGE] XGUI: Utilizes ULib's more robust ID Targeting system. 
+	* [CHANGE] XGUI: Utilizes ULib's more robust ID Targeting system.
 	* [CHANGE] XGUI: Controls added to utilize time/string formats and restrictions.
 	* [CHANGE] XGUI: No longer duplicates ULX replicated cvars (ulx_cl_) due to ULib changes. Uses the regular ulx_ cvars directly.
 	* [CHANGE] XGUI: Supports new values for sv_alltalk.
