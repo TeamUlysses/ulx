@@ -63,6 +63,7 @@ Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
 v3.61 - *(00/00/00)*
+	* [FIX] "#" (Pound signs) removing content in ulx asay (Thanks bener180).
 	* [CHANGE] Jail models. The jail is slightly bigger and can't be shot through anymore (Thanks Mors-Quaedam).
 
 v3.60 - *(01/27/13)*
