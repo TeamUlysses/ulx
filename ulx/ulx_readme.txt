@@ -62,8 +62,8 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
-v2.61 - *(00/00/00)*
-
+v3.61 - *(00/00/00)*
+	* [CHANGE] Jail models. The jail is slightly bigger and can't be shot through anymore (Thanks Mors-Quaedam).
 
 v3.60 - *(01/27/13)*
 	* [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
