@@ -19,9 +19,10 @@ function ulx.asay( calling_ply, message )
 	local format
 	local me = "/me "
 	if message:sub( 1, me:len() ) == me then
-		format = "(ADMINS) *** #P " .. message:sub( me:len() + 1 )
+		format = "(ADMINS) *** #P #s"
+		message = message:sub( me:len() + 1 )
 	else
-		format = "#P to admins: " .. message
+		format = "#P to admins: #s"
 	end
 
 	local players = player.GetAll()
@@ -32,7 +33,7 @@ function ulx.asay( calling_ply, message )
 		end
 	end
 
-	ulx.fancyLog( players, format, calling_ply )
+	ulx.fancyLog( players, format, calling_ply, message )
 end
 local asay = ulx.command( CATEGORY_NAME, "ulx asay", ulx.asay, "@", true, true )
 asay:addParam{ type=ULib.cmds.StringArg, hint="message", ULib.cmds.takeRestOfLine }
