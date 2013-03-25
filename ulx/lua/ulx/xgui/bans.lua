@@ -257,7 +257,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 			end
 		end
 		xlib.makebutton{ x=165, y=150, w=75, label="Cancel", parent=xgui_banwindow }.DoClick = function()
-			if doFreeze and ply then
+			if doFreeze and ply and ply:IsValid() then
 				RunConsoleCommand( "ulx", "unfreeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
 			end
 			xgui_banwindow:Remove()
