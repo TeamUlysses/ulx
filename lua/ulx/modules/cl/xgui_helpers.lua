@@ -25,7 +25,7 @@ function xgui.load_helpers()
 	--Code for creating the XGUI base
 	---------------------------------
 	function xgui.makeXGUIbase()
-		xgui.anchor = xlib.makeXpanel{ w=600, h=400, x=ScrW()/2-300, y=ScrH()/2-270 }
+		xgui.anchor = xlib.makeXpanel{ w=600, h=420, x=ScrW()/2-300, y=ScrH()/2-270 }
 		xgui.anchor:SetVisible( false )
 		xgui.anchor:SetKeyboardInputEnabled( false )
 		xgui.anchor.Paint = function( self, w, h ) hook.Call( "XLIBDoAnimation" ) end

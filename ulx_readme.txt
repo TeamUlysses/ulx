@@ -63,6 +63,8 @@ Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
 v3.61 - *(00/00/00)*
+	* [FIX] XGUI: Infobar text no longer displaying.
+	* [FIX] XGUI: Error caused when closing the fban window after the targeted player has left the server (Thanks nathan736).
 	* [FIX] "#" (Pound signs) removing content in ulx asay (Thanks bener180).
 	* [CHANGE] Jail models. The jail is slightly bigger and can't be shot through anymore (Thanks Mors-Quaedam).
 
