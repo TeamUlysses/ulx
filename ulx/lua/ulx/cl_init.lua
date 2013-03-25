@@ -19,7 +19,8 @@ if not ulx then
 end
 
 function ulx.clInit( v, r )
-	ulx.version = v -- Yah, I know, we should have the version from shared anyways.... but doesn't make sense to send one and not the other.
+	-- Number conversion to ensure we're not getting an incredibly complex floating number
+	ulx.version = tonumber( string.format( "%.2f", v ) ) -- Yah, I know, we should have the version from shared anyways.... but doesn't make sense to send one and not the other.
 	ulx.revision = r
 
 	Msg( "ULX version " .. ulx.getVersion() .. " loaded.\n" )
