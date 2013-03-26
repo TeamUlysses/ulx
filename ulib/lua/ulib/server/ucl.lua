@@ -37,7 +37,12 @@ end
 local function reloadGroups()
 	local needsBackup = false
 	local err
-	ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS, "DATA" ), "/" ) )
+	-- Working around garry file reading bug as of March 26, 2013
+	if file.Exists( ULib.UCL_GROUPS, "DATA" ) then
+		ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS, "DATA" ), "/" ) )
+	else
+		ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( "data/" .. ULib.UCL_GROUPS, "GAME" ), "/" ) )
+	end
 
 	if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 		needsBackup = true
@@ -125,7 +130,12 @@ reloadGroups()
 local function reloadUsers()
 	local needsBackup = false
 	local err
-	ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS, "DATA" ), "/" ) )
+	-- Working around garry file reading bug as of March 26, 2013
+	if file.Exists( ULib.UCL_USERS, "DATA" ) then
+		ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS, "DATA" ), "/" ) )
+	else
+		ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( "data/" .. ULib.UCL_USERS, "GAME" ), "/" ) )
+	end
 
 	-- Check to make sure it passes a basic validity test
 	if not ucl.users then
