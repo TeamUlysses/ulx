@@ -47,6 +47,7 @@ Group: Changelog
 v2.51 - *(00/00/00)*
 	* [FIX] ULib.ucl.userAllow not working on disconnected players (Thanks, JackYack13).
 	* [FIX] Issue with setting groups with capitals in the group name (Thanks, FPtje!).
+	* [FIX] Calling SetUserGroup not passing on information to clients (Thanks, Bo98).
 	* [REMOVED] Temp garry-patch for reading from the data directory that appears to be fixed now.
 
 v2.50 - *(01/27/13)*

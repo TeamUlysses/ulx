@@ -961,6 +961,7 @@ function meta:SetUserGroup( group, dontCall )
 	end
 
 	if not dontCall and self:GetUserGroup() ~= oldGroup then -- Changed! Inform the masses of the change
+		hook.Call( ULib.HOOK_UCLCHANGED )
 		hook.Call( ULib.HOOK_UCLAUTH, _, self )
 	end
 end
