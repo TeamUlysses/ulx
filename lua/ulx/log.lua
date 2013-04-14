@@ -31,10 +31,10 @@ ulx.log_file = nil
 local function init()
 	curDateStr = os.date( "%Y-%m-%d" )
 	if logFile:GetBool() then
-		file.CreateDir( logDir:GetString() )
-		ulx.log_file = os.date( logDir:GetString() .. "/" .. "%m-%d-%y" .. ".txt" )
-		if not file.Exists( ulx.log_file, "DATA" ) then
-			file.Write( ulx.log_file, "" )
+		ULib.fileCreateDir( "data/" .. logDir:GetString() )
+		ulx.log_file = os.date( "data/" .. logDir:GetString() .. "/" .. "%m-%d-%y" .. ".txt" )
+		if not ULib.fileExists( ulx.log_file ) then
+			ULib.fileWrite( ulx.log_file, "" )
 		else
 			ulx.logWriteln( "\n\n" ) -- Make some space
 		end
@@ -52,7 +52,7 @@ local function next_log()
 		local old_log = ulx.log_file
 		ulx.logWriteln( "<Logging continued in \"" .. new_log .. "\">" )
 		ulx.log_file = new_log
-		file.Write( ulx.log_file, "" )
+		ULib.fileWrite( ulx.log_file, "" )
 		ulx.logWriteln( "<Logging continued from \"" .. old_log .. "\">" )
 	end
 	curDateStr = os.date( "%Y-%m-%d" )
@@ -154,7 +154,7 @@ function ulx.logWriteln( str )
 	if not ulx.log_file then return end
 
 	if logFile:GetBool() and ulx.log_file then
-		file.Append( ulx.log_file, str .. "\n" )
+		ULib.fileAppend( ulx.log_file, str .. "\n" )
 	end
 end
 

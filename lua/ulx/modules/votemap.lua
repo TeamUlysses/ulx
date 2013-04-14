@@ -16,7 +16,7 @@ local function init()
 		end
 	else
 		for map, _ in pairs( specifiedMaps ) do
-			if file.Exists( "maps/" .. map .. ".bsp", "GAME" ) then
+			if ULib.fileExists( "maps/" .. map .. ".bsp" ) then
 				table.insert( ulx.votemaps, map )
 			end
 		end

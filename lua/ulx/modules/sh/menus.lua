@@ -1,12 +1,12 @@
 local CATEGORY_NAME = "Menus"
 
-if file.Exists( "lua/ulx/modules/cl/motdmenu.lua", "GAME" ) or ulx.motdmenu_exists then
+if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists then
 	CreateConVar( "motdfile", "ulx_motd.txt" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
 	local function sendMotd( ply, showMotd )
 		if showMotd == "1" then -- Assume it's a file
 			if ply.ulxHasMotd then return end -- This player already has the motd
-			if not file.Exists( GetConVarString( "motdfile" ), "GAME" ) then return end -- Invalid
-			local f = file.Read( GetConVarString( "motdfile" ), "GAME" )
+			if not ULib.fileExists( GetConVarString( "motdfile" ) ) then return end -- Invalid
+			local f = ULib.fileRead( GetConVarString( "motdfile" ) )
 
 			ULib.clientRPC( ply, "ulx.rcvMotd", false, f )
 

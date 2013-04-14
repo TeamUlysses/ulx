@@ -26,7 +26,7 @@ function ulx.showMotdMenu()
 	html:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
 	html:SetPos( 10, 30 )
 	if not isUrl then
-		html:SetHTML( file.Read( "ulx_motd.txt", "DATA" ) )
+		html:SetHTML( ULib.fileRead( "data/ulx_motd.txt" ) )
 	else
 		html:OpenURL( url )
 	end
@@ -35,7 +35,7 @@ end
 function ulx.rcvMotd( isUrl_, text )
 	isUrl = isUrl_
 	if not isUrl then
-		file.Write( "ulx_motd.txt", text )
+		ULib.fileWrite( "data/ulx_motd.txt", text )
 	else
 		if text:find( "://", 1, true ) then
 			url = text

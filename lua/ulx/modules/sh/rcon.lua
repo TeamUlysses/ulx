@@ -46,12 +46,12 @@ luarun:help( "Executes lua in server console. (Use '=' for output)" )
 
 function ulx.exec( calling_ply, config )
 	if string.sub( config, -4 ) ~= ".cfg" then config = config .. ".cfg" end
-	if not file.Exists( "cfg/" .. config, "GAME" ) then
+	if not ULib.fileExists( "cfg/" .. config ) then
 		ULib.tsayError( calling_ply, "That config does not exist!", true )
 		return
 	end
 
-	ULib.execFile( "cfg/" .. config, "GAME" )
+	ULib.execFile( "cfg/" .. config )
 	ulx.fancyLogAdmin( calling_ply, "#A executed file #s", config )
 end
 local exec = ulx.command( CATEGORY_NAME, "ulx exec", ulx.exec )
