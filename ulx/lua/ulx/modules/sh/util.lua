@@ -211,12 +211,12 @@ spectate:defaultAccess( ULib.ACCESS_ADMIN )
 spectate:help( "Spectate target." )
 
 function ulx.addForcedDownload( path )
-	if file.IsDir( path, "GAME" ) then
+	if ULib.fileIsDir( path ) then
 		files = ULib.filesInDir( path )
 		for _, v in ipairs( files ) do
 			ulx.addForcedDownload( path .. "/" .. v )
 		end
-	elseif file.Exists( path, "GAME" ) then
+	elseif ULib.fileExists( path ) then
 		resource.AddFile( path )
 	else
 		Msg( "[ULX] ERROR: Tried to add nonexistent or empty file to forced downloads '" .. path .. "'\n" )
@@ -248,7 +248,7 @@ function ulx.debuginfo( calling_ply )
 		str = str .. plyline .. "\n"
 	end
 
-	local gmoddefault = util.KeyValuesToTable( file.Read( "settings/users.txt", "GAME" ) )
+	local gmoddefault = util.KeyValuesToTable( ULib.fileRead( "settings/users.txt" ) )
 	str = str .. "\n\nULib.ucl.users (#=" .. table.Count( ULib.ucl.users ) .. "):\n" .. ulx.dumpTable( ULib.ucl.users, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.groups (#=" .. table.Count( ULib.ucl.groups ) .. "):\n" .. ulx.dumpTable( ULib.ucl.groups, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.authed (#=" .. table.Count( ULib.ucl.authed ) .. "):\n" .. ulx.dumpTable( ULib.ucl.authed, 1 ) .. "\n\n"
@@ -257,14 +257,14 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "Active legacy addons on this server:\n"
 	local _, possibleaddons = file.Find( "addons/*", "GAME" )
 	for _, addon in ipairs( possibleaddons ) do
-		if file.Exists( "addons/" .. addon .. "/addon.txt", "GAME" ) then
-			local t = util.KeyValuesToTable( file.Read( "addons/" .. addon .. "/addon.txt", "GAME" ) )
+		if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
+			local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
 			if tonumber( t.version ) then t.version = string.format( "%g", t.version ) end -- Removes innaccuracy in floating point numbers
 			str = str .. string.format( "%s%s by %s, version %s (%s)\n", addon, str.rep( " ", 24 - addon:len() ), t.author_name, t.version, t.up_date )
 		end
 	end
 
-	local f = file.Read( "workshop.vdf", "GAME" )
+	local f = ULib.fileRead( "workshop.vdf" )
 	if f then
 		local addons = ULib.parseKeyValues( ULib.stripComments( f, "//" ) )
 		addons = addons.addons -- Garry's wrapper
@@ -277,7 +277,7 @@ function ulx.debuginfo( calling_ply )
 		end
 	end
 
-	file.Write( "ulx/debugdump.txt", str )
+	ULib.fileWrite( "data/ulx/debugdump.txt", str )
 	Msg( "Debug information written to garrysmod/data/ulx/debugdump.txt on server.\n" )
 end
 local debuginfo = ulx.command( CATEGORY_NAME, "ulx debuginfo", ulx.debuginfo )
@@ -297,17 +297,17 @@ function ulx.resettodefaults( calling_ply, param )
 		return
 	end
 
-	file.Delete( "ulx/adverts.txt" )
-	file.Delete( "ulx/banreasons.txt" )
-	file.Delete( "ulx/config.txt" )
-	file.Delete( "ulx/downloads.txt" )
-	file.Delete( "ulx/gimps.txt" )
-	file.Delete( "ulx/sbox_limits.txt" )
-	file.Delete( "ulx/votemaps.txt" )
-	file.Delete( "ulib/bans.txt" )
-	file.Delete( "ulib/groups.txt" )
-	file.Delete( "ulib/misc_registered.txt" )
-	file.Delete( "ulib/users.txt" )
+	ULib.fileDelete( "data/ulx/adverts.txt" )
+	ULib.fileDelete( "data/ulx/banreasons.txt" )
+	ULib.fileDelete( "data/ulx/config.txt" )
+	ULib.fileDelete( "data/ulx/downloads.txt" )
+	ULib.fileDelete( "data/ulx/gimps.txt" )
+	ULib.fileDelete( "data/ulx/sbox_limits.txt" )
+	ULib.fileDelete( "data/ulx/votemaps.txt" )
+	ULib.fileDelete( "data/ulib/bans.txt" )
+	ULib.fileDelete( "data/ulib/groups.txt" )
+	ULib.fileDelete( "data/ulib/misc_registered.txt" )
+	ULib.fileDelete( "data/ulib/users.txt" )
 
 	local str = "Please change levels to finish the reset"
 	if calling_ply:IsValid() then

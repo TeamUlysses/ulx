@@ -56,7 +56,7 @@ do
 	local _, gamemodes = file.Find( "gamemodes/*", "GAME" )
 
 	for _, gamemode in ipairs( gamemodes ) do
-		if file.IsDir( "gamemodes/" .. gamemode, "GAME" ) and file.Exists( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt", "GAME" ) and not util.tobool( util.KeyValuesToTable( file.Read( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt", "GAME" ) ).hide ) then
+		if ULib.fileIsDir( "gamemodes/" .. gamemode ) and ULib.fileExists( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt" ) and not util.tobool( util.KeyValuesToTable( ULib.fileRead( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt" ) ).hide ) then
 			table.insert( ulx.gamemodes, gamemode:lower() )
 		end
 	end
@@ -95,8 +95,8 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	local command = sv_cvar:gsub( "^ulx_", "" ):lower() -- Strip it off for lookup below
 	if not ulx.cvars[ command ] then return end
 	sv_cvar = ulx.cvars[ command ].original -- Make sure we have intended casing
-	local path = "ulx/config.txt"
-	if not file.Exists( path, "DATA" ) then
+	local path = "data/ulx/config.txt"
+	if not ULib.fileExists( path ) then
 		Msg( "[ULX ERROR] Config doesn't exist at " .. path .. "\n" )
 		return
 	end
@@ -105,9 +105,9 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 
 	if new_value:find( "[%s:']" ) then new_value = string.format( "%q", new_value ) end
 	local replacement = string.format( "%s %s ", sv_cvar, new_value:gsub( "%%", "%%%%" ) ) -- Because we're feeding it through gsub below, need to expand '%'s
-	local config = file.Read( "ulx/config.txt", "DATA" )
+	local config = ULib.fileRead( path )
 	config = config:gsub( ULib.makePatternSafe( sv_cvar ):gsub( "%a", function( c ) return "[" .. c:lower() .. c:upper() .. "]" end ) .. "%s+[^;\r\n]*", replacement ) -- The gsub makes us case neutral
-	file.Write( path, config )
+	ULib.fileWrite( path, config )
 end
 hook.Add( ulx.HOOK_ULXDONELOADING, "AddCvarHook", function() hook.Add( ULib.HOOK_REPCVARCHANGED, "ULXCheckCvar", cvarChanged ) end ) -- We're not interested in changing cvars till after load
 

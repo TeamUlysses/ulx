@@ -79,7 +79,7 @@ end
 -- This will play sounds client side
 local function rcvSound( um )
 	local str = um:ReadString()
-	if not file.Exists( "sound/" .. str, "GAME" ) then
+	if not ULib.fileExists( "sound/" .. str ) then
 		Msg( "[LC ULib ERROR] Received invalid sound\n" )
 		return
 	end

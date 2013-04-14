@@ -67,9 +67,9 @@ function ulx.getVersion() -- This exists on the client as well, so feel free to 
 	if ulx.release then
 		version = string.format( "%.02f", ulx.version )
 	else
-		if file.Exists( "addons/ulx/.svn/wc.db", "GAME" ) then -- SVN's new format
+		if ULib.fileExists( "addons/ulx/.svn/wc.db" ) then -- SVN's new format
 			-- The following code would probably work if garry allowed us to read this file...
-			--[[local raw = file.Read( "addons/ulx/.svn/wc.db", true )
+			--[[local raw = ULib.fileRead( "addons/ulx/.svn/wc.db" )
 			local highest = 0
 			for rev in string.gmatch( raw, "/ulx/!svn/ver/%d+/" ) do
 				if rev > highest then
@@ -77,9 +77,9 @@ function ulx.getVersion() -- This exists on the client as well, so feel free to 
 				end
 			end
 			r = highest]]
-		elseif file.Exists( "addons/ulx/lua/ulx/.svn/entries", "GAME" ) then
+		elseif ULib.fileExists( "addons/ulx/lua/ulx/.svn/entries" ) then
 			-- Garry broke the following around 05/11/2010, then fixed it again around 11/10/2010!
-			local lines = string.Explode( "\n", file.Read( "lua/ulx/.svn/entries", "GAME" ) )
+			local lines = string.Explode( "\n", ULib.fileRead( "lua/ulx/.svn/entries" ) )
 			r = tonumber( lines[ 4 ] )
 		end
 

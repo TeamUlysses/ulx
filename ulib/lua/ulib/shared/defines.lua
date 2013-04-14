@@ -221,18 +221,20 @@ ULib.HOOK_PLAYER_NAME_CHANGED = "ULibPlayerNameChanged"
 ]]
 if SERVER then
 ULib.UCL_LOAD_DEFAULT = true -- Set this to false to ignore the SetUserGroup() call.
-ULib.UCL_USERS = "ulib/users.txt"
-ULib.UCL_GROUPS = "ulib/groups.txt"
-ULib.UCL_REGISTERED = "ulib/misc_registered.txt" -- Holds access strings that ULib has already registered
-ULib.BANS_FILE = "ulib/bans.txt"
-ULib.VERSION_FILE = "ulib/version.txt"
+ULib.UCL_USERS = "data/ulib/users.txt"
+ULib.UCL_GROUPS = "data/ulib/groups.txt"
+ULib.UCL_REGISTERED = "data/ulib/misc_registered.txt" -- Holds access strings that ULib has already registered
+ULib.BANS_FILE = "data/ulib/bans.txt"
+ULib.VERSION_FILE = "data/ulib/version.txt"
 
 ULib.DEFAULT_GRANT_ACCESS = { allow={}, deny={}, guest=true }
 
-if file.Exists( ULib.UCL_REGISTERED, "DATA" ) and file.Exists( "addons/ulib/data/" .. ULib.UCL_GROUPS, "GAME" ) and file.Read( ULib.UCL_GROUPS, "DATA" ) == file.Read( "addons/ulib/data/" .. ULib.UCL_GROUPS, "GAME" ) then
-  -- File has been reset, delete registered
-	file.Delete( ULib.UCL_REGISTERED )
-end
+hook.Add( "Initialize", "ULibCheckFileInit", function()
+	if ULib.fileExists( ULib.UCL_REGISTERED ) and ULib.fileExists( "addons/ulib/data/" .. ULib.UCL_GROUPS ) and ULib.fileRead( ULib.UCL_GROUPS ) == ULib.fileRead( "addons/ulib/data/" .. ULib.UCL_GROUPS ) then
+	  -- File has been reset, delete registered
+		ULib.deleteFile( ULib.UCL_REGISTERED )
+	end
+end)
 end
 
 --[[

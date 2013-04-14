@@ -124,8 +124,8 @@ function ULib.ban( ply, time, reason, admin )
 	ULib.addBan( ply:SteamID(), time, reason, ply:Name(), admin )
 
 	-- Load our currently banned users so we don't overwrite them
-	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
-		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
+	if ULib.fileExists( "cfg/banned_user.cfg" ) then
+		ULib.execFile( "cfg/banned_user.cfg" )
 	end
 end
 
@@ -154,8 +154,8 @@ function ULib.kickban( ply, time, reason, admin )
 	ULib.addBan( ply:SteamID(), time, reason, ply:Name(), admin )
 
 	-- Load our currently banned users so we don't overwrite them
-	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
-		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
+	if ULib.fileExists( "cfg/banned_user.cfg" ) then
+		ULib.execFile( "cfg/banned_user.cfg" )
 	end
 end
 
@@ -180,10 +180,10 @@ end
 function ULib.addBan( steamid, time, reason, name, admin )
 	local strTime = time ~= 0 and string.format( "for %s minute(s)", time ) or "permanently"
 	local showReason = string.format( "Banned %s: %s", strTime, reason )
-	
+
 	local players = player.GetAll()
 	for i=1, #players do
-		if players[ i ]:SteamID() == steamid then			
+		if players[ i ]:SteamID() == steamid then
 			ULib.kick( players[ i ], showReason, admin )
 		end
 	end
@@ -222,7 +222,7 @@ function ULib.addBan( steamid, time, reason, name, admin )
 		t.name = name
 	end
 	ULib.bans[ steamid ] = t
-	file.Write( ULib.BANS_FILE, ULib.makeKeyValues( ULib.bans ) )
+	ULib.fileWrite( ULib.BANS_FILE, ULib.makeKeyValues( ULib.bans ) )
 end
 
 --[[
@@ -241,15 +241,14 @@ end
 function ULib.unban( steamid )
 
 	--Default banlist
-	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
-		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
+	if ULib.fileExists( "cfg/banned_user.cfg" ) then
+		ULib.execFile( "cfg/banned_user.cfg" )
 	end
 	ULib.queueFunctionCall( game.ConsoleCommand, "removeid " .. steamid .. ";writeid\n" ) -- Execute after done loading bans
 
 	--ULib banlist
 	ULib.bans[ steamid ] = nil
-	file.Write( ULib.BANS_FILE, ULib.makeKeyValues( ULib.bans ) )
-
+	ULib.fileWrite( ULib.BANS_FILE, ULib.makeKeyValues( ULib.bans ) )
 end
 
 local function doInvis()
@@ -334,10 +333,10 @@ end
 ]]
 function ULib.refreshBans()
 	local err
-	if not file.Exists( ULib.BANS_FILE, "DATA" ) then
+	if not ULib.fileExists( ULib.BANS_FILE ) then
 		ULib.bans = {}
 	else
-		ULib.bans, err = ULib.parseKeyValues( file.Read( ULib.BANS_FILE, "DATA" ) )
+		ULib.bans, err = ULib.parseKeyValues( ULib.fileRead( ULib.BANS_FILE ) )
 	end
 
 	if err then
@@ -350,10 +349,10 @@ function ULib.refreshBans()
 	end
 
 	local default_bans = ""
-	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
-		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
+	if ULib.fileExists( "cfg/banned_user.cfg" ) then
+		ULib.execFile( "cfg/banned_user.cfg" )
 		ULib.queueFunctionCall( game.ConsoleCommand, "writeid\n" )
-		default_bans = file.Read( "cfg/banned_user.cfg", "GAME" )
+		default_bans = ULib.fileRead( "cfg/banned_user.cfg" )
 	end
 
 	--default_bans = ULib.makePatternSafe( default_bans )
@@ -388,7 +387,7 @@ function ULib.refreshBans()
 	end
 
 	-- We're queueing this because it will split the load out for VERY large ban files
-	ULib.queueFunctionCall( function() file.Write( ULib.BANS_FILE, ULib.makeKeyValues( ULib.bans ) ) end )
+	ULib.queueFunctionCall( function() ULib.fileWrite( ULib.BANS_FILE, ULib.makeKeyValues( ULib.bans ) ) end )
 end
 ULib.pcallError( ULib.refreshBans )
 

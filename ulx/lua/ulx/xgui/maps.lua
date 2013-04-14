@@ -12,9 +12,9 @@ maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", pare
 maps.list = xlib.makelistview{ x=5, y=30, w=175, h=310, multiselect=true, parent=maps, headerheight=0 } --Remember to enable/disable multiselect based on admin status?
 maps.list:AddColumn( "Map Name" )
 maps.list.OnRowSelected = function( self, LineID, Line )
-	if ( file.Exists( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png", "GAME" ) ) then 
+	if ( ULib.fileExists( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" ) ) then
 		maps.disp:SetMaterial( "../maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" )
-	else 
+	else
 		maps.disp:SetMaterial( "../maps/noicon.png" )
 	end
 	maps.curmap:SetText( Line:GetColumnText(1) )
@@ -78,9 +78,9 @@ function maps.updateVoteMaps()
 	for k, Line in pairs( maps.list.Lines ) do
 		if ( Line:IsLineSelected() ) then table.insert( lastselected, Line:GetColumnText(1) ) end
 	end
-	
+
 	maps.list:Clear()
-	
+
 	if LocalPlayer():query( "ulx map" ) then --Show all maps for admins who have access to change the level
 		maps.maplabel:SetText( "Server Maps (Votemaps are highlighted)" )
 		for _,v in ipairs( ulx.maps ) do
@@ -98,7 +98,7 @@ function maps.updateVoteMaps()
 		maps.list:SelectItem( l )
 	end
 	maps.updateButtonStates()
-	
+
 	ULib.cmds.translatedCmds["ulx votemap"].args[2].completes = xgui.data.votemaps --Set concommand completes for the ulx votemap command. (Used by XGUI in the cmds tab)
 end
 

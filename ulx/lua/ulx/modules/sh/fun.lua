@@ -189,7 +189,7 @@ unigniteall:help( "Extinguishes all players and all entities." )
 
 ------------------------------ Playsound ------------------------------
 function ulx.playsound( calling_ply, sound )
-	if not file.Exists( "sound/" .. sound, "GAME" ) then
+	if not ULib.fileExists( "sound/" .. sound ) then
 		ULib.tsayError( calling_ply, "That sound doesn't exist on the server!", true )
 		return
 	end
@@ -436,7 +436,7 @@ function ulx.jailtp( calling_ply, target_ply, seconds )
 	local tr = util.TraceEntity( t, target_ply )
 
 	local pos = tr.HitPos
-	
+
 	if ulx.getExclusive( target_ply, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( target_ply, calling_ply ), true )
 		return
@@ -450,10 +450,10 @@ function ulx.jailtp( calling_ply, target_ply, seconds )
 		if target_ply:InVehicle() then
 			target_ply:ExitVehicle()
 		end
-		
+
 		target_ply:SetPos( pos )
 		target_ply:SetLocalVelocity( Vector( 0, 0, 0 ) ) -- Stop!
-							
+
 		doJail( target_ply, seconds )
 	end
 
@@ -499,7 +499,7 @@ jailableArea = function( pos )
 			return false
 		end
 	end
-	
+
 	return true
 end
 

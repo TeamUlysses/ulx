@@ -1,16 +1,9 @@
 if not ULib then
 	ULib = {}
-	--[[
-	if file.Exists( "../lua/includes/modules/gm_ulib.dll" ) then
-		require( "ulib" ) -- Lua engine load
-		if not ULib.pluginLoaded() then -- It stays loaded across maps so use this to check
-			game.ConsoleCommand( "plugin_load ../../../gmodbeta2007/lua/includes/modules/gm_ulib\n" ) -- So we don't have to bother with a .vdf file
-		end
-	end
-	]]
 
-	if not ULib.consoleCommand then ULib.consoleCommand = game.ConsoleCommand end -- In case they remove our module or it doesn't load
-	
+	-- For historical purposes
+	if not ULib.consoleCommand then ULib.consoleCommand = game.ConsoleCommand end
+
 	file.CreateDir( "ulib" )
 
 	Msg( "///////////////////////////////\n" )

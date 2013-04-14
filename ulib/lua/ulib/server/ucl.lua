@@ -6,14 +6,14 @@
 
 local ucl = ULib.ucl -- Make it easier for us to refer to
 
-local accessStrings = ULib.parseKeyValues( file.Read( ULib.UCL_REGISTERED, "DATA" ) or "" ) or {}
+local accessStrings = ULib.parseKeyValues( ULib.fileRead( ULib.UCL_REGISTERED ) or "" ) or {}
 local accessCategories = {}
 ULib.ucl.accessStrings = accessStrings
 ULib.ucl.accessCategories = accessCategories
 
 -- Helper function to save access string registration to misc_registered.txt
 local function saveAccessStringRegistration()
-	file.Write( ULib.UCL_REGISTERED, ULib.makeKeyValues( accessStrings ) )
+	ULib.fileWrite( ULib.UCL_REGISTERED, ULib.makeKeyValues( accessStrings ) )
 end
 
 -- Save what we've got with ucl.groups so far!
@@ -22,7 +22,7 @@ function ucl.saveGroups()
 		table.sort( groupInfo.allow )
 	end
 
-	file.Write( ULib.UCL_GROUPS, ULib.makeKeyValues( ucl.groups ) )
+	ULib.fileWrite( ULib.UCL_GROUPS, ULib.makeKeyValues( ucl.groups ) )
 end
 
 function ucl.saveUsers()
@@ -31,35 +31,30 @@ function ucl.saveUsers()
 		table.sort( userInfo.deny )
 	end
 
-	file.Write( ULib.UCL_USERS, ULib.makeKeyValues( ucl.users ) )
+	ULib.fileWrite( ULib.UCL_USERS, ULib.makeKeyValues( ucl.users ) )
 end
 
 local function reloadGroups()
 	local needsBackup = false
 	local err
-	-- Working around garry file reading bug as of March 26, 2013
-	if file.Exists( ULib.UCL_GROUPS, "DATA" ) then
-		ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_GROUPS, "DATA" ), "/" ) )
-	else
-		ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( "data/" .. ULib.UCL_GROUPS, "GAME" ), "/" ) )
-	end
+	ucl.groups, err = ULib.parseKeyValues( ULib.removeCommentHeader( ULib.fileRead( ULib.UCL_GROUPS ), "/" ) )
 
 	if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 		needsBackup = true
 		-- Totally messed up! Clear it.
-		local f = "addons/ulib/data/" .. ULib.UCL_GROUPS
-		if not file.Exists( f, "GAME" ) then
+		local f = "addons/ulib/" .. ULib.UCL_GROUPS
+		if not ULib.fileExists( f ) then
 			Msg( "ULIB PANIC: groups.txt is corrupted and I can't find the default groups.txt file!!\n" )
 		else
 			local err2
-			ucl.groups, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f, "GAME" ), "/" ) )
+			ucl.groups, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( ULib.fileRead( f ), "/" ) )
 			if not ucl.groups or not ucl.groups[ ULib.ACCESS_ALL ] then
 				Msg( "ULIB PANIC: default groups.txt is corrupt!\n" )
 				err = err2
 			end
 		end
-		if file.Exists( ULib.UCL_REGISTERED, "DATA" ) then
-			file.Delete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
+		if ULib.fileExists( ULib.UCL_REGISTERED ) then
+			ULib.fileDelete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}
 
@@ -130,30 +125,25 @@ reloadGroups()
 local function reloadUsers()
 	local needsBackup = false
 	local err
-	-- Working around garry file reading bug as of March 26, 2013
-	if file.Exists( ULib.UCL_USERS, "DATA" ) then
-		ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( ULib.UCL_USERS, "DATA" ), "/" ) )
-	else
-		ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( "data/" .. ULib.UCL_USERS, "GAME" ), "/" ) )
-	end
+	ucl.users, err = ULib.parseKeyValues( ULib.removeCommentHeader( ULib.fileRead( ULib.UCL_USERS ), "/" ) )
 
 	-- Check to make sure it passes a basic validity test
 	if not ucl.users then
 		needsBackup = true
 		-- Totally messed up! Clear it.
-		local f = "addons/ulib/data/" .. ULib.UCL_USERS
-		if not file.Exists( f, "GAME" ) then
+		local f = "addons/ulib/" .. ULib.UCL_USERS
+		if not ULib.fileExists( f ) then
 			Msg( "ULIB PANIC: users.txt is corrupted and I can't find the default users.txt file!!\n" )
 		else
 			local err2
-			ucl.users, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( file.Read( f, "GAME" ), "/" ) )
+			ucl.users, err2 = ULib.parseKeyValues( ULib.removeCommentHeader( ULib.fileRead( f ), "/" ) )
 			if not ucl.users then
 				Msg( "ULIB PANIC: default users.txt is corrupt!\n" )
 				err = err2
 			end
 		end
-		if file.Exists( ULib.UCL_REGISTERED, "DATA" ) then
-			file.Delete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
+		if ULib.fileExists( ULib.UCL_REGISTERED ) then
+			ULib.deleteFile( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}
 

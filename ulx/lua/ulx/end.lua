@@ -2,14 +2,14 @@
 
 local function init()
 	-- Load our banned users
-	if file.Exists( "cfg/banned_user.cfg", "GAME" ) then
-		ULib.execFile( "cfg/banned_user.cfg", "GAME" )
+	if ULib.fileExists( "cfg/banned_user.cfg" ) then
+		ULib.execFile( "cfg/banned_user.cfg" )
 	end
 end
 hook.Add( "Initialize", "ULXInitialize", init )
 
 local function doMainCfg( path )
-	ULib.execString( ULib.stripComments( file.Read( path, "DATA" ), ";" ), "ULXConfigExec" )
+	ULib.execString( ULib.stripComments( ULib.fileRead( path ), ";" ), "ULXConfigExec" )
 end
 
 local function doDownloadCfg( path )
@@ -18,7 +18,7 @@ local function doDownloadCfg( path )
 		return
 	end
 
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( ULib.fileRead( path ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -34,7 +34,7 @@ local function doGimpCfg( path )
 	end
 
 	ulx.clearGimpSays()
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( ULib.fileRead( path ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -49,7 +49,7 @@ local function doAdvertCfg( path )
 		return
 	end
 
-	local data_root, err = ULib.parseKeyValues( ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
+	local data_root, err = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( path ), ";" ) )
 	if not data_root then Msg( "[ULX] Error in advert config: " .. err .. "\n" ) return end
 
 	for group_name, row in pairs( data_root ) do
@@ -74,7 +74,7 @@ local function doVotemapsCfg( path )
 	end
 
 	ulx.clearVotemaps()
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( ULib.fileRead( path ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -89,7 +89,7 @@ local function doReasonsCfg( path )
 		return
 	end
 
-	local lines = ULib.explode( "\n+", ULib.stripComments( file.Read( path, "DATA" ), ";" ) )
+	local lines = ULib.explode( "\n+", ULib.stripComments( ULib.fileRead( path ), ";" ) )
 	for _, line in ipairs( lines ) do
 		line = line:Trim()
 		if line:len() > 0 then
@@ -113,18 +113,18 @@ local function doCfg()
 
 	for filename, fn in pairs( things_to_execute ) do
 		-- Global config
-		if file.Exists( "ulx/" .. filename, "DATA" ) then
-			fn( "ulx/" .. filename )
+		if ULib.fileExists( "data/ulx/" .. filename ) then
+			fn( "data/ulx/" .. filename )
 		end
 
 		-- Per gamemode config
-		if file.Exists( "ulx/gamemodes/" .. gamemode_name .. "/" .. filename, "DATA" ) then
-			fn( "ulx/gamemodes/" .. gamemode_name .. "/" .. filename )
+		if ULib.fileExists( "data/ulx/gamemodes/" .. gamemode_name .. "/" .. filename ) then
+			fn( "data/ulx/gamemodes/" .. gamemode_name .. "/" .. filename )
 		end
 
 		-- Per map config
-		if file.Exists( "ulx/maps/" .. map_name .. "/" .. filename, "DATA" ) then
-			fn( "ulx/maps/" .. map_name .. "/" .. filename )
+		if ULib.fileExists( "data/ulx/maps/" .. map_name .. "/" .. filename ) then
+			fn( "data/ulx/maps/" .. map_name .. "/" .. filename )
 		end
 	end
 

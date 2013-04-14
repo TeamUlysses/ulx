@@ -4,7 +4,7 @@
 local function init()
 	if ULib.isSandbox() then --Only execute the following code if it's a sandbox gamemode
 		xgui.addDataType( "sboxlimits", function() return xgui.sboxLimits end, "xgui_gmsettings", 0, -20 )
-		
+
 		ULib.replicatedWritableCvar( "physgun_limited", "rep_physgun_limited", GetConVarNumber( "physgun_limited" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_noclip", "rep_sbox_noclip", GetConVarNumber( "sbox_noclip" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_godmode", "rep_sbox_godmode", GetConVarNumber( "sbox_godmode" ), false, false, "xgui_gmsettings" )
@@ -15,7 +15,7 @@ local function init()
 		xgui.sboxLimits = {}
 		if ULib.isSandbox() then
 			local curgroup
-			local f = file.Read( "data/ulx/sbox_limits.txt", "GAME" ) 
+			local f = ULib.fileRead( "data/ulx/sbox_limits.txt", "GAME" )
 			if f == nil then Msg( "XGUI ERROR: Sandbox Cvar limits file was needed but could not be found!\n" ) return end
 			local lines = string.Explode( "\n", f )
 			for i,v in ipairs( lines ) do

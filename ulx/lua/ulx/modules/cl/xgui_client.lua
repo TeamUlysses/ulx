@@ -49,8 +49,8 @@ xgui.ulxmenucompletes = {}
 
 --Set up XGUI clientside settings, load settings from file if it exists
 xgui.settings = {}
-if file.Exists( "ulx/xgui_settings.txt", "DATA" ) then
-	local input = file.Read( "ulx/xgui_settings.txt", "DATA" )
+if ULib.fileExists( "data/ulx/xgui_settings.txt" ) then
+	local input = ULib.fileRead( "data/ulx/xgui_settings.txt" )
 	input = input:match( "^.-\n(.*)$" )
 	xgui.settings = ULib.parseKeyValues( input )
 end
@@ -166,7 +166,7 @@ hook.Add( "UCLAuthed", "InitXGUI", xgui.init, 20 )
 function xgui.saveClientSettings()
 	local output = "// This file stores clientside settings for XGUI.\n"
 	output = output .. ULib.makeKeyValues( xgui.settings )
-	file.Write( "ulx/xgui_settings.txt", output )
+	ULib.fileWrite( "data/ulx/xgui_settings.txt", output )
 end
 
 function xgui.checkModuleExists( modulename, moduletable )

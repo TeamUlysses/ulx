@@ -4,6 +4,182 @@
 	Some utility functions. Unlike the functions in misc.lua, this file only holds HL2 specific functions.
 ]]
 
+local dataFolder = "data"
+--[[
+	Function: fileExists
+
+	Checks for the existence of a file by path.
+
+	Parameters:
+
+		f - The path to check, rooted at the garry's mod root directory.
+
+	Returns:
+
+		True if the file exists, false otherwise.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileExists( f )
+	local isDataFolder = f:lower():sub( 1, dataFolder:len() ) ~= dataFolder
+	fWoData = f:sub( dataFolder:len() + 2 ) -- +2 removes path seperator
+
+	return file.Exists( f, "GAME" ) or (isDataFolder and file.Exists( fWoData, "DATA" ))
+end
+
+--[[
+	Function: fileRead
+
+	Reads a file and returns the contents. This function is not very forgiving on providing oddly formatted filepaths.
+
+	Parameters:
+
+		f - The file to read, rooted at the garrysmod directory.
+
+	Returns:
+
+		The file contents or nil if the file does not exist.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileRead( f )
+	local isDataFolder = f:lower():sub( 1, dataFolder:len() ) == dataFolder
+	fWoData = f:sub( dataFolder:len() + 2 ) -- +2 removes path seperator
+
+	if not ULib.fileExists( f ) then
+		return nil
+	end
+
+	if not isDataFolder then
+		return file.Read( f, "GAME" )
+	else
+		if file.Exists( fWoData, "DATA" ) then
+			return file.Read( fWoData, "DATA" )
+		else
+			return file.Read( f, "GAME" )
+		end
+	end
+end
+
+--[[
+	Function: fileWrite
+
+	Writes file content.
+
+	Parameters:
+
+		f - The file path to write to, rooted at the garrysmod directory.
+		content - The content to write.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileWrite( f, content )
+	local isDataFolder = f:lower():sub( 1, dataFolder:len() ) == dataFolder
+	fWoData = f:sub( dataFolder:len() + 2 ) -- +2 removes path seperator
+
+	if not isDataFolder then return nil end
+
+	file.Write( fWoData, content )
+end
+
+
+--[[
+	Function: fileAppend
+
+	Append to file content.
+
+	Parameters:
+
+		f - The file path to append to, rooted at the garrysmod directory.
+		content - The content to append.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileAppend( f, content )
+	local isDataFolder = f:lower():sub( 1, dataFolder:len() ) == dataFolder
+	fWoData = f:sub( dataFolder:len() + 2 ) -- +2 removes path seperator
+
+	if not isDataFolder then return nil end
+
+	file.Append( fWoData, content )
+end
+
+
+--[[
+	Function: fileCreateDir
+
+	Create a directory.
+
+	Parameters:
+
+		f - The directory path to create, rooted at the garrysmod directory.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileCreateDir( f )
+	local isDataFolder = f:lower():sub( 1, dataFolder:len() ) == dataFolder
+	fWoData = f:sub( dataFolder:len() + 2 ) -- +2 removes path seperator
+
+	if not isDataFolder then return nil end
+
+	file.CreateDir( fWoData )
+end
+
+
+--[[
+	Function: fileDelete
+
+	Delete file contents.
+
+	Parameters:
+
+		f - The file path to delete, rooted at the garrysmod directory.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileDelete( f )
+	local isDataFolder = f:lower():sub( 1, dataFolder:len() ) == dataFolder
+	fWoData = f:sub( dataFolder:len() + 2 ) -- +2 removes path seperator
+
+	if not isDataFolder then return nil end
+
+	file.Delete( fWoData )
+end
+
+
+--[[
+	Function: fileIsDir
+
+	Is file a directory?
+
+	Parameters:
+
+		f - The file path to check, rooted at the garrysmod directory.
+
+	Returns:
+
+		True if dir, false otherwise.
+
+	Revisions:
+
+		v2.51 - Initial revision (tired of Garry changing his API all the time).
+]]
+function ULib.fileIsDir( f )
+	return file.IsDir( f, "GAME" )
+end
+
 
 --[[
 	Function: execFile
@@ -12,22 +188,22 @@
 
 	Parameters:
 
-		f - The file, relative to the data folder.
-		option - An optional string stating where to pull the file from.
+		f - The file, relative to the garrysmod folder.
 		queueName - The queue name to ULib.namedQueueFunctionCall to use.
 
 	Revisions:
 
 		v2.40 - No longer strips comments, removed ability to execute on players.
 		v2.50 - Added option to conform to Garry's API changes and queueName to specify queue name to use.
+		v2.51 - Removed option parameter.
 ]]
-function ULib.execFile( f, option, queueName )
-	if not file.Exists( f, option ) then
+function ULib.execFile( f, queueName )
+	if not ULib.fileExists( f ) then
 		ULib.error( "Called execFile with invalid file! " .. f )
 		return
 	end
 
-	ULib.execString( file.Read( f, option ), queueName )
+	ULib.execString( ULib.fileRead( f ), queueName )
 end
 
 
@@ -57,7 +233,7 @@ function ULib.execString( f, queueName )
 		if line:lower():sub( 1, exec:len() ) == exec then
 			local dummy, dummy, cfg = line:lower():find( "^exec%s+([%w%.]+)%s*/?/?.*$")
 			if not cfg:find( ".cfg", 1, true ) then cfg = cfg .. ".cfg" end -- Add it if it's not there
-			ULib.execFile( "cfg/" .. cfg, "GAME", queueName )
+			ULib.execFile( "cfg/" .. cfg, queueName )
 		elseif line ~= "" then
 			buffer = buffer .. line .. "\n"
 			buffer_lines = buffer_lines + 1
@@ -148,7 +324,7 @@ end
 		v2.50 - Now assumes paths relative to base folder.
 ]]
 function ULib.filesInDir( dir, recurse, root )
-	if not file.IsDir( dir, "GAME" ) then
+	if not ULib.FileIsDir( dir ) then
 		return nil
 	end
 
@@ -162,7 +338,7 @@ function ULib.filesInDir( dir, recurse, root )
 	local result = file.Find( dir .. "/*", "GAME" )
 
 	for i=1, #result do
-		if file.IsDir( dir .. "/" .. result[ i ], "GAME" ) and recurse then
+		if ULib.FileIsDir( dir .. "/" .. result[ i ] ) and recurse then
 			files = table.Add( files, ULib.filesInDir( dir .. "/" .. result[ i ], recurse, root ) )
 		else
 			if not relDir then
@@ -258,7 +434,7 @@ end
 
 	Parameters:
 
-		f - The file to backup
+		f - The file to backup, rooted in the garrysmod directory.
 
 	Returns:
 
@@ -269,19 +445,19 @@ end
 		v2.40 - Initial.
 ]]
 function ULib.backupFile( f )
-	local contents = file.Read( f, "DATA" )
+	local contents = ULib.fileRead( f )
 	local filename = f:GetFileFromFilename():sub( 1, -5 ) -- Remove '.txt'
 	local folder = f:GetPathFromFilename()
 
 	local num = 1
 	local targetPath = folder .. filename .. "_backup.txt"
-	while file.Exists( targetPath, "DATA" ) do
+	while ULib.fileExists( targetPath ) do
 		num = num + 1
 		targetPath = folder .. filename .. "_backup" .. num .. ".txt"
 	end
 
 	-- We now have a filename that doesn't yet exist!
-	file.Write( targetPath, contents )
+	ULib.fileWrite( targetPath, contents )
 
 	return targetPath
 end
