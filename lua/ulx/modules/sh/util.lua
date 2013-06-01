@@ -363,9 +363,11 @@ end
 --------------------
 --	   Hooks	  --
 --------------------
+local cl_cvar_pickup = "cl_pickupplayers"
+if CLIENT then CreateClientConVar( cl_cvar_pickup, "1", true, true ) end
 local function playerPickup( ply, ent )
 	local access, tag = ULib.ucl.query( ply, "ulx physgunplayer" )
-	if ent:GetClass() == "player" and ULib.isSandbox() and access and not ent.NoNoclip then
+	if ent:GetClass() == "player" and ULib.isSandbox() and access and not ent.NoNoclip and ply:GetInfoNum( cl_cvar_pickup, 1 ) == 1 then
 		-- Extra restrictions! UCL wasn't designed to handle this sort of thing so we're putting it in by hand...
 		local restrictions = {}
 		ULib.cmds.PlayerArg.processRestrictions( restrictions, ply, {}, tag and ULib.splitArgs( tag )[ 1 ] )
