@@ -1086,7 +1086,7 @@ function cmds.TranslateCommand:instantiate( cmd, fn, say_cmd, hide_say, no_space
 	self.args = {}
 	self.fn = fn
 	self.cmd = cmd -- We need this for usage print
-	translatedCmds[ cmd ] = self
+	translatedCmds[ cmd:lower() ] = self
 
 	cmds.addCommand( cmd, translateCmdCallback, translateAutocompleteCallback, cmd, say_cmd, hide_say, no_space_in_say )
 end
@@ -1144,7 +1144,7 @@ function cmds.TranslateCommand:setOpposite( cmd, args, say_cmd, hide_say, no_spa
 	ULib.checkArg( 5, "ULib.cmds.TranslateCommand:setOpposite", {"nil", "boolean"}, no_space_in_say )
 
 	self.opposite = cmd
-	translatedCmds[ cmd ] = self
+	translatedCmds[ cmd:lower() ] = self
 	self.oppositeArgs = args
 
 	cmds.addCommand( cmd, translateCmdCallback, translateAutocompleteCallback, cmd, say_cmd, hide_say, no_space_in_say )
@@ -1457,7 +1457,7 @@ function cmds.addCommand( cmd, fn, autocomplete, access_string, say_cmd, hide_sa
 			ULib.addSayCommand( say_cmd[ i ], sayCommandCallback, cmd, hide_say, no_space_in_say )
 
 			local translatedCommand =  say_cmd[ i ] .. (no_space_in_say and "" or " ")
-			ULib.sayCmds[ translatedCommand ].__cmd = cmd -- Definitely needs refactoring at some point...
+			ULib.sayCmds[ translatedCommand:lower() ].__cmd = cmd -- Definitely needs refactoring at some point...
 		end
 	end
 end

@@ -50,6 +50,7 @@ v2.51 - *(00/00/00)*
 	* [FIX] Calling SetUserGroup not passing on information to clients (Thanks, Bo98).
 	* [FIX] Garry's File I/O bugs by wrapping all his I/O.
 	* [FIX] A user group lower casing that no longer belonged in the code (Thanks, iamalexer).
+	* [FIX] Some issues with casing in ULib commands (Thanks, TheSpy7).
 	* [REMOVED] Temp garry-patch for reading from the data directory that appears to be fixed now.
 
 v2.50 - *(01/27/13)*
