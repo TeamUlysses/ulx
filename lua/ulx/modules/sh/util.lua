@@ -363,6 +363,7 @@ end
 --------------------
 --	   Hooks	  --
 --------------------
+-- This cvar also exists in DarkRP (thanks, FPtje)
 local cl_cvar_pickup = "cl_pickupplayers"
 if CLIENT then CreateClientConVar( cl_cvar_pickup, "1", true, true ) end
 local function playerPickup( ply, ent )

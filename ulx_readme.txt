@@ -63,7 +63,7 @@ Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
 v3.61 - *(00/00/00)*
-	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so he doesn't do it on accident). Done in collaboration with FPtje.
+	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
 	* [FIX] XGUI: Infobar text no longer displaying.
 	* [FIX] XGUI: Error caused when closing the fban window after the targeted player has left the server (Thanks nathan736).
 	* [FIX] "#" (Pound signs) removing content in ulx asay (Thanks bener180).
