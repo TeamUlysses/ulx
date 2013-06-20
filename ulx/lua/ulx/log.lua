@@ -36,7 +36,7 @@ local function init()
 		if not ULib.fileExists( ulx.log_file ) then
 			ULib.fileWrite( ulx.log_file, "" )
 		else
-			ulx.logWriteln( "\n\n" ) -- Make some space
+			ulx.logWriteln( "\r\n\r\n" ) -- Make some space
 		end
 		ulx.logString( "New map: " .. game.GetMap() )
 	end
@@ -154,7 +154,7 @@ function ulx.logWriteln( str )
 	if not ulx.log_file then return end
 
 	if logFile:GetBool() and ulx.log_file then
-		ULib.fileAppend( ulx.log_file, str .. "\n" )
+		ULib.fileAppend( ulx.log_file, str .. "\r\n" )
 	end
 end
 
