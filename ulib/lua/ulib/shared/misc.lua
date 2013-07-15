@@ -882,7 +882,7 @@ end
 -- This wonderful bit of following code will make sure that no rogue coder can screw us up by changing the value of '_'
 _ = nil -- Make sure we're starting out right.
 local meta = getmetatable( _G ) or {}
-if isbool( meta ) then return end -- Metatable is protected, so we aren't able to run this code without erroring.
+if type( meta ) == "boolean" then return end -- Metatable is protected, so we aren't able to run this code without erroring.
 local old__newindex = meta.__newindex
 setmetatable( _G, meta )
 function meta.__newindex( t, k, v )
