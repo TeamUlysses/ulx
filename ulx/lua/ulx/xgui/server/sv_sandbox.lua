@@ -8,7 +8,7 @@ local function init()
 		ULib.replicatedWritableCvar( "physgun_limited", "rep_physgun_limited", GetConVarNumber( "physgun_limited" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_noclip", "rep_sbox_noclip", GetConVarNumber( "sbox_noclip" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_godmode", "rep_sbox_godmode", GetConVarNumber( "sbox_godmode" ), false, false, "xgui_gmsettings" )
-		ULib.replicatedWritableCvar( "sbox_plpldamage", "rep_sbox_plpldamage", GetConVarNumber( "sbox_playershurtplayers" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_playershurtplayers", "rep_sbox_playershurtplayers", GetConVarNumber( "sbox_playershurtplayers" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_weapons", "rep_sbox_weapons", GetConVarNumber( "sbox_weapons" ), false, false, "xgui_gmsettings" )
 
 		--Process the list of known Sandbox Cvar Limits and check if they exist
