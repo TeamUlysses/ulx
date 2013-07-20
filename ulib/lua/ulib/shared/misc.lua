@@ -268,7 +268,7 @@ end
 		v2.40 - Properly handles escaped quotes now.
 ]]
 function ULib.parseKeyValues( str, convert )
-	local lines = ULib.explode( "\n", str )
+	local lines = ULib.explode( "\r?\n", str )
 	local parent_tables = {} -- Traces our way to root
 	local current_table = {}
 	local is_insert_last_op = false
@@ -628,7 +628,7 @@ end
 ]]
 function ULib.removeCommentHeader( data, comment_char )
 	comment_char = comment_char or ";"
-	local lines = ULib.explode( "\n", data )
+	local lines = ULib.explode( "\r?\n", data )
 	local end_comment_line = 0
 	for _, line in ipairs( lines ) do
 		local trimmed = line:Trim()
@@ -666,7 +666,7 @@ function ULib.stringTimeToSeconds( str )
 	if str == nil or type( str ) == "number" then
 		return str
 	end
-	
+
 	str = str:gsub( " ", "" )
 	local minutes = 0
 	local keycode_location = str:find( "%a" )
