@@ -45,7 +45,7 @@ hook.Add( ulx.HOOK_ULXDONELOADING, "InitULX", init ) -- So we load the settings 
 
 local function next_log()
 	if logFile:GetBool() then
-		local new_log = os.date( logDir:GetString() .. "/" .. "%m-%d-%y" .. ".txt" )
+		local new_log = os.date( "data/" .. logDir:GetString() .. "/" .. "%m-%d-%y" .. ".txt" )
 		if new_log == ulx.log_file then -- Make sure the date has changed.
 			return
 		end
