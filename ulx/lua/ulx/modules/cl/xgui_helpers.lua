@@ -258,7 +258,7 @@ function xgui.load_helpers()
 			end
 			
 			function outPanel.val:ValueChanged( val )
-				val = math.Clamp( tonumber( val ), self.minvalue, self.maxvalue )
+				val = math.Clamp( tonumber( val ), self.minvalue or 0, self.maxvalue or 0 )
 				self.Slider:SetSlideX( self.Scratch:GetFraction( val ) )
 				if ( self.TextArea != vgui.GetKeyboardFocus() ) then
 					self.TextArea:SetValue( self.Scratch:GetTextValue() )
@@ -266,7 +266,9 @@ function xgui.load_helpers()
 				self:OnValueChanged( val )
 			end
 			
-			outPanel.interval:ChooseOptionID( 1 )
+			if #outPanel.interval.Choices ~= 0 then
+				outPanel.interval:ChooseOptionID( 1 )
+			end
 			
 			outPanel.GetValue = function( self )
 				local char = string.lower( self.interval:GetValue():sub(1,1) )

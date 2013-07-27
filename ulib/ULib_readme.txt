@@ -225,8 +225,8 @@ Group: Developers
 To all developers, I sincerely hope you enjoy what ULib has to offer!
 If you have any suggestions, comments, or complaints, please tell us at <http://forums.ulyssesmod.net/>.
 
-If you want an overview of what's in ULib, please visit the documentation at <http://ulyssesmod.net/docs/>
-If you find any bugs, you can report them at <https://github.com/Nayruden/Ulysses/issues>
+If you want an overview of what's in ULib, please visit the documentation at <http://ulyssesmod.net/docs/>.
+If you find any bugs, you can report them at <https://github.com/Nayruden/Ulysses/issues>.
 
 All ULib's functions are kept in the table "ULib" to prevent conflicts.
 

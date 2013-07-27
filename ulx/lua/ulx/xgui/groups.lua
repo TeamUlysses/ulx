@@ -658,11 +658,10 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						local temp = restrictions[argnum] and string.Split( restrictions[argnum], ":" ) or ""
 						rmin = string.sub( temp[1], 1, 1 ) ~= ":" and temp[1]
 						rmax = temp[2]
-						if rmin == "" then rmin = nil end
-						if rmax == "" then rmax = nil end
+						if rmax == nil then rmax = rmin end
 					end
-					outPanel.hasmin = xlib.makecheckbox{ x=5, y=8, value=( rmin~=nil ), parent=outPanel }
-					outPanel.hasmax = xlib.makecheckbox{ x=5, y=48, value=( rmax~=nil ), parent=outPanel }
+					outPanel.hasmin = xlib.makecheckbox{ x=5, y=8, value=( rmin~="" ), parent=outPanel }
+					outPanel.hasmax = xlib.makecheckbox{ x=5, y=48, value=( rmax~="" ), parent=outPanel }
 					if table.HasValue( arg, ULib.cmds.allowTimeString ) then
 						outPanel.type = "time"
 						
@@ -851,9 +850,13 @@ function groups.generateAccessString()
 						local maxchr = string.lower( pnl.maxterval:GetValue():sub(1,1) )
 						if maxchr == "m" or maxchr == "p" then maxchr = "" end
 						
-						outstr = outstr .. outtmp .. " " .. 
-							( pnl.hasmin:GetChecked() and ( pnl.min:GetValue() .. minchr ) or "" ) ..
-							( pnl.hasmax:GetChecked() and ( ":" .. pnl.max:GetValue() .. maxchr ) or "" )
+						outstr = outstr .. outtmp .. " "
+						if pnl.hasmin:GetChecked() then
+							outstr = outstr .. pnl.min:GetValue() .. minchr
+						end
+						if pnl.hasmax:GetChecked() and not ( maxchr == minchr and pnl.max:GetValue() == pnl.min:GetValue() ) then
+							outstr = outstr .. ":" .. pnl.max:GetValue() .. maxchr
+						end
 						outtmp = ""
 					else
 						outtmp = outtmp .. " *"
