@@ -700,6 +700,10 @@ function ULib.stringTimeToSeconds( str )
 		num = tonumber( str )
 	end
 
+	if num == nil then
+		return nil
+	end
+
 	return minutes + num
 end
 
