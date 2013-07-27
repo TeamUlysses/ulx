@@ -73,6 +73,8 @@ function StandardizeModel( model )
 end
 
 function CheckModelCount( uniqueid, mdl )
+	if uniqueid == nil or mdl == nil then return end -- Give up
+
 	mdl = StandardizeModel( mdl )
 
 	if not LimitedModels[ mdl ] then return nil, nil end

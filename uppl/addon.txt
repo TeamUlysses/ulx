@@ -1,8 +1,8 @@
 "AddonInfo"
 {
 	"name"				"Uppl"
-	"version"			"1.1"
-	"up_date"			"01/27/13"
+	"version"			"1.11"
+	"up_date"			"00/00/00"
 	"author_name"			"Megiddo (Team Ulysses)"
 	"author_email"			"megiddo@meg-tech.com"
 	"author_url"			"http://www.ulyssesmod.net/"
