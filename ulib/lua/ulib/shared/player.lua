@@ -190,7 +190,7 @@ function ULib.getUsers( target, enable_keywords, ply )
 					if ply then
 						if ply:IsValid() then
 							table.insert( tmpTargets, ply )
-						else
+						elseif not negate then
 							return false, "You cannot target yourself from console!"
 						end
 					end

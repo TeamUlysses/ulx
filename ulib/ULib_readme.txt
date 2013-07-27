@@ -53,6 +53,7 @@ v2.51 - *(00/00/00)*
 	* [FIX] Some issues with casing in ULib commands (Thanks, TheSpy7).
 	* [FIX] Invalid time restrictions throwing an error (Thanks, Scratch).
 	* [FIX] A problem with targeting in single player (Effected XGUI. Thanks, bender180).
+	* [FIX] A problem with self-target restrictions breaking commands under certain conditions (Thanks, iSnipeu).
 	* [REMOVED] Temp garry-patch for reading from the data directory that appears to be fixed now.
 
 v2.50 - *(01/27/13)*
