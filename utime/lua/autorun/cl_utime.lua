@@ -37,7 +37,7 @@ end
 hook.Add( "InitPostEntity", "UtimeInitialize", initialize )
 
 function think()
-	if not LocalPlayer():IsValid() then return end
+	if not LocalPlayer():IsValid() or gpanel == nil then return end
 
 	if not utime_enable:GetBool() or not IsValid( LocalPlayer() ) or
 			(IsValid( LocalPlayer():GetActiveWeapon() ) and LocalPlayer():GetActiveWeapon():GetClass() == "gmod_camera") then
