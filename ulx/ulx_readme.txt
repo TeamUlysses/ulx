@@ -67,6 +67,7 @@ v3.61 - *(00/00/00)*
 	* [FIX] XGUI: Infobar text no longer displaying.
 	* [FIX] XGUI: Error caused when closing the fban window after the targeted player has left the server (Thanks nathan736).
 	* [FIX] "#" (Pound signs) removing content in ulx asay (Thanks bener180).
+	* [FIX] Reserved slot mode 3 not kicking the shortest connected player as it is supposed to (Thanks monkstick).
 	* [CHANGE] Jail models. The jail is slightly bigger and can't be shot through anymore (Thanks Mors-Quaedam).
 	* [CHANGE] Updated PvP damage cvar to reflect Garry's changes (Thanks Mors-Quadam).
 
