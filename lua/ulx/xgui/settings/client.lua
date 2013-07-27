@@ -57,6 +57,17 @@ xgui.hookEvent( "onProcessModules", nil, client.processModules )
 xgui.addSettingModule( "Client", client, "icon16/layout_content.png" )
 
 
+--------------------General Clientside Module--------------------
+local genpnl = xlib.makepanel{ parent=xgui.null }
+
+genpnl.pickupplayers = xlib.makecheckbox{ x=10, y=10, w=150, label="Enable picking up players with physgun (for yourself)", convar="cl_pickupplayers", parent=genpnl }
+function genpnl.processModules()
+	genpnl.pickupplayers:SetDisabled( not LocalPlayer():query( "ulx physgunplayer" ) )
+end
+
+xgui.hookEvent( "onProcessModules", nil, genpnl.processModules )
+xgui.addSubModule( "General Settings", genpnl, nil, "client" )
+
 --------------------XGUI Clientside Module--------------------
 local xguipnl = xlib.makepanel{ parent=xgui.null }
 xlib.makebutton{ x=10, y=10, w=150, label="Refresh XGUI Modules", parent=xguipnl }.DoClick=function()
@@ -112,7 +123,6 @@ end
 for skin, skindata in pairs( derma.SkinList ) do
 	xguipnl.skinselect:AddChoice( skindata.PrintName, skin )
 end
-xgui.addSubModule( "XGUI Settings", xguipnl, nil, "client" )
 
 ----------------
 --TAB ORDERING--
@@ -269,3 +279,5 @@ xguipnl.outAnim:ChooseOptionID( tonumber( xgui.settings.animOuttype ) )
 function xguipnl.outAnim:OnSelect( index, value, data )
 	xgui.settings.animOuttype = index
 end
+
+xgui.addSubModule( "XGUI Settings", xguipnl, nil, "client" )
