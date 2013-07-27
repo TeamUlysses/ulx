@@ -70,6 +70,7 @@ v3.61 - *(00/00/00)*
 	* [FIX] Reserved slot mode 3 not kicking the shortest connected player as it is supposed to (Thanks monkstick).
 	* [CHANGE] Jail models. The jail is slightly bigger and can't be shot through anymore (Thanks Mors-Quaedam).
 	* [CHANGE] Updated PvP damage cvar to reflect Garry's changes (Thanks Mors-Quadam).
+	* [CHANGE] "ulx gag" now uses a server-side hook (much more robust).
 
 v3.60 - *(01/27/13)*
 	* [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
