@@ -461,6 +461,7 @@ hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated 
 plist:Add( plist.motdEnabled )
 plist:Add( plist.motdURLEnabled )
 plist:Add( plist.motdURLText )
+plist:Add( xlib.makelabel{ label="Allowed variables: %curmap%, %steamid%" } )
 plist:Add( xlib.makelabel{ label="\nWelcome Message" } )
 plist:Add( xlib.maketextbox{ repconvar="ulx_welcomemessage", selectall=true } )
 plist:Add( xlib.makelabel{ label="Allowed variables: %curmap%, %host%" } )

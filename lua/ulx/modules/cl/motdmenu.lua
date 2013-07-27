@@ -3,7 +3,7 @@ ulx.motdmenu_exists = true
 local isUrl
 local url
 
-function ulx.showMotdMenu()
+function ulx.showMotdMenu( steamid )
 	local window = vgui.Create( "DFrame" )
 	if ScrW() > 640 then -- Make it larger if we can.
 		window:SetSize( ScrW()*0.9, ScrH()*0.9 )
@@ -28,6 +28,8 @@ function ulx.showMotdMenu()
 	if not isUrl then
 		html:SetHTML( ULib.fileRead( "data/ulx_motd.txt" ) )
 	else
+		url = string.gsub( url, "%%curmap%%", game.GetMap() )
+		url = string.gsub( url, "%%steamid%%", steamid )
 		html:OpenURL( url )
 	end
 end

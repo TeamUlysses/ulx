@@ -24,7 +24,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		if not ply:IsValid() then return end -- They left, doh!
 
 		sendMotd( ply, showMotd )
-		ULib.clientRPC( ply, "ulx.showMotdMenu" )
+		ULib.clientRPC( ply, "ulx.showMotdMenu", ply:SteamID() ) -- Passing it because they may get it before LocalPlayer() is valid
 	end
 	hook.Add( "PlayerInitialSpawn", "showMotd", showMotd )
 
