@@ -60,7 +60,7 @@ local function playerAccess( ply )
 
 		if mode == 3 and cur + slots > max then -- We've got some kicking to do!
 			local shortestply
-			local shortesttime = 0
+			local shortesttime = math.huge
 
 			local players = player.GetAll()
 			for _, player in ipairs( players ) do
