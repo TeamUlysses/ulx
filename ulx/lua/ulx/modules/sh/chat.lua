@@ -220,12 +220,6 @@ function ulx.gag( calling_ply, target_plys, should_ungag )
 	local players = player.GetAll()
 	for i=1, #target_plys do
 		local v = target_plys[ i ]
-		for j=1, #players do
-			umsg.Start( "ulx_gag", players[ j ] )
-				umsg.Entity( v )
-				umsg.Bool( not should_ungag )
-			umsg.End()
-		end
 		v.ulx_gagged = not should_ungag
 	end
 
@@ -242,18 +236,12 @@ gag:defaultAccess( ULib.ACCESS_ADMIN )
 gag:help( "Gag target(s), disables microphone." )
 gag:setOpposite( "ulx ungag", {_, _, true}, "!ungag" )
 
-local function sendGags( ply )
-	local players = player.GetAll()
-	for i=1, #players do
-		if players[ i ].ulx_gagged then
-			umsg.Start( "ulx_gag", ply )
-				umsg.Entity( players[ i ] )
-				umsg.Bool( not should_ungag )
-			umsg.End()
-		end
+local function gagHook( listener, talker )
+	if talker.ulx_gagged then
+		return false
 	end
 end
-hook.Add( "ULibLocalPlayerReady", "ULXSendGags", sendGags )
+hook.Add( "PlayerCanHearPlayersVoice", "ULXGag", gagHook )
 
 -- Anti-spam stuff
 local chattime_cvar

@@ -55,25 +55,6 @@ local function rcvBlind( um )
 end
 usermessage.Hook( "ulx_blind", rcvBlind )
 
-function ulx.gagUser( user_to_gag, should_gag )
-	if should_gag then
-		if user_to_gag.ulx_was_gagged == nil then user_to_gag.ulx_was_gagged = user_to_gag:IsMuted() end
-		if user_to_gag:IsMuted() then return end
-		user_to_gag:SetMuted( true )
-	else
-		local was_gagged = user_to_gag.ulx_was_gagged
-		user_to_gag.ulx_was_gagged = nil
-		if not user_to_gag:IsMuted() or was_gagged then return end
-		user_to_gag:SetMuted( true ) -- Toggle
-	end
-end
-
-local function rcvGag( um )
-	local user_to_gag = um:ReadEntity()
-	local gagged = um:ReadBool()
-	ulx.gagUser( user_to_gag, gagged )
-end
-usermessage.Hook( "ulx_gag", rcvGag )
 
 local curVote
 
