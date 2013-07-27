@@ -52,6 +52,7 @@ v2.51 - *(00/00/00)*
 	* [FIX] A user group lower casing that no longer belonged in the code (Thanks, iamalexer).
 	* [FIX] Some issues with casing in ULib commands (Thanks, TheSpy7).
 	* [FIX] Invalid time restrictions throwing an error (Thanks, Scratch).
+	* [FIX] A problem with targeting in single player (Effected XGUI. Thanks, bender180).
 	* [REMOVED] Temp garry-patch for reading from the data directory that appears to be fixed now.
 
 v2.50 - *(01/27/13)*

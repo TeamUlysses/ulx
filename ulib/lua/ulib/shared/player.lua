@@ -109,8 +109,13 @@ end
 	Revisions:
 
 		v2.50 - Initial.
+		v2.51 - Added exception for single player since it's handled differently on client and server.
 ]]
 function ULib.getUniqueIDForPlayer( ply )
+	if game.SinglePlayer() then
+		return "1"
+	end
+
 	local players = player.GetAll()
 	for _, indexFn in ipairs( checkIndexes ) do
 		local id = indexFn( ply )
