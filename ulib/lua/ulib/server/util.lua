@@ -249,7 +249,9 @@ local function clientChangeCvar( ply, command, argv )
 	RunConsoleCommand( sv_cvar, newvalue )
 	hook.Call( ULib.HOOK_REPCVARCHANGED, _, sv_cvar, repcvars[ sv_cvar ].cl_cvar, ply, oldvalue, newvalue )
 end
-concommand.Add( "ulib_update_cvar", clientChangeCvar )
+concommand.Add( "ulib_update_cvar", clientChangeCvar, nil, nil, FCVAR_SERVER_CAN_EXECUTE )
+-- Adding FCVAR_SERVER_CAN_EXECUTE above prevents an odd bug where if a user hosts a listen server, this command gets registered,
+-- but when they join another server they can't change any replicated cvars.
 
 repCvarServerChanged = function( sv_cvar, oldvalue, newvalue )
 	if not repcvars[ sv_cvar ] then -- Bad value or we need to ignore it
