@@ -1,6 +1,6 @@
 Title: Utime Readme
 
-*Utime v1.42 (released 01/27/13)*
+*Utime v1.43 (released 00/00/00)*
 
 Utime keeps track of session and total time for players. All the colors and positions are customizable by each client.
 
@@ -33,6 +33,9 @@ change will not cut it!
 Group: Config
 
 All client config is done in game under "utilities". To disable the welcome message, set utime_welcome to 0.
+
+v1.43 - *(00/00/00)*
+	* [ADD] Player names are no longer shown when disguiser is enabled in TTT.
 
 v1.42 - *(01/27/13)*
 	* [ADD] utime_welcome cvar to disable welcome message.
