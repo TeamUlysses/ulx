@@ -24,6 +24,7 @@ local function assignTeam( ply )
 	if team then
 		local team_data = team_by_name[ team.name ]
 		ULib.queueFunctionCall( function()
+			if not ply:IsValid() then return end -- In case they drop quickly
 			ply:SetTeam( team_data.index )
 			if team_data.model then
 				ply:SetModel( team_data.model )
