@@ -548,6 +548,7 @@ doJail = function( v, seconds )
 		ent:SetAngles( info.ang )
 		ent:Spawn()
 		ent:GetPhysicsObject():EnableMotion( false )
+		ent:SetMoveType( MOVETYPE_NONE )
 		ent.jailWall = true
 		table.insert( walls, ent )
 	end
