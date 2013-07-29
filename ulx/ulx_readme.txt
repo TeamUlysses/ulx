@@ -65,11 +65,12 @@ Group: Changelog
 v3.61 - *(00/00/00)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
 	* [ADD] %curmap% and %steamid% variables in "ulx showMotd" URL for custom-served MOTDs (Thanks, Mors-Quaedam).
-	* [FIX] XGUI: Infobar text no longer displaying.
-	* [FIX] XGUI: Error caused when closing the fban window after the targeted player has left the server (Thanks nathan736).
 	* [FIX] "#" (Pound signs) removing content in ulx asay (Thanks bener180).
 	* [FIX] Reserved slot mode 3 not kicking the shortest connected player as it is supposed to (Thanks monkstick).
-	* [FIX] XGUI: Issues with min / max number restrictions.
+	* [FIX] XGUI: Infobar text no longer displaying.
+	* [FIX] XGUI: Error caused when closing the fban window after the targeted player has left the server (Thanks nathan736).
+	* [FIX] XGUI: Issues with handling min / max number restrictions.
+	* [FIX] XGUI: Map icons not loading.
 	* [CHANGE] Jail models. The jail is slightly bigger and can't be shot through anymore (Thanks Mors-Quaedam).
 	* [CHANGE] Updated PvP damage cvar to reflect Garry's changes (Thanks Mors-Quadam).
 	* [CHANGE] "ulx gag" now uses a server-side hook (much more robust).

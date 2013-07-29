@@ -12,10 +12,10 @@ maps.curmap = xlib.makelabel{ x=187, y=223, w=192, label="No Map Selected", pare
 maps.list = xlib.makelistview{ x=5, y=30, w=175, h=310, multiselect=true, parent=maps, headerheight=0 } --Remember to enable/disable multiselect based on admin status?
 maps.list:AddColumn( "Map Name" )
 maps.list.OnRowSelected = function( self, LineID, Line )
-	if ( ULib.fileExists( "maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" ) ) then
-		maps.disp:SetMaterial( "../maps/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" )
+	if ( ULib.fileExists( "maps/thumb/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" ) ) then
+		maps.disp:SetMaterial( Material( "maps/thumb/" .. maps.list:GetSelected()[1]:GetColumnText(1) .. ".png" ) )
 	else
-		maps.disp:SetMaterial( "../maps/noicon.png" )
+		maps.disp:SetMaterial( Material( "maps/thumb/noicon.png" ) )
 	end
 	maps.curmap:SetText( Line:GetColumnText(1) )
 	maps.updateButtonStates()
@@ -23,7 +23,7 @@ end
 
 maps.disp = vgui.Create( "DImage", maps )
 maps.disp:SetPos( 185, 30 )
-maps.disp:SetMaterial( "../maps/noicon.png" )
+maps.disp:SetMaterial( Material( "maps/thumb/noicon.png" ) )
 maps.disp:SetSize( 192, 192 )
 
 maps.gamemode = xlib.makecombobox{ x=70, y=340, w=110, h=20, text="<default>", parent=maps }
@@ -139,7 +139,7 @@ function maps.updateButtonStates()
 		maps.svote:SetDisabled( true )
 		maps.changemap:SetDisabled( true )
 		maps.curmap:SetText( "No Map Selected" )
-		maps.disp:SetMaterial( "../maps/noicon.png" )
+		maps.disp:SetMaterial( Material( "maps/thumb/noicon.png" ) )
 	end
 end
 
