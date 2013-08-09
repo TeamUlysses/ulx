@@ -324,7 +324,7 @@ end
 		v2.50 - Now assumes paths relative to base folder.
 ]]
 function ULib.filesInDir( dir, recurse, root )
-	if not ULib.FileIsDir( dir ) then
+	if not ULib.fileIsDir( dir ) then
 		return nil
 	end
 
@@ -338,7 +338,7 @@ function ULib.filesInDir( dir, recurse, root )
 	local result = file.Find( dir .. "/*", "GAME" )
 
 	for i=1, #result do
-		if ULib.FileIsDir( dir .. "/" .. result[ i ] ) and recurse then
+		if ULib.fileIsDir( dir .. "/" .. result[ i ] ) and recurse then
 			files = table.Add( files, ULib.filesInDir( dir .. "/" .. result[ i ], recurse, root ) )
 		else
 			if not relDir then
