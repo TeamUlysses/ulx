@@ -660,8 +660,8 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						rmax = temp[2]
 						if rmax == nil then rmax = rmin end
 					end
-					outPanel.hasmin = xlib.makecheckbox{ x=5, y=8, value=( rmin~="" ), parent=outPanel }
-					outPanel.hasmax = xlib.makecheckbox{ x=5, y=48, value=( rmax~="" ), parent=outPanel }
+					outPanel.hasmin = xlib.makecheckbox{ x=5, y=8, value=( rmin~=nil ), parent=outPanel }
+					outPanel.hasmax = xlib.makecheckbox{ x=5, y=48, value=( rmax~=nil ), parent=outPanel }
 					if table.HasValue( arg, ULib.cmds.allowTimeString ) then
 						outPanel.type = "time"
 						
