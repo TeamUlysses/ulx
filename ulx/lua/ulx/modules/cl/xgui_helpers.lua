@@ -271,9 +271,21 @@ function xgui.load_helpers()
 			end
 			
 			outPanel.GetValue = function( self )
+				local val, char = self:GetRawValue()
+				return val .. char
+			end
+			outPanel.GetRawValue = function( self )
 				local char = string.lower( self.interval:GetValue():sub(1,1) )
 				if char == "m" or char == "p" or tonumber( self.val:GetValue() ) == 0 then char = "" end
-				return self.val:GetValue() .. char
+				return self.val:GetValue(), char
+			end
+			outPanel.GetMinutes = function( self )
+				local btime, char = self:GetRawValue()
+				if char == "h" then btime = btime * 60
+				elseif char == "d" then btime = btime * 1440
+				elseif char == "w" then btime = btime * 10080
+				elseif char == "y" then btime = btime * 525600 end
+				return btime
 			end
 			outPanel.TextArea = outPanel.val.TextArea
 			return outPanel

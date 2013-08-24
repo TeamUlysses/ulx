@@ -32,13 +32,14 @@ function bans.init()
 		if ULib.ucl.query( ply, "ulx ban" ) or ULib.ucl.query( ply, "ulx banid" ) then
 			local steamID = args[1]
 			local bantime = tonumber( args[2] )
-			
-			if not ULib.bans[steamID] then 
-				ULib.addBan( steamID, bantime, args[3], args[4], ply )
-				return
-			end
 			local reason = args[3]
 			local name = args[4]
+			
+			if not ULib.bans[steamID] then 
+				ULib.addBan( steamID, bantime, reason, name, ply )
+				return
+			end
+			
 			if name == "" then 
 				name = nil
 				ULib.bans[steamID].name = nil
@@ -50,6 +51,7 @@ function bans.init()
 				xgui.removeData( {}, "sbans", { steamID } )
 				return
 			end
+			
 			if bantime ~= 0 then
 				if (ULib.bans[steamID].time + bantime*60) <= os.time() then --New ban time makes the ban expired
 					ULib.unban( steamID )
@@ -71,6 +73,8 @@ function bans.init()
 				xgui.sourcebans[k] = v
 			else
 				xgui.ulxbans[k] = v
+				xgui.ulxbans[k].time = "" .. xgui.ulxbans[k].time
+				xgui.ulxbans[k].unban = "" .. xgui.ulxbans[k].unban
 			end
 		end
 	end
