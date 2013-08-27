@@ -73,7 +73,7 @@ xlib.makebutton{ x=447, y=340, w=130, label="View Source Bans...", parent=xbans 
 	xbans.sbanWindow.sbanDetails.DoClick = function()
 		xgui.ShowBanWindow( nil, xbans.sbanWindow.bans:GetSelected()[1]:GetColumnText(1), nil, true )
 	end
-	
+
 	function xbans.sbanWindow.gotoPage( pageno )
 		xbans.sbanWindow.bans:Clear()
 		xbans.sbanWindow.sbanDelete:SetDisabled( true )
@@ -84,7 +84,7 @@ xlib.makebutton{ x=447, y=340, w=130, label="View Source Bans...", parent=xbans 
 			end
 		end
 		xbans.sbanWindow.sbanPage:SetText( pageno )
-		
+
 		if xbans.sbanPages > 2 then
 			xbans.sbanWindow.sbanPage:SetDisabled( false )
 			xbans.sbanWindow.pgright:SetDisabled( not ( pageno < xbans.sbanPages ) )
@@ -95,7 +95,7 @@ xlib.makebutton{ x=447, y=340, w=130, label="View Source Bans...", parent=xbans 
 			xbans.sbanWindow.pgleft:SetDisabled( true )
 		end
 	end
-	
+
 	function xbans.populateSBans( page )
 		xbans.sbanWindow.banlist = {}
 		for ID,_ in pairs( xgui.data.sbans ) do
@@ -131,7 +131,7 @@ function xbans.ShowBanDetailsWindow( ID )
 		xbans.openWindows[ID]:Remove()
 	end
 	xbans.openWindows[ID] = xlib.makeframe{ label="Ban Details", x=wx, y=wy, w=285, h=295, skin=xgui.settings.skin }
-	
+
 	local panel = xbans.openWindows[ID]
 	local name = xlib.makelabel{ x=50, y=30, label="Name:", parent=panel }
 	xlib.makelabel{ x=90, y=30, w=190, label=( xgui.data.bans[ID].name or "<Unknown>" ), parent=panel, tooltip=xgui.data.bans[ID].name }
@@ -155,25 +155,25 @@ function xbans.ShowBanDetailsWindow( ID )
 	xlib.makelabel{ x=21, y=225, label="Updated by:", parent=panel }
 	if xgui.data.bans[ID].modified_admin then xlib.makelabel{ x=90, y=225, label=string.gsub( xgui.data.bans[ID].modified_admin, "%(STEAM_%w:%w:%w*%)", "" ), parent=panel } end
 	if xgui.data.bans[ID].modified_admin then xlib.makelabel{ x=90, y=240, label=string.match( xgui.data.bans[ID].modified_admin, "%(STEAM_%w:%w:%w*%)" ), parent=panel } end
-	
+
 	xlib.makebutton{ x=5, y=265, w=89, label="Edit Ban...", parent=panel }.DoClick = function()
 		xgui.ShowBanWindow( nil, ID, nil, true )
 	end
-	
+
 	xlib.makebutton{ x=99, y=265, w=89, label="Unban", parent=panel }.DoClick = function()
 		xbans.RemoveBan( ID )
 	end
-		
+
 	xlib.makebutton{ x=192, y=265, w=88, label="Close", parent=panel }.DoClick = function()
 		xbans.openWindows[ID] = nil
 		panel:Remove()
 	end
-	
+
 	panel.btnClose.DoClick = function ( button )
 		xbans.openWindows[ID] = nil
 		panel:Remove()
 	end
-	
+
 	if timeleft:GetValue() ~= "N/A" then
 		function panel.OnTimer()
 			if panel:IsVisible() then
@@ -197,148 +197,148 @@ end
 
 function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate )
 	if not LocalPlayer():query( "ulx ban" ) and not LocalPlayer():query( "ulx banid" ) then return end
-	
-		local xgui_banwindow = xlib.makeframe{ label=( isUpdate and "Edit Ban" or "Ban Player" ), w=285, h=180, skin=xgui.settings.skin }
-		xlib.makelabel{ x=37, y=33, label="Name:", parent=xgui_banwindow }
-		xlib.makelabel{ x=23, y=58, label="SteamID:", parent=xgui_banwindow }
-		xlib.makelabel{ x=28, y=83, label="Reason:", parent=xgui_banwindow }
-		xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
-		local reason = xlib.makecombobox{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
-		local banpanel = ULib.cmds.NumArg.x_getcontrol( ULib.cmds.translatedCmds["ulx ban"].args[3], 2 )
-		banpanel:SetParent( xgui_banwindow )
-		banpanel.interval:SetParent( xgui_banwindow )
-		banpanel.interval:SetPos( 200, 105 )
-		banpanel.val:SetParent( xgui_banwindow )
-		banpanel.val:SetPos( 75, 125 )
-		banpanel.val:SetWidth( 200 )
-		
-		local name
-		if not isUpdate then
-			name = xlib.makecombobox{ x=75, y=30, w=200, parent=xgui_banwindow, enableinput=true, selectall=true }
-			for k,v in pairs( player.GetAll() ) do
-				name:AddChoice( v:Nick(), v:SteamID() )
-			end
-			name.OnSelect = function( self, index, value, data )
-				self.steamIDbox:SetText( data )
-			end
-		else
-			name = xlib.maketextbox{ x=75, y=30, w=200, parent=xgui_banwindow, selectall=true }
-			if xgui.data.bans[ID] then
-				name:SetText( xgui.data.bans[ID].name or "" )
-				reason:SetText( xgui.data.bans[ID].reason or "" )
-				if tonumber( xgui.data.bans[ID].unban ) ~= 0 then
-					local btime = ( tonumber( xgui.data.bans[ID].unban ) - tonumber( xgui.data.bans[ID].time ) )
-					if btime % 31536000 == 0 then
-						if #banpanel.interval.Choices >= 6 then
-							banpanel.interval:ChooseOptionID(6)
-						else
-							banpanel.interval:SetText( "Years" )
-						end
-						btime = btime / 31536000
-					elseif btime % 604800 == 0 then
-						if #banpanel.interval.Choices >= 5 then
-							banpanel.interval:ChooseOptionID(5)
-						else
-							banpanel.interval:SetText( "Weeks" )
-						end
-						btime = btime / 604800
-					elseif btime % 86400 == 0 then
-						if #banpanel.interval.Choices >= 4 then
-							banpanel.interval:ChooseOptionID(4)
-						else
-							banpanel.interval:SetText( "Days" )
-						end
-						btime = btime / 86400
-					elseif btime % 3600 == 0 then
-						if #banpanel.interval.Choices >= 3 then
-							banpanel.interval:ChooseOptionID(3)
-						else
-							banpanel.interval:SetText( "Hours" )
-						end
-						btime = btime / 3600
+
+	local xgui_banwindow = xlib.makeframe{ label=( isUpdate and "Edit Ban" or "Ban Player" ), w=285, h=180, skin=xgui.settings.skin }
+	xlib.makelabel{ x=37, y=33, label="Name:", parent=xgui_banwindow }
+	xlib.makelabel{ x=23, y=58, label="SteamID:", parent=xgui_banwindow }
+	xlib.makelabel{ x=28, y=83, label="Reason:", parent=xgui_banwindow }
+	xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
+	local reason = xlib.makecombobox{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
+	local banpanel = ULib.cmds.NumArg.x_getcontrol( ULib.cmds.translatedCmds["ulx ban"].args[3], 2 )
+	banpanel:SetParent( xgui_banwindow )
+	banpanel.interval:SetParent( xgui_banwindow )
+	banpanel.interval:SetPos( 200, 105 )
+	banpanel.val:SetParent( xgui_banwindow )
+	banpanel.val:SetPos( 75, 125 )
+	banpanel.val:SetWidth( 200 )
+
+	local name
+	if not isUpdate then
+		name = xlib.makecombobox{ x=75, y=30, w=200, parent=xgui_banwindow, enableinput=true, selectall=true }
+		for k,v in pairs( player.GetAll() ) do
+			name:AddChoice( v:Nick(), v:SteamID() )
+		end
+		name.OnSelect = function( self, index, value, data )
+			self.steamIDbox:SetText( data )
+		end
+	else
+		name = xlib.maketextbox{ x=75, y=30, w=200, parent=xgui_banwindow, selectall=true }
+		if xgui.data.bans[ID] then
+			name:SetText( xgui.data.bans[ID].name or "" )
+			reason:SetText( xgui.data.bans[ID].reason or "" )
+			if tonumber( xgui.data.bans[ID].unban ) ~= 0 then
+				local btime = ( tonumber( xgui.data.bans[ID].unban ) - tonumber( xgui.data.bans[ID].time ) )
+				if btime % 31536000 == 0 then
+					if #banpanel.interval.Choices >= 6 then
+						banpanel.interval:ChooseOptionID(6)
 					else
-						btime = btime / 60
-						if #banpanel.interval.Choices >= 2 then
-							banpanel.interval:ChooseOptionID(2)
-						else
-							banpanel.interval:SetText( "Minutes" )
-						end
+						banpanel.interval:SetText( "Years" )
 					end
-					banpanel.val:SetValue( btime )
+					btime = btime / 31536000
+				elseif btime % 604800 == 0 then
+					if #banpanel.interval.Choices >= 5 then
+						banpanel.interval:ChooseOptionID(5)
+					else
+						banpanel.interval:SetText( "Weeks" )
+					end
+					btime = btime / 604800
+				elseif btime % 86400 == 0 then
+					if #banpanel.interval.Choices >= 4 then
+						banpanel.interval:ChooseOptionID(4)
+					else
+						banpanel.interval:SetText( "Days" )
+					end
+					btime = btime / 86400
+				elseif btime % 3600 == 0 then
+					if #banpanel.interval.Choices >= 3 then
+						banpanel.interval:ChooseOptionID(3)
+					else
+						banpanel.interval:SetText( "Hours" )
+					end
+					btime = btime / 3600
+				else
+					btime = btime / 60
+					if #banpanel.interval.Choices >= 2 then
+						banpanel.interval:ChooseOptionID(2)
+					else
+						banpanel.interval:SetText( "Minutes" )
+					end
+				end
+				banpanel.val:SetValue( btime )
+			end
+		end
+	end
+
+	local steamID = xlib.maketextbox{ x=75, y=55, w=200, selectall=true, disabled=( isUpdate or not LocalPlayer():query( "ulx banid" ) ), parent=xgui_banwindow }
+	name.steamIDbox = steamID --Make a reference to the steamID textbox so it can change the value easily without needing a global variable
+
+	if doFreeze and ply then
+		if LocalPlayer():query( "ulx freeze" ) then
+			RunConsoleCommand( "ulx", "freeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
+			steamID:SetDisabled( true )
+			name:SetDisabled( true )
+			xgui_banwindow:ShowCloseButton( false )
+		else
+			doFreeze = false
+		end
+	end
+	xlib.makebutton{ x=165, y=150, w=75, label="Cancel", parent=xgui_banwindow }.DoClick = function()
+		if doFreeze and ply and ply:IsValid() then
+			RunConsoleCommand( "ulx", "unfreeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
+		end
+		xgui_banwindow:Remove()
+	end
+	xlib.makebutton{ x=45, y=150, w=75, label=( isUpdate and "Update" or "Ban!" ), parent=xgui_banwindow }.DoClick = function()
+		if isUpdate then
+			local function performUpdate(btime)
+				RunConsoleCommand( "xgui", "updateBan", steamID:GetValue(), btime, reason:GetValue(), name:GetValue() )
+				xgui_banwindow:Remove()
+			end
+			btime = banpanel:GetMinutes()
+			if btime ~= 0 and xgui.data.bans[steamID:GetValue()] and btime * 60 + xgui.data.bans[steamID:GetValue()].time < os.time() then
+				Derma_Query( "WARNING! The new ban time you have specified will cause this ban to expire.\nThe minimum time required in order to change the ban length successfully is " 
+						.. xgui.ConvertTime( os.time() - xgui.data.bans[steamID:GetValue()].time ) .. ".\nAre you sure you wish to continue?", "XGUI WARNING",
+					"Expire Ban", function()
+						performUpdate(btime)
+					end,
+					"Cancel", function() end )
+			else
+				performUpdate(btime)
+			end
+			return
+		end
+
+		if ULib.isValidSteamID( steamID:GetValue() ) then
+			local isOnline = false
+			for k, v in ipairs( player.GetAll() ) do
+				if v:SteamID() == steamID:GetValue() then
+					isOnline = v
+					break
 				end
 			end
-		end
-		
-		local steamID = xlib.maketextbox{ x=75, y=55, w=200, selectall=true, disabled=( isUpdate or not LocalPlayer():query( "ulx banid" ) ), parent=xgui_banwindow }
-		name.steamIDbox = steamID --Make a reference to the steamID textbox so it can change the value easily without needing a global variable
-
-		if doFreeze and ply then
-			if LocalPlayer():query( "ulx freeze" ) then
-				RunConsoleCommand( "ulx", "freeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
-				steamID:SetDisabled( true )
-				name:SetDisabled( true )
-				xgui_banwindow:ShowCloseButton( false )
+			if not isOnline then
+				if name:GetValue() == "" then
+					RunConsoleCommand( "ulx", "banid", steamID:GetValue(), banpanel:GetValue(), reason:GetValue() )
+				else
+					RunConsoleCommand( "xgui", "updateBan", steamID:GetValue(), banpanel:GetMinutes(), reason:GetValue(), ( name:GetValue() ~= "" and name:GetValue() or nil ) )
+				end
 			else
-				doFreeze = false
-			end
-		end
-		xlib.makebutton{ x=165, y=150, w=75, label="Cancel", parent=xgui_banwindow }.DoClick = function()
-			if doFreeze and ply and ply:IsValid() then
-				RunConsoleCommand( "ulx", "unfreeze", "$" .. ULib.getUniqueIDForPlayer( ply ) )
+				RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( isOnline ), banpanel:GetValue(), reason:GetValue() )
 			end
 			xgui_banwindow:Remove()
-		end
-		xlib.makebutton{ x=45, y=150, w=75, label=( isUpdate and "Update" or "Ban!" ), parent=xgui_banwindow }.DoClick = function()
-			if isUpdate then
-				local function performUpdate(btime)
-					RunConsoleCommand( "xgui", "updateBan", steamID:GetValue(), btime, reason:GetValue(), name:GetValue() )
-					xgui_banwindow:Remove()
-				end
-				btime = banpanel:GetMinutes()
-				if btime ~= 0 and xgui.data.bans[steamID:GetValue()] and btime * 60 + xgui.data.bans[steamID:GetValue()].time < os.time() then
-					Derma_Query( "WARNING! The new ban time you have specified will cause this ban to expire.\nThe minimum time required in order to change the ban length successfully is " 
-							.. xgui.ConvertTime( os.time() - xgui.data.bans[steamID:GetValue()].time ) .. ".\nAre you sure you wish to continue?", "XGUI WARNING",
-						"Expire Ban", function()
-							performUpdate(btime)
-						end,
-						"Cancel", function() end )
-				else
-					performUpdate(btime)
-				end
+		else
+			local ply = ULib.getUser( name:GetValue() )
+			if ply then
+				RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( ply ), banpanel:GetValue(), reason:GetValue() )
+				xgui_banwindow:Remove()
 				return
 			end
-			
-			if ULib.isValidSteamID( steamID:GetValue() ) then
-				local isOnline = false
-				for k, v in ipairs( player.GetAll() ) do
-					if v:SteamID() == steamID:GetValue() then
-						isOnline = v
-						break
-					end
-				end
-				if not isOnline then
-					if name:GetValue() == "" then
-						RunConsoleCommand( "ulx", "banid", steamID:GetValue(), banpanel:GetValue(), reason:GetValue() )
-					else
-						RunConsoleCommand( "xgui", "updateBan", steamID:GetValue(), banpanel:GetMinutes(), reason:GetValue(), ( name:GetValue() ~= "" and name:GetValue() or nil ) )
-					end
-				else
-					RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( isOnline ), banpanel:GetValue(), reason:GetValue() )
-				end
-				xgui_banwindow:Remove()
-			else
-				local ply = ULib.getUser( name:GetValue() )
-				if ply then
-					RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( ply ), banpanel:GetValue(), reason:GetValue() )
-					xgui_banwindow:Remove()
-					return
-				end
-				Derma_Message( "Invalid SteamID, player name, or multiple player targets found!" )
-			end
+			Derma_Message( "Invalid SteamID, player name, or multiple player targets found!" )
 		end
-		
-		if ply then name:SetText( ply:Nick() ) end
-		if ID then steamID:SetText( ID ) else steamID:SetText( "STEAM_0:" ) end
+	end
+
+	if ply then name:SetText( ply:Nick() ) end
+	if ID then steamID:SetText( ID ) else steamID:SetText( "STEAM_0:" ) end
 end
 
 --If the user requests to sort by unban date, tell the listview to sort by column 6 (unban date in seconds) for better sort accuracy
@@ -383,17 +383,19 @@ function xbans.populateBans( chunk )
 			xgui.queueFunctionCall( xbans.addbanline, "bans", baninfo, steamID ) --Queue this via xgui.queueFunctionCall to prevent lag
 		end
 	end
-	xgui.queueFunctionCall( function() xbans.isPopulating = xbans.isPopulating - 1 
-										if xbans.isPopulating == 0 then xbans.showperma:SetDisabled( false ) end end, nil )
+	xgui.queueFunctionCall( function()
+								xbans.isPopulating = xbans.isPopulating - 1 
+								if xbans.isPopulating == 0 then xbans.showperma:SetDisabled( false ) end
+							end, nil )
 end
 
 function xbans.addbanline( baninfo, steamID )
 	xbans.banlist:AddLine(	baninfo.name or steamID,
-								( baninfo.admin ) and string.gsub( baninfo.admin, "%(STEAM_%w:%w:%w*%)", "" ) or "",
-								(( tonumber( baninfo.unban ) ~= 0 ) and os.date( "%c", math.min( tonumber( baninfo.unban ), 4294967295 ) )) or "Never",
-								baninfo.reason,
-								steamID,
-								tonumber( baninfo.unban ) )
+						( baninfo.admin ) and string.gsub( baninfo.admin, "%(STEAM_%w:%w:%w*%)", "" ) or "",
+						(( tonumber( baninfo.unban ) ~= 0 ) and os.date( "%c", math.min( tonumber( baninfo.unban ), 4294967295 ) )) or "Never",
+						baninfo.reason,
+						steamID,
+						tonumber( baninfo.unban ) )
 end
 
 function xbans.banRemoved( banids )
@@ -429,7 +431,7 @@ function xbans.banUpdated( bantable )
 				v:SetColumnText( 5, SteamID )
 				v:SetColumnText( 6, tonumber( data.unban ) )
 				break
-			end				
+			end
 		end
 		if not found then
 			local t = {}
