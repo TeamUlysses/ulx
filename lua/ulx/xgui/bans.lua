@@ -28,6 +28,12 @@ xbans.banlist.OnRowRightClick = function( self, LineID, line )
 	menu:Open()
 end
 
+xbans.searchbox = xlib.maketextbox{ x=5, y=6, w=160, parent=xbans }
+xbans.searchbox.OnValueChange = function( pnl, v )
+	xbans.clearbans()
+	xbans.populateBans( nil, v )
+end
+
 xlib.makelabel{ x=200, y=10, label="Right-click on a ban for more options", parent=xbans }
 xbans.freezeban = xlib.makecheckbox{ x=140, y=343, label="Use Freezeban", tooltip="Freezes a player you have selected for banning while editing ban information (!fban in chat)", value=1, parent=xbans }
 xlib.makebutton{ x=5, y=340, w=130, label="Add Ban...", parent=xbans }.DoClick = function()
@@ -374,12 +380,24 @@ function xbans.clearbans()
 	xbans.banlist:Clear()
 end
 
-function xbans.populateBans( chunk )
+function xbans.populateBans( chunk, search )
 	if not chunk then chunk = xgui.data.bans end
 	xbans.showperma:SetDisabled( true )
 	xbans.isPopulating = xbans.isPopulating + 1
 	for steamID, baninfo in pairs( chunk ) do
 		if not ( xbans.showperma:GetChecked() == false and tonumber( baninfo.unban ) == 0 ) then
+			if search then
+				local shouldShow = false
+				if string.find( string.lower(steamID), string.lower(xbans.searchbox:GetValue()) ) then
+					shouldShow = true
+				end
+				for k,v in pairs( baninfo ) do
+					if string.find( string.lower(v), string.lower(xbans.searchbox:GetValue()) ) then
+						shouldShow = true
+					end
+				end
+				if !shouldShow then continue end
+			end
 			xgui.queueFunctionCall( xbans.addbanline, "bans", baninfo, steamID ) --Queue this via xgui.queueFunctionCall to prevent lag
 		end
 	end
