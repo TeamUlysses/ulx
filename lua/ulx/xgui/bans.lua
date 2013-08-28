@@ -28,9 +28,10 @@ xbans.banlist.OnRowRightClick = function( self, LineID, line )
 	menu:Open()
 end
 
-xbans.searchbox = xlib.maketextbox{ x=5, y=6, w=160, parent=xbans }
+xbans.searchbox = xlib.maketextbox{ x=5, y=6, w=160, text="Search...", selectall=true, parent=xbans }
 xbans.searchbox.OnValueChange = function( pnl, v )
 	xbans.clearbans()
+	xgui.flushQueue( "bans" )
 	xbans.populateBans( nil, v )
 end
 
@@ -388,12 +389,13 @@ function xbans.populateBans( chunk, search )
 		if not ( xbans.showperma:GetChecked() == false and tonumber( baninfo.unban ) == 0 ) then
 			if search then
 				local shouldShow = false
-				if string.find( string.lower(steamID), string.lower(xbans.searchbox:GetValue()) ) then
+				if string.find( string.lower(steamID), string.lower(search), nil, true ) then
 					shouldShow = true
-				end
-				for k,v in pairs( baninfo ) do
-					if string.find( string.lower(v), string.lower(xbans.searchbox:GetValue()) ) then
-						shouldShow = true
+				else
+					for k,v in pairs( baninfo ) do
+						if string.find( string.lower(v), string.lower(search), nil, true ) then
+							shouldShow = true
+						end
 					end
 				end
 				if !shouldShow then continue end
