@@ -1,6 +1,6 @@
 ; example2.nsi
 ;
-; This script is based on example1.nsi, but it remember the directory, 
+; This script is based on example1.nsi, but it remember the directory,
 ; has uninstall support and (optionally) installs start menu shortcuts.
 ;
 ; It will install example2.nsi into a directory that the user selects,
@@ -16,11 +16,11 @@
 ;--------------------------------
 ;General
 
-!define ULX_VERSION 3.60
-!define ULIB_VERSION 2.50
+!define ULX_VERSION 3.61
+!define ULIB_VERSION 2.51
 
 ; The file to write
-OutFile "install-ulx-v3_60.exe"
+OutFile "install-ulx-v3_61.exe"
 
 ; The name of the installer
 Name "ULX Installer"
@@ -66,7 +66,7 @@ Section "Dummy" SecDummy
 
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
-  
+
   ; Put file there
   SetOutPath "$INSTDIR\ulib"
   File /r "..\ulib\*.*"
