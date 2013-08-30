@@ -301,7 +301,7 @@ local function voteBanDone2( t, target, time, ply, reason )
 		else
 			ULib.kick( target, "Vote ban successful." )
 		end
-		ULib.ban( target, time )
+		ULib.ban( target, time, ply )
 	end
 end
 
