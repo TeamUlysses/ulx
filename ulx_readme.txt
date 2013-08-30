@@ -64,10 +64,11 @@ Check out the configs folder in ulx for some more goodies.
 Group: Changelog
 v3.61 - *(00/00/00)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
-	* [ADD] %curmap% and %steamid% variables in "ulx showMotd" URL for custom-served MOTDs (Thanks, Mors-Quaedam).
+	* [ADD] %curmap% and %steamid% variables in "ulx showMotd" URL for custom-served MOTDs (Thanks Mors-Quaedam).
 	* [ADD] XGUI: Bans are now searchable. (Thanks to iSnipeu for the code contribution!)
 	* [FIX] "#" (Pound signs) removing content in ulx asay (Thanks bener180).
 	* [FIX] Reserved slot mode 3 not kicking the shortest connected player as it is supposed to (Thanks monkstick).
+	* [FIX] No longer able to physgun frozen players (Thanks ms333).
 	* [FIX] XGUI: Added checks to prevent admins from being able to edit ban information past their restrictions (Thanks Zaph).
 	* [FIX] XGUI: Infobar text no longer displaying.
 	* [FIX] XGUI: Error caused when closing the fban window after the targeted player has left the server (Thanks nathan736).
