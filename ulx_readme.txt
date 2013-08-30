@@ -3,7 +3,7 @@ Title: ULX Readme
 __ULX__
 Version 3.61
 
-*ULX v3.61 (released 00/00/00)*
+*ULX v3.61 (released 08/30/13)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,7 +62,7 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
-v3.61 - *(00/00/00)*
+v3.61 - *(08/30/13)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
 	* [ADD] %curmap% and %steamid% variables in "ulx showMotd" URL for custom-served MOTDs (Thanks Mors-Quaedam).
 	* [ADD] XGUI: Bans are now searchable. (Thanks to iSnipeu for the code contribution!)
