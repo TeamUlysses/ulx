@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.61
+Version 3.62
 
-*ULX v3.61 (released 08/30/13)*
+*ULX v3.62 (released 00/00/00)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -62,6 +62,10 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
+v3.62 - *(00/00/00)*
+	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
+	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
+
 v3.61 - *(08/30/13)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
 	* [ADD] %curmap% and %steamid% variables in "ulx showMotd" URL for custom-served MOTDs (Thanks Mors-Quaedam).

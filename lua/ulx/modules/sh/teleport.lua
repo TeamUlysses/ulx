@@ -23,6 +23,8 @@ local function playerSend( from, to, force )
 		i = i + 1
 		if i > #directions then	 -- No place found
 			if force then
+				from.ulx_prevpos = from:GetPos()
+				from.ulx_prevang = from:EyeAngles()
 				return to:GetPos() + Angle( 0, directions[ 1 ], 0 ):Forward() * 47
 			else
 				return false
@@ -34,6 +36,8 @@ local function playerSend( from, to, force )
 		tr = util.TraceEntity( t, from )
 	end
 
+	from.ulx_prevpos = from:GetPos()
+	from.ulx_prevang = from:EyeAngles()
 	return tr.HitPos
 end
 
@@ -226,6 +230,9 @@ function ulx.teleport( calling_ply, target_ply )
 		return
 	end
 
+	target_ply.ulx_prevpos = target_ply:GetPos()
+	target_ply.ulx_prevang = target_ply:EyeAngles()
+
 	if target_ply:InVehicle() then
 		target_ply:ExitVehicle()
 	end
@@ -241,3 +248,41 @@ local teleport = ulx.command( CATEGORY_NAME, "ulx teleport", ulx.teleport, {"!tp
 teleport:addParam{ type=ULib.cmds.PlayerArg, ULib.cmds.optional }
 teleport:defaultAccess( ULib.ACCESS_ADMIN )
 teleport:help( "Teleports target." )
+
+function ulx.retrn( calling_ply, target_ply )
+	if not target_ply:IsValid() then
+		Msg( "Return where? The console may never return to the mortal realm.\n" )
+		return
+	end
+
+	if not target_ply.ulx_prevpos then
+		ULib.tsayError( calling_ply, target_ply:Nick() .. " does not have any previous locations to send them to.", true )
+		return
+	end
+
+	if ulx.getExclusive( target_ply, calling_ply ) then
+		ULib.tsayError( calling_ply, ulx.getExclusive( target_ply, calling_ply ), true )
+		return
+	end
+
+	if not target_ply:Alive() then
+		ULib.tsayError( calling_ply, target_ply:Nick() .. " is dead!", true )
+		return
+	end
+
+	if target_ply:InVehicle() then
+		target_ply:ExitVehicle()
+	end
+
+	target_ply:SetPos( target_ply.ulx_prevpos )
+	target_ply:SetEyeAngles( target_ply.ulx_prevang )
+	target_ply.ulx_prevpos = nil
+	target_ply.ulx_prevang = nil
+	target_ply:SetLocalVelocity( Vector( 0, 0, 0 ) ) -- Stop!
+
+	ulx.fancyLogAdmin( calling_ply, "#A returned #T to their original position", target_ply )
+end
+local retrn = ulx.command( CATEGORY_NAME, "ulx return", ulx.retrn, "!return" )
+retrn:addParam{ type=ULib.cmds.PlayerArg, ULib.cmds.optional }
+retrn:defaultAccess( ULib.ACCESS_ADMIN )
+retrn:help( "Returns target to last position before a teleport." )
