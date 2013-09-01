@@ -801,6 +801,7 @@ function ucl.registerAccess( access, groups, comment, category )
 
 	access = access:lower()
 	comment = comment or ""
+	if groups == nil then groups = {} end
 	if type( groups ) == "string" then
 		groups = { groups }
 	end

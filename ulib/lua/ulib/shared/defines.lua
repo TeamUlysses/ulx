@@ -7,7 +7,7 @@
 ULib = ULib or {}
 
 
-ULib.VERSION = 2.51
+ULib.VERSION = 2.52
 
 ULib.ACCESS_ALL = "user"
 ULib.ACCESS_OPERATOR = "operator"
