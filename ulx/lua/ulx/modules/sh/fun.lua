@@ -967,4 +967,4 @@ end
 local strip = ulx.command( CATEGORY_NAME, "ulx strip", ulx.stripweapons, "!strip" )
 strip:addParam{ type=ULib.cmds.PlayersArg }
 strip:defaultAccess( ULib.ACCESS_ADMIN )
-strip:help( "Strip weapons target(s)." )
+strip:help( "Strip weapons from target(s)." )
