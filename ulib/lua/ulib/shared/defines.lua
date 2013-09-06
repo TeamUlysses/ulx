@@ -232,7 +232,7 @@ ULib.DEFAULT_GRANT_ACCESS = { allow={}, deny={}, guest=true }
 hook.Add( "Initialize", "ULibCheckFileInit", function()
 	if ULib.fileExists( ULib.UCL_REGISTERED ) and ULib.fileExists( "addons/ulib/data/" .. ULib.UCL_GROUPS ) and ULib.fileRead( ULib.UCL_GROUPS ) == ULib.fileRead( "addons/ulib/data/" .. ULib.UCL_GROUPS ) then
 	  -- File has been reset, delete registered
-		ULib.deleteFile( ULib.UCL_REGISTERED )
+		ULib.fileDelete( ULib.UCL_REGISTERED )
 	end
 end)
 end

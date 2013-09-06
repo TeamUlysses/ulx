@@ -143,7 +143,7 @@ local function reloadUsers()
 			end
 		end
 		if ULib.fileExists( ULib.UCL_REGISTERED ) then
-			ULib.deleteFile( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
+			ULib.fileDelete( ULib.UCL_REGISTERED ) -- Since we're regnerating we'll need to remove this
 		end
 		accessStrings = {}
 
