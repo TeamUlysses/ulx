@@ -44,17 +44,16 @@ Group: Usage
 To use ULX, simply type in whatever command or cvar you want to use. If you're not running a listen server,
 or if you want to give access to other users, you must add users.
 
-You can either follow the standard GM10 way of adding users
-(http://wiki.garrysmod.com/?title=Player_Groups), or you can add yourself directly to the
-data/ULib/users.txt file. DO NOT EDIT THE ULIB FILE UNLESS YOU KNOW WHAT YOU'RE DOING.
+You can either follow the standard gmod way of adding users
+(http://maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/index0c18.html?title=Player_Groups), or you can add yourself directly to the
+data/ulib/users.txt file. DO NOT EDIT THE ULIB FILE UNLESS YOU KNOW WHAT YOU'RE DOING.
 
 A word about superadmins: Superadmins are considered the highest usergroup. They have access to all the
 commands in ULX, override other user's immunity, and are shown otherwise hidden log messages (IE, shown
 rcon commands admins are running, when they spectate others). Superadmins also have the power to give and
 revoke access to commands using userallow and userdeny (though they can't use this command on eachother).
 
-All commands are now preceded by "ulx ". Type "ulx help" in a console without the quotes for help.
-This is different from ulx v1 where commands were preceded by "ulx_".
+All commands are preceded by "ulx ". Type "ulx help" in a console without the quotes for help.
 
 __To give yourself a jump start into ulx, simply remember the commands "ulx help" and "ulx menu". You can
 also access the menu by saying "!menu".__
@@ -64,6 +63,7 @@ Check out the configs folder in ulx for some more goodies.
 Group: Changelog
 v3.62 - *(00/00/00)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
+	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 
 v3.61 - *(08/30/13)*
