@@ -167,6 +167,7 @@ function ulx.gimp( calling_ply, target_plys, should_ungimp )
 		else
 			v.gimp = ID_GIMP
 		end
+		v:SetNWBool("ulx_gimped", not should_ungimp)
 	end
 
 	if not should_ungimp then
@@ -191,6 +192,7 @@ function ulx.mute( calling_ply, target_plys, should_unmute )
 		else
 			v.gimp = ID_MUTE
 		end
+		v:SetNWBool("ulx_muted", not should_unmute)
 	end
 
 	if not should_unmute then
@@ -221,6 +223,7 @@ function ulx.gag( calling_ply, target_plys, should_ungag )
 	for i=1, #target_plys do
 		local v = target_plys[ i ]
 		v.ulx_gagged = not should_ungag
+		v:SetNWBool("ulx_gagged", v.ulx_gagged)
 	end
 
 	if not should_ungag then
