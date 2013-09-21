@@ -214,12 +214,12 @@ local function playerDeath( victim, weapon, killer )
 	if logEvents:GetBool() then
 		if not killer:IsPlayer() then
 			ulx.logString( string.format( "%s was killed by %s", victim:Nick(), killer:GetClass() ) )
+		elseif weapon == nil or not weapon:IsValid() then
+			ulx.logString( string.format( "%s killed %s", killer:Nick(), victim:Nick() ) )
+		elseif victim ~= killer then
+			ulx.logString( string.format( "%s killed %s using %s", killer:Nick(), victim:Nick(), weapon:GetClass() ) )
 		else
-			if victim ~= killer then
-				ulx.logString( string.format( "%s killed %s using %s", killer:Nick(), victim:Nick(), weapon:GetClass() ) )
-			else
-				ulx.logString( string.format( "%s suicided!", victim:Nick() ) )
-			end
+			ulx.logString( string.format( "%s suicided!", victim:Nick() ) )
 		end
 	end
 end
