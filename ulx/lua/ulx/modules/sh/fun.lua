@@ -869,9 +869,10 @@ function ulx.maul( calling_ply, target_plys )
 				v:DisallowVehicles( true )
 				v:GodDisable()
 				v:SetArmor( 0 ) -- Armor takes waaaay too long for them to take down
-				v.maulOrigWalk = v.WalkSpeed
-				v.maulOrigSprint = v.SprintSpeed
-				GAMEMODE:SetPlayerSpeed( v, 1, 1 ) -- Somehow 0 == crazy fast
+				v.maulOrigWalk = v:GetWalkSpeed()
+				v.maulOrigSprint = v:GetRunSpeed()
+				v:SetWalkSpeed(1)
+				v:SetRunSpeed(1)
 
 				v.maulStart = CurTime()
 				v.maulStartHP = v:Health()
@@ -910,7 +911,8 @@ checkMaulDeath = function( ply, weapon, killer )
 				timer.Simple( 0.1, function()
 					if not ply:IsValid() then return end -- They left
 					ply:SetCollisionGroup( COLLISION_GROUP_WORLD )
-					GAMEMODE:SetPlayerSpeed( ply, 1, 1 )
+					ply:SetWalkSpeed(1)
+					ply:SetRunSpeed(1)
 				end )
 			end )
 			return true -- Don't register their death on HUD
@@ -931,7 +933,8 @@ checkMaulDeath = function( ply, weapon, killer )
 		ply:DisallowNoclip( false )
 		ply:DisallowSpawning( false )
 		ply:DisallowVehicles( false )
-		GAMEMODE:SetPlayerSpeed( ply, ply.maulOrigWalk, ply.maulOrigSprint )
+		ply:SetWalkSpeed(ply.maulOrigWalk)
+		ply:SetRunSpeed(ply.maulOrigSprint)
 		ply.maulOrigWalk = nil
 		ply.maulOrigSprint = nil
 

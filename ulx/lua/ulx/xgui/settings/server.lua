@@ -91,7 +91,7 @@ local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Admin Votemap Settings" } )
 plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept a mapchange" } )
 plist:Add( xlib.makeslider{ label="<--->", min=0, max=1, decimal=2, repconvar="ulx_votemap2Successratio" } )
-plist:Add( xlib.makelabel{ label="Ratio of votes needed to accept a mapchange" } )
+plist:Add( xlib.makelabel{ label="Minimum votes for a successful mapchange" } )
 plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, repconvar="ulx_votemap2Minvotes" } )
 xgui.addSubModule( "ULX Admin Votemaps", plist, nil, "server" )
 
