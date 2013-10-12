@@ -65,6 +65,7 @@ v3.62 - *(00/00/00)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
+	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
 
 v3.61 - *(08/30/13)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
