@@ -11,6 +11,11 @@ local function init()
 		ULib.replicatedWritableCvar( "sbox_playershurtplayers", "rep_sbox_playershurtplayers", GetConVarNumber( "sbox_playershurtplayers" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_weapons", "rep_sbox_weapons", GetConVarNumber( "sbox_weapons" ), false, false, "xgui_gmsettings" )
 
+		ULib.replicatedWritableCvar( "sbox_persist", "rep_sbox_persist", GetConVarNumber( "sbox_persist" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_bonemanip_misc", "rep_sbox_bonemanip_misc", GetConVarNumber( "sbox_bonemanip_misc" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_bonemanip_npc", "rep_sbox_bonemanip_npc", GetConVarNumber( "sbox_bonemanip_npc" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_bonemanip_player", "rep_sbox_bonemanip_player", GetConVarNumber( "sbox_bonemanip_player" ), false, false, "xgui_gmsettings" )
+
 		--Process the list of known Sandbox Cvar Limits and check if they exist
 		xgui.sboxLimits = {}
 		if ULib.isSandbox() then
