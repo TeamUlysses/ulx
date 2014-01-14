@@ -179,15 +179,22 @@ local function playerSay( ply, text, private )
 end
 hook.Add( "PlayerSay", "ULXLogSay", playerSay, 20 )
 
-local function playerConnect( name, address, steamid )
+local joinTimer = {}
+local mapStartTime = os.time()
+local function playerConnect( name, address )
+	joinTimer[address] = os.time()
 	if logEvents:GetBool() then
-		ulx.logString( string.format( "Client \"%s\" connected (%s).", name, address ) )
+		ulx.logString( string.format( "Client \"%s\" connected.", name ) )
 	end
 end
 hook.Add( "PlayerConnect", "ULXLogConnect", playerConnect, -20 )
 
 local function playerInitialSpawn( ply )
-	local txt = string.format( "Client \"%s\" spawned in server (%s)<%s>.", ply:Nick(), not ply:IsBot() and ply:IPAddress() or "BOT", ply:SteamID() )
+	local ip = ply:IPAddress()
+	local seconds = os.time() - (joinTimer[ip] or mapStartTime)
+	joinTimer[ip] = nil
+	
+	local txt = string.format( "Client \"%s\" spawned in server <%s> (took %i seconds).", ply:Nick(), ply:SteamID(), seconds )
 	if logEvents:GetBool() then
 		ulx.logString( txt )
 	end
