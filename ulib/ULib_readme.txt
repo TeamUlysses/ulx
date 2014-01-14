@@ -1,6 +1,6 @@
 Title: ULib Readme
 
-*ULib v2.52 (released 00/00/00)*
+*ULib v2.60 (released 00/00/00)*
 
 ULib is a developer library for GMod 10 (<http://garrysmod.com/>).
 
@@ -44,7 +44,7 @@ After installing ULib correctly, scripts that take advantage of ULib will take c
 Rest easy!
 
 Group: Changelog
-v2.52 - *(00/00/00)*
+v2.60 - *(00/00/00)*
 	* [FIX] ULib.ucl.registerAccess not allowing an access tag to be registered to no groups.
 	* [FIX] Several incorrect file I/O calls (Thanks, Q4-Bi).
 

@@ -66,6 +66,7 @@ v3.62 - *(00/00/00)*
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
+	* [CHANGE] Logging now prints how long a user took to join the server.
 
 v3.61 - *(08/30/13)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
