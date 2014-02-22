@@ -174,7 +174,7 @@ function Call( name, gm, ... )
 	if HookTable then
 		local a, b, c, d, e, f
 		for k=1, #HookTable do
-			v = HookTable[ k ]
+			local v = HookTable[ k ]
 			if not v then
 				-- Nothing
 			else
