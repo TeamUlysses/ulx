@@ -712,7 +712,9 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 					else
 						outPanel.type = "num"
 						outPanel.min = xlib.makeslider{ x=25, y=5, w=150, value=( rmin or arg.min or 0 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Min", disabled=( rmin==nil ), parent=outPanel }
-						outPanel.max = xlib.makeslider{ x=25, y=45, w=150, value=( rmax or arg.max or 100 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Max", disabled=( rmax==nil ), parent=outPanel }
+						outPanel.max = xlib.makeslider{ x=25, y=30, w=150, value=( rmax or arg.max or 100 ), min=( arg.min or 0 ), max=( arg.max or 100 ), label="Max", disabled=( rmax==nil ), parent=outPanel }
+						outPanel.hasmax:SetPos( 5,33 )
+						outPanel:SetHeight( 55 )
 						outPanel.hasmin.OnChange = function( self, bVal )
 							outPanel.min:SetDisabled( not bVal )
 						end
