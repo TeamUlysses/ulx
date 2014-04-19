@@ -219,6 +219,9 @@ hook.Add( "PlayerDisconnected", "ULXLogDisconnect", playerDisconnect, -20 )
 
 local function playerDeath( victim, weapon, killer )
 	if logEvents:GetBool() then
+		if not IsValid( victim ) then return end
+		if not IsValid( killer ) then return end
+
 		if not killer:IsPlayer() then
 			ulx.logString( string.format( "%s was killed by %s", victim:Nick(), killer:GetClass() ) )
 		elseif weapon == nil or not weapon:IsValid() then
