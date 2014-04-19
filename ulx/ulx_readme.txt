@@ -67,7 +67,8 @@ v3.62 - *(00/00/00)*
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
 	* [FIX] NULL entity error after votekick on a player that left the server, now sends message stating that votekicked player already left.
-	* [FIX] XGUI: Slider label widths were extra large due to a slight change in default numslider behavior. (Thanks Fuzzik!)
+	* [FIX] PlayerDeath hook errors in certain gamemodes where invalid entites are sent as the killer or victim. (Thanks Mechanical Mind).
+	* [FIX] XGUI: Slider label widths were extra large due to a slight change in default numslider behavior. (Thanks Fuzzik).
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.
