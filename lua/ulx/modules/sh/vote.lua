@@ -252,8 +252,12 @@ local function voteKickDone( t, target, time, ply, reason )
 	if winner ~= 1 or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: User will not be kicked. (" .. (results[ 1 ] or "0") .. "/" .. t.voters .. ")"
 	else
-		str = "Vote results: User will now be kicked, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
-		ulx.doVote( "Accept result and kick " .. target:Nick() .. "?", { "Yes", "No" }, voteKickDone2, 30000, { ply }, true, target, time, ply, reason )
+		if target:IsValid() then
+			str = "Vote results: User will now be kicked, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
+			ulx.doVote( "Accept result and kick " .. target:Nick() .. "?", { "Yes", "No" }, voteKickDone2, 30000, { ply }, true, target, time, ply, reason )
+		else
+			str = "Vote results: User voted to be kicked, but has already left."
+		end
 	end
 
 	ULib.tsay( _, str ) -- TODO, color?

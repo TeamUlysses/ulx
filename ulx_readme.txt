@@ -66,6 +66,8 @@ v3.62 - *(00/00/00)*
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
+	* [FIX] NULL entity error after votekick on a player that left the server, now sends message stating that votekicked player already left.
+	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.
 
