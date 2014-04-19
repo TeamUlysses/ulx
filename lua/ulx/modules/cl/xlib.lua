@@ -507,6 +507,9 @@ end
 
 function xlib.makeslider( t )
 	local pnl = vgui.Create( "DNumSlider", t.parent )
+	
+	pnl.PerformLayout = function() end  -- Clears the code that automatically sets the width of the label to 41% of the entire width.
+	
 	pnl:SetPos( t.x, t.y )
 	pnl:SetWide( t.w or 100 )
 	pnl:SetTall( t.h or 20 )
