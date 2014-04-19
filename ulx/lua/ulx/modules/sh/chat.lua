@@ -208,14 +208,16 @@ mute:defaultAccess( ULib.ACCESS_ADMIN )
 mute:help( "Mutes target(s) so they are unable to chat." )
 mute:setOpposite( "ulx unmute", {_, _, true}, "!unmute" )
 
-local function gimpCheck( ply, strText )
-	if ply.gimp == ID_MUTE then return "" end
-	if ply.gimp == ID_GIMP then
-		if #gimpSays < 1 then return nil end
-		return gimpSays[ math.random( #gimpSays ) ]
+if SERVER then
+	local function gimpCheck( ply, strText )
+		if ply.gimp == ID_MUTE then return "" end
+		if ply.gimp == ID_GIMP then
+			if #gimpSays < 1 then return nil end
+			return gimpSays[ math.random( #gimpSays ) ]
+		end
 	end
+	hook.Add( "PlayerSay", "ULXGimpCheck", gimpCheck, 18 ) -- Very low priority
 end
-hook.Add( "PlayerSay", "ULXGimpCheck", gimpCheck, 18 ) -- Very low priority
 
 ------------------------------ Gag ------------------------------
 function ulx.gag( calling_ply, target_plys, should_ungag )
@@ -247,50 +249,51 @@ end
 hook.Add( "PlayerCanHearPlayersVoice", "ULXGag", gagHook )
 
 -- Anti-spam stuff
-local chattime_cvar
-if SERVER then chattime_cvar = ulx.convar( "chattime", "1.5", "<time> - Players can only chat every x seconds (anti-spam). 0 to disable.", ULib.ACCESS_ADMIN ) end
-local function playerSay( ply )
-	if not ply.lastChatTime then ply.lastChatTime = 0 end
-
-	local chattime = chattime_cvar:GetFloat()
-	if chattime <= 0 then return end
-
-	if ply.lastChatTime + chattime > CurTime() then
-		return ""
-	else
-		ply.lastChatTime = CurTime()
-		return
-	end
-end
-hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, 17 )
-
-local function meCheck( ply, strText, bTeam )
-	if ply.gimp or not ULib.isSandbox() then return end -- Don't mess
-
-	if strText:sub( 1, 4 ) == "/me " then
-		strText = string.format( "*** %s %s", ply:Nick(), strText:sub( 5 ) )
-		if not bTeam then
-			ULib.tsay( _, strText )
+if SERVER then
+	local chattime_cvar = ulx.convar( "chattime", "1.5", "<time> - Players can only chat every x seconds (anti-spam). 0 to disable.", ULib.ACCESS_ADMIN )
+	local function playerSay( ply )
+		if not ply.lastChatTime then ply.lastChatTime = 0 end
+	
+		local chattime = chattime_cvar:GetFloat()
+		if chattime <= 0 then return end
+	
+		if ply.lastChatTime + chattime > CurTime() then
+			return ""
 		else
-			strText = "(TEAM) " .. strText
-			local teamid = ply:Team()
-			local players = team.GetPlayers( teamid )
-			for _, ply2 in ipairs( players ) do
-				ULib.tsay( ply2, strText )
-			end
+			ply.lastChatTime = CurTime()
+			return
 		end
-
-		if game.IsDedicated() then
-			Msg( strText .. "\n" ) -- Log to console
-		end
-		if util.tobool( GetConVarNumber( "ulx_logChat" ) ) then
-			ulx.logString( strText )
-		end
-
-		return ""
 	end
+	hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, 17 )
+	
+	local function meCheck( ply, strText, bTeam )
+		if ply.gimp or not ULib.isSandbox() then return end -- Don't mess
+	
+		if strText:sub( 1, 4 ) == "/me " then
+			strText = string.format( "*** %s %s", ply:Nick(), strText:sub( 5 ) )
+			if not bTeam then
+				ULib.tsay( _, strText )
+			else
+				strText = "(TEAM) " .. strText
+				local teamid = ply:Team()
+				local players = team.GetPlayers( teamid )
+				for _, ply2 in ipairs( players ) do
+					ULib.tsay( ply2, strText )
+				end
+			end
+	
+			if game.IsDedicated() then
+				Msg( strText .. "\n" ) -- Log to console
+			end
+			if util.tobool( GetConVarNumber( "ulx_logChat" ) ) then
+				ulx.logString( strText )
+			end
+	
+			return ""
+		end
+	end
+	hook.Add( "PlayerSay", "ULXMeCheck", meCheck, 18 ) -- Extremely low priority
 end
-hook.Add( "PlayerSay", "ULXMeCheck", meCheck, 18 ) -- Extremely low priority
 
 local function showWelcome( ply )
 	local message = GetConVarString( "ulx_welcomemessage" )
