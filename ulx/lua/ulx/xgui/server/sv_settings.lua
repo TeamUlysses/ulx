@@ -8,7 +8,7 @@ function settings.init()
 
 	xgui.addDataType( "gimps", function() return ulx.gimpSays end, "xgui_svsettings", 0, -10 )
 	xgui.addDataType( "adverts", function() return ulx.adverts end, "xgui_svsettings", 0, -10 )
-	xgui.addDataType( "banreasons", function() return ulx.common_kick_reasons end, "xgui_svsettings", 0, -10 )
+	xgui.addDataType( "banreasons", function() return ulx.common_kick_reasons end, "ulx ban", 0, -10 )
 	xgui.addDataType( "votemaps", function() return settings.votemaps end, nil, 0, -20 )
 
 	ULib.replicatedWritableCvar( "sv_voiceenable", "rep_sv_voiceenable", GetConVarNumber( "sv_voiceenable" ), false, false, "xgui_svsettings" )
