@@ -63,7 +63,7 @@ function xgui.init()
 	-----------------
 	xgui.dataTypes = {}
 	xgui.activeUsers = {}  --Set up a table to list users who are actively transferring data
-	xgui.readyPlayers = {} --Set up a table to store users who are ready to recieve data.
+	xgui.readyPlayers = {} --Set up a table to store users who are ready to receive data.
 	function xgui.addDataType( name, retrievalFunc, access, maxChunkSize, priority )
 		xgui.dataTypes[name] = { getData=retrievalFunc, access=access, maxchunk=maxChunkSize }
 		table.insert( xgui.dataTypes, { name=name, priority=priority or 0 } )
@@ -75,7 +75,7 @@ function xgui.init()
 	end
 	xgui.addCmd( "getdata", xgui.getdata )
 
-	--Let the server know when players are/aren't ready to recieve data.
+	--Let the server know when players are/aren't ready to receive data.
 	function xgui.getInstalled( ply )
 		ULib.clientRPC( ply, "xgui.getInstalled" )
 		xgui.readyPlayers[ply:UniqueID()] = 1
