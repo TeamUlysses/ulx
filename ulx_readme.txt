@@ -68,6 +68,7 @@ v3.62 - *(00/00/00)*
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
 	* [FIX] NULL entity error after votekick on a player that left the server, now sends message stating that votekicked player already left.
 	* [FIX] PlayerDeath hook errors in certain gamemodes where invalid entites are sent as the killer or victim. (Thanks Mechanical Mind).
+	* [FIX] JailTP command now saves last player position, now works with "ulx return". (Thanks jakej78b).
 	* [FIX] XGUI: Slider label widths were extra large due to a slight change in default numslider behavior. (Thanks Fuzzik).
 	* [FIX] Garry's Mod update caused users to be banned faster than expected, log then incorrectly stated that (Console) was banned.
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).

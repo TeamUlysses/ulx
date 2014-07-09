@@ -447,6 +447,9 @@ function ulx.jailtp( calling_ply, target_ply, seconds )
 		ULib.tsayError( calling_ply, "That is not an area where a jail can be placed!", true )
 		return
 	else
+		target_ply.ulx_prevpos = target_ply:GetPos()
+		target_ply.ulx_prevang = target_ply:EyeAngles()
+
 		if target_ply:InVehicle() then
 			target_ply:ExitVehicle()
 		end
