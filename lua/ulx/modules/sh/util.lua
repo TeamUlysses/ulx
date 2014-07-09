@@ -56,13 +56,13 @@ function ulx.ban( calling_ply, target_ply, minutes, reason )
 		return
 	end
 
-	ULib.kickban( target_ply, minutes, reason, calling_ply )
-
 	local time = "for #i minute(s)"
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned #T " .. time
 	if reason and reason ~= "" then str = str .. " (#s)" end
 	ulx.fancyLogAdmin( calling_ply, str, target_ply, minutes ~= 0 and minutes or reason, reason )
+
+	ULib.kickban( target_ply, minutes, reason, calling_ply )
 end
 local ban = ulx.command( CATEGORY_NAME, "ulx ban", ulx.ban, "!ban" )
 ban:addParam{ type=ULib.cmds.PlayerArg }
@@ -87,8 +87,6 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 		end
 	end
 
-	ULib.addBan( steamid, minutes, reason, name, calling_ply )
-
 	local time = "for #i minute(s)"
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned steamid #s "
@@ -98,6 +96,8 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	str = str .. time
 	if reason and reason ~= "" then str = str .. " (#4s)" end
 	ulx.fancyLogAdmin( calling_ply, str, steamid, minutes ~= 0 and minutes or reason, reason )
+
+	ULib.addBan( steamid, minutes, reason, name, calling_ply )
 end
 local banid = ulx.command( CATEGORY_NAME, "ulx banid", ulx.banid )
 banid:addParam{ type=ULib.cmds.StringArg, hint="steamid" }
