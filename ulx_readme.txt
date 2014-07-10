@@ -71,6 +71,7 @@ v3.62 - *(00/00/00)*
 	* [FIX] JailTP command now saves last player position, now works with "ulx return". (Thanks jakej78b).
 	* [FIX] XGUI: Slider label widths were extra large due to a slight change in default numslider behavior. (Thanks Fuzzik).
 	* [FIX] Garry's Mod update caused users to be banned faster than expected, log then incorrectly stated that (Console) was banned.
+	* [FIX] Garry's Mod update prevented votebans from working.
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.
