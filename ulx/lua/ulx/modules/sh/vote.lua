@@ -300,12 +300,12 @@ local function voteBanDone2( t, target, time, ply, reason )
 	end
 
 	if shouldBan then
-		if reason and reason ~= "" then
+		ULib.ban( target, time, reason, ply )
+		--[[if reason and reason ~= "" then
 			ULib.kick( target, "Vote ban successful. (" .. reason .. ")" )
 		else
 			ULib.kick( target, "Vote ban successful." )
-		end
-		ULib.ban( target, time, reason, ply )
+		end]]--
 	end
 end
 
