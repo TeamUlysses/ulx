@@ -91,11 +91,11 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned steamid #s "
 	if name then
-		steamid = steamid .. "(" .. name .. ") "
+		displayid = steamid .. "(" .. name .. ") "
 	end
 	str = str .. time
 	if reason and reason ~= "" then str = str .. " (#4s)" end
-	ulx.fancyLogAdmin( calling_ply, str, steamid, minutes ~= 0 and minutes or reason, reason )
+	ulx.fancyLogAdmin( calling_ply, str, displayid, minutes ~= 0 and minutes or reason, reason )
 
 	ULib.addBan( steamid, minutes, reason, name, calling_ply )
 end
