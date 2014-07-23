@@ -101,10 +101,10 @@ local function reloadGroups()
 				-- Lower case'ify
 				for k, v in pairs( groupInfo.allow ) do
 					if type( k ) == "string" and k:lower() ~= k then
-						groupInfo.allow[ k:lower() ] = v:lower()
+						groupInfo.allow[ k:lower() ] = v
 						groupInfo.allow[ k ] = nil
 					else
-						groupInfo.allow[ k ] = v:lower()
+						groupInfo.allow[ k ] = v
 					end
 				end
 			end
@@ -289,7 +289,7 @@ function ucl.groupAllow( name, access, revoke )
 		local access = v:lower()
 		local accesstag
 		if type( k ) == "string" then
-			accesstag = v:lower()
+			accesstag = v
 			access = k:lower()
 		end
 
@@ -844,7 +844,15 @@ end
 
 		v2.40 - Rewrite.
 ]]
+
+--Debug table:
+local plysAuthDebug = {}
+print("ULX TEMP DEBUG ACTIVE")
 function ucl.probe( ply )
+	if not plysAuthDebug[ply:UniqueID()] then
+		RunConsoleCommand("ulx", "asay", "ULX DEBUG FAILURE: " .. ply:Nick())
+	end
+
 	local ip = ULib.splitPort( ply:IPAddress() )
 	local uid = ply:UniqueID()
 	local checkIndexes = { uid, ip, ply:SteamID() }
@@ -918,6 +926,7 @@ local function UCLChanged()
 end
 hook.Add( ULib.HOOK_UCLCHANGED, "ULibSendUCLToClients", UCLChanged )
 
+
 --[[
 -- The following is useful for debugging since Garry changes client bootstrapping so frequently
 hook.Add( ULib.HOOK_UCLCHANGED, "UTEST", function() print( "HERE HERE: UCL Changed" ) end )
@@ -928,9 +937,19 @@ hook.Add( "PlayerAuthed", "UTEST", function() print( "HERE HERE: Player Authed" 
 ---------- Modify
 
 -- Move garry's auth function so it gets called sooner
+--local playerAuth = hook.GetTable().PlayerInitialSpawn.PlayerAuthSpawn
+--hook.Remove( "PlayerInitialSpawn", "PlayerAuthSpawn" ) -- Remove from original spot
+--hook.Add( "PlayerAuthed", "GarryAuth", playerAuth, -5 ) -- Put here
+
+-- Temporary debug that checks for auth ordering
 local playerAuth = hook.GetTable().PlayerInitialSpawn.PlayerAuthSpawn
-hook.Remove( "PlayerInitialSpawn", "PlayerAuthSpawn" ) -- Remove from original spot
-hook.Add( "PlayerAuthed", "GarryAuth", playerAuth, -5 ) -- Put here
+hook.Remove( "PlayerInitialSpawn", "PlayerAuthSpawn" )
+function testAuthMethod(ply)
+	playerAuth(ply)
+	plysAuthDebug[ply:UniqueID()] = true
+end
+hook.Add( "PlayerAuthed", "GarryAuth", testAuthMethod, -5 )
+
 
 local meta = FindMetaTable( "Player" )
 if not meta then return end

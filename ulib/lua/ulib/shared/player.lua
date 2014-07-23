@@ -154,11 +154,10 @@ end
 ]]
 function ULib.getUsers( target, enable_keywords, ply )
 	local players = player.GetAll()
-	target = target:lower()
 
 	-- First, do a full name match in case someone's trying to exploit our target system
 	for _, player in ipairs( players ) do
-		if target == player:Nick():lower() then
+		if target:lower() == player:Nick():lower() then
 			return { player }
 		end
 	end
@@ -234,7 +233,7 @@ function ULib.getUsers( target, enable_keywords, ply )
 
 			if not keywordMatch then
 				for _, player in ipairs( players ) do
-					if player:Nick():lower():find( piece, 1, true ) then -- No patterns
+					if player:Nick():lower():find( piece:lower(), 1, true ) then -- No patterns
 						table.insert( targetPlys, player )
 					end
 				end

@@ -470,7 +470,7 @@ end
 function xgui.callUpdate( dtype, event, data )
 	--Run any functions that request to be called when "curtable" is updated
 	if not xgui.hook[dtype] or ( event and not xgui.hook[dtype][event] ) then
-		Msg( "XGUI: Attemped to call nonexistent type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
+		Msg( "XGUI: Attempted to call non-existent type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
 	else
 		if not event then
 			for _, func in ipairs( xgui.hook[dtype] ) do func( data ) end
