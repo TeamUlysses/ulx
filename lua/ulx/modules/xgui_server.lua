@@ -198,7 +198,7 @@ function xgui.init()
 	--Removes a single key from the table -- The table "data" should be structured that it contains the set of tables to a single key which will be removed. (i.e. data = {base={subtable1="key"}} )
 	--It can also remove multiple values. Here are a few examples:
 		--xgui.removeData( {}, "adverts", {[2]={[1]={"rpt"} } } )  --This would remove the repeat time of the first advert in the second advert group.
-		--xgui.removeData( {}, "votemaps", {3, 3, 3, 3} ) --This will remove votemaps numbered 3-6 in xgui.data.votemaps. (It uses table.remove, but you can alternitavely do {6,5,4,3} to produce the same effect)
+		--xgui.removeData( {}, "votemaps", {3, 3, 3, 3} ) --This will remove votemaps numbered 3-6 in xgui.data.votemaps. (It uses table.remove, but you can alternatively do {6,5,4,3} to produce the same effect)
 	function xgui.removeData( plys, dtype, data )
 		xgui.sendDataEvent( plys, 4, dtype, data )
 	end
@@ -230,7 +230,7 @@ function xgui.init()
 			if #xgui.activeUsers[ply:UniqueID()].tables > 0 then --Data tables have been requested while the player was transferring data
 				xgui.sendDataTable( ply, xgui.activeUsers[ply:UniqueID()].tables, true )
 				xgui.activeUsers[ply:UniqueID()].tables = {}
-			elseif #xgui.activeUsers[ply:UniqueID()].events > 0 then --No data tables are needed, and events have occured while the player was transferring data
+			elseif #xgui.activeUsers[ply:UniqueID()].events > 0 then --No data tables are needed, and events have occurred while the player was transferring data
 				local chunks = {}
 				for _,v in ipairs( xgui.activeUsers[ply:UniqueID()].events ) do
 					table.insert( chunks, v )
