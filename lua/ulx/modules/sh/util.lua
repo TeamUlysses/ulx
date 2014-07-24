@@ -90,8 +90,9 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	local time = "for #i minute(s)"
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned steamid #s "
+	displayid = steamid
 	if name then
-		displayid = steamid .. "(" .. name .. ") "
+		displayid = displayid .. "(" .. name .. ") "
 	end
 	str = str .. time
 	if reason and reason ~= "" then str = str .. " (#4s)" end
