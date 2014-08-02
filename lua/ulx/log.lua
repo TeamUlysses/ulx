@@ -161,7 +161,7 @@ end
 local function echoToAdmins( txt )
 	local players = player.GetAll()
 	for _, ply in ipairs( players ) do
-		if ULib.ucl.query( ply, spawnechoAccess ) then
+		if ULib.ucl.authed[ ply:UniqueID() ] and ULib.ucl.query( ply, spawnechoAccess ) then
 			ULib.console( ply, txt )
 		end
 	end
