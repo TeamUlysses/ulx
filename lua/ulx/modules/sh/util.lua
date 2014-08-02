@@ -42,7 +42,8 @@ function ulx.kick( calling_ply, target_ply, reason )
 		reason = nil
 		ulx.fancyLogAdmin( calling_ply, "#A kicked #T", target_ply )
 	end
-	ULib.kick( target_ply, reason, calling_ply )
+	-- Delay by 1 frame to ensure the chat hook finishes with player intact. Prevents a crash.
+	ULib.queueFunctionCall( ULib.kick, target_ply, reason, calling_ply )
 end
 local kick = ulx.command( CATEGORY_NAME, "ulx kick", ulx.kick, "!kick" )
 kick:addParam{ type=ULib.cmds.PlayerArg }
@@ -61,8 +62,8 @@ function ulx.ban( calling_ply, target_ply, minutes, reason )
 	local str = "#A banned #T " .. time
 	if reason and reason ~= "" then str = str .. " (#s)" end
 	ulx.fancyLogAdmin( calling_ply, str, target_ply, minutes ~= 0 and minutes or reason, reason )
-
-	ULib.kickban( target_ply, minutes, reason, calling_ply )
+	-- Delay by 1 frame to ensure any chat hook finishes with player intact. Prevents a crash.
+	ULib.queueFunctionCall( ULib.kickban, target_ply, minutes, reason, calling_ply )
 end
 local ban = ulx.command( CATEGORY_NAME, "ulx ban", ulx.ban, "!ban" )
 ban:addParam{ type=ULib.cmds.PlayerArg }
@@ -97,8 +98,8 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	str = str .. time
 	if reason and reason ~= "" then str = str .. " (#4s)" end
 	ulx.fancyLogAdmin( calling_ply, str, displayid, minutes ~= 0 and minutes or reason, reason )
-
-	ULib.addBan( steamid, minutes, reason, name, calling_ply )
+	-- Delay by 1 frame to ensure any chat hook finishes with player intact. Prevents a crash.
+	ULib.queueFunctionCall( ULib.addBan, steamid, minutes, reason, name, calling_ply )
 end
 local banid = ulx.command( CATEGORY_NAME, "ulx banid", ulx.banid )
 banid:addParam{ type=ULib.cmds.StringArg, hint="steamid" }

@@ -169,8 +169,6 @@ end
 
 local function playerSay( ply, text, private )
 	if logChat:GetBool() then
-		if not ply:IsValid() then return false end	--Stop processing the hook to prevent a crash.
-		
 		if private then
 			ulx.logString( string.format( "(TEAM) %s: %s", ply:Nick(), text ) )
 		else
