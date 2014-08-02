@@ -844,15 +844,7 @@ end
 
 		v2.40 - Rewrite.
 ]]
-
---Debug table:
-local plysAuthDebug = {}
-print("ULX TEMP DEBUG ACTIVE")
 function ucl.probe( ply )
-	if not plysAuthDebug[ply:UniqueID()] then
-		RunConsoleCommand("ulx", "asay", "ULX DEBUG FAILURE: " .. ply:Nick())
-	end
-
 	local ip = ULib.splitPort( ply:IPAddress() )
 	local uid = ply:UniqueID()
 	local checkIndexes = { uid, ip, ply:SteamID() }
@@ -926,7 +918,6 @@ local function UCLChanged()
 end
 hook.Add( ULib.HOOK_UCLCHANGED, "ULibSendUCLToClients", UCLChanged )
 
-
 --[[
 -- The following is useful for debugging since Garry changes client bootstrapping so frequently
 hook.Add( ULib.HOOK_UCLCHANGED, "UTEST", function() print( "HERE HERE: UCL Changed" ) end )
@@ -937,19 +928,9 @@ hook.Add( "PlayerAuthed", "UTEST", function() print( "HERE HERE: Player Authed" 
 ---------- Modify
 
 -- Move garry's auth function so it gets called sooner
---local playerAuth = hook.GetTable().PlayerInitialSpawn.PlayerAuthSpawn
---hook.Remove( "PlayerInitialSpawn", "PlayerAuthSpawn" ) -- Remove from original spot
---hook.Add( "PlayerAuthed", "GarryAuth", playerAuth, -5 ) -- Put here
-
--- Temporary debug that checks for auth ordering
 local playerAuth = hook.GetTable().PlayerInitialSpawn.PlayerAuthSpawn
-hook.Remove( "PlayerInitialSpawn", "PlayerAuthSpawn" )
-function testAuthMethod(ply)
-	playerAuth(ply)
-	plysAuthDebug[ply:UniqueID()] = true
-end
-hook.Add( "PlayerAuthed", "GarryAuth", testAuthMethod, -5 )
-
+hook.Remove( "PlayerInitialSpawn", "PlayerAuthSpawn" ) -- Remove from original spot
+hook.Add( "PlayerAuthed", "GarryAuth", playerAuth, -5 ) -- Put here
 
 local meta = FindMetaTable( "Player" )
 if not meta then return end
