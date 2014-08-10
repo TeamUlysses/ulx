@@ -8,7 +8,7 @@ xgui.hook = { onProcessModules={}, onOpen={} }
 function xgui.prepareDataType( dtype, location )
 	if not xgui.data[dtype] then
 		xgui.data[dtype] = location or {}
-		xgui.hook[dtype] = { clear={}, process={}, done={}, add={}, update={}, remove={} }
+		xgui.hook[dtype] = { clear={}, process={}, done={}, add={}, update={}, remove={}, data={} }
 	end
 end
 
@@ -88,7 +88,7 @@ function xgui.init( authedply )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
 	local version_type = ulx.revision and ( ulx.revision > 0 and " SVN " .. ulx.revision or " Release") or (" N/A")
-	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v14.7.8 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
+	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v14.8.9 |  ULX v" .. string.format("%.2f", ulx.version) .. version_type .. "  |  ULib v" .. ULib.VERSION, parent=xgui.infobar }:NoClipping( true )
 	xgui.thetime = xlib.makelabel{ x=515, y=-10, label="", parent=xgui.infobar }
 	xgui.thetime:NoClipping( true )
 	xgui.thetime.check = function()
@@ -448,6 +448,8 @@ function xgui.getChunk( flag, datatype, data )
 		elseif flag == 6 then --End a set of chunks (Clear the merge flag)
 			xgui.mergeData = nil
 			xgui.callUpdate( datatype, "done" )
+		elseif flag == 7 then --Pass the data directly to the module to be handled.
+			xgui.callUpdate( datatype, "data", data )
 		end
 		xgui.callUpdate( datatype )
 	end

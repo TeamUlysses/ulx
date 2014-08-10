@@ -127,6 +127,15 @@ function xlib.makebutton( t )
 			DLabel.PerformLayout( self )
 		end
 	end
+	if not t.tooltipwidth then t.tooltipwidth = 250 end
+	if t.tooltip then
+		if t.tooltipwidth ~= 0 then
+			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
+		end
+		pnl:SetToolTip( t.tooltip )
+		pnl:SetMouseInputEnabled( true )
+	end
+	
 	return pnl
 end
 
