@@ -64,6 +64,7 @@ Group: Changelog
 v3.62 - *(00/00/00)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
+	* [ADD] XGUI: Added more sorting and filtering options for bans.
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
 	* [FIX] NULL entity error after votekick on a player that left the server, now sends message stating that votekicked player already left.
@@ -77,6 +78,9 @@ v3.62 - *(00/00/00)*
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.
+	* [CHANGE] XGUI: Many Ban menu improvements. Entire banlist is no longer sent on join- data subset is now requested by the client and sent from the server.
+	* [CHANGE] XGUI: Ban list is now paginated instead of a giant scrollable list.
+	* [CHANGE] XGUI: ULX Bans and other (or "Source Bans") are no longer separated.
 
 v3.61 - *(08/30/13)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
