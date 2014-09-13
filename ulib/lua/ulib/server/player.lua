@@ -233,12 +233,13 @@ end
 	Parameters:
 
 		steamid - The steamid to unban.
+		admin - *(Optional)* Admin player unbanning steamid
 
 	Revisions:
 
 		v2.10 - Initial
 ]]
-function ULib.unban( steamid )
+function ULib.unban( steamid, admin )
 
 	--Default banlist
 	if ULib.fileExists( "cfg/banned_user.cfg" ) then
