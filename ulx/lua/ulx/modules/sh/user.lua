@@ -1,7 +1,9 @@
 local CATEGORY_NAME = "User Management"
 
 local function checkForValidId( calling_ply, id )
-	if id:find( "%." ) then -- Assume IP and check
+	if id == "BOT" or id == "NULL" then -- Bot check
+		return true
+	elseif id:find( "%." ) then -- Assume IP and check
 	 	if not ULib.isValidIP( id ) then
 			ULib.tsayError( calling_ply, "Invalid IP.", true )
 			return false
