@@ -76,13 +76,12 @@ function ulx.voteCallback( ply, command, argv )
 	if game.IsDedicated() then Msg( str .. "\n" ) end
 
 	if ulx.voteInProgress.votes >= ulx.voteInProgress.voters then
-		timer.Destroy( "ULXVoteTimeout" )
 		ulx.voteDone()
 	end
 end
 if SERVER then concommand.Add( "ulx_vote", ulx.voteCallback ) end
 
-function ulx.voteDone()
+function ulx.voteDone( cancelled )
 	local players = player.GetAll()
 	for _, ply in ipairs( players ) do -- Clear voting tags
 		ply.ulxVoted = nil
@@ -90,7 +89,10 @@ function ulx.voteDone()
 
 	local vip = ulx.voteInProgress
 	ulx.voteInProgress = nil
-	ULib.pcallError( vip.callback, vip, unpack( vip.args, 1, 10 ) ) -- Unpack is explicit in length to avoid odd LuaJIT quirk.
+	timer.Destroy( "ULXVoteTimeout" )
+	if not cancelled then
+		ULib.pcallError( vip.callback, vip, unpack( vip.args, 1, 10 ) ) -- Unpack is explicit in length to avoid odd LuaJIT quirk.
+	end
 end
 -- End our helper functions
 
@@ -136,20 +138,18 @@ vote:defaultAccess( ULib.ACCESS_ADMIN )
 vote:help( "Starts a public vote." )
 
 -- Stop a vote in progress
-function ulx.overrule( calling_ply )
-	if voteInProgress then
-		voteInProgress.votes = 0
-		timer.Destroy( "ULXVoteTimeout" )
-		ulx.voteDone()
-		ulx.fancyLogAdmin( calling_ply, "#A has stopped the current vote." )
+function ulx.stopVote( calling_ply )
+	if not ulx.voteInProgress then
+		ULib.tsayError( calling_ply, "There is no vote currently in progress.", true )
 		return
 	end
-
-	ULib.tsayError( calling_ply, "There is no vote currently in progress. Please wait for a vote to start.", true )
+	
+	ulx.voteDone( true )
+	ulx.fancyLogAdmin( calling_ply, "#A has stopped the current vote." )
 end
-local overrule = ulx.command( CATEGORY_NAME, "ulx overrule", ulx.overrule, "!overrule" )
-overrule:defaultAccess( ULib.ACCESS_ADMIN )
-overrule:help( "Stop a vote in progress." )
+local stopvote = ulx.command( CATEGORY_NAME, "ulx stopvote", ulx.stopVote, "!stopvote" )
+stopvote:defaultAccess( ULib.ACCESS_SUPERADMIN )
+stopvote:help( "Stops a vote in progress." )
 
 local function voteMapDone2( t, changeTo, ply )
 	local shouldChange = false
