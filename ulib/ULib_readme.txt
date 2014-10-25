@@ -45,6 +45,7 @@ Rest easy!
 
 Group: Changelog
 v2.60 - *(00/00/00)*
+	* [ADD] Admin parameter to ULib.unban for overriding purposes (Thanks for the idea, MStruntze).
 	* [FIX] ULib.ucl.registerAccess not allowing an access tag to be registered to no groups.
 	* [FIX] Several incorrect file I/O calls (Thanks, Q4-Bi).
 	* [FIX] Hook priority being messed up for parent hook when hooks are called recursively (Thanks, NoBrainCZ).

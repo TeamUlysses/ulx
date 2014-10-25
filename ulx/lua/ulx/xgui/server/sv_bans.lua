@@ -76,7 +76,7 @@ function bans.init()
 
 		if bantime ~= 0 then
 			if (ULib.bans[steamID].time + bantime*60) <= os.time() then --New ban time makes the ban expired
-				ULib.unban( steamID )
+				ULib.unban( steamID, ply )
 				return
 			end
 			bantime = bantime - (os.time() - ULib.bans[steamID].time)/60
