@@ -48,9 +48,7 @@ v2.60 - *(00/00/00)*
 	* [FIX] ULib.ucl.registerAccess not allowing an access tag to be registered to no groups.
 	* [FIX] Several incorrect file I/O calls (Thanks, Q4-Bi).
 	* [FIX] Hook priority being messed up for parent hook when hooks are called recursively (Thanks, NoBrainCZ).
-	* [FIX] ucl.groupAllow no longer lower-cases access tag to support case-insensitive groups.
-	* [FIX] Access strings are no longer lower-cased when being read from the groups.txt file.
-	* [CHANGE] ULib.getUsers now only lower-cases player names, groups are now case-sensitive.
+	* [CHANGE] hook.Run to match Garry's changes.
 
 v2.51 - *(08/30/13)*
 	* [FIX] ULib.ucl.userAllow not working on disconnected players (Thanks, JackYack13).

@@ -313,11 +313,11 @@ removegroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
 removegroup:help( "Removes a group. USE WITH CAUTION." )
 
 function ulx.groupallow( calling_ply, group_name, access_string, access_tag )
-	access_tag = access_tag
+	access_tag = access_tag:lower()
 
 	local accessTable
 	if access_tag and access_tag ~= "" then
-		accessTable = { [access_string]=access_tag }
+		accessTable = { [access_string]=access_tag:lower() }
 	else
 		accessTable = { access_string }
 	end

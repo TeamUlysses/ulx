@@ -141,9 +141,10 @@ end
 	Revisions:
 	
 		2.50 - Created to match GM13 API
+		2.60 - Modified to match latest Garry-changes
 ]]
 function Run( name, ... )
-	return Call( name, nil, ... )
+	return Call( name, gmod and gmod.GetGamemode() or nil, ... )
 end
 
 local resort = {}

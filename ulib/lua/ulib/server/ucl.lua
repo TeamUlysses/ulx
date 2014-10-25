@@ -101,10 +101,10 @@ local function reloadGroups()
 				-- Lower case'ify
 				for k, v in pairs( groupInfo.allow ) do
 					if type( k ) == "string" and k:lower() ~= k then
-						groupInfo.allow[ k:lower() ] = v
+						groupInfo.allow[ k:lower() ] = v:lower()
 						groupInfo.allow[ k ] = nil
 					else
-						groupInfo.allow[ k ] = v
+						groupInfo.allow[ k ] = v:lower()
 					end
 				end
 			end
@@ -289,7 +289,7 @@ function ucl.groupAllow( name, access, revoke )
 		local access = v:lower()
 		local accesstag
 		if type( k ) == "string" then
-			accesstag = v
+			accesstag = v:lower()
 			access = k:lower()
 		end
 
