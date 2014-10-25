@@ -65,6 +65,7 @@ v3.62 - *(00/00/00)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [ADD] XGUI: Added more sorting and filtering options for bans.
+	* [ADD] "ulx stopvote" to stop a vote currently in progress (Thanks, LuaTenshi).
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
 	* [FIX] NULL entity error after votekick on a player that left the server, now sends message stating that votekicked player already left.
