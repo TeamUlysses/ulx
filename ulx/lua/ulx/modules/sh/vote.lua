@@ -6,17 +6,16 @@ local CATEGORY_NAME = "Voting"
 if SERVER then ulx.convar( "voteEcho", "0", _, ULib.ACCESS_SUPERADMIN ) end -- Echo votes?
 
 -- First, our helper function to make voting so much easier!
-local voteInProgress
 function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 	timeout = timeout or 20
-	if voteInProgress then
+	if ulx.voteInProgress then
 		Msg( "Error! ULX tried to start a vote when another vote was in progress!\n" )
-		return
+		return false
 	end
 
 	if not options[ 1 ] or not options[ 2 ] then
 		Msg( "Error! ULX tried to start a vote without at least two options!\n" )
-		return
+		return false
 	end
 
 	local voters = 0
@@ -37,18 +36,20 @@ function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 		ULib.umsgSend( options )
 	umsg.End()
 
-	voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, args={...} }
+	ulx.voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, args={...} }
 
 	timer.Create( "ULXVoteTimeout", timeout, 1, ulx.voteDone )
+	
+	return true
 end
 
 function ulx.voteCallback( ply, command, argv )
-	if not voteInProgress then
+	if not ulx.voteInProgress then
 		ULib.tsayError( ply, "There is not a vote in progress" )
 		return
 	end
 
-	if not argv[ 1 ] or not tonumber( argv[ 1 ] ) or not voteInProgress.options[ tonumber( argv[ 1 ] ) ] then
+	if not argv[ 1 ] or not tonumber( argv[ 1 ] ) or not ulx.voteInProgress.options[ tonumber( argv[ 1 ] ) ] then
 		ULib.tsayError( ply, "Invalid or out of range vote." )
 		return
 	end
@@ -60,21 +61,21 @@ function ulx.voteCallback( ply, command, argv )
 
 	local echo = util.tobool( GetConVarNumber( "ulx_voteEcho" ) )
 	local id = tonumber( argv[ 1 ] )
-	voteInProgress.results[ id ] = voteInProgress.results[ id ] or 0
-	voteInProgress.results[ id ] = voteInProgress.results[ id ] + 1
+	ulx.voteInProgress.results[ id ] = ulx.voteInProgress.results[ id ] or 0
+	ulx.voteInProgress.results[ id ] = ulx.voteInProgress.results[ id ] + 1
 
-	voteInProgress.votes = voteInProgress.votes + 1
+	ulx.voteInProgress.votes = ulx.voteInProgress.votes + 1
 
 	ply.ulxVoted = true -- Tag them as having voted
 
-	local str = ply:Nick() .. " voted for: " .. voteInProgress.options[ id ]
-	if echo and not voteInProgress.noecho then
+	local str = ply:Nick() .. " voted for: " .. ulx.voteInProgress.options[ id ]
+	if echo and not ulx.voteInProgress.noecho then
 		ULib.tsay( _, str ) -- TODO, color?
 	end
 	ulx.logString( str )
 	if game.IsDedicated() then Msg( str .. "\n" ) end
 
-	if voteInProgress.votes >= voteInProgress.voters then
+	if ulx.voteInProgress.votes >= ulx.voteInProgress.voters then
 		timer.Destroy( "ULXVoteTimeout" )
 		ulx.voteDone()
 	end
@@ -87,8 +88,8 @@ function ulx.voteDone()
 		ply.ulxVoted = nil
 	end
 
-	local vip = voteInProgress
-	voteInProgress = nil
+	local vip = ulx.voteInProgress
+	ulx.voteInProgress = nil
 	ULib.pcallError( vip.callback, vip, unpack( vip.args, 1, 10 ) ) -- Unpack is explicit in length to avoid odd LuaJIT quirk.
 end
 -- End our helper functions
@@ -120,7 +121,7 @@ local function voteDone( t )
 end
 
 function ulx.vote( calling_ply, title, ... )
-	if voteInProgress then
+	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
 	end
@@ -187,7 +188,7 @@ end
 function ulx.votemap2( calling_ply, ... )
 	local argv = { ... }
 
-	if voteInProgress then
+	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
 	end
@@ -266,7 +267,7 @@ local function voteKickDone( t, target, time, ply, reason )
 end
 
 function ulx.votekick( calling_ply, target_ply, reason )
-	if voteInProgress then
+	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
 	end
@@ -336,7 +337,7 @@ local function voteBanDone( t, target, time, ply, reason )
 end
 
 function ulx.voteban( calling_ply, target_ply, minutes, reason )
-	if voteInProgress then
+	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
 	end
