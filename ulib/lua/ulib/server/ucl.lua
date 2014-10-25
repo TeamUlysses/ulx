@@ -101,10 +101,10 @@ local function reloadGroups()
 				-- Lower case'ify
 				for k, v in pairs( groupInfo.allow ) do
 					if type( k ) == "string" and k:lower() ~= k then
-						groupInfo.allow[ k:lower() ] = v:lower()
+						groupInfo.allow[ k:lower() ] = v
 						groupInfo.allow[ k ] = nil
 					else
-						groupInfo.allow[ k ] = v:lower()
+						groupInfo.allow[ k ] = v
 					end
 				end
 			end
@@ -185,19 +185,19 @@ local function reloadUsers()
 				-- Lower case'ify
 				for k, v in pairs( userInfo.allow ) do
 					if type( k ) == "string" and k:lower() ~= k then
-						userInfo.allow[ k:lower() ] = v:lower()
+						userInfo.allow[ k:lower() ] = v
 						userInfo.allow[ k ] = nil
 					else
-						userInfo.allow[ k ] = v:lower()
+						userInfo.allow[ k ] = v
 					end
 				end
 
 				for k, v in ipairs( userInfo.deny ) do
 					if type( k ) == "string" and type( v ) == "string" then -- This isn't allowed here
-						table.insert( userInfo.deny, k:lower() )
+						table.insert( userInfo.deny, k )
 						userInfo.deny[ k ] = nil
 					else
-						userInfo.deny[ k ] = v:lower()
+						userInfo.deny[ k ] = v
 					end
 				end
 			end
@@ -289,7 +289,7 @@ function ucl.groupAllow( name, access, revoke )
 		local access = v:lower()
 		local accesstag
 		if type( k ) == "string" then
-			accesstag = v:lower()
+			accesstag = v
 			access = k:lower()
 		end
 
@@ -580,8 +580,8 @@ function ucl.addUser( id, allows, denies, group )
 	if group and not ucl.groups[ group ] then return error( "Group does not exist for adding user to (" .. group .. ")", 2 ) end
 
 	-- Lower case'ify
-	for k, v in ipairs( allows ) do allows[ k ] = v:lower() end
-	for k, v in ipairs( denies ) do denies[ k ] = v:lower() end
+	for k, v in ipairs( allows ) do allows[ k ] = v end
+	for k, v in ipairs( denies ) do denies[ k ] = v end
 
 	local name
 	if ucl.users[ id ] and ucl.users[ id ].name then name = ucl.users[ id ].name end -- Preserve name
@@ -668,7 +668,7 @@ function ucl.userAllow( id, access, revoke, deny )
 		if type( k ) == "string" then
 			access = k:lower()
 			if not revoke and not deny then -- Not valid to have accessTags unless this is the case
-				accesstag = v:lower()
+				accesstag = v
 			end
 		end
 

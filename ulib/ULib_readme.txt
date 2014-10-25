@@ -46,9 +46,11 @@ Rest easy!
 Group: Changelog
 v2.60 - *(00/00/00)*
 	* [ADD] Admin parameter to ULib.unban for overriding purposes (Thanks for the idea, MStruntze).
+	* [ADD] A list of players is presented when a target string for getUser matches more than one player (Thanks, RhapsodySL).
 	* [FIX] ULib.ucl.registerAccess not allowing an access tag to be registered to no groups.
 	* [FIX] Several incorrect file I/O calls (Thanks, Q4-Bi).
 	* [FIX] Hook priority being messed up for parent hook when hooks are called recursively (Thanks, NoBrainCZ).
+	* [FIX] Some fiddly-bits with group case-sensitivity (Thanks, BryanFlannery).
 	* [CHANGE] hook.Run to match Garry's changes.
 
 v2.51 - *(08/30/13)*
