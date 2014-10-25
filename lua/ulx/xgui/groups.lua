@@ -161,13 +161,14 @@ end
 
 function groups.changeUserGroup( ID, group )
 	if ID == "NULL" then
-		Derma_Message( "Cannot add/remove invalid players (Bots) using XGUI!", "XGUI NOTICE" )
+		-- Is bot, most likely.
+		ID = "BOT"
+	end
+
+	if group == "user" then
+		RunConsoleCommand( "ulx", "removeuserid", ID )
 	else
-		if group == "user" then
-			RunConsoleCommand( "ulx", "removeuserid", ID )
-		else
-			RunConsoleCommand( "ulx", "adduserid", ID, group )
-		end
+		RunConsoleCommand( "ulx", "adduserid", ID, group )
 	end
 end
 
