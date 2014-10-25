@@ -117,7 +117,7 @@ function ulx.unban( calling_ply, steamid )
 
 	name = ULib.bans[ steamid ] and ULib.bans[ steamid ].name
 
-	ULib.unban( steamid )
+	ULib.unban( steamid, calling_ply )
 	if name then
 		ulx.fancyLogAdmin( calling_ply, "#A unbanned steamid #s", steamid .. " (" .. name .. ")" )
 	else
