@@ -74,7 +74,6 @@ v3.62 - *(00/00/00)*
 	* [FIX] Garry's Mod update caused users to be banned faster than expected, log then incorrectly stated that (Console) was banned.
 	* [FIX] Garry's Mod update prevented votebans from working.
 	* [FIX] Garry's Mod update caused server crash when kicking/banning yourself via chat command.
-	* [FIX] "ulx groupallow" did not allow for access tags that targeted non fully-lowercased groups. (Thanks BryanFlannery).
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.
