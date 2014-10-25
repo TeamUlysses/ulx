@@ -135,6 +135,21 @@ vote:addParam{ type=ULib.cmds.StringArg, hint="options", ULib.cmds.takeRestOfLin
 vote:defaultAccess( ULib.ACCESS_ADMIN )
 vote:help( "Starts a public vote." )
 
+-- Stop a vote in progress
+function ulx.overrule( calling_ply )
+	if voteInProgress then
+		voteInProgress.votes = 0
+		timer.Destroy( "ULXVoteTimeout" )
+		ulx.voteDone()
+		ulx.fancyLogAdmin( calling_ply, "#A has stopped the current vote." )
+		return
+	end
+
+	ULib.tsayError( calling_ply, "There is no vote currently in progress. Please wait for a vote to start.", true )
+end
+local overrule = ulx.command( CATEGORY_NAME, "ulx overrule", ulx.overrule, "!overrule" )
+overrule:defaultAccess( ULib.ACCESS_ADMIN )
+overrule:help( "Stop a vote in progress." )
 
 local function voteMapDone2( t, changeTo, ply )
 	local shouldChange = false
@@ -372,4 +387,4 @@ votemap:help( "Vote for a map, no args lists available maps." )
 -- Our veto command
 local veto = ulx.command( CATEGORY_NAME, "ulx veto", ulx.votemapVeto, "!veto" )
 veto:defaultAccess( ULib.ACCESS_ADMIN )
-veto:help( "Veto a successful votemap" )
+veto:help( "Veto a successful votemap." )
