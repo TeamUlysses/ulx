@@ -260,8 +260,15 @@ local function doInvis()
 			remove = false
 			if player:Alive() and player:GetActiveWeapon():IsValid() then
 				if player:GetActiveWeapon() ~= t.invis.wep then
-					timer.Simple( 0.05, function () ULib.invisible( player, true, t.invis.vis ) end )
+
+					if t.invis.wep and IsValid( t.invis.web ) then		-- If changed weapon, set the old weapon to be visible.
+						t.invis.wep:SetRenderMode( RENDERMODE_NORMAL )
+						t.invis.wep:Fire( "alpha", 255, 0 )
+						t.invis.wep:SetMaterial( "" )
+					end
+
 					t.invis.wep = player:GetActiveWeapon()
+					ULib.invisible( player, true, t.invis.vis )
 				end
 			end
 		end
