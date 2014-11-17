@@ -19,7 +19,7 @@ function ulx.showMotdMenu( steamid )
 
 	local button = vgui.Create( "DButton", window )
 	button:SetText( "Close" )
-	button.DoClick = function() window:Close() end
+	button.DoClick = function() window:Remove() end
 	button:SetSize( 100, 40 )
 	button:SetPos( (window:GetWide() - button:GetWide()) / 2, window:GetTall() - button:GetTall() - 10 )
 
