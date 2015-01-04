@@ -188,6 +188,9 @@ function ULib.addBan( steamid, time, reason, name, admin )
 		end
 	end
 
+	-- Remove all semicolons from the reason to prevent command injection
+	showReason = string.gsub(showReason, ";", "")
+
 	-- This redundant kick code is to ensure they're kicked -- even if they're joining
 	game.ConsoleCommand( string.format( "kickid %s %s\n", steamid, showReason or "" ) )
 	game.ConsoleCommand( string.format( "banid %f %s kick\n", time, steamid ) )
