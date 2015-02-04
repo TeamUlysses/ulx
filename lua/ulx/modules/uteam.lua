@@ -142,8 +142,8 @@ function ulx.refreshTeams()
 		assignTeam( ply )
 	end
 
-	hook.Add( "PlayerInitialSpawn", "UTeamInitialSpawn", sendDataTo, -20 )
-	hook.Add( "PlayerSpawn", "UTeamSpawnAuth", assignTeam, -20 )
-	hook.Add( "UCLAuthed", "UTeamAuth", assignTeam, -20 )
+	hook.Add( "PlayerInitialSpawn", "UTeamInitialSpawn", sendDataTo, hook.MONITOR_HIGH )
+	hook.Add( "PlayerSpawn", "UTeamSpawnAuth", assignTeam, hook.MONITOR_HIGH )
+	hook.Add( "UCLAuthed", "UTeamAuth", assignTeam, hook.MONITOR_HIGH )
 end
-hook.Add( "Initialize", "UTeamInitialize", ulx.refreshTeams, -20 )
+hook.Add( "Initialize", "UTeamInitialize", ulx.refreshTeams, hook.MONITOR_HIGH )

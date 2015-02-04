@@ -190,7 +190,7 @@ function ulx.spectate( calling_ply, target_ply )
 		ulx.fancyLogAdmin( calling_ply, true, "#A stopped spectating #T", target_ply )
 		ulx.clearExclusive( calling_ply )
 	end
-	hook.Add( "PlayerSpawn", "ulx_unspectatedspawn_" .. calling_ply:EntIndex(), stopSpectate )
+	hook.Add( "PlayerSpawn", "ulx_unspectatedspawn_" .. calling_ply:EntIndex(), stopSpectate, hook.MONITOR_HIGH )
 	
 	local function unspectate( player, key )
 		if calling_ply ~= player then return end -- Not the person we want
@@ -202,14 +202,14 @@ function ulx.spectate( calling_ply, target_ply )
 		player:SetPos( pos )
 		player:SetAngles( ang )
 	end
-	hook.Add( "KeyPress", "ulx_unspectate_" .. calling_ply:EntIndex(), unspectate )
+	hook.Add( "KeyPress", "ulx_unspectate_" .. calling_ply:EntIndex(), unspectate, hook.MONITOR_LOW )
 
 	local function disconnect( player ) -- We want to watch for spectator or target disconnect
 		if player == target_ply or player == calling_ply then -- Target or spectator disconnecting
 			unspectate( calling_ply, IN_FORWARD )
 		end
 	end
-	hook.Add( "PlayerDisconnected", "ulx_unspectatedisconnect_" .. calling_ply:EntIndex(), disconnect )
+	hook.Add( "PlayerDisconnected", "ulx_unspectatedisconnect_" .. calling_ply:EntIndex(), disconnect, hook.MONITOR_HIGH )
 
 	calling_ply:Spectate( OBS_MODE_IN_EYE )
 	calling_ply:SpectateEntity( target_ply )
@@ -395,7 +395,7 @@ local function playerPickup( ply, ent )
 		return true
 	end
 end
-hook.Add( "PhysgunPickup", "ulxPlayerPickup", playerPickup, -5 ) -- Allow admins to move players. Call before the prop protection hook.
+hook.Add( "PhysgunPickup", "ulxPlayerPickup", playerPickup, hook.HIGH ) -- Allow admins to move players. Call before the prop protection hook.
 if SERVER then ULib.ucl.registerAccess( "ulx physgunplayer", ULib.ACCESS_ADMIN, "Ability to physgun other players", "Other" ) end
 
 local function playerDrop( ply, ent )

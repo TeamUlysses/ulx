@@ -196,7 +196,7 @@ function xgui.load_helpers()
 		end
 
 		table.insert( stack, { fn=fn, tag=tag, n=select( "#", ... ), ... } )
-		hook.Add( "Think", "XGUIQueueThink", onThink, -20 )
+		hook.Add( "Think", "XGUIQueueThink", onThink, hook.MONITOR_HIGH )
 	end
 
 	function xgui.flushQueue( tag )

@@ -216,7 +216,7 @@ if SERVER then
 			return gimpSays[ math.random( #gimpSays ) ]
 		end
 	end
-	hook.Add( "PlayerSay", "ULXGimpCheck", gimpCheck, 18 ) -- Very low priority
+	hook.Add( "PlayerSay", "ULXGimpCheck", gimpCheck, hook.LOW )
 end
 
 ------------------------------ Gag ------------------------------
@@ -264,7 +264,7 @@ if SERVER then
 			return
 		end
 	end
-	hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, 17 )
+	hook.Add( "PlayerSay", "ulxPlayerSay", playerSay, hook.LOW )
 	
 	local function meCheck( ply, strText, bTeam )
 		if ply.gimp or not ULib.isSandbox() then return end -- Don't mess
@@ -292,7 +292,7 @@ if SERVER then
 			return ""
 		end
 	end
-	hook.Add( "PlayerSay", "ULXMeCheck", meCheck, 18 ) -- Extremely low priority
+	hook.Add( "PlayerSay", "ULXMeCheck", meCheck, hook.LOW ) -- Extremely low priority
 end
 
 local function showWelcome( ply )

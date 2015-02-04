@@ -272,7 +272,7 @@ function xgui.init()
 end
 
 --Init the code when the server is ready
-hook.Add( "Initialize", "XGUI_InitServer", xgui.init, -1 )
+hook.Add( "Initialize", "XGUI_InitServer", xgui.init, hook.HIGH )
 
 --Call the modules postinit function when ULX is done loading. Should be called well after the Initialize hook.
 function xgui.postInit()

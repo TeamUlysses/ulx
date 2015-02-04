@@ -86,4 +86,4 @@ local function playerAccess( ply )
 		ULib.queueFunctionCall( ULib.kick, ply, "[ULX] Reserved slot, sorry!" ) -- Wait a frame so all access hooks can be called properly.
 	end
 end
-hook.Add( ULib.HOOK_UCLAUTH, "ULXReservedSlots", playerAccess, 20 ) -- Run at the end of auth
+hook.Add( ULib.HOOK_UCLAUTH, "ULXReservedSlots", playerAccess, hook.MONITOR_LOW ) -- Run at the end of auth

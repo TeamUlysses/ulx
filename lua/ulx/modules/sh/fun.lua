@@ -162,7 +162,7 @@ local function checkFireDeath( ply )
 		ply.ulx_ignited_until = nil
 	end
 end
-hook.Add( "PlayerDeath", "ULXCheckFireDeath", checkFireDeath )
+hook.Add( "PlayerDeath", "ULXCheckFireDeath", checkFireDeath, hook.MONITOR_HIGH )
 
 ------------------------------ Unigniteall ------------------------------
 function ulx.unigniteall( calling_ply )
@@ -611,7 +611,7 @@ local function jailDisconnectedCheck( ply )
 		ply.jail.unjail()
 	end
 end
-hook.Add( "PlayerDisconnected", "ULXJailDisconnectedCheck", jailDisconnectedCheck )
+hook.Add( "PlayerDisconnected", "ULXJailDisconnectedCheck", jailDisconnectedCheck, hook.MONITOR_HIGH )
 
 local function playerPickup( ply, ent )
 	if CLIENT then return end
@@ -620,7 +620,7 @@ local function playerPickup( ply, ent )
 		ent.physgunned_by[ ply ] = true
 	end
 end
-hook.Add( "PhysgunPickup", "ulxPlayerPickupJailCheck", playerPickup, -20 )
+hook.Add( "PhysgunPickup", "ulxPlayerPickupJailCheck", playerPickup, hook.MONITOR_HIGH )
 
 local function playerDrop( ply, ent )
 	if CLIENT then return end
@@ -748,7 +748,7 @@ local function ragdollDisconnectedCheck( ply )
 		ply.ragdoll:Remove()
 	end
 end
-hook.Add( "PlayerDisconnected", "ULXRagdollDisconnectedCheck", ragdollDisconnectedCheck )
+hook.Add( "PlayerDisconnected", "ULXRagdollDisconnectedCheck", ragdollDisconnectedCheck, hook.MONITOR_HIGH )
 
 ------------------------------ Maul ------------------------------
 local zombieDeath -- We need these registered up here because functions reference each other.
@@ -955,12 +955,12 @@ checkMaulDeath = function( ply, weapon, killer )
 		hook.Remove( "Think", "MaulMoreDamageThink" )
 	end
 end
-hook.Add( "PlayerDeath", "ULXCheckMaulDeath", checkMaulDeath, -15 ) -- Hook it first because we're changing speed. Want others to override us.
+hook.Add( "PlayerDeath", "ULXCheckMaulDeath", checkMaulDeath, hook.HIGH ) -- Hook it first because we're changing speed. Want others to override us.
 
 local function maulDisconnectedCheck( ply )
 	checkMaulDeath( ply ) -- Just run it through the death function
 end
-hook.Add( "PlayerDisconnected", "ULXMaulDisconnectedCheck", maulDisconnectedCheck )
+hook.Add( "PlayerDisconnected", "ULXMaulDisconnectedCheck", maulDisconnectedCheck, hook.MONITOR_HIGH )
 
 ------------------------------ Strip ------------------------------
 function ulx.stripweapons( calling_ply, target_plys )

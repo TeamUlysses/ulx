@@ -136,7 +136,7 @@ local function doCfg()
 end
 
 if game.IsDedicated() then
-	hook.Add( "Initialize", "ULXDoCfg", doCfg, -20 )
+	hook.Add( "Initialize", "ULXDoCfg", doCfg, hook.MONITOR_HIGH )
 else
-	hook.Add( "PlayerInitialSpawn", "ULXDoCfg", doCfg, -20 ) -- TODO can we make this initialize too?
+	hook.Add( "PlayerInitialSpawn", "ULXDoCfg", doCfg, hook.MONITOR_HIGH ) -- TODO can we make this initialize too?
 end

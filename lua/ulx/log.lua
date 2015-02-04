@@ -175,9 +175,8 @@ local function playerSay( ply, text, private )
 			ulx.logString( string.format( "%s: %s", ply:Nick(), text ) )
 		end
 	end
-	return nil
 end
-hook.Add( "PlayerSay", "ULXLogSay", playerSay, 20 )
+hook.Add( "PlayerSay", "ULXLogSay", playerSay, hook.MONITOR_LOW )
 
 local joinTimer = {}
 local mapStartTime = os.time()
@@ -187,7 +186,7 @@ local function playerConnect( name, address )
 		ulx.logString( string.format( "Client \"%s\" connected.", name ) )
 	end
 end
-hook.Add( "PlayerConnect", "ULXLogConnect", playerConnect, -20 )
+hook.Add( "PlayerConnect", "ULXLogConnect", playerConnect, hook.MONITOR_HIGH )
 
 local function playerInitialSpawn( ply )
 	local ip = ply:IPAddress()
@@ -203,7 +202,7 @@ local function playerInitialSpawn( ply )
 		echoToAdmins( txt )
 	end
 end
-hook.Add( "PlayerInitialSpawn", "ULXLogInitialSpawn", playerInitialSpawn, -19 )
+hook.Add( "PlayerInitialSpawn", "ULXLogInitialSpawn", playerInitialSpawn, hook.MONITOR_HIGH )
 
 local function playerDisconnect( ply )
 	local txt = string.format( "Dropped \"%s\" from server<%s>", ply:Nick(), ply:SteamID() )
@@ -215,7 +214,7 @@ local function playerDisconnect( ply )
 		echoToAdmins( txt )
 	end
 end
-hook.Add( "PlayerDisconnected", "ULXLogDisconnect", playerDisconnect, -20 )
+hook.Add( "PlayerDisconnected", "ULXLogDisconnect", playerDisconnect, hook.MONITOR_HIGH )
 
 local function playerDeath( victim, weapon, killer )
 	if logEvents:GetBool() then
@@ -233,7 +232,7 @@ local function playerDeath( victim, weapon, killer )
 		end
 	end
 end
-hook.Add( "PlayerDeath", "ULXLogDeath", playerDeath, -20 )
+hook.Add( "PlayerDeath", "ULXLogDeath", playerDeath, hook.MONITOR_HIGH )
 
 -- Check name changes
 local function nameCheck( ply, oldnick, newnick )
@@ -254,7 +253,7 @@ local function shutDown()
 		ulx.logString( "Server is shutting down/changing levels." )
 	end
 end
-hook.Add( "ShutDown", "ULXLogShutDown", shutDown, -20 )
+hook.Add( "ShutDown", "ULXLogShutDown", shutDown, hook.MONITOR_HIGH )
 
 function ulx.logSpawn( txt )
 	if logSpawns:GetBool() then
@@ -276,32 +275,32 @@ end
 local function propSpawn( ply, model, ent )
 	ulx.logSpawn( string.format( "%s<%s> spawned model %s", ply:Nick(), ply:SteamID(), ulx.standardizeModel( model ) ) )
 end
-hook.Add( "PlayerSpawnedProp", "ULXLogPropSpawn", propSpawn, 20 )
+hook.Add( "PlayerSpawnedProp", "ULXLogPropSpawn", propSpawn, hook.MONITOR_LOW )
 
 local function ragdollSpawn( ply, model, ent )
 	ulx.logSpawn( string.format( "%s<%s> spawned ragdoll %s", ply:Nick(), ply:SteamID(), ulx.standardizeModel( model ) ) )
 end
-hook.Add( "PlayerSpawnedRagdoll", "ULXLogRagdollSpawn", ragdollSpawn, 20 )
+hook.Add( "PlayerSpawnedRagdoll", "ULXLogRagdollSpawn", ragdollSpawn, hook.MONITOR_LOW )
 
 local function effectSpawn( ply, model, ent )
 	ulx.logSpawn( string.format( "%s<%s> spawned effect %s", ply:Nick(), ply:SteamID(), ulx.standardizeModel( model ) ) )
 end
-hook.Add( "PlayerSpawnedEffect", "ULXLogEffectSpawn", effectSpawn, 20 )
+hook.Add( "PlayerSpawnedEffect", "ULXLogEffectSpawn", effectSpawn, hook.MONITOR_LOW )
 
 local function vehicleSpawn( ply, ent )
 	ulx.logSpawn( string.format( "%s<%s> spawned vehicle %s", ply:Nick(), ply:SteamID(), ulx.standardizeModel( ent:GetModel() or "unknown" ) ) )
 end
-hook.Add( "PlayerSpawnedVehicle", "ULXLogVehicleSpawn", vehicleSpawn, 20 )
+hook.Add( "PlayerSpawnedVehicle", "ULXLogVehicleSpawn", vehicleSpawn, hook.MONITOR_LOW )
 
 local function sentSpawn( ply, ent )
 	ulx.logSpawn( string.format( "%s<%s> spawned sent %s", ply:Nick(), ply:SteamID(), ent:GetClass() ) )
 end
-hook.Add( "PlayerSpawnedSENT", "ULXLogSentSpawn", sentSpawn, 20 )
+hook.Add( "PlayerSpawnedSENT", "ULXLogSentSpawn", sentSpawn, hook.MONITOR_LOW )
 
 local function NPCSpawn( ply, ent )
 	ulx.logSpawn( string.format( "%s<%s> spawned NPC %s", ply:Nick(), ply:SteamID(), ent:GetClass() ) )
 end
-hook.Add( "PlayerSpawnedNPC", "ULXLogNPCSpawn",NPCSpawn )
+hook.Add( "PlayerSpawnedNPC", "ULXLogNPCSpawn", NPCSpawn, hook.MONITOR_LOW )
 
 local default_color
 local console_color
