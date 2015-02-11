@@ -161,7 +161,7 @@ function xgui.init( authedply )
 
 	xgui.processModules()
 end
-hook.Add( "UCLAuthed", "InitXGUI", xgui.init, hook.MONITOR_LOW )
+hook.Add( "UCLAuthed", "InitXGUI", xgui.init, MONITOR_LOW )
 
 function xgui.saveClientSettings()
 	local output = "// This file stores clientside settings for XGUI.\n"

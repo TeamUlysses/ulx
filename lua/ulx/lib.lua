@@ -51,14 +51,14 @@ local function checkDeath( ply, weapon, killer )
 		return true -- Don't register their death on HUD
 	end
 end
-hook.Add( "PlayerDeath", "ULXCheckDeath", checkDeath, hook.HIGH ) -- Hook it first because we're blocking their death.
+hook.Add( "PlayerDeath", "ULXCheckDeath", checkDeath, HOOK_HIGH ) -- Hook it first because we're blocking their death.
 
 local function checkSuicide( ply )
 	if ply.ulxNoDie then
 		return false
 	end
 end
-hook.Add( "CanPlayerSuicide", "ULXCheckSuicide", checkSuicide, hook.HIGH )
+hook.Add( "CanPlayerSuicide", "ULXCheckSuicide", checkSuicide, HOOK_HIGH )
 
 function ulx.getVersion() -- This exists on the client as well, so feel free to use it!
 	local version
