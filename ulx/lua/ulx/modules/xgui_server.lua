@@ -149,7 +149,7 @@ function xgui.init()
 			local chunks = {}
 			for _, dtype in ipairs( datatypes ) do
 				if xgui.dataTypes[dtype] then
-					data = xgui.dataTypes[dtype]
+					local data = xgui.dataTypes[dtype]
 					if ULib.ucl.query( ply, data.access ) then
 						local t = data.getData()
 						local size = data.maxchunk or 0 --Split the table into "chunks" of per-datatype specified size to even out data flow. 0 to disable
