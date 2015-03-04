@@ -3,7 +3,7 @@ xgui = {}
 
 --Make a spot for modules to store data and hooks
 xgui.data = {}
-xgui.hook = { onProcessModules={}, onOpen={} }
+xgui.hook = { onProcessModules={}, onOpen={}, onClose={} }
 --Call this function in your client-side module code to ensure the data types have been instantiated on the client.
 function xgui.prepareDataType( dtype, location )
 	if not xgui.data[dtype] then
@@ -389,6 +389,9 @@ function xgui.hide()
 	xgui.anchor:SetMouseInputEnabled( false )
 	xgui.base.animClose()
 	CloseDermaMenus()
+
+	--Calls the functions requesting to hook when XGUI is closed
+	xgui.callUpdate( "onClose" )
 end
 
 function xgui.toggle( tabname )
