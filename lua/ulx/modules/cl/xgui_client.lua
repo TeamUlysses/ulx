@@ -72,10 +72,7 @@ if not xgui.settings.animIntype then xgui.settings.animIntype = 1 end
 if not xgui.settings.animOuttype then xgui.settings.animOuttype = 1 end
 
 
-function xgui.init( authedply )
-	if not authedply then authedply = LocalPlayer() end
-	if authedply ~= LocalPlayer() then return end
-
+function xgui.init( ply )
 	xgui.load_helpers()
 
 	--Initiate the base window (see xgui_helpers.lua for code)
@@ -156,12 +153,11 @@ function xgui.init( authedply )
 	--Check if the server has XGUI installed
 	RunConsoleCommand( "_xgui", "getInstalled" )
 
-	hook.Remove( "UCLAuthed", "InitXGUI" )
 	xgui.initialized = true
 
 	xgui.processModules()
 end
-hook.Add( "UCLAuthed", "InitXGUI", xgui.init, 20 )
+hook.Add( ULib.HOOK_LOCALPLAYERREADY, "InitXGUI", xgui.init, 20 )
 
 function xgui.saveClientSettings()
 	local output = "// This file stores clientside settings for XGUI.\n"
