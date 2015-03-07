@@ -80,6 +80,7 @@ v3.62 - *(00/00/00)*
 	* [FIX] Bug when changing weapons while cloaked, weapons would stay invisible after uncloaking. (Thanks Z0mb1n3).
 	* [FIX] Could not assign BOTs to groups via ulx adduserid or XGUI. (Thanks RhapsodySL).
 	* [FIX] Fixed bug where XGUI would not start on dev branch of Garry's Mod. Changed to init on ULib.HOOK_LOCALPLAYERREADY instead of ULib.HOOK_UCLAUTH.
+	* [FIX] MOTD not enabled message would display for all players instead of the player who tried to open the motd. (Thanks TheClonker).
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.
