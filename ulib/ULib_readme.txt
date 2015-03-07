@@ -52,6 +52,7 @@ v2.60 - *(00/00/00)*
 	* [FIX] Hook priority being messed up for parent hook when hooks are called recursively (Thanks, NoBrainCZ).
 	* [FIX] Some fiddly-bits with group case-sensitivity (Thanks, BryanFlannery).
 	* [CHANGE] hook.Run to match Garry's changes.
+	* [CHANGE] ULib.HOOK_LOCALPLAYERREADY is now called on InitPostEntity instead of OnEntCreate.
 
 v2.51 - *(08/30/13)*
 	* [FIX] ULib.ucl.userAllow not working on disconnected players (Thanks, JackYack13).
