@@ -66,6 +66,7 @@ v3.62 - *(00/00/00)*
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [ADD] XGUI: Added more sorting and filtering options for bans.
 	* [ADD] "ulx stopvote" to stop a vote currently in progress (Thanks, LuaTenshi).
+	* [ADD] XGUI: Added "onClose" event for modules that need it. (Suggested by arduinium).
 	* [FIX] Ban reason and the person who started the voteban is now reported in "ulx voteban" bans (Thanks iSnipeu).
 	* [FIX] An API change causing an error to be thrown at the end of "ulx maul" (Thanks Decicus).
 	* [FIX] NULL entity error after votekick on a player that left the server, now sends message stating that votekicked player already left.
@@ -78,6 +79,8 @@ v3.62 - *(00/00/00)*
 	* [FIX] Bug with spectate and respawning (Thanks Sjokomelk).
 	* [FIX] Bug when changing weapons while cloaked, weapons would stay invisible after uncloaking. (Thanks Z0mb1n3).
 	* [FIX] Could not assign BOTs to groups via ulx adduserid or XGUI. (Thanks RhapsodySL).
+	* [FIX] Fixed bug where XGUI would not start on dev branch of Garry's Mod. Changed to init on ULib.HOOK_LOCALPLAYERREADY instead of ULib.HOOK_UCLAUTH.
+	* [FIX] MOTD not enabled message would display for all players instead of the player who tried to open the motd. (Thanks TheClonker).
 	* [CHANGE] "PlayerSay" hooks are now only called serverside. (Thanks NoBrainCZ).
 	* [CHANGE] Logging now prints how long a user took to join the server.
 	* [CHANGE] XGUI: Updated cvarlist for sandbox and wiremod limits.

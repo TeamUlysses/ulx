@@ -3,7 +3,7 @@ xgui = {}
 
 --Make a spot for modules to store data and hooks
 xgui.data = {}
-xgui.hook = { onProcessModules={}, onOpen={} }
+xgui.hook = { onProcessModules={}, onOpen={}, onClose={} }
 --Call this function in your client-side module code to ensure the data types have been instantiated on the client.
 function xgui.prepareDataType( dtype, location )
 	if not xgui.data[dtype] then
@@ -72,10 +72,7 @@ if not xgui.settings.animIntype then xgui.settings.animIntype = 1 end
 if not xgui.settings.animOuttype then xgui.settings.animOuttype = 1 end
 
 
-function xgui.init( authedply )
-	if not authedply then authedply = LocalPlayer() end
-	if authedply ~= LocalPlayer() then return end
-
+function xgui.init( ply )
 	xgui.load_helpers()
 
 	--Initiate the base window (see xgui_helpers.lua for code)
@@ -156,12 +153,11 @@ function xgui.init( authedply )
 	--Check if the server has XGUI installed
 	RunConsoleCommand( "_xgui", "getInstalled" )
 
-	hook.Remove( "UCLAuthed", "InitXGUI" )
 	xgui.initialized = true
 
 	xgui.processModules()
 end
-hook.Add( "UCLAuthed", "InitXGUI", xgui.init, MONITOR_LOW )
+hook.Add( ULib.HOOK_LOCALPLAYERREADY, "InitXGUI", xgui.init, MONITOR_LOW )
 
 function xgui.saveClientSettings()
 	local output = "// This file stores clientside settings for XGUI.\n"
@@ -389,6 +385,9 @@ function xgui.hide()
 	xgui.anchor:SetMouseInputEnabled( false )
 	xgui.base.animClose()
 	CloseDermaMenus()
+
+	--Calls the functions requesting to hook when XGUI is closed
+	xgui.callUpdate( "onClose" )
 end
 
 function xgui.toggle( tabname )

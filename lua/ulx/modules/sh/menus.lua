@@ -35,7 +35,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		end
 
 		if GetConVarString( "ulx_showMotd" ) == "0" then
-			ULib.tsay( ply, "The MOTD has been disabled on this server." )
+			ULib.tsay( calling_ply, "The MOTD has been disabled on this server." )
 			return
 		end
 
