@@ -88,6 +88,7 @@ v3.62 - *(00/00/00)*
 	* [CHANGE] XGUI: Ban list is now paginated instead of a giant scrollable list.
 	* [CHANGE] XGUI: ULX Bans and other (or "Source Bans") are no longer separated.
 	* [CHANGE] ULX vote variable is now global so other addons can tell if a vote is in progress. ulx.doVote() also returns whether or not it actually started a vote (Thanks for the ideas, arduinium).
+	* [CHANGE] XGUI: Changed gamemode dropdown on maps tab to honor player/group restrictions. (Thanks chaos12135).
 
 v3.61 - *(08/30/13)*
 	* [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
