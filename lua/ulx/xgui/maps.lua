@@ -107,7 +107,13 @@ function maps.updateGamemodes()
 	maps.gamemode:Clear()
 	maps.gamemode:SetText( lastselected )
 	maps.gamemode:AddChoice( "<default>" )
-	for _, v in ipairs( ulx.gamemodes ) do
+
+	-- Get allowed gamemodes
+	local access, tag = LocalPlayer():query( "ulx map" )
+	local restrictions = {}
+	ULib.cmds.StringArg.processRestrictions( restrictions, ULib.cmds.translatedCmds['ulx map'].args[3], ulx.getTagArgNum( tag, 2 ) )
+
+	for _, v in ipairs( restrictions.restrictedCompletes ) do
 		maps.gamemode:AddChoice( v )
 	end
 end
