@@ -417,7 +417,9 @@ function xgui.getChunk( flag, datatype, data )
 		xgui.chunkbox:Progress( datatype )
 		if flag == -1 then return --Ignore these chunks
 		elseif flag == 0 then --Data should be purged
-			table.Empty( xgui.data[datatype] )
+			if xgui.data[datatype] then
+				table.Empty( xgui.data[datatype] )
+			end
 			xgui.flushQueue( datatype )
 			xgui.callUpdate( datatype, "clear" )
 		elseif flag == 1 then
