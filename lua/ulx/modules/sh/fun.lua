@@ -611,7 +611,7 @@ local function jailDisconnectedCheck( ply )
 		ply.jail.unjail()
 	end
 end
-hook.Add( "PlayerDisconnected", "ULXJailDisconnectedCheck", jailDisconnectedCheck )
+hook.Add( "PlayerDisconnected", "ULXJailDisconnectedCheck", jailDisconnectedCheck, -20 )
 
 local function playerPickup( ply, ent )
 	if CLIENT then return end
