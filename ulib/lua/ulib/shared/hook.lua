@@ -141,7 +141,7 @@ end
 	Revisions:
 	
 		2.50 - Created to match GM13 API
-		2.60 - Modified to match latest Garry-changes
+		2.52 - Modified to match latest Garry-changes
 ]]
 function Run( name, ... )
 	return Call( name, gmod and gmod.GetGamemode() or nil, ... )
@@ -164,11 +164,6 @@ function Call( name, gm, ... )
 		sortHooks( resort[ i ] )
 	end
 	resort = {}
-	
-	-- If called from hook.Run then gm will be nil.
-	if gm == nil and gmod ~= nil then
-		gm = gmod.GetGamemode()
-	end
 
 	local HookTable = Hooks[ name ]
 

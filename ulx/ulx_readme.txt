@@ -3,7 +3,7 @@ Title: ULX Readme
 __ULX__
 Version 3.62
 
-*ULX v3.62 (released 00/00/00)*
+*ULX v3.62 (released 03/09/15)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -61,7 +61,7 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
-v3.62 - *(00/00/00)*
+v3.62 - *(03/09/15)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 	* [ADD] XGUI: Added more sorting and filtering options for bans.

@@ -16,11 +16,11 @@
 ;--------------------------------
 ;General
 
-!define ULX_VERSION 3.61
-!define ULIB_VERSION 2.51
+!define ULX_VERSION 3.62
+!define ULIB_VERSION 2.52
 
 ; The file to write
-OutFile "install-ulx-v3_61.exe"
+OutFile "install-ulx-v3_62.exe"
 
 ; The name of the installer
 Name "ULX Installer"
