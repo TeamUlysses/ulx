@@ -624,7 +624,7 @@ hook.Add( "PhysgunPickup", "ulxPlayerPickupJailCheck", playerPickup, HOOK_MONITO
 
 local function playerDrop( ply, ent )
 	if CLIENT then return end
-	if ent:IsPlayer() then
+	if ent:IsPlayer() and ent.physgunned_by then
 		ent.physgunned_by[ ply ] = nil
 	end
 end
