@@ -162,7 +162,7 @@ local function checkFireDeath( ply )
 		ply.ulx_ignited_until = nil
 	end
 end
-hook.Add( "PlayerDeath", "ULXCheckFireDeath", checkFireDeath, MONITOR_HIGH )
+hook.Add( "PlayerDeath", "ULXCheckFireDeath", checkFireDeath, HOOK_MONITOR_HIGH )
 
 ------------------------------ Unigniteall ------------------------------
 function ulx.unigniteall( calling_ply )
@@ -611,7 +611,7 @@ local function jailDisconnectedCheck( ply )
 		ply.jail.unjail()
 	end
 end
-hook.Add( "PlayerDisconnected", "ULXJailDisconnectedCheck", jailDisconnectedCheck, MONITOR_HIGH )
+hook.Add( "PlayerDisconnected", "ULXJailDisconnectedCheck", jailDisconnectedCheck, HOOK_MONITOR_HIGH )
 
 local function playerPickup( ply, ent )
 	if CLIENT then return end
@@ -620,7 +620,7 @@ local function playerPickup( ply, ent )
 		ent.physgunned_by[ ply ] = true
 	end
 end
-hook.Add( "PhysgunPickup", "ulxPlayerPickupJailCheck", playerPickup, MONITOR_HIGH )
+hook.Add( "PhysgunPickup", "ulxPlayerPickupJailCheck", playerPickup, HOOK_MONITOR_HIGH )
 
 local function playerDrop( ply, ent )
 	if CLIENT then return end
@@ -748,7 +748,7 @@ local function ragdollDisconnectedCheck( ply )
 		ply.ragdoll:Remove()
 	end
 end
-hook.Add( "PlayerDisconnected", "ULXRagdollDisconnectedCheck", ragdollDisconnectedCheck, MONITOR_HIGH )
+hook.Add( "PlayerDisconnected", "ULXRagdollDisconnectedCheck", ragdollDisconnectedCheck, HOOK_MONITOR_HIGH )
 
 ------------------------------ Maul ------------------------------
 local zombieDeath -- We need these registered up here because functions reference each other.
@@ -960,7 +960,7 @@ hook.Add( "PlayerDeath", "ULXCheckMaulDeath", checkMaulDeath, HOOK_HIGH ) -- Hoo
 local function maulDisconnectedCheck( ply )
 	checkMaulDeath( ply ) -- Just run it through the death function
 end
-hook.Add( "PlayerDisconnected", "ULXMaulDisconnectedCheck", maulDisconnectedCheck, MONITOR_HIGH )
+hook.Add( "PlayerDisconnected", "ULXMaulDisconnectedCheck", maulDisconnectedCheck, HOOK_MONITOR_HIGH )
 
 ------------------------------ Strip ------------------------------
 function ulx.stripweapons( calling_ply, target_plys )

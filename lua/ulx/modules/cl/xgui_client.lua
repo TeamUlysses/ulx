@@ -157,7 +157,7 @@ function xgui.init( ply )
 
 	xgui.processModules()
 end
-hook.Add( ULib.HOOK_LOCALPLAYERREADY, "InitXGUI", xgui.init, MONITOR_LOW )
+hook.Add( ULib.HOOK_LOCALPLAYERREADY, "InitXGUI", xgui.init, HOOK_MONITOR_LOW )
 
 function xgui.saveClientSettings()
 	local output = "// This file stores clientside settings for XGUI.\n"

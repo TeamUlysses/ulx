@@ -175,23 +175,23 @@ function ulx.spectate( calling_ply, target_ply )
 
 	local pos = calling_ply:GetPos()
 	local ang = calling_ply:GetAngles()
-	
+
 	local function stopSpectate( player )
 		if player ~= calling_ply then -- For the spawning, make sure it's them doing the spawning
 			return
 		end
-		
+
 		hook.Remove( "PlayerSpawn", "ulx_unspectatedspawn_" .. calling_ply:EntIndex() )
 		hook.Remove( "KeyPress", "ulx_unspectate_" .. calling_ply:EntIndex() )
 		hook.Remove( "PlayerDisconnected", "ulx_unspectatedisconnect_" .. calling_ply:EntIndex() )
-		
+
 		if player.ULXHasGod then player:GodEnable() end -- Restore if player had ulx god.
 		player:UnSpectate() -- Need this for DarkRP for some reason, works fine without it in sbox
 		ulx.fancyLogAdmin( calling_ply, true, "#A stopped spectating #T", target_ply )
 		ulx.clearExclusive( calling_ply )
 	end
-	hook.Add( "PlayerSpawn", "ulx_unspectatedspawn_" .. calling_ply:EntIndex(), stopSpectate, MONITOR_HIGH )
-	
+	hook.Add( "PlayerSpawn", "ulx_unspectatedspawn_" .. calling_ply:EntIndex(), stopSpectate, HOOK_MONITOR_HIGH )
+
 	local function unspectate( player, key )
 		if calling_ply ~= player then return end -- Not the person we want
 		if key ~= IN_FORWARD and key ~= IN_BACK and key ~= IN_MOVELEFT and key ~= IN_MOVERIGHT then return end -- Not a key we're interested in
@@ -202,14 +202,14 @@ function ulx.spectate( calling_ply, target_ply )
 		player:SetPos( pos )
 		player:SetAngles( ang )
 	end
-	hook.Add( "KeyPress", "ulx_unspectate_" .. calling_ply:EntIndex(), unspectate, MONITOR_LOW )
+	hook.Add( "KeyPress", "ulx_unspectate_" .. calling_ply:EntIndex(), unspectate, HOOK_MONITOR_LOW )
 
 	local function disconnect( player ) -- We want to watch for spectator or target disconnect
 		if player == target_ply or player == calling_ply then -- Target or spectator disconnecting
 			unspectate( calling_ply, IN_FORWARD )
 		end
 	end
-	hook.Add( "PlayerDisconnected", "ulx_unspectatedisconnect_" .. calling_ply:EntIndex(), disconnect, MONITOR_HIGH )
+	hook.Add( "PlayerDisconnected", "ulx_unspectatedisconnect_" .. calling_ply:EntIndex(), disconnect, HOOK_MONITOR_HIGH )
 
 	calling_ply:Spectate( OBS_MODE_IN_EYE )
 	calling_ply:SpectateEntity( target_ply )
