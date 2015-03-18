@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.62
+Version 3.70
 
-*ULX v3.62 (released 03/09/15)*
+*ULX v3.70 (released 00/00/00)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 
@@ -61,6 +61,9 @@ also access the menu by saying "!menu".__
 Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
+v3.70 - *(00/00/00)*
+	* [CHANGE] Hook calls to match ULib's new format.
+
 v3.62 - *(03/09/15)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
 	* [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
