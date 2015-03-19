@@ -39,7 +39,7 @@ function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 	ulx.voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, args={...} }
 
 	timer.Create( "ULXVoteTimeout", timeout, 1, ulx.voteDone )
-	
+
 	return true
 end
 
@@ -143,7 +143,7 @@ function ulx.stopVote( calling_ply )
 		ULib.tsayError( calling_ply, "There is no vote currently in progress.", true )
 		return
 	end
-	
+
 	ulx.voteDone( true )
 	ulx.fancyLogAdmin( calling_ply, "#A has stopped the current vote." )
 end
@@ -181,20 +181,27 @@ local function voteMapDone( t, argv, ply )
 	local minVotes = GetConVarNumber( "ulx_votemap2Minvotes" )
 	local str
 	local changeTo
+	-- Figure out the map to change to, if we're changing
+	if #argv > 1 then
+		changeTo = t.options[ winner ]
+	else
+		changeTo = argv[ 1 ]
+	end
+
 	if (#argv < 2 and winner ~= 1) or not winner or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: Vote was unsuccessful."
-	else
+	elseif ply:IsValid() then
 		str = "Vote results: Option '" .. t.options[ winner ] .. "' won, changemap pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
 
-		-- Figure out the map to change to.
-		if #argv > 1 then
-			changeTo = t.options[ winner ]
-		else
-			changeTo = argv[ 1 ]
-		end
-
 		ulx.doVote( "Accept result and changemap to " .. changeTo .. "?", { "Yes", "No" }, voteMapDone2, 30000, { ply }, true, changeTo, ply )
+	else -- It's the server console, let's roll with it
+		str = "Vote results: Option '" .. t.options[ winner ] .. "' won. (" .. winnernum .. "/" .. t.voters .. ")"
+		ULib.tsay( _, str )
+		ulx.logString( str )
+		ULib.consoleCommand( "changelevel " .. changeTo .. "\n" )
+		return
 	end
+
 	ULib.tsay( _, str ) -- TODO, color?
 	ulx.logString( str )
 	if game.IsDedicated() then Msg( str .. "\n" ) end
@@ -268,11 +275,14 @@ local function voteKickDone( t, target, time, ply, reason )
 	if winner ~= 1 or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: User will not be kicked. (" .. (results[ 1 ] or "0") .. "/" .. t.voters .. ")"
 	else
-		if target:IsValid() then
+		if not target:IsValid() then
+			str = "Vote results: User voted to be kicked, but has already left."
+		elseif ply:IsValid() then
 			str = "Vote results: User will now be kicked, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
 			ulx.doVote( "Accept result and kick " .. target:Nick() .. "?", { "Yes", "No" }, voteKickDone2, 30000, { ply }, true, target, time, ply, reason )
-		else
-			str = "Vote results: User voted to be kicked, but has already left."
+		else -- Vote from server console, roll with it
+			str = "Vote results: User will now be kicked. (" .. winnernum .. "/" .. t.voters .. ")"
+			ULib.kick( target, "Vote kick successful." )
 		end
 	end
 
@@ -305,27 +315,22 @@ if SERVER then ulx.convar( "votekickMinvotes", "2", _, ULib.ACCESS_ADMIN ) end -
 
 
 
-local function voteBanDone2( t, target, time, ply, reason )
+local function voteBanDone2( t, nick, steamid, time, ply, reason )
 	local shouldBan = false
 
 	if t.results[ 1 ] and t.results[ 1 ] > 0 then
-		ulx.logUserAct( ply, target, "#A approved the voteban against #T (" .. time .. " minutes) (" .. (reason or "") .. ")" )
+		ulx.fancyLogAdmin( ply, "#A approved the voteban against #s (#s minutes) (#s))", nick, time, reason or "" )
 		shouldBan = true
 	else
-		ulx.logUserAct( ply, target, "#A denied the voteban against #T" )
+		ulx.fancyLogAdmin( ply, "#A denied the voteban against #s", nick )
 	end
 
 	if shouldBan then
-		ULib.ban( target, time, reason, ply )
-		--[[if reason and reason ~= "" then
-			ULib.kick( target, "Vote ban successful. (" .. reason .. ")" )
-		else
-			ULib.kick( target, "Vote ban successful." )
-		end]]--
+		ULib.addBan( steamid, time, reason, nick, ply )
 	end
 end
 
-local function voteBanDone( t, target, time, ply, reason )
+local function voteBanDone( t, nick, steamid, time, ply, reason )
 	local results = t.results
 	local winner
 	local winnernum = 0
@@ -342,8 +347,14 @@ local function voteBanDone( t, target, time, ply, reason )
 	if winner ~= 1 or winnernum < minVotes or winnernum / t.voters < ratioNeeded then
 		str = "Vote results: User will not be banned. (" .. (results[ 1 ] or "0") .. "/" .. t.voters .. ")"
 	else
-		str = "Vote results: User will now be banned for " .. time .. " minutes, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
-		ulx.doVote( "Accept result and ban " .. target:Nick() .. "?", { "Yes", "No" }, voteBanDone2, 30000, { ply }, true, target, time, ply, reason )
+		reason = ("[ULX Voteban] " .. (reason or "")):Trim()
+		if ply:IsValid() then
+			str = "Vote results: User will now be banned, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
+			ulx.doVote( "Accept result and ban " .. nick .. "?", { "Yes", "No" }, voteBanDone2, 30000, { ply }, true, nick, steamid, time, ply, reason )
+		else -- Vote from server console, roll with it
+			str = "Vote results: User will now be banned. (" .. winnernum .. "/" .. t.voters .. ")"
+			ULib.addBan( steamid, time, reason, nick, ply )
+		end
 	end
 
 	ULib.tsay( _, str ) -- TODO, color?
@@ -362,7 +373,7 @@ function ulx.voteban( calling_ply, target_ply, minutes, reason )
 		msg = msg .. " (" .. reason .. ")"
 	end
 
-	ulx.doVote( msg, { "Yes", "No" }, voteBanDone, _, _, _, target_ply, minutes, calling_ply, reason )
+	ulx.doVote( msg, { "Yes", "No" }, voteBanDone, _, _, _, target_ply:Nick(), target_ply:SteamID(), minutes, calling_ply, reason )
 	if reason and reason ~= "" then
 		ulx.fancyLogAdmin( calling_ply, "#A started a voteban of #i minute(s) against #T (#s)", minutes, target_ply, reason )
 	else

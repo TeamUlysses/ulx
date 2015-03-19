@@ -67,6 +67,8 @@ v3.70 - *(00/00/00)*
 	* [FIX] XGUI: Error if the default settings/users.txt file was missing.
 	* [FIX] Gamemode list includes workshop addons now (Thanks, jason2010).
 	* [FIX] "ulx ent" parameter parsing (Thanks, Zombine).
+	* [FIX] "ulx voteban" can now ban the user even if they disconnect after the vote starts.
+	* [FIX] Vote commands now work properly from server console.
 	* [CHANGE] Hook calls to match ULib's new format.
 
 v3.62 - *(03/09/15)*
