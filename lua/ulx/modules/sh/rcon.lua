@@ -93,7 +93,9 @@ function ulx.ent( calling_ply, classname, params )
 
 	newEnt:SetPos( vector ) -- Note that the position can be overridden by the user's flags
 
-	params:gsub( "([%w%p]+)\"?:\"?([%w%p]+)", function( key, value )
+	params:gsub( "([^|:\"]+)\"?:\"?([^|]+)", function( key, value )
+		key = key:Trim()
+		value = value:Trim()
 		newEnt:SetKeyValue( key, value )
 	end )
 
@@ -113,6 +115,6 @@ function ulx.ent( calling_ply, classname, params )
 end
 local ent = ulx.command( CATEGORY_NAME, "ulx ent", ulx.ent )
 ent:addParam{ type=ULib.cmds.StringArg, hint="classname" }
-ent:addParam{ type=ULib.cmds.StringArg, hint="<flag>:<value>", ULib.cmds.takeRestOfLine, ULib.cmds.optional }
+ent:addParam{ type=ULib.cmds.StringArg, hint="<flag> : <value> |", ULib.cmds.takeRestOfLine, ULib.cmds.optional }
 ent:defaultAccess( ULib.ACCESS_SUPERADMIN )
-ent:help( "Spawn an ent, separate flag and value with ':'." )
+ent:help( "Spawn an ent, separate flag and value with ':', flag:value pairs with '|'." )
