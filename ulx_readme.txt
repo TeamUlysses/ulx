@@ -62,6 +62,7 @@ Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
 v3.70 - *(00/00/00)*
+	* [FIX] Gamemode list includes workshop addons now (Thanks, jason2010).
 	* [CHANGE] Hook calls to match ULib's new format.
 
 v3.62 - *(03/09/15)*

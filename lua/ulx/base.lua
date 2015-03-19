@@ -53,13 +53,11 @@ do
 	table.sort( ulx.maps ) -- Make sure it's alphabetical
 
 	ulx.gamemodes = {}
-	local _, gamemodes = file.Find( "gamemodes/*", "GAME" )
-
-	for _, gamemode in ipairs( gamemodes ) do
-		if ULib.fileIsDir( "gamemodes/" .. gamemode ) and ULib.fileExists( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt" ) and not util.tobool( util.KeyValuesToTable( ULib.fileRead( "gamemodes/" .. gamemode .. "/" .. gamemode .. ".txt" ) ).hide ) then
-			table.insert( ulx.gamemodes, gamemode:lower() )
-		end
+	local fromEngine = engine.GetGamemodes()
+	for i=1, #fromEngine do
+		table.insert( ulx.gamemodes, fromEngine[ i ].name:lower() )
 	end
+
 	table.sort( ulx.gamemodes ) -- Alphabetize
 end
 
