@@ -12,13 +12,13 @@ function xlib.makecheckbox( t )
 	pnl:SizeToContents()
 	pnl:SetValue( t.value or 0 )
 	if t.convar then pnl:SetConVar( t.convar ) end
-	
+
 	if t.textcolor then
 		pnl:SetTextColor( t.textcolor )
 	else
 		pnl:SetTextColor( SKIN.text_dark )
 	end
-	
+
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
 		if t.tooltipwidth ~= 0 then
@@ -26,14 +26,14 @@ function xlib.makecheckbox( t )
 		end
 		pnl:SetToolTip( t.tooltip )
 	end
-	
+
 	function pnl:SetDisabled( val )
 		pnl.disabled = val
 		pnl:SetMouseInputEnabled( not val )
 		pnl:SetAlpha( val and 128 or 255 )
 	end
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
-	
+
 	--Work around for bug where changing the parent of a disabled textbox reenables mouse input.
 	local tempfunc = pnl.SetParent
 	pnl.SetParent = function( self, parent )
@@ -41,7 +41,7 @@ function xlib.makecheckbox( t )
 		self:SetDisabled( self.disabled )
 		return ret
 	end
-	
+
 	--Replicated Convar Updating
 	if t.repconvar then
 		xlib.checkRepCvarCreated( t.repconvar )
@@ -75,7 +75,7 @@ function xlib.makelabel( t )
 		pnl:SetToolTip( t.tooltip )
 		pnl:SetMouseInputEnabled( true )
 	end
-	
+
 	if t.font then pnl:SetFont( t.font ) end
 	if t.w and t.wordwrap then
 		pnl:SetText( xlib.wordWrap( t.label, t.w, t.font or "Default" ) )
@@ -95,12 +95,12 @@ end
 function xlib.makelistlayout( t )
 	local pnl = vgui.Create( "DListLayout" )
 	pnl.scroll = vgui.Create( "DScrollPanel", t.parent )
-	
+
 	pnl.scroll:SetPos( t.x, t.y )
 	pnl.scroll:SetSize( t.w, t.h )
 	pnl:SetSize( t.w, t.h )
 	pnl.scroll:AddItem( pnl )
-	
+
 	function pnl:PerformLayout()
 		self:SizeToChildren( false, true )
 		self:SetWide( self.scroll:GetWide() - ( self.scroll.VBar.Enabled and 16 or 0 ) )
@@ -115,7 +115,7 @@ function xlib.makebutton( t )
 	pnl:SetText( t.label or "" )
 	pnl:SetDisabled( t.disabled )
 	if t.icon then pnl:SetIcon( t.icon ) end
-	if t.btype and t.btype == "close" then 
+	if t.btype and t.btype == "close" then
 		pnl.Paint = function( panel, w, h ) derma.SkinHook( "Paint", "WindowCloseButton", panel, w, h ) end
 	end
 	if t.centericon then	--Place the image in the cetner of the button instead of the default layout.
@@ -135,7 +135,7 @@ function xlib.makebutton( t )
 		pnl:SetToolTip( t.tooltip )
 		pnl:SetMouseInputEnabled( true )
 	end
-	
+
 	return pnl
 end
 
@@ -305,13 +305,13 @@ function xlib.makecombobox( t )
 	t.h = t.h or 20
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
-	
+
 	--Create a textbox to use in place of the button
 	if ( t.enableinput == true ) then
 		pnl.TextEntry = vgui.Create( "DTextEntry", pnl )
 		pnl.TextEntry.selectAll = t.selectall
 		pnl.TextEntry:SetEditable( true )
-		
+
 		pnl.TextEntry.OnGetFocus = function( self ) --Close the menu when the textbox is clicked, IF the menu was open.
 			hook.Run( "OnTextEntryGetFocus", self )
 			if ( pnl.Menu ) then
@@ -319,11 +319,11 @@ function xlib.makecombobox( t )
 				pnl.Menu = nil
 			end
 		end
-		
+
 		--Override GetValue/SetValue to get/set the text from the TextEntry instead of itself.
 		pnl.GetValue = function( self ) return self.TextEntry:GetValue() end
 		pnl.SetText = function( self, val ) self.TextEntry:SetValue( val ) end
-		
+
 		pnl.ChooseOption = function( self, value, index ) --Update the text of the TextEntry when an option is selected.
 			if ( self.Menu ) then
 				self.Menu:Remove()
@@ -332,7 +332,7 @@ function xlib.makecombobox( t )
 			self.TextEntry:SetText( value )
 			self:OnSelect( index, value, self.Data[index] )
 		end
-		
+
 		pnl.PerformLayout = function( self ) --Update the size of the textbox when the combobox's PerformLayout is called.
 			self.DropButton:SetSize( 15, 15 )
 			self.DropButton:AlignRight( 4 )
@@ -340,7 +340,7 @@ function xlib.makecombobox( t )
 			self.TextEntry:SetSize( self:GetWide()-20, self:GetTall() )
 		end
 	end
-	
+
 	pnl:SetText( t.text or "" )
 
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
@@ -411,16 +411,18 @@ function xlib.makecombobox( t )
 			pnl:SetText( GetConVar( t.repconvar ):GetString() )
 			function pnl.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 				if cl_cvar == t.repconvar:lower() then
+					if t.convarblanklabel and new_val == "" then new_val = t.convarblanklabel end
 					pnl:SetText( new_val )
 				end
 			end
 			hook.Add( "ULibReplicatedCvarChanged", "XLIB_" .. t.repconvar, pnl.ConVarUpdated )
 			function pnl:OnSelect( index, value )
+				if t.convarblanklabel and value == "<not specified>" then value = "" end
 				RunConsoleCommand( t.repconvar, value )
 			end
 		end
 	end
-	
+
 	return pnl
 end
 
@@ -445,7 +447,7 @@ function xlib.makecolorpicker( t )
 	local pnl = vgui.Create( "xlibColorPanel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	if t.noalphamodetwo then pnl:NoAlphaModeTwo() end --Provide an alternate layout with no alpha bar.
-	if t.addalpha then 
+	if t.addalpha then
 		pnl:AddAlphaBar()
 		if t.alphamodetwo then pnl:AlphaModeTwo() end
 	end
@@ -481,7 +483,7 @@ function xlib.wordWrap( text, width, font )
 	local pos_start, pos_end = 1, 1
 	while true do
 		local begin, stop = text:find( "%s+", pos_end + 1 )
-		
+
 		if (surface.GetTextSize( text:sub( pos_start, begin or -1 ):Trim() ) > width and pos_end - pos_start > 0) then -- If it's not going to fit, split into a newline
 			output = output .. text:sub( pos_start, pos_end ):Trim() .. "\n"
 			pos_start = pos_end + 1
@@ -503,7 +505,7 @@ function xlib.makeprogressbar( t )
 	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), textcolor=SKIN.text_dark, parent=pnl }
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
-	pnl:SetFraction( t.value or 0 ) 
+	pnl:SetFraction( t.value or 0 )
 	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
 end
@@ -516,9 +518,9 @@ end
 
 function xlib.makeslider( t )
 	local pnl = vgui.Create( "DNumSlider", t.parent )
-	
+
 	pnl.PerformLayout = function() end  -- Clears the code that automatically sets the width of the label to 41% of the entire width.
-	
+
 	pnl:SetPos( t.x, t.y )
 	pnl:SetWide( t.w or 100 )
 	pnl:SetTall( t.h or 20 )
@@ -528,15 +530,15 @@ function xlib.makeslider( t )
 	pnl.TextArea:SetDrawBackground( true )
 	pnl.TextArea.selectAll = t.selectall
 	pnl.Label:SizeToContents()
-	
+
 	if t.textcolor then
 		pnl.Label:SetTextColor( t.textcolor )
 	else
 		pnl.Label:SetTextColor( SKIN.text_dark )
 	end
-	
+
 	if t.fixclip then pnl.Slider.Knob:NoClipping( false ) end --Fixes clipping on the knob, an example is the sandbox limit sliders.
-	
+
 	if t.convar then pnl:SetConVar( t.convar ) end
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
@@ -545,7 +547,7 @@ function xlib.makeslider( t )
 		end
 		pnl:SetToolTip( t.tooltip )
 	end
-	
+
 	--Support for enabling/disabling slider
 	pnl.SetDisabled = function( self, val )
 		pnl:SetAlpha( val and 128 or 255 )
@@ -556,9 +558,9 @@ function xlib.makeslider( t )
 		pnl.Slider:SetMouseInputEnabled( not val )
 	end
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
-	
+
 	pnl:SizeToContents()
-	
+
 	--
 	--The following code bits are basically copies of Garry's code with changes to prevent the slider from sending updates so often
 	pnl.GetValue = function( self ) return tonumber( self.TextArea:GetValue() ) end
@@ -579,7 +581,7 @@ function xlib.makeslider( t )
 		end
 		self:OnValueChanged( val )
 	end
-	
+
 	--Textbox
 	function pnl.ValueUpdated( value )
 		pnl.TextArea:SetText( string.format("%." .. ( pnl.Scratch:GetDecimals() ) .. "f", tonumber( value ) or 0) )
@@ -593,14 +595,14 @@ function xlib.makeslider( t )
 		pnl:SetValue( pnl.TextArea:GetText() )
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
 	end
-	
+
 	--Slider
 	local pnl_val
 	function pnl:TranslateSliderValues( x, y )
 		pnl_val = self.Scratch:GetMin() + (x * self.Scratch:GetRange()) --Store the value and update the textbox to the new value
 		pnl.ValueUpdated( pnl_val )
 		self.Scratch:SetFraction( x )
-		
+
 		return self.Scratch:GetFraction(), y
 	end
 	local tmpfunc = pnl.Slider.Knob.OnMouseReleased
@@ -617,7 +619,7 @@ function xlib.makeslider( t )
 		self:SetDragging( false )
 		self:MouseCapture( false )
 	end
-	
+
 	--Scratch
 	function pnl.Scratch:OnCursorMoved( x, y )
 		if ( !self:GetActive() ) then return end
@@ -639,7 +641,7 @@ function xlib.makeslider( t )
 		self:SetFloatValue( value )
 		pnl_val = value --Store value for later
 		pnl.ValueUpdated( pnl_val )
-		
+
 		self:LockCursor()
 	end
 	pnl.Scratch.OnMouseReleased = function( self, mousecode )
@@ -648,14 +650,14 @@ function xlib.makeslider( t )
 		self:SetActive( false )
 		self:MouseCapture( false )
 		self:SetCursor( "sizewe" )
-		
+
 		pnl:SetValue( pnl.TextArea:GetText() )
 	end
 	--End code changes
 	--
-	
+
 	if t.value then pnl:SetValue( t.value ) end
-	
+
 	--Replicated Convar Updating
 	if t.repconvar then
 		xlib.checkRepCvarCreated( t.repconvar )
@@ -676,7 +678,7 @@ function xlib.makeslider( t )
 		pnl.ConVarStringThink = function() end
 		pnl.ConVarChanged = function() end
 	end
-	
+
 	return pnl
 end
 
@@ -867,7 +869,7 @@ function PANEL:AddAlphaBar()
 		self:OnCursorMoved( self:CursorPos() )
 		self:GetParent():OnChange( self:GetParent():GetColor() )
 	end
-	
+
 	self.ColorCube:SetPos( 45,5 )
 	self:SetSize( 190, 110 )
 	self.txtR:SetPos( 150, 7 )
@@ -1045,7 +1047,7 @@ hook.Add( "XLIBDoAnimation", "xlib_runAnims", xlib.animRun )
 xlib.animQueue = {}
 xlib.animBackupQueue = {}
 
---This will allow us to make animations run faster when linked together 
+--This will allow us to make animations run faster when linked together
 --Makes sure the entire animation length = animationTime (~0.2 sec by default)
 xlib.animStep = 0
 
@@ -1080,14 +1082,14 @@ xlib.animQueue_call = function()
 			xlib.animQueue_start()
 		end
 	end
-end	
+end
 
 xlib.addToAnimQueue = function( obj, ... )
 	local arg = { ... }
 	--If there is an animation running, then we need to store the new animation stuff somewhere else temporarily.
 	--Also, if ignoreRunning is true, then we'll add the anim to the regular queue regardless of running status.
 	local outTable = xlib.animRunning and xlib.animBackupQueue or xlib.animQueue
-		
+
 	if type( obj ) == "function" then
 		table.insert( outTable, function() xlib.animRunning = true  obj( unpack( arg ) )  xlib.animQueue_call() end )
 	elseif type( obj ) == "string" and xlib.animTypes[obj] then

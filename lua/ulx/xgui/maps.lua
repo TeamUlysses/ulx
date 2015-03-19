@@ -61,6 +61,9 @@ maps.vetomap.DoClick = function()
 	RunConsoleCommand( "ulx", "veto" )
 end
 
+maps.nextLevelLabel = xlib.makelabel{ x=382, y=13, label="Nextlevel (cvar)", parent=maps }
+maps.nextlevel = xlib.makecombobox{ x=382, y=30, w=180, h=20, repconvar="rep_nextlevel", convarblanklabel="<not specified>", parent=maps }
+
 function maps.addMaptoList( mapname, lastselected )
 	local line = maps.list:AddLine( mapname )
 	if table.HasValue( lastselected, mapname ) then
@@ -80,14 +83,23 @@ function maps.updateVoteMaps()
 	end
 
 	maps.list:Clear()
+	maps.nextlevel:Clear()
 
 	if LocalPlayer():query( "ulx map" ) then --Show all maps for admins who have access to change the level
 		maps.maplabel:SetText( "Server Maps (Votemaps are highlighted)" )
+		maps.nextlevel:AddChoice( "<not specified>" )
+		maps.nextlevel.ConVarUpdated( "nextlevel", "rep_nextlevel", nil, nil, GetConVar( "rep_nextlevel" ):GetString() )
+		maps.nextLevelLabel:SetAlpha(255);
+		maps.nextlevel:SetDisabled( false )
 		for _,v in ipairs( ulx.maps ) do
 			maps.addMaptoList( v, lastselected )
+			maps.nextlevel:AddChoice( v )
 		end
 	else
 		maps.maplabel:SetText( "Server Votemaps" )
+		maps.nextLevelLabel:SetAlpha(0);
+		maps.nextlevel:SetDisabled( true )
+		maps.nextlevel:SetAlpha(0);
 		for _,v in ipairs( ulx.votemaps ) do --Show the list of votemaps for users without access to "ulx map"
 			maps.addMaptoList( v, lastselected )
 		end

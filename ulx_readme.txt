@@ -62,6 +62,9 @@ Check out the configs folder in ulx for some more goodies.
 
 Group: Changelog
 v3.70 - *(00/00/00)*
+	* [ADD] XGUI: Ability to set the 'nextlevel' cvar from the maps tab, if you have access to "ulx map".
+	* [FIX] Changing weapons while cloaked would keep them hidden when uncloaked. (Thanks, TheRealAyCe).
+	* [FIX] XGUI: Error if the default settings/users.txt file was missing.
 	* [FIX] Gamemode list includes workshop addons now (Thanks, jason2010).
 	* [CHANGE] Hook calls to match ULib's new format.
 
