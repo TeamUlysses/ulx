@@ -303,7 +303,11 @@ function ulx.votekick( calling_ply, target_ply, reason )
 	end
 
 	ulx.doVote( msg, { "Yes", "No" }, voteKickDone, _, _, _, target_ply, time, calling_ply, reason )
-	ulx.fancyLogAdmin( calling_ply, "#A started a votekick against #T", target_ply )
+	if reason and reason ~= "" then
+		ulx.fancyLogAdmin( calling_ply, "#A started a votekick against #T (#s)", minutes, target_ply, reason )
+	else
+		ulx.fancyLogAdmin( calling_ply, "#A started a votekick against #T", minutes, target_ply )
+	end
 end
 local votekick = ulx.command( CATEGORY_NAME, "ulx votekick", ulx.votekick, "!votekick" )
 votekick:addParam{ type=ULib.cmds.PlayerArg }
