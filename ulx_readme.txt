@@ -21,6 +21,7 @@ ULX is brought to you by..
 * Brett "Megiddo" Smith - Contact: <megiddo@ulyssesmod.net>
 * JamminR - Contact: <jamminr@ulyssesmod.net>
 * Stickly Man! - Contact: <sticklyman@ulyssesmod.net>
+* MrPresident - Contact: <mrpresident@ulyssesmod.net>
 
 Group: Requirements
 
@@ -64,6 +65,7 @@ Group: Changelog
 v3.70 - *(00/00/00)*
 	* [ADD] XGUI: Ability to set the 'nextlevel' cvar from the maps tab, if you have access to "ulx map".
 	* [ADD] Reason to votekick log (Thanks, CSchulz).
+	* [ADD] Steam ID parameter to "ulx who" to lookup users by Steam ID.
 	* [FIX] Changing weapons while cloaked would keep them hidden when uncloaked. (Thanks, TheRealAyCe).
 	* [FIX] XGUI: Error if the default settings/users.txt file was missing.
 	* [FIX] Gamemode list includes workshop addons now (Thanks, jason2010).
