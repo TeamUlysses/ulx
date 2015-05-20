@@ -277,7 +277,7 @@ hook.Add( "Initialize", "XGUI_InitServer", xgui.init, HOOK_HIGH )
 --Call the modules postinit function when ULX is done loading. Should be called well after the Initialize hook.
 function xgui.postInit()
 	for _, v in ipairs( xgui.svmodules ) do if v.postinit then v.postinit() end end
-	
+
 	--Fix any users who requested data before the server was ready
 	for _, ply in pairs( player.GetAll() ) do
 		for UID, data in pairs( xgui.activeUsers ) do
@@ -287,4 +287,4 @@ function xgui.postInit()
 		end
 	end
 end
-hook.Add( ulx.HOOK_ULXDONELOADING, "XGUI_PostInitServer", xgui.postInit )
+hook.Add( ulx.HOOK_ULXDONELOADING, "XGUI_PostInitServer", xgui.postInit, HOOK_MONITOR_LOW )
