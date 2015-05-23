@@ -87,7 +87,6 @@ end
 hook.Add( "PlayerInitialSpawn", "ULXInitPlayer", playerInit )
 
 -- Cvar saving
-
 function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	if not sv_cvar:find( "^ulx_" ) then return end
 	local command = sv_cvar:gsub( "^ulx_", "" ):lower() -- Strip it off for lookup below
@@ -104,8 +103,12 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	if new_value:find( "[%s:']" ) then new_value = string.format( "%q", new_value ) end
 	local replacement = string.format( "%s %s ", sv_cvar, new_value:gsub( "%%", "%%%%" ) ) -- Because we're feeding it through gsub below, need to expand '%'s
 	local config = ULib.fileRead( path )
-	config = config:gsub( ULib.makePatternSafe( sv_cvar ):gsub( "%a", function( c ) return "[" .. c:lower() .. c:upper() .. "]" end ) .. "%s+[^;\r\n]*", replacement ) -- The gsub makes us case neutral
+	config, found = config:gsub( ULib.makePatternSafe( sv_cvar ):gsub( "%a", function( c ) return "[" .. c:lower() .. c:upper() .. "]" end ) .. "%s+[^;\r\n]*", replacement ) -- The gsub makes us case neutral
+	if found == 0 then -- Configuration option does not exist in config- append it
+		newline = config:match("\r?\n")
+		if not config:find("\r?\n$") then config = config .. newline end
+		config = config .. "ulx " .. replacement .. "; " .. ulx.cvars[ command ].help .. newline
+	end
 	ULib.fileWrite( path, config )
 end
 hook.Add( ulx.HOOK_ULXDONELOADING, "AddCvarHook", function() hook.Add( ULib.HOOK_REPCVARCHANGED, "ULXCheckCvar", cvarChanged ) end ) -- We're not interested in changing cvars till after load
-
