@@ -187,7 +187,7 @@ end
 groups.pnlG2 = xlib.makepanel{ w=350, h=200, parent=groups.clippanela }
 groups.pnlG2:SetVisible( false )
 function groups.pnlG2:Open()
-	if not self:IsVisible() then			
+	if not self:IsVisible() then
 		if groups.pnlG1:IsVisible() then
 			groups.pnlG1:Close()
 		end
@@ -232,7 +232,7 @@ groups.glist.OnRowSelected = function( self, LineID, Line )
 	groups.ginherit:SetText( ULib.ucl.groups[group].inherit_from or "user" )
 	groups.gcantarget:SetText( ULib.ucl.groups[group].can_target or "*" )
 	groups.gupdate:SetDisabled( false )
-	
+
 	local isGroupUser = ( group == "user" )
 	groups.gdelete:SetDisabled( isGroupUser )
 	groups.ginherit:SetDisabled( isGroupUser )
@@ -262,13 +262,13 @@ groups.gupdate.DoClick = function( self )
 	local oldinheritance = ULib.ucl.groups[groupname].inherit_from
 	local newinheritance = groups.ginherit:GetValue()
 	local cantarget = ULib.ucl.groups[groupname].can_target
-	
+
 	if newinheritance == "user" then newinheritance = nil end
 	if not cantarget then cantarget = "*" end
-	
+
 	if groups.gname:GetValue() ~= groupname then
 		if groupname == "superadmin" or groupname == "admin" then
-			Derma_Query( "Renaming the " .. groupname .. " group is generally a bad idea, and it could break some plugins. Are you sure?", "XGUI WARNING", 
+			Derma_Query( "Renaming the " .. groupname .. " group is generally a bad idea, and it could break some plugins. Are you sure?", "XGUI WARNING",
 				"Rename to " .. groups.gname:GetValue(), function()
 					RunConsoleCommand( "ulx", "renamegroup", groupname, groups.gname:GetValue() )
 					groupname = groups.gname:GetValue() end,
@@ -282,11 +282,11 @@ groups.gupdate.DoClick = function( self )
 			end
 		end
 	end
-	
+
 	if newinheritance ~= oldinheritance then
 		ULib.queueFunctionCall( RunConsoleCommand, "xgui", "setinheritance", groupname, newinheritance or ULib.ACCESS_ALL )
 	end
-	
+
 	if cantarget ~= groups.gcantarget:GetValue() then
 		ULib.queueFunctionCall( RunConsoleCommand, "ulx", "setgroupcantarget", groupname, groups.gcantarget:GetValue() )
 	end
@@ -295,12 +295,12 @@ groups.gdelete = xlib.makebutton{ x=5, y=175, w=130, label="Delete", disabled=tr
 groups.gdelete.DoClick = function()
 	local group = groups.gname:GetValue()
 	if group == "superadmin" or group == "admin" then
-		Derma_Query( "Removing the " .. group .. " group is generally a bad idea, and it could break some plugins. Are you sure?", "XGUI WARNING", 
+		Derma_Query( "Removing the " .. group .. " group is generally a bad idea, and it could break some plugins. Are you sure?", "XGUI WARNING",
 			"Remove", function()
 				RunConsoleCommand( "ulx", "removegroup", group ) end,
 			"Cancel", function() end )
 	else
-		Derma_Query( "Are you sure you would like to remove the \"" .. group .. "\" group?", "XGUI WARNING", 
+		Derma_Query( "Are you sure you would like to remove the \"" .. group .. "\" group?", "XGUI WARNING",
 			"Remove", function()
 				RunConsoleCommand( "ulx", "removegroup", group ) end,
 			"Cancel", function() end )
@@ -330,7 +330,7 @@ groups.teamlist.OnRowSelected = function( self, LineID, Line )
 	groups.upbtn:SetDisabled( LineID == 1 )
 	groups.downbtn:SetDisabled( LineID == #self.Lines )
 	groups.teammodadd:SetDisabled( false )
-	
+
 	local lastmod = groups.teammodifiers:GetSelectedLine() and groups.teammodifiers:GetSelected()[1]:GetColumnText(1)
 	groups.teammodifiers:Clear()
 	for _, chteam in pairs( xgui.data.teams ) do
@@ -359,7 +359,7 @@ end
 
 local function checkNewTeamExists( name, number )
 	for _, v in ipairs( xgui.data.teams ) do
-		if v.name == name .. number then 
+		if v.name == name .. number then
 			name, number = checkNewTeamExists( name, number == "" and 1 or number+1 )
 			break
 		end
@@ -467,9 +467,9 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 		groups.teammodspace:Add( applybtn )
 	end
 end
-	
+
 --Default, Min, Max, Decimals
-xgui.allowedTeamModifiers = { 
+xgui.allowedTeamModifiers = {
 	armor = { 0, 0, 255 },
 	--crouchedWalkSpeed = 0.6, --Pointless setting?
 	deaths = { 0, -2048, 2047 },
@@ -485,7 +485,7 @@ xgui.allowedTeamModifiers = {
 	stepSize = { 18, 0, 512, 2 },
 	unDuckSpeed = { 0.2, 0, 10, 2 },
 	walkSpeed = { 250, 1, nil } }
-	
+
 groups.teammodadd = xlib.makebutton{ x=110, y=180, w=75, label="Add..", disabled=true, parent=groups.pnlG3 }
 groups.teammodadd.DoClick = function()
 	local team = groups.teamlist:GetSelected()[1]:GetColumnText(1)
@@ -493,7 +493,7 @@ groups.teammodadd.DoClick = function()
 	for i, v in pairs( xgui.data.teams ) do
 		if v.name == team then teamdata = v end
 	end
-	
+
 	local allowedSorted = {}
     for k,_ in pairs(xgui.allowedTeamModifiers) do table.insert(allowedSorted, k) end
     table.sort( allowedSorted, function( a,b ) return string.lower( a ) < string.lower( b ) end )
@@ -507,7 +507,7 @@ groups.teammodadd.DoClick = function()
 				break
 			end
 		end
-		if add then 
+		if add then
 			local def = xgui.allowedTeamModifiers[allowedname]
 			if type( def ) == "table" then def = def[1] end
 			menu:AddOption( allowedname, function() RunConsoleCommand( "xgui", "updateTeamValue", team, allowedname, def ) end )
@@ -534,7 +534,7 @@ function groups.pnlG4:Open()
 		groups.pnlG3:Close()
 	end
 	self:openAnim()
-	if groups.selcmd then 
+	if groups.selcmd then
 		if ULib.cmds.translatedCmds[groups.selcmd] and #ULib.cmds.translatedCmds[groups.selcmd].args > 1 then
 			groups.pnlG5:Open( groups.selcmd )
 		else
@@ -624,9 +624,9 @@ xlib.makelabel{ x=5, y=5, label="Restrict command arguments:", parent=groups.pnl
 
 function groups.populateRestrictionArgs( cmd, accessStr )
 	if not accessStr then accessStr = groups.access_lines[cmd]:GetColumnText(3) end
-	
+
 	groups.rArgList:Clear()
-	
+
 	local restrictions = ULib.splitArgs( accessStr, "<", ">" )
 	if restrictions[1] == "" then restrictions[1] = nil end
 
@@ -665,12 +665,12 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 					outPanel.hasmax = xlib.makecheckbox{ x=5, y=48, value=( rmax~=nil ), parent=outPanel }
 					if table.HasValue( arg, ULib.cmds.allowTimeString ) then
 						outPanel.type = "time"
-						
+
 						local irmin, vrmin = ULib.cmds.NumArg.getTime( rmin )
 						local iargmin, vargmin = ULib.cmds.NumArg.getTime( arg.min )
 						local irmax, vrmax = ULib.cmds.NumArg.getTime( rmax )
 						local iargmax, vargmax = ULib.cmds.NumArg.getTime( arg.max )
-						
+
 						local curinterval = ( irmin or iargmin or "Permanent" )
 						local curval = vrmin or vargmin or 0
 						outPanel.min = xlib.makeslider{ x=25, y=25, w=150, label="<--->", min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
@@ -683,7 +683,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 							outPanel.min:SetDisabled( not bVal or outPanel.minterval:GetValue() == "Permanent" )
 							outPanel.minterval:SetDisabled( not bVal )
 						end
-						
+
 						local curinterval = ( irmax or iargmax or "Permanent" )
 						local curval = vrmax or vargmax or 0
 						outPanel.max = xlib.makeslider{ x=25, y=65, w=150, label="<--->", min=( vargmin or 0 ), max=( vargmax or 100 ), value=curval, decimal=0, disabled=( curinterval=="Permanent" ), parent=outPanel }
@@ -696,10 +696,10 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 							outPanel.max:SetDisabled( not bVal or outPanel.maxterval:GetValue() == "Permanent" )
 							outPanel.maxterval:SetDisabled( not bVal )
 						end
-						
+
 						xlib.makelabel{ x=25, y=8, label="Limit Minimum", parent=outPanel }
 						xlib.makelabel{ x=25, y=48, label="Limit Maximum", parent=outPanel }
-						
+
 						--Handle change in width due to scrollbar
 						local tempfunc = outPanel.PerformLayout
 						outPanel.PerformLayout = function( self )
@@ -722,7 +722,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						outPanel.hasmax.OnChange = function( self, bVal )
 							outPanel.max:SetDisabled( not bVal )
 						end
-						
+
 						--Handle change in width due to scrollbar
 						local tempfunc = outPanel.PerformLayout
 						outPanel.PerformLayout = function( self )
@@ -747,19 +747,19 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 					outPanel.list = xlib.makelistview{ x=5, y=5, w=170, h=150, multiselect=false, parent=outPanel }
 					outPanel.list:AddColumn( "Whitelist String Values" )
 					outPanel.textbox = xlib.maketextbox{ x=5, y=155, w=170, parent=outPanel, selectall=true }
-					
+
 					local strings = {}
 					if restrictions[argnum] then strings = string.Split( restrictions[argnum], "," ) end
 					for _, v in ipairs( strings ) do
 						outPanel.list:AddLine( v )
 					end
-					
+
 					outPanel.textbox.OnEnter = function( self )
 						if self:GetValue() ~= "" then
 							if not( string.find( self:GetValue(), "<" ) or string.find( self:GetValue(), ">" ) or string.find( self:GetValue(), "," ) ) then
 								local found = false
 								for _, l in ipairs( outPanel.list.Lines ) do
-									if l:GetColumnText(1) == self:GetValue() then 
+									if l:GetColumnText(1) == self:GetValue() then
 										found = true
 									end
 								end
@@ -810,7 +810,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 		end
 	end
 	groups.rArgList:Add( groups.applyButton )
-	
+
 	if not groups.access_lines[cmd].Columns[2]:GetChecked() then
 		groups.applyButton:SetText( "Apply access + restrictions" )
 	elseif groups.access_lines[cmd].Columns[2].disabled then
@@ -829,7 +829,7 @@ function groups.generateAccessString()
 	local outtmp = ""
 	for _, panel in ipairs( groups.rArgList:GetChildren() ) do
 		local pnl = panel.Contents
-		
+
 		if panel.GetExpanded then --Weed out panels that we're not interested in
 			if panel:GetExpanded() then
 				if pnl.type == "ply" then
@@ -846,13 +846,13 @@ function groups.generateAccessString()
 					if pnl.hasmin:GetChecked() or pnl.hasmax:GetChecked() then
 						if pnl.min:GetValue() == 0 then pnl.minterval:ChooseOptionID(1) end --Set to Permanent when 0 hours/mins/weeks/years is selected
 						if pnl.max:GetValue() == 0 then pnl.maxterval:ChooseOptionID(1) end
-						
+
 						local minchr = string.lower( pnl.minterval:GetValue():sub(1,1) )
 						if minchr == "m" or minchr == "p" then minchr = "" end
-						
+
 						local maxchr = string.lower( pnl.maxterval:GetValue():sub(1,1) )
 						if maxchr == "m" or maxchr == "p" then maxchr = "" end
-						
+
 						outstr = outstr .. outtmp .. " "
 						if pnl.hasmin:GetChecked() then
 							outstr = outstr .. pnl.min:GetValue() .. minchr
@@ -864,7 +864,7 @@ function groups.generateAccessString()
 					else
 						outtmp = outtmp .. " *"
 					end
-				
+
 				elseif pnl.type == "bool" then
 					outstr = outstr .. outtmp .. " " .. ( pnl.checkbox:GetChecked() and "1" or "0" )
 					outtmp = ""
@@ -936,15 +936,15 @@ end
 function groups.playerListAddChunk( chunk )
 	local group = groups.lastOpenGroup
 	if not group then return end
-	
+
 	local lastsel
 	if groups.players:GetSelectedLine() then lastsel = groups.players:GetSelected()[1]:GetColumnText(1) end
-	
+
 	local function processline( name, ID, lastsel )
 		local l = groups.players:AddLine( name, ID )
 		if lastsel and name == lastsel then groups.players:SelectItem( l ) end
 	end
-	
+
 	if group ~= "user" then
 		for ID, user in pairs( chunk ) do
 			if user.group == group then
@@ -963,9 +963,9 @@ end
 
 --Refresh the entire player list for a group
 function groups.refreshPlayerList()
-	
+
 	groups.cplayer:SetDisabled( true )
-	
+
 	groups.clearPlayerList()
 	groups.playerListAddChunk( xgui.data.users )
 	xgui.queueFunctionCall( groups.sortPlayerList, "group_userlist" )
@@ -997,7 +997,7 @@ end
 groups.updateGroups()
 
 function groups.updateTeams()
-	local last_selected = groups.teamlist:GetSelectedLine() and groups.teamlist:GetSelected()[1]:GetColumnText(1)	
+	local last_selected = groups.teamlist:GetSelectedLine() and groups.teamlist:GetSelected()[1]:GetColumnText(1)
 	groups.teams:Clear()
 	groups.teams:AddChoice( "<None>" )
 	groups.teams:AddChoice( "--*" )
@@ -1018,7 +1018,7 @@ function groups.updateTeams()
 		groups.upbtn:SetDisabled( true )
 		groups.downbtn:SetDisabled( true )
 		groups.teamdelete:SetDisabled( true )
-	end	
+	end
 	groups.teams:SetText( groups.getGroupsTeam( groups.list:GetValue() ) )
 end
 
@@ -1040,7 +1040,7 @@ function groups.updateAccessPanel()
 	groups.access_cats = {}
 	groups.access_lines = {}
 	groups.access_expandedcat = nil
-	
+
 	local newcategories = {}
 	local sortcategories = {}
 	local function processAccess( access, data )
@@ -1103,7 +1103,7 @@ function groups.updateAccessPanel()
 				if ( mcode == MOUSE_LEFT ) then
 					self:GetParent():Toggle()
 					--Use this to collapse the other categories.
-					if groups.access_expandedcat then 
+					if groups.access_expandedcat then
 						if groups.access_expandedcat ~= self:GetParent() then
 							groups.access_expandedcat:Toggle()
 						else
@@ -1125,13 +1125,13 @@ function groups.updateAccessPanel()
 		line:SetToolTip( data.hStr )
 		groups.access_lines[access] = line
 	end
-	
+
 	for access, data in pairs( xgui.data.accesses ) do
 		xgui.queueFunctionCall( processAccess, "accesses", access, data )
 	end
 	--Why queueFunctionCall? Mainly to prevent large lags when performing a bunch of derma AddLine()s at once. queueFunctionCall will spread the load for each line, usually one per frame.
 	--This results in the possibility of the end user seeing lines appearing as he's looking at the menus, but I believe that a few seconds of lines appearing is better than 150+ms of freeze time.
-	
+
 	local function finalSort()
 		table.sort( sortcategories )
 		for _, catname in ipairs( sortcategories ) do
@@ -1163,7 +1163,7 @@ function groups.accessChanged( access, newVal, group )
 						return
 					end
 				end
-				
+
 				Derma_Query( "WARNING! Removing access to " .. access .. " will revoke YOUR access to features you're currently using.\nYou will most likely not be able to regain access without console intervention.\nAre you sure you wish to proceed?", "XGUI WARNING",
 					"Revoke", function() RunConsoleCommand( "ulx", "groupdeny", group, access ) end,
 					"Cancel", function() end )
@@ -1179,7 +1179,7 @@ function groups.accessSelected( catlist, LineID )
 		if cat ~= catlist then
 			cat:ClearSelection()
 		end
-	end	
+	end
 end
 
 function groups.showAccessOptions( line )
@@ -1188,7 +1188,7 @@ function groups.showAccessOptions( line )
 	if line.Columns[2]:GetChecked() then
 		if line.Columns[2].disabled then
 			menu:AddOption( "Grant access at \"" .. groups.list:GetValue() .. "\" level", function() groups.accessChanged( access, true ) end )
-			
+
 			menu:AddOption( "Revoke access from \"" .. line:GetColumnText(4) .. "\"", function() groups.accessChanged( access, false, line:GetColumnText(4) ) end )
 		else
 			menu:AddOption( "Revoke access", function() groups.accessChanged( access, false ) end )

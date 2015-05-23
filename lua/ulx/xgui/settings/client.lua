@@ -132,7 +132,7 @@ xguipnl.mainorder:AddColumn( "Main Modules" )
 xguipnl.mainorder.OnRowSelected = function( self, LineID, Line )
 	xguipnl.upbtnM:SetDisabled( LineID <= 1 )
 	xguipnl.downbtnM:SetDisabled( LineID >= #xgui.settings.moduleOrder )
-end 
+end
 xguipnl.updateMainOrder = function()
 	local selected = xguipnl.mainorder:GetSelectedLine() and xguipnl.mainorder:GetSelected()[1]:GetColumnText(1)
 	xguipnl.mainorder:Clear()
@@ -165,7 +165,7 @@ xguipnl.settingorder:AddColumn( "Setting Modules" )
 xguipnl.settingorder.OnRowSelected = function( self, LineID, Line )
 	xguipnl.upbtnS:SetDisabled( LineID <= 1 )
 	xguipnl.downbtnS:SetDisabled( LineID >= #xgui.settings.settingOrder )
-end 
+end
 xguipnl.updateSettingOrder = function()
 	local selected = xguipnl.settingorder:GetSelectedLine() and xguipnl.settingorder:GetSelected()[1]:GetColumnText(1)
 	xguipnl.settingorder:Clear()

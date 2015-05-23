@@ -57,25 +57,25 @@ cmds.plist:AddColumn( "Group" )
 
 cmds.cmds = xlib.makelistlayout{ x=5, y=30, w=150, h=330, parent=cmds, padding=1, spacing=1 }
 cmds.setselected = function( selcat, LineID )
-	if selcat.Lines[LineID]:GetColumnText(2) == cmds.selcmd then 
+	if selcat.Lines[LineID]:GetColumnText(2) == cmds.selcmd then
 		selcat:ClearSelection()
 		if cmds.plist.open then cmds.plist:Close() else cmds.argslist:Close() end
 		xlib.animQueue_start()
 		cmds.selcmd = nil
-		return 
+		return
 	end
-	
+
 	for _, cat in pairs( cmds.cmd_contents ) do
 		if cat ~= selcat then
 			cat:ClearSelection()
 		end
 	end
 	cmds.selcmd = selcat.Lines[LineID]:GetColumnText(2)
-	
+
 	if cmds.permissionChanged then cmds.refreshPlist() return end
-	
+
 	if xlib.animRunning then xlib.animQueue_forceStop() end
-	
+
 	local cmd = ULib.cmds.translatedCmds[cmds.selcmd]
 	if cmd.args[2] and ( cmd.args[2].type == ULib.cmds.PlayersArg or cmd.args[2].type == ULib.cmds.PlayerArg ) then
 		cmds.plist:Open( cmd.args[2] )
@@ -88,14 +88,14 @@ end
 function cmds.refreshPlist( arg )
 	if not arg then arg = ULib.cmds.translatedCmds[cmds.selcmd].args[2] end
 	if not arg or ( arg.type ~= ULib.cmds.PlayersArg and arg.type ~= ULib.cmds.PlayerArg ) then return end
-	
+
 	local lastplys = {}
 	for k, Line in pairs( cmds.plist.Lines ) do
 		if ( Line:IsLineSelected() ) then table.insert( lastplys, Line:GetColumnText(1) ) end
 	end
-	
+
 	local targets = cmds.calculateValidPlayers( arg )
-	
+
 	cmds.plist:Clear()
 	cmds.plist:SetMultiSelect( arg.type == ULib.cmds.PlayersArg )
 	for _, ply in ipairs( targets ) do
@@ -103,7 +103,7 @@ function cmds.refreshPlist( arg )
 		line.ply = ply
 		line.OnSelect = function()
 			if cmds.permissionChanged then return end
-			
+
 			if not xlib.animRunning and not cmds.argslist.open then
 				cmds.argslist:Open( ULib.cmds.translatedCmds[cmds.selcmd], false )
 				xlib.animQueue_start( )
@@ -111,12 +111,12 @@ function cmds.refreshPlist( arg )
 				if not cmds.clickedFlag then --Prevent this from happening multiple times.
 					cmds.clickedFlag = true
 					xlib.addToAnimQueue( function() if not cmds.argslist.open then
-						cmds.argslist:Open( ULib.cmds.translatedCmds[cmds.selcmd], false ) end 
+						cmds.argslist:Open( ULib.cmds.translatedCmds[cmds.selcmd], false ) end
 						cmds.clickedFlag = nil end )
 				end
 			end
 		end
-		
+
 		--Select previously selected Lines
 		if table.HasValue( lastplys, ply:Nick() ) then
 			cmds.plist:SelectItem( line )
@@ -128,7 +128,7 @@ function cmds.refreshPlist( arg )
 		cmds.plist:ClearSelection()
 		cmds.plist:SelectItem( firstSelected )
 	end
-	
+
 	if not cmds.plist:GetSelectedLine() then
 		if not xlib.animRunning then
 			if cmds.argslist.open then
@@ -247,7 +247,7 @@ function cmds.buildArgsList( cmd )
 		panel.xguiIgnore = true
 		cmds.argslist:Add( panel )
 	end
-	
+
 	--Hacky workaround for bug where the order of panels in GetChildren() changes sometimes when a textbox is clicked...
 	if cmds.argrptadd and cmds.argrptadd:IsValid() then
 		cmds.argrptadd:DoClick()	--Simulate adding/removing an arg.
@@ -266,7 +266,7 @@ function cmds.runCmd( cmd )
 		table.remove( plys ) --Removes the final comma
 		table.insert( cmd, table.concat( plys ) )
 	end
-	
+
 	for _, arg in ipairs( cmds.curargs ) do
 		if not arg.xguiIgnore then
 			table.insert( cmd, arg:GetValue() )
@@ -290,7 +290,7 @@ cmds.refresh = function( permissionChanged )
 	cmds.expandedcat = nil
 	cmds.selcmd = nil
 	cmds.permissionChanged = true
-	
+
 	local newcategories = {}
 	local sortcategories = {}
 	local matchedCmdFound = false
@@ -317,7 +317,7 @@ cmds.refresh = function( permissionChanged )
 							end
 						end
 						cmds.expandedcat = self:GetParent()
-						return 
+						return
 					end
 					return self:GetParent():OnMousePressed( mcode )
 				end
@@ -342,7 +342,7 @@ cmds.refresh = function( permissionChanged )
 			xlib.animQueue_start()
 		end
 	end
-	
+
 	table.sort( sortcategories )
 	for _, catname in ipairs( sortcategories ) do
 		local cat = newcategories[catname]
@@ -371,7 +371,7 @@ function cmds.argslist:openAnim( cmd, secondary )
 	if secondary then
 		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=-170, starty=0, endx=0, endy=0, setvisible=true } )
 	else
-		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=80, starty=0, endx=255, endy=0, setvisible=true } )	
+		xlib.addToAnimQueue( "pnlSlide", { panel=self.scroll, startx=80, starty=0, endx=255, endy=0, setvisible=true } )
 	end
 end
 
