@@ -57,13 +57,13 @@ function server.processModules()
 		if module.mtype == "server" and ( not module.access or LocalPlayer():query( module.access ) ) then
 			local w,h = module.panel:GetSize()
 			if w == h and h == 0 then module.panel:SetSize( 275, 322 ) end
-			
+
 			if module.panel.scroll then --For DListLayouts
 				module.panel.scroll.panel = module.panel
 				module.panel = module.panel.scroll
 			end
 			module.panel:SetParent( server.panel )
-			
+
 			local line = server.catList:AddLine( module.name, i )
 			if ( module.panel == server.curPanel ) then
 				server.curPanel = nil
@@ -117,7 +117,7 @@ end
 function adverts.isBottomNode( node )
 	local parentnode = node:GetParentNode()
 	local parentchildren = parentnode.ChildNodes:GetChildren()
-	
+
 	if parentnode:GetParentNode().ChildNodes then --Is node within a subgroup?
 		local parentparentchildren = parentnode:GetParentNode().ChildNodes:GetChildren()
 		return parentchildren[#parentchildren] == node and parentparentchildren[#parentparentchildren] == parentnode
@@ -194,7 +194,7 @@ adverts.nodeup.DoClick = function()
 		local parentparentchildren = parentnode:GetParentNode().ChildNodes:GetChildren()
 		local newgroup = "<No Group>"
 		for i,v in ipairs( parentparentchildren ) do
-			if v == parentnode then 
+			if v == parentnode then
 				if parentparentchildren[i-1] and type( parentparentchildren[i-1].group ) ~= "number" then
 					newgroup = parentparentchildren[i-1].group
 					adverts.selnewgroup = newgroup
@@ -246,7 +246,7 @@ end
 function adverts.removeAdvert( node )
 	if node then
 		Derma_Query( "Are you sure you want to delete this " .. ( node.data and "advert?" or "advert group?" ), "XGUI WARNING", 
-		"Delete", function() 
+		"Delete", function()
 			if node.data then --Remove a single advert
 				RunConsoleCommand( "xgui", "removeAdvert", node.group, node.number, type( node.group ) )
 			else --Remove an advert group
@@ -274,7 +274,7 @@ function adverts.updateAdverts()
 	adverts.removebutton:SetDisabled( true )
 	--Store the currently selected node, if any
 	local lastNode = adverts.tree:GetSelectedItem()
-	if adverts.selnewgroup then 
+	if adverts.selnewgroup then
 		lastNode.group = adverts.selnewgroup
 		lastNode.number = adverts.seloffset
 		adverts.selnewgroup = nil
@@ -294,7 +294,7 @@ function adverts.updateAdverts()
 	adverts.group:Clear()
 	adverts.group:AddChoice( "<No Group>" )
 	adverts.group:ChooseOptionID( 1 )
-	
+
 	local sortGroups = {}
 	local sortSingle = {}
 	for group, advertgroup in pairs( xgui.data.adverts ) do
@@ -326,7 +326,7 @@ function adverts.updateAdverts()
 		--Expand folder if it was expanded previously
 		if groupStates[group] then foldernode:SetExpanded( true, true ) end
 	end
-	
+
 	adverts.tree:InvalidateLayout()
 	local node = adverts.tree:GetSelectedItem()
 	if node then
@@ -395,6 +395,8 @@ xgui.addSubModule( "ULX Command/Event Echoes", plist, nil, "server" )
 local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="General ULX Settings" } )
 plist:Add( xlib.makeslider{ label="Chat spam time", min=0, max=5, decimal=1, repconvar="ulx_chattime" } )
+plist:Add( xlib.makelabel{ label="Allow '/me' chat feature" } )
+plist:Add( xlib.makecombobox{ repconvar="ulx_meChatEnabled", isNumberConvar=true, choices={ "Disabled", "Sandbox Only", "Enabled" } } )
 plist:Add( xlib.makelabel{ label="\nMOTD Settings" } )
 --Very custom convar handling for ulx_showMotd
 plist.motdEnabled = xlib.makecheckbox{ label="Show MOTD when players join" }
@@ -437,7 +439,7 @@ end
 function plist.motdURLText:OnEnter() self:UpdateConvarValue() end
 function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 	if cl_cvar == "ulx_showmotd" then
-		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL 
+		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL
 			plist.motdEnabled:SetValue( 1 )
 			plist.motdURLEnabled:SetValue( 1 )
 			plist.motdURLEnabled:SetDisabled( false )

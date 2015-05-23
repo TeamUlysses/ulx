@@ -14,6 +14,7 @@ motdfile ulx_motd.txt ; The motd to show, if using a file.
 
 
 ulx chattime 0 ; Players can only chat every x seconds (anti-spam). 0 to disable
+ulx meChatEnabled 1 ; Allow players to use '/me' in chat. 0 = Disabled, 1 = Sandbox only (Default), 2 = Enabled
 
 
 ; This is what the players will see when they join, set it to "" to disable.
