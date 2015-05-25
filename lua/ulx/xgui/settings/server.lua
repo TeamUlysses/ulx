@@ -137,6 +137,7 @@ end
 adverts.tree.DoRightClick = function( self, node )
 	self:SetSelectedItem( node )
 	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
 	if not node.data then
 		menu:AddOption( "Rename Group...", function() adverts.RenameAdvert( node:GetValue() ) end )
 	end

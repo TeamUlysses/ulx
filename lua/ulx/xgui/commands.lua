@@ -171,7 +171,7 @@ function cmds.buildArgsList( cmd )
 				if arg.invisible ~= true then
 					local curitem = arg
 					if curitem.repeat_min then --This command repeats!
-						local panel = xlib.makepanel{ h=20 }
+						local panel = xlib.makepanel{ h=20, parent=cmds.argslist }
 						local choices = {}
 						panel.argnum = argnum
 						panel.xguiIgnore = true
@@ -179,7 +179,7 @@ function cmds.buildArgsList( cmd )
 						panel.addbutton = xlib.makebutton{ label="Add", w=83, parent=panel }
 						panel.addbutton.DoClick = function( self )
 							local parent = self:GetParent()
-							local ctrl = parent.arg.type.x_getcontrol( parent.arg, parent.argnum )
+							local ctrl = parent.arg.type.x_getcontrol( parent.arg, parent.argnum, cmds.argslist )
 							cmds.argslist:Add( ctrl )
 							ctrl:MoveToAfter( choices[#choices] )
 							table.insert( choices, ctrl )
@@ -199,7 +199,7 @@ function cmds.buildArgsList( cmd )
 						end
 						cmds.argslist:Add( panel )
 						for i=1,curitem.repeat_min do
-							local ctrl = arg.type.x_getcontrol( arg, argnum )
+							local ctrl = arg.type.x_getcontrol( arg, argnum, cmds.argslist )
 							cmds.argslist:Add( ctrl )
 							table.insert( choices, ctrl )
 							table.insert( cmds.curargs, ctrl )
@@ -207,7 +207,7 @@ function cmds.buildArgsList( cmd )
 						cmds.argrptadd = panel.addbutton --For hacky workaround, see below
 						cmds.argrptrem = panel.removebutton
 					else
-						local panel = arg.type.x_getcontrol( arg, argnum )
+						local panel = arg.type.x_getcontrol( arg, argnum, cmds.argslist )
 						table.insert( cmds.curargs, panel )
 						if curitem.type == ULib.cmds.NumArg then
 							panel.TextArea.OnEnter = function( self )
@@ -227,7 +227,7 @@ function cmds.buildArgsList( cmd )
 		end
 	end
 	if LocalPlayer():query( cmd.cmd ) then
-		local panel = xlib.makebutton{ label=cmd.cmd }
+		local panel = xlib.makebutton{ label=cmd.cmd, parent=cmds.argslist }
 		panel.xguiIgnore = true
 		panel.DoClick = function()
 			cmds.runCmd( cmd.cmd )
@@ -235,7 +235,7 @@ function cmds.buildArgsList( cmd )
 		cmds.argslist:Add( panel )
 	end
 	if cmd.opposite and LocalPlayer():query( cmd.opposite ) then
-		local panel = xlib.makebutton{ label=cmd.opposite }
+		local panel = xlib.makebutton{ label=cmd.opposite, parent=cmds.argslist }
 		panel.DoClick = function()
 			cmds.runCmd( cmd.opposite )
 		end
@@ -243,7 +243,7 @@ function cmds.buildArgsList( cmd )
 		cmds.argslist:Add( panel )
 	end
 	if cmd.helpStr then --If the command has a string for help
-		local panel = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true }
+		local panel = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true, parent=cmds.argslist }
 		panel.xguiIgnore = true
 		cmds.argslist:Add( panel )
 	end

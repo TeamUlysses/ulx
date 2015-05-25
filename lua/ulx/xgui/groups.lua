@@ -88,6 +88,7 @@ end
 groups.aplayer = xlib.makebutton{ x=5, y=210, w=80, label="Add...", parent=groups.pnlG1 }
 groups.aplayer.DoClick = function()
 	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
 	for k, v in ipairs( player.GetAll() ) do
 		if v:GetUserGroup() ~= groups.list:GetValue() then
 			menu:AddOption( v:Nick() .. "  |  " .. v:GetUserGroup(), function() groups.changeUserGroup( v:SteamID(), groups.list:GetValue() ) end )
@@ -108,6 +109,7 @@ groups.cplayer.DoClick = function()
 	if groups.players:GetSelectedLine() then
 		local ID = groups.players:GetSelected()[1]:GetColumnText(2)
 		local menu = DermaMenu()
+		menu:SetSkin(xgui.settings.skin)
 		for _, v in pairs( xgui.data.groups ) do
 			if v ~= "user" and v ~= groups.list:GetValue() then
 				menu:AddOption( v, function() groups.changeUserGroup( ID, v ) end )
@@ -398,21 +400,21 @@ groups.teammodifiers:AddColumn( "Value" ).DoClick = function() end
 groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 	groups.teammodremove:SetDisabled( Line:GetColumnText(1) == "name" or Line:GetColumnText(1) == "color" )
 	groups.teammodspace:Clear()
-	local applybtn = xlib.makebutton{ label="Apply" }
+	local applybtn = xlib.makebutton{ label="Apply", parent=groups.teammodspace }
 	if Line:GetColumnText(3) ~= "number" then
 		if Line:GetColumnText(1) == "name" then
-			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2) }
+			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2), parent=groups.teammodspace }
 			groups.teamctrl.OnEnter = function()
 				applybtn.DoClick()
 			end
 			groups.teammodspace:Add( groups.teamctrl )
 		elseif Line:GetColumnText(1) == "color" then
-			groups.teamctrl = xlib.makecolorpicker{}
+			groups.teamctrl = xlib.makecolorpicker{ parent=groups.teammodspace }
 			local tempcolor = string.Explode( " ", Line:GetColumnText(2) )
 			groups.teamctrl:SetColor( Color( tempcolor[1], tempcolor[2], tempcolor[3] ) )
 			groups.teammodspace:Add( groups.teamctrl )
 		elseif Line:GetColumnText(1) == "model" then
-			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2) }
+			groups.teamctrl = xlib.maketextbox{ selectall=true, text=Line:GetColumnText(2), parent=groups.teammodspace }
 			groups.teamctrl.OnEnter = function( self )
 				applybtn.DoClick()
 				for _, item in ipairs( groups.modelList.Items ) do
@@ -441,7 +443,7 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 	else
 		local defvalues = xgui.allowedTeamModifiers[Line:GetColumnText(1)]
 		if type( defvalues ) ~= "table" then defvalues = { defvalues } end
-		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4], value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1) }
+		groups.teamctrl = xlib.makeslider{ min=defvalues[2] or 0, max=defvalues[3] or 2000, decimal=defvalues[4], value=tonumber( Line:GetColumnText(2) ), label=Line:GetColumnText(1), parent=groups.teammodspace }
 		groups.teamctrl.OnEnter = function( self )
 			applybtn.DoClick()
 		end
@@ -495,10 +497,11 @@ groups.teammodadd.DoClick = function()
 	end
 
 	local allowedSorted = {}
-    for k,_ in pairs(xgui.allowedTeamModifiers) do table.insert(allowedSorted, k) end
-    table.sort( allowedSorted, function( a,b ) return string.lower( a ) < string.lower( b ) end )
+	for k,_ in pairs(xgui.allowedTeamModifiers) do table.insert(allowedSorted, k) end
+	table.sort( allowedSorted, function( a,b ) return string.lower( a ) < string.lower( b ) end )
 
 	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
 	for _, allowedname in pairs( allowedSorted ) do
 		local add = true
 		for name, data in pairs( teamdata ) do
@@ -650,7 +653,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						tempfunc( self )
 						outPanel.txtfield:SetWide( self:GetWide()-10 )
 					end
-					outCat = xlib.makecat{ label="Restrict " .. (arg.hint or "player(s)"), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel }
+					outCat = xlib.makecat{ label="Restrict " .. (arg.hint or "player(s)"), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel, parent=xgui.null }
 				---Number Argument---
 				elseif arg.type == ULib.cmds.NumArg then
 					local outPanel = xlib.makepanel{ h=85 }
@@ -733,13 +736,13 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						end
 					end
 
-					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "number value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel }
+					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "number value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel, parent=xgui.null }
 				---Bool Argument---
 				elseif arg.type == ULib.cmds.BoolArg then
 					local outPanel = xlib.makepanel{ h=25 }
 					outPanel.type = "bool"
 					outPanel.checkbox = xlib.makecheckbox{ x=5, y=5, value=restrictions[argnum] or false, label="Must be: True (1), False (0)", parent=outPanel }
-					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "bool value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel }
+					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "bool value" ), w=180, checkbox=true, expanded=hasrestriction, contents=outPanel, parent=xgui.null }
 				---String Argument---
 				elseif arg.type == ULib.cmds.StringArg then
 					local outPanel = xlib.makepanel{ h=200 }
@@ -797,13 +800,13 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 						outPanel.textbox:SetWide( w )
 						outPanel.removeButton:SetPos( (w/2)+5, 175 )
 					end
-					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "string value" ), w=180, padding=0, checkbox=true, expanded=hasrestriction, contents=outPanel }
+					outCat = xlib.makecat{ label="Restrict " .. ( arg.hint or "string value" ), w=180, padding=0, checkbox=true, expanded=hasrestriction, contents=outPanel, parent=xgui.null }
 				end
 				groups.rArgList:Add( outCat )
 			end
 		end
 	end
-	groups.applyButton = xlib.makebutton{ h=20, label="Apply restrictions" }
+	groups.applyButton = xlib.makebutton{ h=20, label="Apply restrictions", parent=groups.rArgList }
 	groups.applyButton.DoClick = function( self )
 		if ( groups.access_lines[cmd].Columns[2].disabled or groups.access_lines[cmd]:GetColumnText(4) == "" ) or outstr ~= accessStr then
 			RunConsoleCommand( "ulx", "groupallow", groups.list:GetValue(), cmd, groups.generateAccessString() )
@@ -814,7 +817,7 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 	if not groups.access_lines[cmd].Columns[2]:GetChecked() then
 		groups.applyButton:SetText( "Apply access + restrictions" )
 	elseif groups.access_lines[cmd].Columns[2].disabled then
-		groups.applyInheritedButton = xlib.makebutton{ h=20 }
+		groups.applyInheritedButton = xlib.makebutton{ h=20, parent=groups.rArgList }
 		groups.applyInheritedButton.DoClick = function( self )
 			RunConsoleCommand( "ulx", "groupallow", groups.access_lines[cmd]:GetColumnText(4), cmd, groups.generateAccessString() )
 		end
@@ -822,6 +825,8 @@ function groups.populateRestrictionArgs( cmd, accessStr )
 		groups.applyInheritedButton:SetText( "Apply restrictions at \"" .. groups.access_lines[cmd]:GetColumnText(4) .. "\" level" )
 		groups.rArgList:Add( groups.applyInheritedButton )
 	end
+	groups.rArgList:SetSkin( xgui.settings.skin )  -- For some reason, skin doesn't update properly when this panel is recreated
+	groups.rArgList:SetSkin( "" )                  -- Set the skin back to "" so that future skin changes in client settings will apply
 end
 
 function groups.generateAccessString()
@@ -1185,6 +1190,7 @@ end
 function groups.showAccessOptions( line )
 	local access = line:GetColumnText(1)
 	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
 	if line.Columns[2]:GetChecked() then
 		if line.Columns[2].disabled then
 			menu:AddOption( "Grant access at \"" .. groups.list:GetValue() .. "\" level", function() groups.accessChanged( access, true ) end )

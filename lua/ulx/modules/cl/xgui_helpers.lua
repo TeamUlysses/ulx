@@ -151,7 +151,7 @@ function xgui.load_helpers()
 		end
 
 		--Progress bar
-		xgui.chunkbox = xlib.makeprogressbar{ x=420, w=180, h=20, visible=false, parent=xgui.anchor }
+		xgui.chunkbox = xlib.makeprogressbar{ x=420, w=180, h=20, visible=false, skin=xgui.settings.skin, parent=xgui.anchor }
 		function xgui.chunkbox:Progress( datatype )
 			self.value = self.value + 1
 			self:SetFraction( self.value / self.max )
@@ -221,11 +221,11 @@ function xgui.load_helpers()
 	end
 
 	--Load control interpretations for ULib argument types
-	function ULib.cmds.BaseArg.x_getcontrol( arg, argnum )
-		return xlib.makelabel{ label="Not Supported" }
+	function ULib.cmds.BaseArg.x_getcontrol( arg, argnum, parent )
+		return xlib.makelabel{ label="Not Supported", parent=parent }
 	end
 
-	function ULib.cmds.NumArg.x_getcontrol( arg, argnum )
+	function ULib.cmds.NumArg.x_getcontrol( arg, argnum, parent )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
 		ULib.cmds.NumArg.processRestrictions( restrictions, arg, ulx.getTagArgNum( tag, argnum ) )
@@ -234,7 +234,7 @@ function xgui.load_helpers()
 			local min = restrictions.min or 0
 			local max = restrictions.max or 10 * 60 * 24 * 365 --default slider max 10 years
 
-			local outPanel = xlib.makepanel{ h=40 }
+			local outPanel = xlib.makepanel{ h=40, parent=parent }
 			xlib.makelabel{ x=5, y=3, label="Ban Length:", parent=outPanel }
 			outPanel.interval = xlib.makecombobox{ x=90, w=75, parent=outPanel }
 			outPanel.val = xlib.makeslider{ w=165, y=20, label="<--->", min=min, max=max, value=min, decimal=0, parent=outPanel }
@@ -297,7 +297,7 @@ function xgui.load_helpers()
 			local maxvalue = restrictions.max
 			if restrictions.max == nil and defvalue > 100 then maxvalue = defvalue end
 
-			local outPanel = xlib.makepanel{ h=35 }
+			local outPanel = xlib.makepanel{ h=35, parent=parent }
 			xlib.makelabel{ label=arg.hint or "NumArg", parent=outPanel }
 			outPanel.val = xlib.makeslider{ y=15, w=165, min=restrictions.min, max=maxvalue, value=defvalue, label="<--->", parent=outPanel }
 			outPanel.GetValue = function( self ) return outPanel.val.GetValue( outPanel.val ) end
@@ -329,7 +329,7 @@ function xgui.load_helpers()
 	end
 
 
-	function ULib.cmds.StringArg.x_getcontrol( arg, argnum )
+	function ULib.cmds.StringArg.x_getcontrol( arg, argnum, parent )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
 		ULib.cmds.StringArg.processRestrictions( restrictions, arg, ulx.getTagArgNum( tag, argnum ) )
@@ -338,25 +338,25 @@ function xgui.load_helpers()
 			or restrictions.playerLevelRestriction -- The player's tag specifies only certain strings
 
 		if is_restricted_to_completes then
-			return xlib.makecombobox{ text=arg.hint or "StringArg", choices=restrictions.restrictedCompletes }
+			return xlib.makecombobox{ text=arg.hint or "StringArg", choices=restrictions.restrictedCompletes, parent=parent }
 		elseif restrictions.restrictedCompletes and table.Count( restrictions.restrictedCompletes ) > 0 then
 			-- This is where there needs to be both a drop down AND an input box
-			local outPanel = xlib.makecombobox{ text=arg.hint, choices=restrictions.restrictedCompletes, enableinput=true, selectall=true }
+			local outPanel = xlib.makecombobox{ text=arg.hint, choices=restrictions.restrictedCompletes, enableinput=true, selectall=true, parent=parent }
 			outPanel.OnEnter = function( self )
 				self:GetParent():OnEnter()
 			end
 			return outPanel
 		else
-			return xlib.maketextbox{ text=arg.hint or "StringArg", selectall=true }
+			return xlib.maketextbox{ text=arg.hint or "StringArg", selectall=true, parent=parent }
 		end
 	end
 
-	function ULib.cmds.PlayerArg.x_getcontrol( arg, argnum )
+	function ULib.cmds.PlayerArg.x_getcontrol( arg, argnum, parent )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
 		ULib.cmds.PlayerArg.processRestrictions( restrictions, LocalPlayer(), arg, ulx.getTagArgNum( tag, argnum ) )
 
-		local outPanel = xlib.makecombobox{ text=arg.hint }
+		local outPanel = xlib.makecombobox{ text=arg.hint, parent=parent }
 		local targets = restrictions.restrictedTargets
 		if targets == false then -- No one allowed
 			targets = {}
@@ -370,16 +370,16 @@ function xgui.load_helpers()
 		return outPanel
 	end
 
-	function ULib.cmds.CallingPlayerArg.x_getcontrol( arg, argnum )
-		return xlib.makelabel{ label=arg.hint or "CallingPlayer" }
+	function ULib.cmds.CallingPlayerArg.x_getcontrol( arg, argnum, parent )
+		return xlib.makelabel{ label=arg.hint or "CallingPlayer", parent=parent }
 	end
 
-	function ULib.cmds.BoolArg.x_getcontrol( arg, argnum )
+	function ULib.cmds.BoolArg.x_getcontrol( arg, argnum, parent )
 		local access, tag = LocalPlayer():query( arg.cmd )
 		local restrictions = {}
 		ULib.cmds.BoolArg.processRestrictions( restrictions, arg, ulx.getTagArgNum( tag, argnum ) )
 
-		local outPanel = xlib.makecheckbox{ label=arg.hint or "BoolArg", value=restrictions.restrictedTo }
+		local outPanel = xlib.makecheckbox{ label=arg.hint or "BoolArg", value=restrictions.restrictedTo, parent=parent }
 		if restrictions.restrictedTo ~= nil then outPanel:SetDisabled( true ) end
 		outPanel.GetValue = function( self )
 			return self:GetChecked() and 1 or 0

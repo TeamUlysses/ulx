@@ -410,6 +410,7 @@ function xgui.expectChunks( numofchunks )
 		xgui.chunkbox:SetFraction( 0 )
 		xgui.chunkbox.Label:SetText( "Getting data: Waiting for server..." )
 		xgui.chunkbox:SetVisible( true )
+		xgui.chunkbox:SetSkin( xgui.settings.skin )
 		xgui.flushQueue( "chunkbox" ) --Remove the queue entry that would hide the chunkbox
 	end
 end

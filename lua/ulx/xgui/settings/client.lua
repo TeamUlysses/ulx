@@ -105,10 +105,6 @@ end
 ----------------
 --SKIN MANAGER--
 ----------------
---Include the extra skins in case nothing else has included them.
-for _, file in ipairs( file.Find( "skins/*.lua", "LUA" ) ) do
-	include( "skins/" .. file )
-end
 xlib.makelabel{ x=10, y=273, label="Derma Theme:", parent=xguipnl }
 xguipnl.skinselect = xlib.makecombobox{ x=10, y=290, w=150, parent=xguipnl }
 if not derma.SkinList[xgui.settings.skin] then

@@ -234,6 +234,7 @@ function xlib.makecat( t )
 	pnl:SetSize( t.w, t.h )
 	pnl:SetLabel( t.label or "" )
 	pnl:SetContents( t.contents )
+	t.contents:SetParent( pnl )
 	t.contents:Dock( TOP )
 
 	if t.expanded ~= nil then pnl:SetExpanded( t.expanded ) end
@@ -274,6 +275,7 @@ function xlib.makepanel( t )
 	local pnl = vgui.Create( "DPanel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
+	if t.skin then pnl:SetSkin( t.skin ) end
 	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
 end
@@ -363,7 +365,7 @@ function xlib.makecombobox( t )
 	end
 	if t.disabled then pnl:SetDisabled( t.disabled ) end
 
-	--Garrys function with no comments, just adding support for Spacers
+	--Garrys function with no comments, just adding support for Spacers and setting the skin.
 	function pnl:OpenMenu()
 		if ( #self.Choices == 0 ) then return end
 		if ( IsValid( self.Menu ) ) then
@@ -371,16 +373,17 @@ function xlib.makecombobox( t )
 			self.Menu = nil
 		end
 		self.Menu = DermaMenu()
-			for k, v in pairs( self.Choices ) do
-				if v == "--*" then --This is the string to determine where to add the spacer
-					self.Menu:AddSpacer()
-				else
-					self.Menu:AddOption( v, function() self:ChooseOption( v, k ) end )
-				end
+		self.Menu:SetSkin( xgui.settings.skin )
+		for k, v in pairs( self.Choices ) do
+			if v == "--*" then --This is the string to determine where to add the spacer
+				self.Menu:AddSpacer()
+			else
+				self.Menu:AddOption( v, function() self:ChooseOption( v, k ) end )
 			end
-			local x, y = self:LocalToScreen( 0, self:GetTall() )
-			self.Menu:SetMinimumWidth( self:GetWide() )
-			self.Menu:Open( x, y, false, self )
+		end
+		local x, y = self:LocalToScreen( 0, self:GetTall() )
+		self.Menu:SetMinimumWidth( self:GetWide() )
+		self.Menu:Open( x, y, false, self )
 	end
 
 	--Replicated Convar Updating
@@ -506,6 +509,7 @@ function xlib.makeprogressbar( t )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
 	pnl:SetFraction( t.value or 0 )
+	if t.skin then pnl:SetSkin( t.skin ) end
 	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
 end

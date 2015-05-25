@@ -15,6 +15,7 @@ xbans.banlist.DoDoubleClick = function( self, LineID, line )
 end
 xbans.banlist.OnRowRightClick = function( self, LineID, line )
 	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
 	menu:AddOption( "Details...", function() xbans.ShowBanDetailsWindow( xgui.data.bans.cache[LineID] ) end )
 	menu:AddOption( "Edit Ban...", function() xgui.ShowBanWindow( nil, line:GetValue( 5 ), nil, true, xgui.data.bans.cache[LineID] ) end )
 	menu:AddOption( "Remove", function() xbans.RemoveBan( line:GetValue( 5 ), xgui.data.bans.cache[LineID] ) end )
@@ -102,6 +103,7 @@ end
 
 local function banUserList( doFreeze )
 	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
 	for k, v in ipairs( player.GetAll() ) do
 		menu:AddOption( v:Nick(), function() xgui.ShowBanWindow( v, v:SteamID(), doFreeze ) end )
 	end
@@ -126,7 +128,7 @@ function xbans.setResultCount( count )
 	local width = pnl:GetWide()
 	local x, y = pnl:GetPos()
 	pnl:SetPos( 475 - width, y )
-	
+
 	local ix, iy = xbans.infoLabel:GetPos()
 	xbans.infoLabel:SetPos( ( 130 - width ) / 2 + 175, y )
 end
@@ -257,8 +259,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate, bandata )
 	xlib.makelabel{ x=28, y=83, label="Reason:", parent=xgui_banwindow }
 	xlib.makelabel{ x=10, y=108, label="Ban Length:", parent=xgui_banwindow }
 	local reason = xlib.makecombobox{ x=75, y=80, w=200, parent=xgui_banwindow, enableinput=true, selectall=true, choices=ULib.cmds.translatedCmds["ulx ban"].args[4].completes }
-	local banpanel = ULib.cmds.NumArg.x_getcontrol( ULib.cmds.translatedCmds["ulx ban"].args[3], 2 )
-	banpanel:SetParent( xgui_banwindow )
+	local banpanel = ULib.cmds.NumArg.x_getcontrol( ULib.cmds.translatedCmds["ulx ban"].args[3], 2, xgui_banwindow )
 	banpanel.interval:SetParent( xgui_banwindow )
 	banpanel.interval:SetPos( 200, 105 )
 	banpanel.val:SetParent( xgui_banwindow )
