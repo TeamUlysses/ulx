@@ -160,6 +160,9 @@ end
 hook.Add( ULib.HOOK_LOCALPLAYERREADY, "InitXGUI", xgui.init, HOOK_MONITOR_LOW )
 
 function xgui.saveClientSettings()
+	if not ULib.fileIsDir( "data/ulx" ) then
+		ULib.fileCreateDir( "data/ulx" )
+	end
 	local output = "// This file stores clientside settings for XGUI.\n"
 	output = output .. ULib.makeKeyValues( xgui.settings )
 	ULib.fileWrite( "data/ulx/xgui_settings.txt", output )
