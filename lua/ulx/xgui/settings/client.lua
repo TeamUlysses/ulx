@@ -83,7 +83,7 @@ databutton.DoClick=function( self )
 		if xgui.isInstalled then  --We can't be in offline mode to do this
 			self:SetDisabled( true )
 			RunConsoleCommand( "xgui", "refreshdata" )
-			timer.Simple( 30, function() self:SetDisabled( false ) end )
+			timer.Simple( 10, function() self:SetDisabled( false ) end )
 		end
 	end
 end
