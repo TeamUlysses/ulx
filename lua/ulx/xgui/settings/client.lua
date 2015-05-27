@@ -53,7 +53,7 @@ function client.processModules()
 end
 client.processModules()
 
-xgui.hookEvent( "onProcessModules", nil, client.processModules )
+xgui.hookEvent( "onProcessModules", nil, client.processModules, "xguiProcessModules" )
 xgui.addSettingModule( "Client", client, "icon16/layout_content.png" )
 
 
@@ -65,7 +65,7 @@ function genpnl.processModules()
 	genpnl.pickupplayers:SetDisabled( not LocalPlayer():query( "ulx physgunplayer" ) )
 end
 
-xgui.hookEvent( "onProcessModules", nil, genpnl.processModules )
+xgui.hookEvent( "onProcessModules", nil, genpnl.processModules, "clientGeneralProcessModules" )
 xgui.addSubModule( "General Settings", genpnl, nil, "client" )
 
 --------------------XGUI Clientside Module--------------------
@@ -137,7 +137,7 @@ xguipnl.updateMainOrder = function()
 		if v == selected then xguipnl.mainorder:SelectItem( l ) end
 	end
 end
-xgui.hookEvent( "onProcessModules", nil, xguipnl.updateMainOrder )
+xgui.hookEvent( "onProcessModules", nil, xguipnl.updateMainOrder, "clientXGUIUpdateTabOrder" )
 xguipnl.upbtnM = xlib.makebutton{ x=250, y=120, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, disabled=true, parent=xguipnl }
 xguipnl.upbtnM.DoClick = function( self )
 	self:SetDisabled( true )
@@ -170,7 +170,7 @@ xguipnl.updateSettingOrder = function()
 		if v == selected then xguipnl.settingorder:SelectItem( l ) end
 	end
 end
-xgui.hookEvent( "onProcessModules", nil, xguipnl.updateSettingOrder )
+xgui.hookEvent( "onProcessModules", nil, xguipnl.updateSettingOrder, "clientXGUIUpdateSettingOrder" )
 xguipnl.upbtnS = xlib.makebutton{ x=395, y=120, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, disabled=true, parent=xguipnl }
 xguipnl.upbtnS.DoClick = function( self )
 	self:SetDisabled( true )

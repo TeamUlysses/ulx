@@ -34,5 +34,5 @@ function sbox_settings.processLimits()
 	end
 end
 
-xgui.hookEvent( "sboxlimits", "process", sbox_settings.processLimits )
+xgui.hookEvent( "sboxlimits", "process", sbox_settings.processLimits, "sandboxProcessLimits" )
 xgui.addSettingModule( "Sandbox", sbox_settings, "icon16/box.png", "xgui_gmsettings" )

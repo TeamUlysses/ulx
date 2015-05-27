@@ -13,14 +13,15 @@ function xgui.prepareDataType( dtype, location )
 end
 
 --Set up various hooks modules can "hook" into.
-function xgui.hookEvent( dtype, event, func )
+function xgui.hookEvent( dtype, event, func, name )
 	if not xgui.hook[dtype] or ( event and not xgui.hook[dtype][event] ) then
 		Msg( "XGUI: Attempted to add to invalid type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
 	else
+		if not name then name = "FixMe" .. math.floor(math.random()*10000) end -- Backwards compatibility for older XGUI modules
 		if not event then
-			table.insert( xgui.hook[dtype], func )
+			xgui.hook[dtype][name] = func
 		else
-			table.insert( xgui.hook[dtype][event], func )
+			xgui.hook[dtype][event][name] = func
 		end
 	end
 end
@@ -456,7 +457,6 @@ function xgui.getChunk( flag, datatype, data )
 		elseif flag == 7 then --Pass the data directly to the module to be handled.
 			xgui.callUpdate( datatype, "data", data )
 		end
-		xgui.callUpdate( datatype )
 	end
 end
 
@@ -480,9 +480,9 @@ function xgui.callUpdate( dtype, event, data )
 		Msg( "XGUI: Attempted to call non-existent type or event to a hook! (" .. dtype .. ", " .. ( event or "nil" ) .. ")\n" )
 	else
 		if not event then
-			for _, func in ipairs( xgui.hook[dtype] ) do func( data ) end
+			for name, func in pairs( xgui.hook[dtype] ) do func( data ) end
 		else
-			for _, func in ipairs( xgui.hook[dtype][event] ) do func( data ) end
+			for name, func in pairs( xgui.hook[dtype][event] ) do func( data ) end
 		end
 	end
 end

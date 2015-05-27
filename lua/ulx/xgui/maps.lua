@@ -170,6 +170,6 @@ function maps.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 end
 hook.Add( "ULibReplicatedCvarChanged", "XGUI_mapsUpdateVotemapEnabled", maps.ConVarUpdated )
 
-xgui.hookEvent( "onProcessModules", nil, maps.updatePermissions )
-xgui.hookEvent( "votemaps", "process", maps.updateVoteMaps )
+xgui.hookEvent( "onProcessModules", nil, maps.updatePermissions, "mapsUpdatePermissions" )
+xgui.hookEvent( "votemaps", "process", maps.updateVoteMaps, "mapsUpdateVotemaps" )
 xgui.addModule( "Maps", maps, "icon16/map.png" )

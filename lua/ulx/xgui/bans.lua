@@ -426,21 +426,21 @@ function xbans.bansRefreshed()
 		xbans.retrieveBans()
 	end
 end
-xgui.hookEvent( "bans", "process", xbans.bansRefreshed )
+xgui.hookEvent( "bans", "process", xbans.bansRefreshed, "bansRefresh" )
 
 function xbans.banPageRecieved( data )
 	xgui.data.bans.cache = data
 	xbans.clearbans()
 	xbans.populateBans()
 end
-xgui.hookEvent( "bans", "data", xbans.banPageRecieved )
+xgui.hookEvent( "bans", "data", xbans.banPageRecieved, "bansGotPage" )
 
 function xbans.checkCache()
 	if xgui.data.bans.cache and xgui.data.bans.count ~= 0 and table.Count(xgui.data.bans.cache) == 0 then
 		xbans.retrieveBans()
 	end
 end
-xgui.hookEvent( "onOpen", nil, xbans.checkCache )
+xgui.hookEvent( "onOpen", nil, xbans.checkCache, "bansCheckCache" )
 
 function xbans.clearbans()
 	xbans.banlist:Clear()
