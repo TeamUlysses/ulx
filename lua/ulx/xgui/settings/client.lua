@@ -133,8 +133,19 @@ xguipnl.updateMainOrder = function()
 	local selected = xguipnl.mainorder:GetSelectedLine() and xguipnl.mainorder:GetSelected()[1]:GetColumnText(1)
 	xguipnl.mainorder:Clear()
 	for i, v in ipairs( xgui.settings.moduleOrder ) do
-		local l = xguipnl.mainorder:AddLine( v )
-		if v == selected then xguipnl.mainorder:SelectItem( l ) end
+		local found = false
+		for _, tab in pairs( xgui.modules.tab ) do
+			if tab.name == v then
+				found = true
+				break
+			end
+		end
+		if found then
+			local l = xguipnl.mainorder:AddLine( v )
+			if v == selected then xguipnl.mainorder:SelectItem( l ) end
+		else
+			table.remove( xgui.settings.moduleOrder, i )
+		end
 	end
 end
 xgui.hookEvent( "onProcessModules", nil, xguipnl.updateMainOrder, "clientXGUIUpdateTabOrder" )
@@ -166,8 +177,19 @@ xguipnl.updateSettingOrder = function()
 	local selected = xguipnl.settingorder:GetSelectedLine() and xguipnl.settingorder:GetSelected()[1]:GetColumnText(1)
 	xguipnl.settingorder:Clear()
 	for i, v in ipairs( xgui.settings.settingOrder ) do
-		local l = xguipnl.settingorder:AddLine( v )
-		if v == selected then xguipnl.settingorder:SelectItem( l ) end
+		local found = false
+		for _, tab in pairs( xgui.modules.setting ) do
+			if tab.name == v then
+				found = true
+				break
+			end
+		end
+		if found then
+			local l = xguipnl.settingorder:AddLine( v )
+			if v == selected then xguipnl.settingorder:SelectItem( l ) end
+		else
+			table.remove( xgui.settings.settingOrder, i )
+		end
 	end
 end
 xgui.hookEvent( "onProcessModules", nil, xguipnl.updateSettingOrder, "clientXGUIUpdateSettingOrder" )

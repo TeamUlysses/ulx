@@ -57,7 +57,7 @@ if ULib.fileExists( "data/ulx/xgui_settings.txt" ) then
 end
 --Set default settings if they didn't get loaded
 if not xgui.settings.moduleOrder then xgui.settings.moduleOrder = { "Cmds", "Groups", "Maps", "Settings", "Bans" } end
-if not xgui.settings.settingOrder then xgui.settings.settingOrder = { "Sandbox", "Server", "XGUI" } end
+if not xgui.settings.settingOrder then xgui.settings.settingOrder = { "Sandbox", "Server", "Client" } end
 if not xgui.settings.animTime then xgui.settings.animTime = 0.22 else xgui.settings.animTime = tonumber( xgui.settings.animTime ) end
 if not xgui.settings.infoColor then
 	--Default color
