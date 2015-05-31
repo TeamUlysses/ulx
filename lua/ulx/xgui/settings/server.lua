@@ -439,7 +439,7 @@ function plist.motdURLText:UpdateConvarValue()
 end
 function plist.motdURLText:OnEnter() self:UpdateConvarValue() end
 function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-	if cl_cvar == "ulx_showmotd" then
+	if cl_cvar == "ulx_showMotd" then
 		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL
 			plist.motdEnabled:SetValue( 1 )
 			plist.motdURLEnabled:SetValue( 1 )
