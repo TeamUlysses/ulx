@@ -24,10 +24,10 @@ ULib.ucl.registerAccess( seeanonymousechoAccess, ULib.ACCESS_ADMIN, "Ability to 
 local spawnechoAccess = "ulx spawnecho"
 ULib.ucl.registerAccess( spawnechoAccess, ULib.ACCESS_ADMIN, "Ability to see spawn echoes and steamids from joined players in console", "Other" ) -- Give admins access to see spawn echoes by default
 
-local curDateStr -- This will hold the date string (YYYY-mm-dd) we think it is right now.
+local curDateStr = os.date( "%Y-%m-%d" ) -- This will hold the date string (YYYY-mm-dd) we think it is right now.
 
 -- Utility stuff for our logs...
-ulx.log_file = nil
+ulx.log_file = ulx.log_file or nil
 local function init()
 	curDateStr = os.date( "%Y-%m-%d" )
 	if logFile:GetBool() then
@@ -192,7 +192,7 @@ local function playerInitialSpawn( ply )
 	local ip = ply:IPAddress()
 	local seconds = os.time() - (joinTimer[ip] or mapStartTime)
 	joinTimer[ip] = nil
-	
+
 	local txt = string.format( "Client \"%s\" spawned in server <%s> (took %i seconds).", ply:Nick(), ply:SteamID(), seconds )
 	if logEvents:GetBool() then
 		ulx.logString( txt )
@@ -327,6 +327,7 @@ local function updateColors()
 	end
 end
 hook.Add( ulx.HOOK_ULXDONELOADING, "UpdateEchoColors", updateColors )
+updateColors()		-- Update colors right away in case of autorefresh
 
 local function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	sv_cvar = sv_cvar:lower()

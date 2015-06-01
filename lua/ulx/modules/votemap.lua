@@ -1,7 +1,7 @@
 ------------------
 --Public votemap--
 ------------------
-ulx.votemaps = {}
+ulx.votemaps = ulx.votemaps or {}
 local specifiedMaps = {}
 
 local function init()

@@ -1,6 +1,6 @@
 local next_team_index
 local starting_team_index = 21
-ulx.teams = {}
+ulx.teams = ulx.teams or {}
 local team_by_name = {}
 
 local function sortTeams( team_a, team_b )

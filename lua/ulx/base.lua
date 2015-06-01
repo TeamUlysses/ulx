@@ -4,7 +4,7 @@
 	Sets up some things for ulx.
 ]]
 
-ulx.cvars = {} -- Used to decipher spaced cvars into actual implementation of underscored cvars (see below)
+ulx.cvars = ulx.cvars or {} -- Used to decipher spaced cvars into actual implementation of underscored cvars (see below)
 
 --[[
 	Function: convar
@@ -67,7 +67,7 @@ do
 	table.sort( ulx.gamemodes ) -- Alphabetize
 end
 
-ulx.common_kick_reasons = {}
+ulx.common_kick_reasons = ulx.common_kick_reasons or {}
 function ulx.addKickReason( reason )
 	table.insert( ulx.common_kick_reasons, reason )
 	table.sort( ulx.common_kick_reasons )

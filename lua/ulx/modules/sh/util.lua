@@ -16,7 +16,7 @@ function ulx.who( calling_ply, steamid )
 		end
 	else
 		data = ULib.ucl.getUserInfoFromID( steamid )
-		
+
 		if not data then
 			ULib.console( calling_ply, "No information for provided id exists" )
 		else
@@ -24,8 +24,8 @@ function ulx.who( calling_ply, steamid )
 			ULib.console( calling_ply, " Name: " .. data.name )
 			ULib.console( calling_ply, "Group: " .. data.group )
 		end
-		
-		
+
+
 	end
 end
 local who = ulx.command( CATEGORY_NAME, "ulx who", ulx.who )
@@ -356,7 +356,7 @@ if SERVER then
 	local ulx_kickAfterNameChanges = 			ulx.convar( "kickAfterNameChanges", "0", "<number> - Players can only change their name x times every ulx_kickAfterNameChangesCooldown seconds. 0 to disable.", ULib.ACCESS_ADMIN )
 	local ulx_kickAfterNameChangesCooldown = 	ulx.convar( "kickAfterNameChangesCooldown", "60", "<time> - Players can change their name ulx_kickAfterXNameChanges times every x seconds.", ULib.ACCESS_ADMIN )
 	local ulx_kickAfterNameChangesWarning = 	ulx.convar( "kickAfterNameChangesWarning", "1", "<1/0> - Display a warning to users to let them know how many more times they can change their name.", ULib.ACCESS_ADMIN )
-	nameChangeTable = {}
+	ulx.nameChangeTable = ulx.nameChangeTable or {}
 
 	local function checkNameChangeLimit( ply, oldname, newname )
 		local maxAttempts = ulx_kickAfterNameChanges:GetInt()
@@ -364,19 +364,19 @@ if SERVER then
 		local showWarning = ulx_kickAfterNameChangesWarning:GetInt()
 
 		if maxAttempts ~= 0 then
-			if not nameChangeTable[ply:SteamID()] then
-				nameChangeTable[ply:SteamID()] = {}
+			if not ulx.nameChangeTable[ply:SteamID()] then
+				ulx.nameChangeTable[ply:SteamID()] = {}
 			end
 
-			for i=#nameChangeTable[ply:SteamID()], 1, -1 do
-				if CurTime() - nameChangeTable[ply:SteamID()][i] > duration then
-					table.remove( nameChangeTable[ply:SteamID()], i )
+			for i=#ulx.nameChangeTable[ply:SteamID()], 1, -1 do
+				if CurTime() - ulx.nameChangeTable[ply:SteamID()][i] > duration then
+					table.remove( ulx.nameChangeTable[ply:SteamID()], i )
 				end
 			end
 
-			table.insert( nameChangeTable[ply:SteamID()], CurTime() )
+			table.insert( ulx.nameChangeTable[ply:SteamID()], CurTime() )
 
-			local curAttempts = #nameChangeTable[ply:SteamID()]
+			local curAttempts = #ulx.nameChangeTable[ply:SteamID()]
 
 			if curAttempts >= maxAttempts then
 				ULib.kick( ply, "Changed name too many times" )

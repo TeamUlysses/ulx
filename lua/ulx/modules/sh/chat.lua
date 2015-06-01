@@ -82,10 +82,11 @@ local thetime = ulx.command( CATEGORY_NAME, "ulx thetime", ulx.thetime, "!thetim
 thetime:defaultAccess( ULib.ACCESS_ALL )
 thetime:help( "Shows you the server time." )
 
-local adverts = {}
-ulx.adverts = adverts -- For XGUI, too lazy to change all refs
 
 ------------------------------ Adverts ------------------------------
+ulx.adverts = ulx.adverts or {}
+local adverts = ulx.adverts -- For XGUI, too lazy to change all refs
+
 local function doAdvert( group, id )
 
 	if adverts[ group ][ id ] == nil then
@@ -146,8 +147,8 @@ function ulx.addAdvert( message, rpt, group, color, len )
 end
 
 ------------------------------ Gimp ------------------------------
-local gimpSays = {} -- Holds gimp says
-ulx.gimpSays = gimpSays -- For XGUI, too lazy to change all refs
+ulx.gimpSays = ulx.gimpSays or {} -- Holds gimp says
+local gimpSays = ulx.gimpSays -- For XGUI, too lazy to change all refs
 local ID_GIMP = 1
 local ID_MUTE = 2
 

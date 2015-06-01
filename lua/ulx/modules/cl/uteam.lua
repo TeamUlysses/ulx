@@ -1,4 +1,4 @@
-ulx.teams = {}
+ulx.teams = ulx.teams or {}
 
 function ulx.populateClTeams( teams )
 	ulx.teams = teams

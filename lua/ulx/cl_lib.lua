@@ -1,22 +1,22 @@
-ulx.common_kick_reasons = {}
+ulx.common_kick_reasons = ulx.common_kick_reasons or {}
 function ulx.populateKickReasons( reasons )
 	table.Empty( ulx.common_kick_reasons )
 	table.Merge( ulx.common_kick_reasons, reasons )
 end
 
-ulx.maps = {}
+ulx.maps = ulx.maps or {}
 function ulx.populateClMaps( maps )
 	table.Empty( ulx.maps )
 	table.Merge( ulx.maps, maps )
 end
 
-ulx.gamemodes = {}
+ulx.gamemodes = ulx.gamemodes or {}
 function ulx.populateClGamemodes( gamemodes )
 	table.Empty( ulx.gamemodes )
 	table.Merge( ulx.gamemodes, gamemodes )
 end
 
-ulx.votemaps = {}
+ulx.votemaps = ulx.votemaps or {}
 function ulx.populateClVotemaps( votemaps )
 	table.Empty( ulx.votemaps )
 	table.Merge( ulx.votemaps, votemaps )
