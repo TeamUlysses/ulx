@@ -457,6 +457,7 @@ function xbans.retrieveBans()
 end
 
 function xbans.populateBans()
+	if xgui.data.bans.cache == nil then return end
 	local cache = xgui.data.bans.cache
 	local count = cache.count or xgui.data.bans.count
 	numPages = math.max( 1, math.ceil( count / 17 ) )
@@ -480,6 +481,7 @@ function xbans.populateBans()
 					tonumber( baninfo.unban ) )
 	end
 end
+xbans.populateBans() --For autorefresh
 
 function xbans.xban( ply, cmd, args, dofreeze )
 	if args[1] and args[1] ~= "" then

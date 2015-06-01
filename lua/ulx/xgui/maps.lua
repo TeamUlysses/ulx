@@ -1,7 +1,7 @@
 --Maps module for ULX GUI -- by Stickly Man!
 --Lists maps on server, allows for map voting, changing levels, etc. All players may access this menu.
 
-ulx.votemaps = {}
+ulx.votemaps = ulx.votemaps or {}
 xgui.prepareDataType( "votemaps", ulx.votemaps )
 local maps = xlib.makepanel{ parent=xgui.null }
 
@@ -160,6 +160,7 @@ function maps.updateButtonStates()
 		maps.disp:SetMaterial( Material( "maps/thumb/noicon.png" ) )
 	end
 end
+maps.updateVoteMaps() -- For autorefresh
 
 --Enable/Disable the votemap button when ulx_votemapEnabled changes
 function maps.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )

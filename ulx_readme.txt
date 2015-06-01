@@ -75,9 +75,14 @@ v3.70 - *(00/00/00)*
 	* [FIX] Vote commands now work properly from server console.
 	* [FIX] XGUI: Numerous issues with selecting a custom Derma/GWEN skin.
 	* [FIX] XGUI: Clientside settings would not save if the client's data/ulx folder did not exist.
+	* [FIX] Improved how well ULX/XGUI files and XGUI clientside/serverside modules handle being autorefreshed.
+	* [FIX] ulx.addToHelpManually now checks for and removes and previously added manual help entries with the same command name.
+	* [FIX] XGUI: Bug where ulx_showMotd cvar would not be updated properly when changed by someone else.
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.
-	* [CHANGE] XGUI: No longer autoexecutes skins to ensure they get installed.
+	* [CHANGE] XGUI: No longer autoexecutes skins to ensure they have been installed.
+	* [CHANGE] XGUI: Added "name" parameter to xgui.hookEvent to prevent event duplication. (Aids with autorefresh, is backwards compatible with old XGUI modules)
+	* [CHANGE] XGUI: Modules that no longer exist will be removed from the customizable sort order.
 
 v3.62 - *(03/09/15)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).

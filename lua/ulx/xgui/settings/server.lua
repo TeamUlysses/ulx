@@ -366,6 +366,7 @@ end
 function adverts.onOpen()
 	ULib.queueFunctionCall( adverts.tree.InvalidateLayout, adverts.tree )
 end
+adverts.updateAdverts() -- For autorefresh
 xgui.hookEvent( "adverts", "process", adverts.updateAdverts, "serverUpdateAdverts" )
 xgui.addSubModule( "ULX Adverts", adverts, nil, "server" )
 
@@ -513,6 +514,7 @@ gimps.updateGimps = function()
 		gimps.list:AddLine( v )
 	end
 end
+gimps.updateGimps()
 xgui.hookEvent( "gimps", "process", gimps.updateGimps, "serverUpdateGimps" )
 xgui.addSubModule( "ULX Gimps", gimps, nil, "server" )
 
@@ -550,6 +552,7 @@ panel.updateBanReasons = function()
 		panel.list:AddLine( v )
 	end
 end
+panel.updateBanReasons()
 xgui.hookEvent( "banreasons", "process", panel.updateBanReasons, "serverUpdateBanReasons" )
 xgui.addSubModule( "ULX Kick/Ban Reasons", panel, "xgui_managebans", "server" )
 
@@ -627,6 +630,7 @@ panel.updateList = function()
 		end
 	end
 end
+panel.updateList()
 xgui.hookEvent( "votemaps", "process", panel.updateList, "serverUpdateVotemapList" )
 xgui.addSubModule( "ULX Player Votemap List", panel, nil, "server" )
 

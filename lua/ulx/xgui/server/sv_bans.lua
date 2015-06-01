@@ -19,12 +19,12 @@ function bans.init()
 			ULib.clientRPC( ply, "xgui.ShowBanWindow" )
 		end
 	end
-	ULib.addSayCommand(	"!xban", xgui_banWindowChat, "ulx ban" )
+	ULib.addSayCommand( "!xban", xgui_banWindowChat, "ulx ban" )
 
 	local function xgui_banWindowChatFreeze( ply, func, args )
 		xgui_banWindowChat( ply, func, args, true )
 	end
-	ULib.addSayCommand(	"!fban", xgui_banWindowChatFreeze, "ulx ban" )
+	ULib.addSayCommand( "!fban", xgui_banWindowChatFreeze, "ulx ban" )
 
 	--XGUI commands
 	function bans.updateBan( ply, args )

@@ -1,9 +1,21 @@
 --Server stuff for the GUI for ULX --by Stickly Man!
 
-xgui = {}
+xgui = xgui or {}
 xgui.svmodules = {}
 function xgui.addSVModule( name, initFunc, postinitFunc )
+	local found = false
+	for i, svmodule in pairs( xgui.svmodules ) do
+		if svmodule.name == name then
+			table.remove( xgui.svmodules, i )
+			found = true
+			break
+		end
+	end
 	table.insert( xgui.svmodules, { name=name, init=initFunc, postinit=postinitFunc } )
+	if found then -- Autorefresh
+		initFunc()
+		postinitFunc()
+	end
 end
 
 Msg( "///////////////////////////////\n" )

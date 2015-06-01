@@ -1150,6 +1150,7 @@ function groups.updateAccessPanel()
 	end
 	xgui.queueFunctionCall( finalSort, "accesses" )
 end
+groups.updateAccessPanel()
 
 function groups.accessChanged( access, newVal, group )
 	if not group then group = groups.list:GetValue() end

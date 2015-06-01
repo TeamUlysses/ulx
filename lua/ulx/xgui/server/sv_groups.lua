@@ -2,7 +2,6 @@
 --Server-side code related to the groups menu.
 
 local groups = {}
-groups.garryUsers = {}
 function groups.init()
 	ULib.ucl.registerAccess( "xgui_managegroups", "superadmin", "Allows managing of groups, users, and access strings via the groups tab in XGUI.", "XGUI" )
 
