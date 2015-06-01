@@ -35,6 +35,12 @@ end
 
 function ulx.addToHelpManually( category, cmd, string, access_tag )
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
+	for i, existingCmd in pairs( ulx.cmdsByCategory[ category ]) do
+		if existingCmd.cmd == cmd and existingCmd.manual == true then
+			table.remove( ulx.cmdsByCategory[ category ], i)
+			break
+		end
+	end
 	table.insert( ulx.cmdsByCategory[ category ], { access_tag=access_tag, cmd=cmd, helpStr=string, manual=true } )
 end
 
