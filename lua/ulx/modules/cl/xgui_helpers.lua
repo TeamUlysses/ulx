@@ -297,9 +297,19 @@ function xgui.load_helpers()
 			local maxvalue = restrictions.max
 			if restrictions.max == nil and defvalue > 100 then maxvalue = defvalue end
 
+			local decimal = 0
+			if not table.HasValue( arg, ULib.cmds.round ) then
+				local minMaxDelta = maxvalue - restrictions.min
+				if minMaxDelta < 5 then
+					decimal = 2
+				elseif minMaxDelta <= 10 then
+					decimal = 1
+				end
+			end
+
 			local outPanel = xlib.makepanel{ h=35, parent=parent }
 			xlib.makelabel{ label=arg.hint or "NumArg", parent=outPanel }
-			outPanel.val = xlib.makeslider{ y=15, w=165, min=restrictions.min, max=maxvalue, value=defvalue, label="<--->", parent=outPanel }
+			outPanel.val = xlib.makeslider{ y=15, w=165, min=restrictions.min, max=maxvalue, value=defvalue, decimal=decimal, label="<--->", parent=outPanel }
 			outPanel.GetValue = function( self ) return outPanel.val.GetValue( outPanel.val ) end
 			outPanel.TextArea = outPanel.val.TextArea
 			return outPanel

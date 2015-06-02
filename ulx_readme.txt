@@ -83,6 +83,7 @@ v3.70 - *(00/00/00)*
 	* [CHANGE] XGUI: No longer autoexecutes skins to ensure they have been installed.
 	* [CHANGE] XGUI: Added "name" parameter to xgui.hookEvent to prevent event duplication. (Aids with autorefresh, is backwards compatible with old XGUI modules)
 	* [CHANGE] XGUI: Modules that no longer exist will be removed from the customizable sort order.
+	* [CHANGE] XGUI: Sliders for arguments on the Cmds tab with a small min/max delta (e.g. from 0 to 1) will now allow up to 2 decimal places, if the arg does not have cmds.round flag.
 
 v3.62 - *(03/09/15)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
