@@ -281,7 +281,7 @@ function xlib.makepanel( t )
 end
 
 function xlib.makeXpanel( t )
-	pnl = vgui.Create( "xlib_Panel", t.parent )
+	local pnl = vgui.Create( "xlib_Panel", t.parent )
 	pnl:MakePopup()
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
@@ -504,7 +504,7 @@ function xlib.wordWrap( text, width, font )
 end
 
 function xlib.makeprogressbar( t )
-	pnl = vgui.Create( "DProgress", t.parent )
+	local pnl = vgui.Create( "DProgress", t.parent )
 	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), textcolor=SKIN.text_dark, parent=pnl }
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
