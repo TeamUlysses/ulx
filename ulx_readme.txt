@@ -67,6 +67,7 @@ v3.70 - *(00/00/00)*
 	* [ADD] Reason to votekick log (Thanks, CSchulz).
 	* [ADD] Steam ID parameter to "ulx who" to lookup users by Steam ID.
 	* [ADD] Cvar "ulx meChatEnabled" added to enable or disable the /me chat feature, or set it to Sandbox only.
+	* [ADD] XGUI: Added methods for developers to be able to open a specific client or server setting module.
 	* [FIX] Changing weapons while cloaked would keep them hidden when uncloaked. (Thanks, TheRealAyCe).
 	* [FIX] XGUI: Error if the default settings/users.txt file was missing.
 	* [FIX] Gamemode list includes workshop addons now (Thanks, jason2010).
