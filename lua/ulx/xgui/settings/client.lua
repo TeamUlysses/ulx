@@ -32,6 +32,26 @@ xlib.makebutton{ x=5, y=307, w=150, label="Save Clientside Settings", parent=cli
 	xgui.saveClientSettings()
 end
 
+function xgui.openClientModule( name )
+	name = string.lower( name )
+	for i = 1, #xgui.modules.submodule do
+		local module = xgui.modules.submodule[i]
+		if module.mtype == "client" and string.lower(module.name) == name then
+			if module.panel ~= client.curPanel then
+				client.catList:ClearSelection()
+				for i=1, #client.catList.Lines do
+					local line = client.catList.Lines[i]
+					if string.lower(line:GetColumnText(1)) == name then
+						client.catList:SelectItem( line )
+						break
+					end
+				end
+			end
+			break
+		end
+	end
+end
+
 --Process modular settings
 function client.processModules()
 	client.catList:Clear()

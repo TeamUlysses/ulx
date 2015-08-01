@@ -50,6 +50,26 @@ server.catList.OnRowSelected = function( self, LineID, Line )
 	xlib.animQueue_start()
 end
 
+function xgui.openServerModule( name )
+	name = string.lower( name )
+	for i = 1, #xgui.modules.submodule do
+		local module = xgui.modules.submodule[i]
+		if module.mtype == "server" and string.lower(module.name) == name then
+			if module.panel ~= server.curPanel then
+				server.catList:ClearSelection()
+				for i=1, #server.catList.Lines do
+					local line = server.catList.Lines[i]
+					if string.lower(line:GetColumnText(1)) == name then
+						server.catList:SelectItem( line )
+						break
+					end
+				end
+			end
+			break
+		end
+	end
+end
+
 --Process modular settings
 function server.processModules()
 	server.catList:Clear()
