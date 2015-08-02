@@ -163,6 +163,7 @@ function cmds.buildArgsList( cmd )
 	cmds.argslist:Clear()
 	cmds.curargs = {}
 	local argnum = 0
+	local zpos = 0
 	local expectingplayers = cmd.args[2] and ( ( cmd.args[2].type == ULib.cmds.PlayersArg ) or ( cmd.args[2].type == ULib.cmds.PlayerArg ) ) or false
 	for _, arg in ipairs( cmd.args ) do
 		if not arg.type.invisible then
@@ -198,14 +199,16 @@ function cmds.buildArgsList( cmd )
 							if #choices <= parent.arg.repeat_min then self:SetDisabled( true ) end
 						end
 						cmds.argslist:Add( panel )
+						panel:SetZPos( zpos )
+						zpos = zpos + 1
 						for i=1,curitem.repeat_min do
 							local ctrl = arg.type.x_getcontrol( arg, argnum, cmds.argslist )
 							cmds.argslist:Add( ctrl )
+							ctrl:SetZPos( zpos )
+							zpos = zpos + 1
 							table.insert( choices, ctrl )
 							table.insert( cmds.curargs, ctrl )
 						end
-						cmds.argrptadd = panel.addbutton --For hacky workaround, see below
-						cmds.argrptrem = panel.removebutton
 					else
 						local panel = arg.type.x_getcontrol( arg, argnum, cmds.argslist )
 						table.insert( cmds.curargs, panel )
@@ -219,8 +222,8 @@ function cmds.buildArgsList( cmd )
 							end
 						end
 						cmds.argslist:Add( panel )
-						cmds.argrptadd = nil --For hacky workaround, see below
-						cmds.argrptrem = nil
+						panel:SetZPos( zpos )
+						zpos = zpos + 1
 					end
 				end
 			end
@@ -233,6 +236,8 @@ function cmds.buildArgsList( cmd )
 			cmds.runCmd( cmd.cmd )
 		end
 		cmds.argslist:Add( panel )
+		panel:SetZPos( zpos )
+		zpos = zpos + 1
 	end
 	if cmd.opposite and LocalPlayer():query( cmd.opposite ) then
 		local panel = xlib.makebutton{ label=cmd.opposite, parent=cmds.argslist }
@@ -241,17 +246,15 @@ function cmds.buildArgsList( cmd )
 		end
 		panel.xguiIgnore = true
 		cmds.argslist:Add( panel )
+		panel:SetZPos( zpos )
+		zpos = zpos + 1
 	end
 	if cmd.helpStr then --If the command has a string for help
 		local panel = xlib.makelabel{ w=160, label=cmd.helpStr, wordwrap=true, parent=cmds.argslist }
 		panel.xguiIgnore = true
 		cmds.argslist:Add( panel )
-	end
-
-	--Hacky workaround for bug where the order of panels in GetChildren() changes sometimes when a textbox is clicked...
-	if cmds.argrptadd and cmds.argrptadd:IsValid() then
-		cmds.argrptadd:DoClick()	--Simulate adding/removing an arg.
-		cmds.argrptrem:DoClick()	--I have no idea why this fixes the problem, either.
+		panel:SetZPos( zpos )
+		zpos = zpos + 1
 	end
 end
 
