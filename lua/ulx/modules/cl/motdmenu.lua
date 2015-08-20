@@ -15,7 +15,8 @@ function ulx.showMotdMenu( steamid )
 	window:SetVisible( true )
 	window:MakePopup()
 
-	local html = vgui.Create( "HTML", window )
+	local html = vgui.Create( "DHTML", window )
+	--html:SetAllowLua( true ) -- Too much of a security risk for us to enable. Feel free to uncomment if you know what you're doing.
 
 	local button = vgui.Create( "DButton", window )
 	button:SetText( "Close" )
@@ -26,7 +27,7 @@ function ulx.showMotdMenu( steamid )
 	html:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
 	html:SetPos( 10, 30 )
 	if not isUrl then
-		html:SetHTML( ULib.fileRead( "data/ulx_motd.txt" ) )
+		html:SetHTML( ULib.fileRead( "data/ulx_motd.txt" ) or "" )
 	else
 		url = string.gsub( url, "%%curmap%%", game.GetMap() )
 		url = string.gsub( url, "%%steamid%%", steamid )

@@ -80,6 +80,7 @@ v3.70 - *(00/00/00)*
 	* [FIX] Improved how well ULX/XGUI files and XGUI clientside/serverside modules handle being autorefreshed.
 	* [FIX] ulx.addToHelpManually now checks for and removes and previously added manual help entries with the same command name.
 	* [FIX] XGUI: Bug where ulx_showMotd cvar would not be updated properly when changed by someone else.
+	* [CHANGE] MOTD now uses DHTML (Awesomium framework).
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.
 	* [CHANGE] XGUI: No longer autoexecutes skins to ensure they have been installed.
