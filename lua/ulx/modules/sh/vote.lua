@@ -59,7 +59,7 @@ function ulx.voteCallback( ply, command, argv )
 		return
 	end
 
-	local echo = util.tobool( GetConVarNumber( "ulx_voteEcho" ) )
+	local echo = ULib.tobool( GetConVarNumber( "ulx_voteEcho" ) )
 	local id = tonumber( argv[ 1 ] )
 	ulx.voteInProgress.results[ id ] = ulx.voteInProgress.results[ id ] or 0
 	ulx.voteInProgress.results[ id ] = ulx.voteInProgress.results[ id ] + 1
@@ -89,7 +89,7 @@ function ulx.voteDone( cancelled )
 
 	local vip = ulx.voteInProgress
 	ulx.voteInProgress = nil
-	timer.Destroy( "ULXVoteTimeout" )
+	timer.Remove( "ULXVoteTimeout" )
 	if not cancelled then
 		ULib.pcallError( vip.callback, vip, unpack( vip.args, 1, 10 ) ) -- Unpack is explicit in length to avoid odd LuaJIT quirk.
 	end

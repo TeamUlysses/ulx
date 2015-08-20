@@ -250,7 +250,7 @@ function bans.init()
 		unbanfunc( steamid, admin )
 		bans.processBans()
 		if timer.Exists( "xgui_unban" .. steamid ) then
-			timer.Destroy( "xgui_unban" .. steamid )
+			timer.Remove( "xgui_unban" .. steamid )
 		end
 	end
 
@@ -260,7 +260,7 @@ function bans.init()
 		for ID, data in pairs( ULib.bans ) do
 			if tonumber( data.unban ) ~= 0 then
 				if tonumber( data.unban ) - os.time() <= 3600 then
-					timer.Destroy( "xgui_unban" .. ID )
+					timer.Remove( "xgui_unban" .. ID )
 					timer.Create( "xgui_unban" .. ID, tonumber( data.unban ) - os.time(), 1, function() ULib.unban( ID ) end )
 				end
 			end
