@@ -34,7 +34,7 @@ function calcSlots( disconnect )
 end
 
 local function updateSlots( ply, disconnect )
-	local visible = ULib.tobool( GetConVarString( "ulx_rslotsVisible" ) )
+	local visible = ULib.toBool( GetConVarString( "ulx_rslotsVisible" ) )
 	if not visible then -- Make sure our visible slots is up to date
 		local slots = calcSlots( disconnect )
 		local max = game.MaxPlayers()
@@ -48,7 +48,7 @@ local function playerAccess( ply )
 	local mode = GetConVarNumber( "ulx_rslotsMode" )
 	if mode == 0 then return end -- Off!
 
-	local visible = ULib.tobool( GetConVarString( "ulx_rslotsVisible" ) )
+	local visible = ULib.toBool( GetConVarString( "ulx_rslotsVisible" ) )
 	local slots = calcSlots()
 	local cur = #player.GetAll()
 	local max = game.MaxPlayers()

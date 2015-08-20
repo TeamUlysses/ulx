@@ -59,7 +59,7 @@ function ulx.voteCallback( ply, command, argv )
 		return
 	end
 
-	local echo = ULib.tobool( GetConVarNumber( "ulx_voteEcho" ) )
+	local echo = ULib.toBool( GetConVarNumber( "ulx_voteEcho" ) )
 	local id = tonumber( argv[ 1 ] )
 	ulx.voteInProgress.results[ id ] = ulx.voteInProgress.results[ id ] or 0
 	ulx.voteInProgress.results[ id ] = ulx.voteInProgress.results[ id ] + 1

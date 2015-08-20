@@ -44,7 +44,7 @@ asay:help( "Send a message to currently connected admins." )
 function ulx.tsay( calling_ply, message )
 	ULib.tsay( _, message )
 
-	if ULib.tobool( GetConVarNumber( "ulx_logChat" ) ) then
+	if ULib.toBool( GetConVarNumber( "ulx_logChat" ) ) then
 		ulx.logString( string.format( "(tsay from %s) %s", calling_ply:IsValid() and calling_ply:Nick() or "Console", message ) )
 	end
 end
@@ -57,7 +57,7 @@ tsay:help( "Send a message to everyone in the chat box." )
 function ulx.csay( calling_ply, message )
 	ULib.csay( _, message )
 
-	if ULib.tobool( GetConVarNumber( "ulx_logChat" ) ) then
+	if ULib.toBool( GetConVarNumber( "ulx_logChat" ) ) then
 		ulx.logString( string.format( "(csay from %s) %s", calling_ply:IsValid() and calling_ply:Nick() or "Console", message ) )
 	end
 end
@@ -288,7 +288,7 @@ if SERVER then
 			if game.IsDedicated() then
 				Msg( strText .. "\n" ) -- Log to console
 			end
-			if ULib.tobool( GetConVarNumber( "ulx_logChat" ) ) then
+			if ULib.toBool( GetConVarNumber( "ulx_logChat" ) ) then
 				ulx.logString( strText )
 			end
 

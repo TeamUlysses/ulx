@@ -62,7 +62,7 @@ function ulx.clearVotemaps()
 end
 
 function ulx.votemap( calling_ply, map )
-	if not ULib.tobool( GetConVarNumber( "ulx_votemapEnabled" ) ) then
+	if not ULib.toBool( GetConVarNumber( "ulx_votemapEnabled" ) ) then
 		ULib.tsayError( calling_ply, "The votemap command has been disabled by a server admin.", true )
 		return
 	end
