@@ -177,6 +177,8 @@ function bans.init()
 	function bans.sendBansToUser( ply, args )
 		if not ply then return end
 
+		if not ULib.ucl.query( ply, "xgui_managebans" ) then return end
+
 		--local perfTimer = os.clock() --Debug
 
 		-- Default params
