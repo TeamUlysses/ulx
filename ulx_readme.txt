@@ -81,6 +81,7 @@ v3.70 - *(00/00/00)*
 	* [FIX] ulx.addToHelpManually now checks for and removes and previously added manual help entries with the same command name.
 	* [FIX] XGUI: Bug where ulx_showMotd cvar would not be updated properly when changed by someone else.
 	* [FIX] XGUI: Minor performance exploit involving serverside ban sorting. (Thanks, TomatoCo).
+	* [FIX] Exploit involving gmod filesystem mounting.
 	* [CHANGE] MOTD now uses DHTML (Awesomium framework).
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.

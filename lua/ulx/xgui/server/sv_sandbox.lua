@@ -20,7 +20,7 @@ local function init()
 		xgui.sboxLimits = {}
 		if ULib.isSandbox() then
 			local curgroup
-			local f = ULib.fileRead( "data/ulx/sbox_limits.txt", "GAME" )
+			local f = ULib.fileRead( "data/ulx/sbox_limits.txt" )
 			if f == nil then Msg( "XGUI ERROR: Sandbox Cvar limits file was needed but could not be found!\n" ) return end
 			local lines = string.Explode( "\n", f )
 			for i,v in ipairs( lines ) do

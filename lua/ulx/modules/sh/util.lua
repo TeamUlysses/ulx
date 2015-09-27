@@ -278,7 +278,7 @@ function ulx.debuginfo( calling_ply )
 		str = str .. plyline .. "\n"
 	end
 
-	local gmoddefault = util.KeyValuesToTable( ULib.fileRead( "settings/users.txt" ) )
+	local gmoddefault = util.KeyValuesToTable( ULib.fileRead( "settings/users.txt", true ) )
 	str = str .. "\n\nULib.ucl.users (#=" .. table.Count( ULib.ucl.users ) .. "):\n" .. ulx.dumpTable( ULib.ucl.users, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.groups (#=" .. table.Count( ULib.ucl.groups ) .. "):\n" .. ulx.dumpTable( ULib.ucl.groups, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.authed (#=" .. table.Count( ULib.ucl.authed ) .. "):\n" .. ulx.dumpTable( ULib.ucl.authed, 1 ) .. "\n\n"
