@@ -43,6 +43,16 @@ function ulx.command( category, command, fn, say_cmd, hide_say, nospace )
 	local obj = ulxCommand( command, fn, say_cmd, hide_say, nospace )
 	obj:addParam{ type=ULib.cmds.CallingPlayerArg }
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
+	for cat, cmds in pairs( ulx.cmdsByCategory ) do
+		for i=1, #cmds do
+			print(cat, cmds[i].cmd, command)
+			if cmds[i].cmd == command then
+				print("TRRUUUUE")
+				table.remove( ulx.cmdsByCategory[ cat ], i )
+				break
+			end
+		end
+	end
 	table.insert( ulx.cmdsByCategory[ category ], obj )
 	obj.category = category
 	obj.say_cmd = say_cmd
