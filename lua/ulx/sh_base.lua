@@ -45,9 +45,7 @@ function ulx.command( category, command, fn, say_cmd, hide_say, nospace )
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
 	for cat, cmds in pairs( ulx.cmdsByCategory ) do
 		for i=1, #cmds do
-			print(cat, cmds[i].cmd, command)
 			if cmds[i].cmd == command then
-				print("TRRUUUUE")
 				table.remove( ulx.cmdsByCategory[ cat ], i )
 				break
 			end
