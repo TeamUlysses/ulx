@@ -426,7 +426,6 @@ groups.teammodifiers.OnRowSelected = function( self, LineID, Line )
 			end
 			groups.teammodspace:Add( groups.teamctrl )
 			groups.modelList = vgui.Create( "DModelSelect" )
-			temp = groups.modelList
 			groups.updateModelPanel()
 			for _, item in ipairs( groups.modelList.Items ) do
 				if item.ConVars == Line:GetColumnText(2) or item.Model == Line:GetColumnText(2) then
