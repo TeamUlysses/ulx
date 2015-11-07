@@ -17,7 +17,7 @@ function calcSlots( disconnect )
 
 		local players = player.GetAll()
 		for _, player in ipairs( players ) do
-			if player:IsConnected() and player:query( access ) then
+			if player:IsConnected() and ULib.ucl.authed[ player:UniqueID() ] and player:query( access ) then
 				admins = admins + 1
 			end
 		end
