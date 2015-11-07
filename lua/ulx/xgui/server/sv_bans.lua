@@ -147,7 +147,7 @@ function bans.init()
 			-- Bans by Unban Date
 			if next( xgui.bansbyunban ) == nil then
 				for k, v in pairs( ULib.bans ) do
-					table.insert( xgui.bansbyunban, { k, v.unban or 0 } )
+					table.insert( xgui.bansbyunban, { k, tonumber(v.unban) or 0 } )
 				end
 				table.sort( xgui.bansbyunban, function( a, b ) return a[2] < b[2] end )
 			end
@@ -206,7 +206,7 @@ function bans.init()
 			local steamID = sortTable[i][1]
 			local bandata = ULib.bans[steamID]
 
-			-- Handle filters. This is confusing, but essentially 0 means skip check, 1 means restrict if condition IS true, 2+ means restrict if condition IS NOT true. 
+			-- Handle filters. This is confusing, but essentially 0 means skip check, 1 means restrict if condition IS true, 2+ means restrict if condition IS NOT true.
 			if not ( filterPermaBan > 0 and ( ( tonumber( bandata.unban ) == 0 ) == ( filterPermaBan == 1 ) ) ) then
 				if not ( filterIncomplete > 0 and ( ( bandata.time == nil ) == ( filterIncomplete == 1 ) ) ) then
 

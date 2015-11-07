@@ -85,6 +85,7 @@ v3.70 - *(00/00/00)*
 	* [FIX] Minor issue where opposite commands might not be run due to case sensitivity.
 	* [FIX] Duplicate help entries due to autorefresh and overriding commands. (Thanks iSnipeu).
 	* [FIX] Ragdolled players were getting removed on map cleanup.
+	* [FIX] XGUI: Server error in some cases when sorting bans by Unban Date after a new ban has been added.
 	* [CHANGE] MOTD now uses DHTML (Awesomium framework).
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.
