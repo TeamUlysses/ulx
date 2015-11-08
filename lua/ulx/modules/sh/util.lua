@@ -181,6 +181,13 @@ function ulx.spectate( calling_ply, target_ply )
 		return
 	end
 
+	-- Check if player is already spectating. If so, stop spectating so we can start again
+	local hookTable = hook.GetTable()["KeyPress"]
+	if hookTable and hookTable["ulx_unspectate_" .. calling_ply:EntIndex()] then
+		-- Simulate keypress to properly exit spectate.
+		hook.Call( "KeyPress", _, calling_ply, IN_FORWARD )
+	end
+
 	if ulx.getExclusive( calling_ply, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( calling_ply, calling_ply ), true )
 		return

@@ -90,6 +90,7 @@ v3.70 - *(00/00/00)*
 	* [CHANGE] MOTD now uses DHTML (Awesomium framework).
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.
+	* [CHANGE] You can now spectate another player while spectating someone else.
 	* [CHANGE] XGUI: No longer autoexecutes skins to ensure they have been installed.
 	* [CHANGE] XGUI: Added "name" parameter to xgui.hookEvent to prevent event duplication. (Aids with autorefresh, is backwards compatible with old XGUI modules)
 	* [CHANGE] XGUI: Modules that no longer exist will be removed from the customizable sort order.
