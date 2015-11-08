@@ -1126,7 +1126,7 @@ function groups.updateAccessPanel()
 			groups.accessChanged( access, not self:GetChecked() )
 		end
 		local line = groups.access_cats[catname]:AddLine( access, checkbox, "", "" )
-		line:SetToolTip( data.hStr )
+		line:SetTooltip( data.hStr )
 		groups.access_lines[access] = line
 	end
 

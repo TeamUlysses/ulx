@@ -24,7 +24,7 @@ function xlib.makecheckbox( t )
 		if t.tooltipwidth ~= 0 then
 			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 		end
-		pnl:SetToolTip( t.tooltip )
+		pnl:SetTooltip( t.tooltip )
 	end
 
 	function pnl:SetDisabled( val )
@@ -72,7 +72,7 @@ function xlib.makelabel( t )
 		if t.tooltipwidth ~= 0 then
 			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 		end
-		pnl:SetToolTip( t.tooltip )
+		pnl:SetTooltip( t.tooltip )
 		pnl:SetMouseInputEnabled( true )
 	end
 
@@ -132,7 +132,7 @@ function xlib.makebutton( t )
 		if t.tooltipwidth ~= 0 then
 			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 		end
-		pnl:SetToolTip( t.tooltip )
+		pnl:SetTooltip( t.tooltip )
 		pnl:SetMouseInputEnabled( true )
 	end
 
@@ -185,7 +185,7 @@ function xlib.maketextbox( t )
 		if t.tooltipwidth ~= 0 then
 			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 		end
-		pnl:SetToolTip( t.tooltip )
+		pnl:SetTooltip( t.tooltip )
 	end
 
 	function pnl:SetDisabled( val ) --Simulate enabling/disabling of a textbox
@@ -350,7 +350,7 @@ function xlib.makecombobox( t )
 		if t.tooltipwidth ~= 0 then
 			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 		end
-		pnl:SetToolTip( t.tooltip )
+		pnl:SetTooltip( t.tooltip )
 	end
 
 	if t.choices then
@@ -549,7 +549,7 @@ function xlib.makeslider( t )
 		if t.tooltipwidth ~= 0 then
 			t.tooltip = xlib.wordWrap( t.tooltip, t.tooltipwidth, "Default" )
 		end
-		pnl:SetToolTip( t.tooltip )
+		pnl:SetTooltip( t.tooltip )
 	end
 
 	--Support for enabling/disabling slider
