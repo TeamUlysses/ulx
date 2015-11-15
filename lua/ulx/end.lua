@@ -128,7 +128,7 @@ local function doCfg()
 		end
 	end
 
-	ULib.queueFunctionCall( hook.Call, ulx.HOOK_ULXDONELOADING, _ ) -- We're done loading! Wait a tick so the configs load.
+	ULib.namedQueueFunctionCall( "ULXConfigExec", hook.Call, ulx.HOOK_ULXDONELOADING, _ ) -- We're done loading! Wait a tick so the configs load.
 
 	if not game.IsDedicated() then
 		hook.Remove( "PlayerInitialSpawn", "ULXDoCfg" )
