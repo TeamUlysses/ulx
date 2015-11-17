@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# .git/hooks/pre-commit
+#
+
+# Prevent infinite loops on post-commit
+touch .commit

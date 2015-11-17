@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# .git/hooks/post-commit
+#
+
+if [ -a .commit ]
+	then
+	rm .commit
+	echo `date '+%s'` > version
+	git add version
+	git commit --amend -C HEAD --no-verify
+fi
