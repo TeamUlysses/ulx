@@ -1,0 +1,12 @@
+{
+	"title"		:	"ULX",
+	"type"		:	"ServerContent",
+	"tags"		:	[ "fun", "build" ],
+	"ignore"	:
+	[
+		"addon.txt",
+		".editorconfig",
+		".git*"
+	],
+	"workshopid": 557962280
+}
