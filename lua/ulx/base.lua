@@ -88,8 +88,8 @@ hook.Add( "PlayerInitialSpawn", "sendAutoCompletes", sendAutocompletes )
 
 -- This will load ULX client side
 local function playerInit( ply )
-	local _, v, r = ulx.getVersion()
-	ULib.clientRPC( ply, "ulx.clInit", v, r )
+	local _, _, b, w = ulx.getVersion()
+	ULib.clientRPC( ply, "ulx.clInit", b, w )
 end
 hook.Add( "PlayerInitialSpawn", "ULXInitPlayer", playerInit )
 

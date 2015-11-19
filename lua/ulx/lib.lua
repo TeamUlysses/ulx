@@ -61,36 +61,41 @@ end
 hook.Add( "CanPlayerSuicide", "ULXCheckSuicide", checkSuicide, HOOK_HIGH )
 
 function ulx.getVersion() -- This exists on the client as well, so feel free to use it!
-	local version
-	local r = 0
+	local versionStr
+	local build = nil
+	local usingWorkshop = false
 
-	if ulx.release then
-		version = string.format( "%.02f", ulx.version )
-	else
-		if ULib.fileExists( "addons/ulx/.svn/wc.db" ) then -- SVN's new format
-			-- The following code would probably work if garry allowed us to read this file...
-			--[[local raw = ULib.fileRead( "addons/ulx/.svn/wc.db" )
-			local highest = 0
-			for rev in string.gmatch( raw, "/ulx/!svn/ver/%d+/" ) do
-				if rev > highest then
-					highest = rev
-				end
-			end
-			r = highest]]
-		elseif ULib.fileExists( "addons/ulx/lua/ulx/.svn/entries" ) then
-			-- Garry broke the following around 05/11/2010, then fixed it again around 11/10/2010!
-			local lines = string.Explode( "\n", ULib.fileRead( "lua/ulx/.svn/entries" ) )
-			r = tonumber( lines[ 4 ] )
-		end
-
-		if r and r > 0 then
-			version = string.format( "<SVN> revision %i", r )
-		else
-			version = string.format( "<SVN> unknown revision" )
+	-- Get workshop information, if available
+	local addons = engine.GetAddons()
+	for i=1, #addons do
+		-- Ideally we'd use the "wsid" from this table
+		-- But, as of 19 Nov 2015, that is broken, so we'll work around it
+		if addons[i].file:find(tostring(ulx.WORKSHOPID)) then
+			usingWorkshop = true
 		end
 	end
 
-	return version, ulx.version, r
+	-- If we have good build data, set it in "build"
+	if ULib.fileExists( "ulx.build" ) then
+		local buildStr = ULib.fileRead( "ulx.build" )
+		local buildNum = tonumber(buildStr)
+		-- Make sure the time is something reasonable -- between the year 2014 and 2128
+		if buildNum and buildNum > 1400000000 and buildNum < 5000000000 then
+			build = buildNum
+		end
+	end
+
+	if ulx.release then
+		versionStr = string.format( "v%.02f", ulx.version )
+	elseif usingWorkshop then
+		versionStr = string.format( "v%.02fw", ulx.version )
+	elseif build then -- It's not release and it's not workshop
+		versionStr = string.format( "v%.02fd (%s)", ulx.version, os.date( "%x", build ) )
+	else -- Not sure what this version is, but it's not a release
+		versionStr = string.format( "v%.02fd", ulx.version )
+	end
+
+	return versionStr, ulx.version, build, usingWorkshop
 end
 
 function ulx.addToMenu( menuid, label, data ) -- TODO: Remove

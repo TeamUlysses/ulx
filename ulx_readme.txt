@@ -1,9 +1,9 @@
 Title: ULX Readme
 
 __ULX__
-Version 3.70
+Version 3.62d
 
-*ULX v3.70 (released 00/00/00)*
+*ULX v3.62d (released 00/00/00)*
 
 ULX is an admin mod for GMod (<http://garrysmod.com/>).
 

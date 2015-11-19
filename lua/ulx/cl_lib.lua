@@ -106,16 +106,21 @@ end
 usermessage.Hook( "ulx_vote", rcvVote )
 
 function ulx.getVersion() -- This exists on the server as well, so feel free to use it!
+	local versionStr
+	local build = ulx.build
+	local usingWorkshop = ulx.usingWorkshop
+
 	if ulx.release then
-		version = string.format( "%.02f", ulx.version )
-	elseif ulx.revision > 0 then -- SVN version?
-		version = string.format( "<SVN> revision %i", ulx.revision )
-	else
-		version = string.format( "<SVN> unknown revision" )
+		versionStr = string.format( "v%.02f", ulx.version )
+	elseif usingWorkshop then
+		versionStr = string.format( "v%.02fw", ulx.version )
+	elseif build then -- It's not release and it's not workshop
+		versionStr = string.format( "v%.02fd (%s)", ulx.version, os.date( "%x", build ) )
+	else -- Not sure what this version is, but it's not a release
+		versionStr = string.format( "v%.02fd", ulx.version )
 	end
 
-	return version, ulx.version, ulx.revision
-
+	return versionStr, ulx.version, build, usingWorkshop
 end
 
 function ulx.addToMenu( menuid, label, data ) -- TODO, remove
