@@ -291,6 +291,17 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "ULib.ucl.authed (#=" .. table.Count( ULib.ucl.authed ) .. "):\n" .. ulx.dumpTable( ULib.ucl.authed, 1 ) .. "\n\n"
 	str = str .. "Garrysmod default file (#=" .. table.Count( gmoddefault ) .. "):\n" .. ulx.dumpTable( gmoddefault, 1 ) .. "\n\n"
 
+	str = str .. "Active workshop addons on this server:\n"
+	local addons = engine.GetAddons()
+	for i=1, #addons do
+		local addon = addons[i]
+		if addon.mounted then
+			local name = addon.title
+			str = str .. string.format( "%s%s workshop ID %s\n", name, str.rep( " ", 24 - name:len() ), addon.file:gsub( "%D", "" ) )
+		end
+	end
+	str = str .. "\n"
+
 	str = str .. "Active legacy addons on this server:\n"
 	local _, possibleaddons = file.Find( "addons/*", "GAME" )
 	for _, addon in ipairs( possibleaddons ) do
@@ -298,19 +309,6 @@ function ulx.debuginfo( calling_ply )
 			local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
 			if tonumber( t.version ) then t.version = string.format( "%g", t.version ) end -- Removes innaccuracy in floating point numbers
 			str = str .. string.format( "%s%s by %s, version %s (%s)\n", addon, str.rep( " ", 24 - addon:len() ), t.author_name, t.version, t.up_date )
-		end
-	end
-
-	local f = ULib.fileRead( "workshop.vdf" )
-	if f then
-		local addons = ULib.parseKeyValues( ULib.stripComments( f, "//" ) )
-		addons = addons.addons -- Garry's wrapper
-		if table.Count( addons ) > 0 then
-			str = str .. string.format( "\nPlus %i workshop addon(s):\n", table.Count( addons ) )
-			PrintTable( addons )
-			for _, addon in pairs( addons ) do
-				str = str .. string.format( "Addon ID: %s\n", addon )
-			end
 		end
 	end
 
