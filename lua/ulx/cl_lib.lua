@@ -123,10 +123,6 @@ function ulx.getVersion() -- This exists on the server as well, so feel free to 
 	return versionStr, ulx.version, build, usingWorkshop
 end
 
-function ulx.addToMenu( menuid, label, data ) -- TODO, remove
-	Msg( "Warning: ulx.addToMenu was called, which is being phased out!\n" )
-end
-
 -- Any language stuff for ULX should go here...
 
 language.Add( "Undone_ulx_ent", "Undone ulx ent command" )

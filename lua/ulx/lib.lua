@@ -98,9 +98,43 @@ function ulx.getVersion() -- This exists on the client as well, so feel free to 
 	return versionStr, ulx.version, build, usingWorkshop
 end
 
-function ulx.addToMenu( menuid, label, data ) -- TODO: Remove
-	Msg( "Warning: ulx.addToMenu was called, which is being phased out!\n" )
+ulx.updateAvailable = false
+local function ulxUpdateCheck( body, len, headers, httpCode )
+	if httpCode ~= 200 then
+		return
+	end
+
+	local currentBuild = tonumber(body)
+	if not currentBuild then return end
+
+	local _, _, myBuild = ulx.getVersion()
+	if myBuild < currentBuild then
+		ulx.updateAvailable = true
+		Msg( "[ULX] There is an update available\n" )
+	end
 end
+
+local function downloadForUlxUpdateCheck()
+	local _, _, myBuild, workshop = ulx.getVersion()
+	if not myBuild or workshop then
+		return
+	end
+
+	if ulx.release then
+		http.Fetch( "https://teamulysses.github.io/ulx/ulx.build", ulxUpdateCheck )
+	else
+		http.Fetch( "https://raw.githubusercontent.com/TeamUlysses/ulx/master/ulx.build", ulxUpdateCheck )
+	end
+end
+hook.Add( "Initialize", "ULXUpdateChecker", downloadForUlxUpdateCheck )
+
+local function advertiseNewVersion( ply )
+	if ply:IsAdmin() and ulx.updateAvailable and not ply.UlxUpdateAdvertised then
+		ULib.tsay( ply, "[ULX] There is an update available" )
+		ply.UlxUpdateAdvertised = true
+	end
+end
+hook.Add( ULib.HOOK_UCLAUTH, "ULXAdvertiseUpdate", advertiseNewVersion )
 
 function ulx.standardizeModel( model ) -- This will convert all model strings to be of the same type, using linux notation and single dashes.
 	model = model:lower()
