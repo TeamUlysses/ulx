@@ -1,7 +1,8 @@
 if not ulx then
 	ulx = {}
 
-	ULib.fileCreateDir( "data/ulx" )
+	-- Get data folder up to speed
+	include( "data.lua" )
 
 	local sv_modules = file.Find( "ulx/modules/*.lua", "LUA" )
 	local sh_modules = file.Find( "ulx/modules/sh/*.lua", "LUA" )
