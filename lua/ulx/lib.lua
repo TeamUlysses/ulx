@@ -99,10 +99,21 @@ function ulx.getVersion() -- This exists on the client as well, so feel free to 
 end
 
 ulx.updateAvailable = false
+local function advertiseNewVersion( ply )
+	if ply:IsAdmin() and ulx.updateAvailable and not ply.UlxUpdateAdvertised then
+		ULib.tsay( ply, "[ULX] There is an update available" )
+		ply.UlxUpdateAdvertised = true
+	end
+end
+hook.Add( ULib.HOOK_UCLAUTH, "ULXAdvertiseUpdate", advertiseNewVersion )
+
 local function ulxUpdateCheck( body, len, headers, httpCode )
 	if httpCode ~= 200 then
 		return
 	end
+
+	timer.Remove( "ULXUpdateChecker" )
+	hook.Remove( "Initialize", "ULXUpdateChecker" )
 
 	local currentBuild = tonumber(body)
 	if not currentBuild then return end
@@ -111,7 +122,17 @@ local function ulxUpdateCheck( body, len, headers, httpCode )
 	if myBuild < currentBuild then
 		ulx.updateAvailable = true
 		Msg( "[ULX] There is an update available\n" )
+
+		local players = player.GetAll()
+		for i=1, #players do
+			advertiseNewVersion( players[ i ] )
+		end
 	end
+end
+
+local function ulxUpdateErr()
+	timer.Remove( "ULXUpdateChecker" )
+	hook.Remove( "Initialize", "ULXUpdateChecker" )
 end
 
 local function downloadForUlxUpdateCheck()
@@ -121,20 +142,16 @@ local function downloadForUlxUpdateCheck()
 	end
 
 	if ulx.release then
-		http.Fetch( "https://teamulysses.github.io/ulx/ulx.build", ulxUpdateCheck )
+		http.Fetch( "https://teamulysses.github.io/ulx/ulx.build", ulxUpdateCheck, ulxUpdateErr )
 	else
-		http.Fetch( "https://raw.githubusercontent.com/TeamUlysses/ulx/master/ulx.build", ulxUpdateCheck )
+		http.Fetch( "https://raw.githubusercontent.com/TeamUlysses/ulx/master/ulx.build", ulxUpdateCheck, ulxUpdateErr )
 	end
 end
+-- The HTTP library loads at a random time after the server starts.
+-- Worse, there's no way to check if it's loaded. To work around these problems,
+-- we will keep trying until we get through.
 hook.Add( "Initialize", "ULXUpdateChecker", downloadForUlxUpdateCheck )
-
-local function advertiseNewVersion( ply )
-	if ply:IsAdmin() and ulx.updateAvailable and not ply.UlxUpdateAdvertised then
-		ULib.tsay( ply, "[ULX] There is an update available" )
-		ply.UlxUpdateAdvertised = true
-	end
-end
-hook.Add( ULib.HOOK_UCLAUTH, "ULXAdvertiseUpdate", advertiseNewVersion )
+timer.Create( "ULXUpdateChecker", 7, 10, downloadForUlxUpdateCheck )
 
 function ulx.standardizeModel( model ) -- This will convert all model strings to be of the same type, using linux notation and single dashes.
 	model = model:lower()

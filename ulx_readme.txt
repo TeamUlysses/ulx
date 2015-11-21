@@ -67,6 +67,7 @@ v3.70 - *(00/00/00)*
 	* [ADD] Reason to votekick log (Thanks, CSchulz).
 	* [ADD] Steam ID parameter to "ulx who" to lookup users by Steam ID.
 	* [ADD] Cvar "ulx meChatEnabled" added to enable or disable the /me chat feature, or set it to Sandbox only.
+	* [ADD] "ulx version" command for easily checking the version being run.
 	* [ADD] XGUI: Added methods for developers to be able to open a specific client or server setting module.
 	* [FIX] The usual random slew of Garry-breakages (Thanks, Fuzzik).
 	* [FIX] Changing weapons while cloaked would keep them hidden when uncloaked. (Thanks, TheRealAyCe).

@@ -1,5 +1,6 @@
 local CATEGORY_NAME = "Utility"
 
+------------------------------ Who ------------------------------
 function ulx.who( calling_ply, steamid )
 	if not steamid or steamid == "" then
 		ULib.console( calling_ply, "ID Name                            Group" )
@@ -33,6 +34,16 @@ who:addParam{ type=ULib.cmds.StringArg, hint="steamid", ULib.cmds.optional }
 who:defaultAccess( ULib.ACCESS_ALL )
 who:help( "See information about currently online users." )
 
+------------------------------ Version ------------------------------
+function ulx.versionCmd( calling_ply )
+	ULib.tsay( calling_ply, "ULib " .. ULib.getVersion(), true )
+	ULib.tsay( calling_ply, "ULX " .. ulx.getVersion(), true )
+end
+local version = ulx.command( CATEGORY_NAME, "ulx version", ulx.versionCmd, "!version" )
+version:defaultAccess( ULib.ACCESS_ALL )
+version:help( "See version information." )
+
+------------------------------ Map ------------------------------
 function ulx.map( calling_ply, map, gamemode )
 	if not gamemode or gamemode == "" then
 		ulx.fancyLogAdmin( calling_ply, "#A changed the map to #s", map )
@@ -66,6 +77,7 @@ kick:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib
 kick:defaultAccess( ULib.ACCESS_ADMIN )
 kick:help( "Kicks target." )
 
+------------------------------ Ban ------------------------------
 function ulx.ban( calling_ply, target_ply, minutes, reason )
 	if target_ply:IsBot() then
 		ULib.tsayError( calling_ply, "Cannot ban a bot", true )
@@ -87,6 +99,7 @@ ban:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.
 ban:defaultAccess( ULib.ACCESS_ADMIN )
 ban:help( "Bans target." )
 
+------------------------------ BanID ------------------------------
 function ulx.banid( calling_ply, steamid, minutes, reason )
 	steamid = steamid:upper()
 	if not ULib.isValidSteamID( steamid ) then
