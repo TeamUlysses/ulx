@@ -115,7 +115,7 @@ function xgui.init( ply )
 	xgui.infobar.Paint = function( self, w, h )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
-	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - by Stickly Man! :: v15.11.7 |  ULX " .. ulx.getVersion() .. "  |  ULib " .. ULib.getVersion(), parent=xgui.infobar }:NoClipping( true )
+	xlib.makelabel{ x=5, y=-10, label="\nULX Admin Mod :: XGUI - Team Ulysses |  ULX " .. ulx.getVersion() .. "  |  ULib " .. ULib.getVersion(), parent=xgui.infobar }:NoClipping( true )
 	xgui.thetime = xlib.makelabel{ x=515, y=-10, label="", parent=xgui.infobar }
 	xgui.thetime:NoClipping( true )
 	xgui.thetime.check = function()
