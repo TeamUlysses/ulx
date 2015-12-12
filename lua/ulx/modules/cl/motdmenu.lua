@@ -179,7 +179,7 @@ local template_footer = [[
 local function renderItemTemplate(items, template)
 	local output = ""
 	for i=1, #items do
-		output = output .. string.gsub( template, "%%content%%", items[i])
+		output = output .. string.gsub( template, "%%content%%", items[i] or "")
 	end
 	return output
 end
@@ -190,10 +190,10 @@ local function renderMods()
 		local addon = ulx.motdSettings.addons[a]
 		if addon.workshop_id then
 			local item = string.gsub( template_item_workshop, "%%title%%", addon.title )
-			output = output .. string.gsub( item, "%%workshop_id%%", addon.workshop_id )
+			output = output .. string.gsub( item, "%%workshop_id%%", addon.workshop_id or "" )
 		else
-			local item = string.gsub( template_item_addon, "%%title%%", addon.title )
-			output = output .. string.gsub( item, "%%author%%", addon.author )
+			local item = string.gsub( template_item_addon, "%%title%%", addon.title or "" )
+			output = output .. string.gsub( item, "%%author%%", addon.author or "" )
 		end
 	end
 
@@ -201,8 +201,8 @@ local function renderMods()
 end
 
 function ulx.generateMotdHTML()
-	local header = string.gsub( template_header, "%%hostname%%", GetHostName() )
-	header = string.gsub( header, "{{(.-)}}", function(a) return ULib.findVar("ulx.motdSettings." .. a) end )
+	local header = string.gsub( template_header, "%%hostname%%", GetHostName() or "" )
+	header = string.gsub( header, "{{(.-)}}", function(a) return ULib.findVar("ulx.motdSettings." .. a) or "" end )
 
 	local body = ""
 
