@@ -61,9 +61,9 @@ files["config.txt"] =
 ;specific config only.
 ;Any line starting with a ';' is a comment!
 
-ulx showMotd 1 ; Set to 0 to disable showing motd on connect. Shows the file the cvar motdfile says to.
+ulx showMotd 0 ; Set to 0 to disable showing motd on connect. Shows the file the cvar motdfile says to.
 ; Set showMotd to a URL to show a URL. You can use %curmap% and %steamid% in the URL to have it automagically parsed for you (eg, server.com/?map=%curmap%&id=%steamid%).
-motdfile ulx_motd.txt ; The motd to show, if using a file.
+; motdfile ulx_motd.txt ; The motd to show, if using a file. Put this file in the root of the garry's mod directory.
 
 
 ulx chattime 0 ; Players can only chat every x seconds (anti-spam). 0 to disable
