@@ -333,6 +333,105 @@ test_hardware
 test_speakers
 ]]
 
+files["motd.txt"] =
+[[; These settings describe the default configuration and text to be shown on the MOTD. This only applies if ulx showMotd is set to 1.
+; All style configuration is set, and the values must be valid CSS.
+; Under info, you may have as many sections as you like. Valid types include "text", "ordered_list", "list".
+; Special type "mods" will automatically list workshop and regular addons in an unordered list.
+; Special type "admins" will automatically list all users within the groups specified in contents.
+; For an example of all of these items, please see the default file generated in ulx\lua\data.lua
+
+"info"
+{
+	"description" "Welcome to our server. Enjoy your stay!"
+	{
+		"title" "About This Server"
+		"type" "text"
+		"contents"
+		{
+			"This server is running ULX."
+			"To edit this default MOTD, open ulx\motd_settings.txt, or check XGUI."
+		}
+	}
+	{
+		"title" "Rules"
+		"type" "ordered_list"
+		"contents"
+		{
+			"DON'T MESS WITH OTHER PLAYERS STUFF. If they want help, they'll ask!"
+			"Don't spam."
+			"Have fun."
+		}
+	}
+	{
+		"title" "Reporting Rulebreakers"
+		"type" "list"
+		"contents"
+		{
+			"Contact an available admin on this server and let them know."
+			"Use @ before typing a chat message to send it to admins."
+			"If no admin is available, note the players name and the current time, and let an admin know as soon as they are available."
+		}
+	}
+	{
+		"title" "Installed Addons"
+		"type" "mods"
+	}
+	{
+		"title" "Our Admins"
+		"type" "admins"
+		"contents"
+		{
+			"superadmin"
+			"admin"
+		}
+	}
+}
+"style"
+{
+	"borders"
+	{
+		"border_color" "#000000"
+		"border_thickness" "1px"
+	}
+	"colors"
+	{
+		"background_color" "#dddddd"
+		"header_color" "#82a0c8"
+		"header_text_color" "#ffffff"
+		"section_text_color" "#000000"
+		"text_color" "#000000"
+	}
+	"fonts"
+	{
+		"server_name"
+		{
+			"family" "Impact"
+			"size" "32px"
+			"weight" "normal"
+		}
+		"subtitle"
+		{
+			"family" "Impact"
+			"size" "20px"
+			"weight" "normal"
+		}
+		"section_title"
+		{
+			"family" "Impact"
+			"size" "26px"
+			"weight" "normal"
+		}
+		"regular"
+		{
+			"family" "Tahoma"
+			"size" "12px"
+			"weight" "normal"
+		}
+	}
+}
+]]
+
 ULib.fileCreateDir( "data/ulx" ) -- This is ignored if the folder already exists
 for filename, content in pairs( files ) do
 	local filepath = "data/ulx/" .. filename
