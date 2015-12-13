@@ -60,98 +60,23 @@ local function checkSuicide( ply )
 end
 hook.Add( "CanPlayerSuicide", "ULXCheckSuicide", checkSuicide, HOOK_HIGH )
 
-function ulx.getVersion() -- This exists on the client as well, so feel free to use it!
-	local versionStr
-	local build = nil
-	local usingWorkshop = false
 
-	-- Get workshop information, if available
-	local addons = engine.GetAddons()
-	for i=1, #addons do
-		-- Ideally we'd use the "wsid" from this table
-		-- But, as of 19 Nov 2015, that is broken, so we'll work around it
-		if addons[i].file:find(tostring(ulx.WORKSHOPID)) then
-			usingWorkshop = true
+local function advertiseNewVersions( ply )
+	if ply:IsAdmin() and not ply.ULX_UpdatesAdvertised then
+		local updatesFor = {}
+		for name, plugin in pairs (ULib.plugins) do
+			myBuild = tonumber( plugin.build )
+			curBuild = tonumber( plugin.buildOnline )
+			if myBuild and curBuild and myBuild < curBuild then
+				table.insert( updatesFor, name )
+			end
 		end
-	end
-
-	-- If we have good build data, set it in "build"
-	if ULib.fileExists( "ulx.build" ) then
-		local buildStr = ULib.fileRead( "ulx.build" )
-		local buildNum = tonumber(buildStr)
-		-- Make sure the time is something reasonable -- between the year 2014 and 2128
-		if buildNum and buildNum > 1400000000 and buildNum < 5000000000 then
-			build = buildNum
-		end
-	end
-
-	if ulx.release then
-		versionStr = string.format( "v%.02f", ulx.version )
-	elseif usingWorkshop then
-		versionStr = string.format( "v%.02fw", ulx.version )
-	elseif build then -- It's not release and it's not workshop
-		versionStr = string.format( "v%.02fd (%s)", ulx.version, os.date( "%x", build ) )
-	else -- Not sure what this version is, but it's not a release
-		versionStr = string.format( "v%.02fd", ulx.version )
-	end
-
-	return versionStr, ulx.version, build, usingWorkshop
-end
-
-ulx.updateAvailable = false
-local function advertiseNewVersion( ply )
-	if ply:IsAdmin() and ulx.updateAvailable and not ply.UlxUpdateAdvertised then
-		ULib.tsay( ply, "[ULX] There is an update available" )
-		ply.UlxUpdateAdvertised = true
+		ULib.tsay( ply, "Updates available for " .. string.Implode( ", ", updatesFor ) )
+		ply.ULX_UpdatesAdvertised = true
 	end
 end
-hook.Add( ULib.HOOK_UCLAUTH, "ULXAdvertiseUpdate", advertiseNewVersion )
+hook.Add( ULib.HOOK_UCLAUTH, "ULXAdvertiseUpdates", advertiseNewVersions )
 
-local function ulxUpdateCheck( body, len, headers, httpCode )
-	if httpCode ~= 200 then
-		return
-	end
-
-	timer.Remove( "ULXUpdateChecker" )
-	hook.Remove( "Initialize", "ULXUpdateChecker" )
-
-	local currentBuild = tonumber(body)
-	if not currentBuild then return end
-
-	local _, _, myBuild = ulx.getVersion()
-	if myBuild < currentBuild then
-		ulx.updateAvailable = true
-		Msg( "[ULX] There is an update available\n" )
-
-		local players = player.GetAll()
-		for i=1, #players do
-			advertiseNewVersion( players[ i ] )
-		end
-	end
-end
-
-local function ulxUpdateErr()
-	timer.Remove( "ULXUpdateChecker" )
-	hook.Remove( "Initialize", "ULXUpdateChecker" )
-end
-
-local function downloadForUlxUpdateCheck()
-	local _, _, myBuild, workshop = ulx.getVersion()
-	if not myBuild or workshop then
-		return
-	end
-
-	if ulx.release then
-		http.Fetch( "https://teamulysses.github.io/ulx/ulx.build", ulxUpdateCheck, ulxUpdateErr )
-	else
-		http.Fetch( "https://raw.githubusercontent.com/TeamUlysses/ulx/master/ulx.build", ulxUpdateCheck, ulxUpdateErr )
-	end
-end
--- The HTTP library loads at a random time after the server starts.
--- Worse, there's no way to check if it's loaded. To work around these problems,
--- we will keep trying until we get through.
-hook.Add( "Initialize", "ULXUpdateChecker", downloadForUlxUpdateCheck )
-timer.Create( "ULXUpdateChecker", 7, 10, downloadForUlxUpdateCheck )
 
 function ulx.standardizeModel( model ) -- This will convert all model strings to be of the same type, using linux notation and single dashes.
 	model = model:lower()

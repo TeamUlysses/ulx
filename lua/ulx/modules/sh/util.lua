@@ -36,8 +36,8 @@ who:help( "See information about currently online users." )
 
 ------------------------------ Version ------------------------------
 function ulx.versionCmd( calling_ply )
-	ULib.tsay( calling_ply, "ULib " .. ULib.getVersion(), true )
-	ULib.tsay( calling_ply, "ULX " .. ulx.getVersion(), true )
+	ULib.tsay( calling_ply, "ULib " .. ULib.pluginVersionStr("ULib"), true )
+	ULib.tsay( calling_ply, "ULX " .. ULib.pluginVersionStr("ULX"), true )
 end
 local version = ulx.command( CATEGORY_NAME, "ulx version", ulx.versionCmd, "!version" )
 version:defaultAccess( ULib.ACCESS_ALL )
@@ -274,7 +274,7 @@ function ulx.addForcedDownload( path )
 end
 
 function ulx.debuginfo( calling_ply )
-	local str = string.format( "ULX version: %s\nULib version: %.2f\n", ulx.getVersion(), ULib.VERSION )
+	local str = string.format( "ULX version: %s\nULib version: %.2f\n", ULib.pluginVersionStr( "ULX" ), ULib.pluginVersionStr( "ULib" ) )
 	str = str .. string.format( "Gamemode: %s\nMap: %s\n", GAMEMODE.Name, game.GetMap() )
 	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 

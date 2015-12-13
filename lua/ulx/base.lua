@@ -86,13 +86,6 @@ end
 hook.Add( ULib.HOOK_UCLAUTH, "sendAutoCompletes", sendAutocompletes )
 hook.Add( "PlayerInitialSpawn", "sendAutoCompletes", sendAutocompletes )
 
--- This will load ULX client side
-local function playerInit( ply )
-	local _, _, b, w = ulx.getVersion()
-	ULib.clientRPC( ply, "ulx.clInit", b, w )
-end
-hook.Add( "PlayerInitialSpawn", "ULXInitPlayer", playerInit )
-
 -- Cvar saving
 function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	if not sv_cvar:find( "^ulx_" ) then return end

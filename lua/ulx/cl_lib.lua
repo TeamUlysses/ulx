@@ -105,24 +105,6 @@ local function rcvVote( um )
 end
 usermessage.Hook( "ulx_vote", rcvVote )
 
-function ulx.getVersion() -- This exists on the server as well, so feel free to use it!
-	local versionStr
-	local build = ulx.build
-	local usingWorkshop = ulx.usingWorkshop
-
-	if ulx.release then
-		versionStr = string.format( "v%.02f", ulx.version )
-	elseif usingWorkshop then
-		versionStr = string.format( "v%.02fw", ulx.version )
-	elseif build then -- It's not release and it's not workshop
-		versionStr = string.format( "v%.02fd (%s)", ulx.version, os.date( "%x", build ) )
-	else -- Not sure what this version is, but it's not a release
-		versionStr = string.format( "v%.02fd", ulx.version )
-	end
-
-	return versionStr, ulx.version, build, usingWorkshop
-end
-
 -- Any language stuff for ULX should go here...
 
 language.Add( "Undone_ulx_ent", "Undone ulx ent command" )
