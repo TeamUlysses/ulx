@@ -78,6 +78,12 @@ function xgui.init()
 	xgui.readyPlayers = {} --Set up a table to store users who are ready to receive data.
 	function xgui.addDataType( name, retrievalFunc, access, maxChunkSize, priority )
 		xgui.dataTypes[name] = { getData=retrievalFunc, access=access, maxchunk=maxChunkSize }
+		-- For autorefresh- ensure priorities for a datatype are never added more than once
+		for i=#xgui.dataTypes, 1, -1 do
+			if xgui.dataTypes[i].name == name then
+				table.remove( xgui.dataTypes, i )
+			end
+		end
 		table.insert( xgui.dataTypes, { name=name, priority=priority or 0 } )
 		table.sort( xgui.dataTypes, function(a,b) return a.priority < b.priority end )
 	end
