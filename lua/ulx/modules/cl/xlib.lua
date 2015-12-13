@@ -741,6 +741,10 @@ function PANEL:Init()
 		self:MouseCapture( false )
 		self:GetParent():OnChange( self:GetParent():GetColor() )
 	end
+	self.ColorCube.Knob.OnMouseReleased = function( self, mcode )
+		self:GetParent():GetParent():OnChange( self:GetParent():GetParent():GetColor() )
+		return DLabel.OnMouseReleased( self, mousecode )
+	end
 
 	self.txtR = xlib.makenumberwang{ x=7, y=110, w=35, value=255, parent=self }
 	self.txtR.OnValueChanged = function( self, val )
@@ -763,6 +767,14 @@ function PANEL:Init()
 		local p = self:GetParent()
 		p:OnChange( p:GetColor() )
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
+	end
+	self.txtR.Up.DoClick = function( button, mcode )
+		self.txtR:SetValue( tonumber( self.txtR:GetValue() ) + 1 )
+		self.txtR:GetParent():OnChange( self.txtR:GetParent():GetColor() )
+	end
+	self.txtR.Down.DoClick = function( button, mcode )
+		self.txtR:SetValue( tonumber( self.txtR:GetValue() ) - 1 )
+		self.txtR:GetParent():OnChange( self.txtR:GetParent():GetColor() )
 	end
 	function self.txtR.OnMouseReleased( self, mousecode )
 		if ( self.Dragging ) then
@@ -792,6 +804,14 @@ function PANEL:Init()
 		p:OnChange( p:GetColor() )
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
 	end
+	self.txtG.Up.DoClick = function( button, mcode )
+		self.txtG:SetValue( tonumber( self.txtG:GetValue() ) + 1 )
+		self.txtG:GetParent():OnChange( self.txtG:GetParent():GetColor() )
+	end
+	self.txtG.Down.DoClick = function( button, mcode )
+		self.txtG:SetValue( tonumber( self.txtG:GetValue() ) - 1 )
+		self.txtG:GetParent():OnChange( self.txtG:GetParent():GetColor() )
+	end
 	function self.txtG.OnMouseReleased( self, mousecode )
 		if ( self.Dragging ) then
 			self:GetParent():OnChange( self:GetParent():GetColor() )
@@ -819,6 +839,14 @@ function PANEL:Init()
 		local p = self:GetParent()
 		p:OnChange( p:GetColor() )
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
+	end
+	self.txtB.Up.DoClick = function( button, mcode )
+		self.txtB:SetValue( tonumber( self.txtB:GetValue() ) + 1 )
+		self.txtB:GetParent():OnChange( self.txtB:GetParent():GetColor() )
+	end
+	self.txtB.Down.DoClick = function( button, mcode )
+		self.txtB:SetValue( tonumber( self.txtB:GetValue() ) - 1 )
+		self.txtB:GetParent():OnChange( self.txtB:GetParent():GetColor() )
 	end
 	function self.txtB.OnMouseReleased( self, mousecode )
 		if ( self.Dragging ) then
@@ -855,6 +883,14 @@ function PANEL:AddAlphaBar()
 		local p = self:GetParent()
 		p:OnChange( p:GetColor() )
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
+	end
+	self.txtA.Up.DoClick = function( button, mcode )
+		self.txtA:SetValue( tonumber( self.txtA:GetValue() ) + 1 )
+		self.txtA:GetParent():OnChange( self.txtA:GetParent():GetColor() )
+	end
+	self.txtA.Down.DoClick = function( button, mcode )
+		self.txtA:SetValue( tonumber( self.txtA:GetValue() ) - 1 )
+		self.txtA:GetParent():OnChange( self.txtA:GetParent():GetColor() )
 	end
 	function self.txtA.OnMouseReleased( self, mousecode )
 		if ( self.Dragging ) then
