@@ -10,6 +10,7 @@ function settings.init()
 	xgui.addDataType( "adverts", function() return ulx.adverts end, "xgui_svsettings", 0, -10 )
 	xgui.addDataType( "banreasons", function() return ulx.common_kick_reasons end, "ulx ban", 0, -10 )
 	xgui.addDataType( "votemaps", function() return settings.votemaps end, nil, 0, -20 )
+	xgui.addDataType( "motdsettings", function() return ulx.motdSettings end, nil, 0, -20 )
 
 	ULib.replicatedWritableCvar( "sv_voiceenable", "rep_sv_voiceenable", GetConVarNumber( "sv_voiceenable" ), false, false, "xgui_svsettings" )
 	ULib.replicatedWritableCvar( "sv_alltalk", "rep_sv_alltalk", GetConVarNumber( "sv_alltalk" ), false, false, "xgui_svsettings" )
@@ -268,6 +269,36 @@ function settings.init()
 
 		ULib.fileWrite( "data/ulx/votemaps.txt", new_file )
 		settings.updatevotemaps()
+	end
+
+	function settings.updateMotdSetting( ply, args )
+		if ULib.ucl.query( ply, "xgui_svsettings" ) then
+			if not args[1] or not args[2] then return end
+
+			-- Black magic to save value (args[2]) to string path (args[1])
+			local x = ulx.motdSettings
+			local path = ULib.explode( "%.", args[1] )
+			for i=1, #path-1 do
+				x = x[ path[i] ]
+				if not x then return end
+			end
+			if x[path[#path]] then
+				x[path[#path]] = args[2]
+				settings.saveMotdSettings()
+				xgui.sendDataTable( {}, "motdsettings" )
+			end
+		end
+	end
+	xgui.addCmd( "updateMotdSetting", settings.updateMotdSetting )
+
+	function settings.saveMotdSettings()
+		local orig_file = ULib.fileRead( "data/ulx/motd.txt" )
+		local comment = xgui.getCommentHeader( orig_file )
+		local new_file = comment
+
+		new_file = new_file .. ULib.makeKeyValues( ulx.motdSettings )
+
+		ULib.fileWrite( "data/ulx/motd.txt", new_file )
 	end
 end
 
