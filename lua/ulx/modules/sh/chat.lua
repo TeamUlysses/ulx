@@ -102,7 +102,7 @@ local function doAdvert( group, id )
 
 	local message = string.gsub( info.message, "%%curmap%%", game.GetMap() )
 	message = string.gsub( message, "%%host%%", GetConVarString( "hostname" ) )
-	message = string.gsub( message, "%%ulx_version%%", ulx.getVersion() )
+	message = string.gsub( message, "%%ulx_version%%", ULib.pluginVersionStr( "ULX" ) )
 
 	if not info.len then -- tsay
 		local lines = ULib.explode( "\\n", message )
@@ -305,7 +305,7 @@ local function showWelcome( ply )
 
 	message = string.gsub( message, "%%curmap%%", game.GetMap() )
 	message = string.gsub( message, "%%host%%", GetConVarString( "hostname" ) )
-	message = string.gsub( message, "%%ulx_version%%", ulx.getVersion() )
+	message = string.gsub( message, "%%ulx_version%%", ULib.pluginVersionStr( "ULX" ) )
 
 	ply:ChatPrint( message ) -- We're not using tsay because ULib might not be loaded yet. (client side)
 end

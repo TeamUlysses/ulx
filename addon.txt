@@ -1,11 +1,9 @@
 "AddonInfo"
 {
-	"name"				"ULX"
-	"version"			"3.62d"
-	"up_date"			"00/00/00"
-	"author_name"			"Team Ulysses"
-	"author_email"			"teamulysses@ulyssesmod.net"
-	"author_url"			"http://www.ulyssesmod.net/"
-	"info"				"Advanced Admin Mod"
-	"override"			"0"
+	"name"            "ULX"
+	"version"         "3.62d"
+	"up_date"         "00/00/00"
+	"author_name"     "Team Ulysses"
+	"author_email"    "teamulysses@ulyssesmod.net"
+	"author_url"      "http://www.ulyssesmod.net/"
 }

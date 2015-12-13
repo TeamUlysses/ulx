@@ -17,11 +17,3 @@ if not ulx then
 		include( "ulx/modules/sh/" .. file )
 	end
 end
-
-function ulx.clInit( b, w )
-	ulx.build = b
-	ulx.usingWorkshop = w
-
-	Msg( "ULX version " .. ulx.getVersion() .. " loaded.\n" )
-end
-usermessage.Hook( "ulx_initplayer", init )

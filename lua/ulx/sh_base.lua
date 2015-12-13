@@ -1,3 +1,19 @@
+local ulxDat = {
+	version       = string.format( "%.2f", ulx.version ),
+	isRelease     = ulx.release,
+	author        = "Team Ulysses",
+	url           = "http://ulyssesmod.net",
+	workshopid    = 557962280,
+	build         = tonumber(ULib.fileRead( "ulx.build" )),
+	buildURL      = ulx.release and "https://teamulysses.github.io/ulx/ulx.build" or "https://raw.githubusercontent.com/TeamUlysses/ulx/master/ulx.build",
+	--buildCallback = nil
+}
+ULib.registerPlugin( "ULX", ulxDat )
+
+function ulx.getVersion() -- This function will be removed in the future
+	return ULib.pluginVersionStr( "ULX" )
+end
+
 local ulxCommand = inheritsFrom( ULib.cmds.TranslateCommand )
 
 function ulxCommand:logString( str )
@@ -130,7 +146,7 @@ function ulx.help( ply )
 	end
 
 
-	ULib.console( ply, "\n-End of help\nULX version: " .. ulx.getVersion() .. "\n" )
+	ULib.console( ply, "\n-End of help\nULX version: " .. ULib.pluginVersionStr( "ULX" ) .. "\n" )
 end
 local help = ulx.command( "Utility", "ulx help", ulx.help )
 help:help( "Shows this help." )

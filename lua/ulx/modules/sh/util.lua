@@ -36,8 +36,8 @@ who:help( "See information about currently online users." )
 
 ------------------------------ Version ------------------------------
 function ulx.versionCmd( calling_ply )
-	ULib.tsay( calling_ply, "ULib " .. ULib.getVersion(), true )
-	ULib.tsay( calling_ply, "ULX " .. ulx.getVersion(), true )
+	ULib.tsay( calling_ply, "ULib " .. ULib.pluginVersionStr("ULib"), true )
+	ULib.tsay( calling_ply, "ULX " .. ULib.pluginVersionStr("ULX"), true )
 end
 local version = ulx.command( CATEGORY_NAME, "ulx version", ulx.versionCmd, "!version" )
 version:defaultAccess( ULib.ACCESS_ALL )
@@ -274,7 +274,7 @@ function ulx.addForcedDownload( path )
 end
 
 function ulx.debuginfo( calling_ply )
-	local str = string.format( "ULX version: %s\nULib version: %.2f\n", ulx.getVersion(), ULib.VERSION )
+	local str = string.format( "ULX version: %s\nULib version: %.2f\n", ULib.pluginVersionStr( "ULX" ), ULib.pluginVersionStr( "ULib" ) )
 	str = str .. string.format( "Gamemode: %s\nMap: %s\n", GAMEMODE.Name, game.GetMap() )
 	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 
@@ -310,7 +310,7 @@ function ulx.debuginfo( calling_ply )
 		local addon = addons[i]
 		if addon.mounted then
 			local name = addon.title
-			str = str .. string.format( "%s%s workshop ID %s\n", name, str.rep( " ", 24 - name:len() ), addon.file:gsub( "%D", "" ) )
+			str = str .. string.format( "%s%s workshop ID %s\n", name, str.rep( " ", 32 - name:len() ), addon.file:gsub( "%D", "" ) )
 		end
 	end
 	str = str .. "\n"
@@ -318,10 +318,31 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "Active legacy addons on this server:\n"
 	local _, possibleaddons = file.Find( "addons/*", "GAME" )
 	for _, addon in ipairs( possibleaddons ) do
-		if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
-			local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
-			if tonumber( t.version ) then t.version = string.format( "%g", t.version ) end -- Removes innaccuracy in floating point numbers
-			str = str .. string.format( "%s%s by %s, version %s (%s)\n", addon, str.rep( " ", 24 - addon:len() ), t.author_name, t.version, t.up_date )
+		if not ULib.findInTable( {"checkers", "chess", "common", "go", "hearts", "spades"}, addon:lower() ) then -- Not sure what these addon folders are
+			local name = addon
+			local author, version, date
+			if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
+				local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
+				if t.name then name = t.name end
+				if t.version then version = t.version end
+				if tonumber( version ) then version = string.format( "%g", version ) end -- Removes innaccuracy in floating point numbers
+				if t.author_name then author = t.author_name end
+				if t.up_date then date = t.up_date end
+			end
+
+			str = str .. name .. str.rep( " ", 32 - name:len() )
+			if author then
+				str = string.format( "%s by %s%s", str, author, version and "," or "" )
+			end
+
+			if version then
+				str = str .. " version " .. version
+			end
+
+			if date then
+				str = string.format( "%s (%s)", str, date )
+			end
+			str = str .. "\n"
 		end
 	end
 
