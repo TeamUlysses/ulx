@@ -350,7 +350,7 @@ files["motd.txt"] =
 		"contents"
 		{
 			"This server is running ULX."
-			"To edit this default MOTD, open ulx\motd_settings.txt, or check XGUI."
+			"To edit this default MOTD, open XGUI->Settings->Server->ULX MOTD, or edit data\ulx\motd.txt."
 		}
 	}
 	{
@@ -370,7 +370,7 @@ files["motd.txt"] =
 		{
 			"Contact an available admin on this server and let them know."
 			"Use @ before typing a chat message to send it to admins."
-			"If no admin is available, note the players name and the current time, and let an admin know as soon as they are available."
+			"If no admin is available, note the players name and the current time, then let an admin know as soon as they are available."
 		}
 	}
 	{
