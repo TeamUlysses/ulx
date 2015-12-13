@@ -417,75 +417,8 @@ xgui.addSubModule( "ULX Command/Event Echoes", plist, nil, "server" )
 local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="General ULX Settings" } )
 plist:Add( xlib.makeslider{ label="Chat spam time", min=0, max=5, decimal=1, repconvar="ulx_chattime" } )
-plist:Add( xlib.makelabel{ label="Allow '/me' chat feature" } )
+plist:Add( xlib.makelabel{ label="\nAllow '/me' chat feature" } )
 plist:Add( xlib.makecombobox{ repconvar="ulx_meChatEnabled", isNumberConvar=true, choices={ "Disabled", "Sandbox Only", "Enabled" } } )
-plist:Add( xlib.makelabel{ label="\nMOTD Settings" } )
---Very custom convar handling for ulx_showMotd
-plist.motdEnabled = xlib.makecheckbox{ label="Show MOTD when players join" }
-function plist.motdEnabled:Toggle() self.Button:DoClick() end
-plist.motdEnabled.Button.DoClick = function( self )
-	self:Toggle()
-	local bVal = self:GetChecked()
-	if bVal == true then
-		if plist.motdURLEnabled:GetChecked() then
-			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
-		else
-			RunConsoleCommand( "ulx_showMotd", "1" )
-		end
-	else
-		RunConsoleCommand( "ulx_showMotd", "0" )
-	end
-end
-plist.motdURLEnabled = xlib.makecheckbox{ label="Get MOTD from URL instead of motd.txt:" }
-
-function plist.motdURLEnabled:Toggle() self.Button:DoClick() end
-plist.motdURLEnabled.Button.DoClick = function( self )
-	self:Toggle()
-	local bVal = self:GetChecked()
-	if bVal == true then
-		if plist.motdURLText:GetValue() ~= "" then
-			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
-		end
-		plist.motdURLText:SetDisabled( false )
-	else
-		RunConsoleCommand( "ulx_showMotd", "1" )
-		plist.motdURLText:SetDisabled( true )
-	end
-end
-plist.motdURLText = xlib.maketextbox{ selectall=true }
-function plist.motdURLText:UpdateConvarValue()
-	if plist.motdURLText:GetValue() ~= "" then
-		RunConsoleCommand( "ulx_showMotd", self:GetValue() )
-	end
-end
-function plist.motdURLText:OnEnter() self:UpdateConvarValue() end
-function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-	if string.lower( cl_cvar ) == "ulx_showmotd" then
-		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL
-			plist.motdEnabled:SetValue( 1 )
-			plist.motdURLEnabled:SetValue( 1 )
-			plist.motdURLEnabled:SetDisabled( false )
-			plist.motdURLText:SetValue( new_val )
-			plist.motdURLText:SetDisabled( false )
-		else
-			plist.motdEnabled:SetValue( new_val )
-			if new_val == "1" then
-				plist.motdURLEnabled:SetValue( 0 )
-				plist.motdURLEnabled:SetDisabled( false )
-				plist.motdURLText:SetDisabled( true )
-			elseif new_val == "0" then
-				plist.motdURLEnabled:SetDisabled( true )
-				plist.motdURLText:SetDisabled( true )
-			end
-		end
-	end
-end
-hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated )
-
-plist:Add( plist.motdEnabled )
-plist:Add( plist.motdURLEnabled )
-plist:Add( plist.motdURLText )
-plist:Add( xlib.makelabel{ label="Allowed variables: %curmap%, %steamid%" } )
 plist:Add( xlib.makelabel{ label="\nWelcome Message" } )
 plist:Add( xlib.maketextbox{ repconvar="ulx_welcomemessage", selectall=true } )
 plist:Add( xlib.makelabel{ label="Allowed variables: %curmap%, %host%" } )
@@ -494,9 +427,6 @@ plist:Add( xlib.makelabel{ label="Number of name changes till kicked (0 disables
 plist:Add( xlib.makeslider{ label="<--->", min=0, max=10, decimal=0, repconvar="ulx_kickAfterNameChanges" } )
 plist:Add( xlib.makeslider{ label="Cooldown time (seconds)", min=0, max=600, decimal=0, repconvar="ulx_kickAfterNameChangesCooldown" } )
 plist:Add( xlib.makecheckbox{ label="Warn players how many name-changes remain", repconvar="ulx_kickAfterNameChangesWarning" } )
-
-xlib.checkRepCvarCreated( "ulx_showMotd" )
-plist.ConVarUpdated( nil, "ulx_showMotd", nil, nil, GetConVar( "ulx_showMotd" ):GetString() )
 
 xgui.addSubModule( "ULX General Settings", plist, nil, "server" )
 
@@ -596,6 +526,281 @@ end
 hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_logDir", logdirbutton.ConVarUpdated )
 plist:Add( logdirbutton )
 xgui.addSubModule( "ULX Logs", plist, nil, "server" )
+
+------------------------------Motd-------------------------------
+xgui.prepareDataType( "motdsettings" )
+local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
+
+local fontWeights = { "normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900", "lighter", "bolder" }
+local commonFonts = { "Arial", "Arial Black", "Calibri", "Candara", "Cambria", "Consolas", "Courier New", "Fraklin Gothic Medium", "Futura", "Georgia", "Helvetica", "Impact", "Lucida Console", "Segoe UI", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana" }
+
+plist:Add( xlib.makelabel{ label="MOTD Settings" } )
+--Very custom convar handling for ulx_showMotd
+plist.motdEnabled = xlib.makecheckbox{ label="Show MOTD when players join" }
+function plist.motdEnabled:Toggle() self.Button:DoClick() end
+plist.motdEnabled.Button.DoClick = function( self )
+	self:Toggle()
+	local bVal = self:GetChecked()
+	if bVal == true then
+		if plist.motdURLEnabled:GetChecked() then
+			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
+		else
+			RunConsoleCommand( "ulx_showMotd", "1" )
+		end
+	else
+		RunConsoleCommand( "ulx_showMotd", "0" )
+	end
+end
+plist.motdURLEnabled = xlib.makecheckbox{ label="Use URL instead of MOTD Generator:" }
+
+function plist.motdURLEnabled:Toggle() self.Button:DoClick() end
+plist.motdURLEnabled.Button.DoClick = function( self )
+	self:Toggle()
+	local bVal = self:GetChecked()
+	if bVal == true then
+		if plist.motdURLText:GetValue() ~= "" then
+			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
+		end
+		plist.motdURLText:SetDisabled( false )
+	else
+		RunConsoleCommand( "ulx_showMotd", "1" )
+		plist.motdURLText:SetDisabled( true )
+	end
+end
+plist.motdURLText = xlib.maketextbox{ selectall=true }
+function plist.motdURLText:UpdateConvarValue()
+	if plist.motdURLText:GetValue() ~= "" then
+		RunConsoleCommand( "ulx_showMotd", self:GetValue() )
+	end
+end
+function plist.motdURLText:OnEnter() self:UpdateConvarValue() end
+function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
+	if string.lower( cl_cvar ) == "ulx_showmotd" then
+		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL
+			plist.motdEnabled:SetValue( 1 )
+			plist.motdURLEnabled:SetValue( 1 )
+			plist.motdURLEnabled:SetDisabled( false )
+			plist.motdURLText:SetValue( new_val )
+			plist.motdURLText:SetDisabled( false )
+		else
+			plist.motdEnabled:SetValue( new_val )
+			if new_val == "1" then
+				plist.motdURLEnabled:SetValue( 0 )
+				plist.motdURLEnabled:SetDisabled( false )
+				plist.motdURLText:SetDisabled( true )
+			elseif new_val == "0" then
+				plist.motdURLEnabled:SetDisabled( true )
+				plist.motdURLText:SetDisabled( true )
+			end
+		end
+	end
+end
+hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated )
+
+plist:Add( plist.motdEnabled )
+plist:Add( plist.motdURLEnabled )
+plist:Add( plist.motdURLText )
+
+plist:Add( xlib.makelabel{ label="\nMOTD Generator" } )
+
+local testButton = xlib.makebutton{ label="Preview MOTD" }
+testButton.DoClick = function()
+	RunConsoleCommand( "ulx", "motd" )
+end
+plist:Add( testButton )
+
+
+plist:Add( xlib.makelabel{ label="\nMOTD Generator Fonts" } )
+
+plist:Add( xlib.makelabel{ label="\nServer Name (Title)" } )
+pnlFontServerName = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontServerName }
+pnlFontServerName.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontServerName }
+pnlFontServerName.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontServerName }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontServerName }
+pnlFontServerName.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontServerName }
+plist:Add( pnlFontServerName )
+
+plist:Add( xlib.makelabel{ label="\nServer Description (Subtitle)" } )
+local pnlFontSubtitle = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSubtitle }
+pnlFontSubtitle.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSubtitle }
+pnlFontSubtitle.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSubtitle }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSubtitle }
+pnlFontSubtitle.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSubtitle }
+plist:Add( pnlFontSubtitle )
+
+plist:Add( xlib.makelabel{ label="\nSection Title" } )
+local pnlFontSection = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSection }
+pnlFontSection.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSection }
+pnlFontSection.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSection }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSection }
+pnlFontSection.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSection }
+plist:Add( pnlFontSection )
+
+plist:Add( xlib.makelabel{ label="\nRegular Text" } )
+local pnlFontRegular = xlib.makepanel{ h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontRegular }
+pnlFontRegular.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontRegular }
+pnlFontRegular.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontRegular }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontRegular }
+pnlFontRegular.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontRegular }
+plist:Add( pnlFontRegular )
+
+
+plist:Add( xlib.makelabel{ label="\nMOTD Generator Colors\n" } )
+
+plist:Add( xlib.makelabel{ label="Background Color" } )
+local pnlColorBackground = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorBackground )
+plist:Add( xlib.makelabel{ label="Header Color" } )
+local pnlColorHeaderBackground = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorHeaderBackground )
+plist:Add( xlib.makelabel{ label="Header Text Color" } )
+local pnlColorHeader = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorHeader )
+plist:Add( xlib.makelabel{ label="Section Header Text Color" } )
+local pnlColorSection = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorSection )
+plist:Add( xlib.makelabel{ label="Default Text Color" } )
+local pnlColorText = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorText )
+
+plist:Add( xlib.makelabel{ label="\nMOTD Generator Top/Bottom Borders\n" } )
+
+local pnlBorderThickness = xlib.makeslider{ label="Border Thickness (Pixels)", value=1, min=0, max=32, parent=pnlBorderThickness }
+plist:Add( pnlBorderThickness )
+plist:Add( xlib.makelabel{ label="Border Color" } )
+local pnlBorderColor = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlBorderColor )
+
+xlib.checkRepCvarCreated( "ulx_showMotd" )
+plist.ConVarUpdated( nil, "ulx_showMotd", nil, nil, GetConVar( "ulx_showMotd" ):GetString() )
+
+
+local function unitToNumber(value)
+	return tonumber( string.gsub(value, "[^%d]", "" ), _ )
+end
+
+local function hexToColor(value)
+	value = string.gsub(value, "#","")
+	return Color(tonumber("0x"..value:sub(1,2)), tonumber("0x"..value:sub(3,4)), tonumber("0x"..value:sub(5,6)))
+end
+
+local function colorToHex(color)
+	return string.format("#%02x%02x%02x", color.r, color.g, color.b )
+end
+
+local didPressEnter = false
+local function registerMOTDChangeEventsTextbox( textbox, setting )
+	textbox.OnEnter = function( self )
+		didPressEnter = true
+	end
+
+	textbox.OnLoseFocus = function( self )
+		hook.Call( "OnTextEntryLoseFocus", nil, self )
+
+		-- OnLoseFocus gets called twice when pressing enter. This will hackishly take care of one of them.
+		if didPressEnter then
+			didPressEnter = false
+			return
+		end
+
+		if self:GetValue() then
+			RunConsoleCommand( "xgui", "updateMotdSetting", setting, self:GetValue() )
+		end
+	end
+end
+
+local function registerMOTDChangeEventsCombobox( combobox, setting )
+	registerMOTDChangeEventsTextbox( combobox.TextEntry, setting )
+
+	combobox.OnSelect = function( self )
+		RunConsoleCommand( "xgui", "updateMotdSetting", setting, self:GetValue() )
+	end
+end
+
+local function registerMOTDChangeEventsSlider( slider, setting )
+	registerMOTDChangeEventsTextbox( slider.TextArea, setting )
+
+	local tmpfunc = slider.Slider.SetDragging
+	slider.Slider.SetDragging = function( self, bval )
+		tmpfunc( self, bval )
+		if ( !bval ) then
+			RunConsoleCommand( "xgui", "updateMotdSetting", setting, slider.TextArea:GetValue() )
+		end
+	end
+
+	local tmpfunc2 = slider.Scratch.OnMouseReleased
+	slider.Scratch.OnMouseReleased = function( self, mousecode )
+		tmpfunc2( self, mousecode )
+		RunConsoleCommand( "xgui", "updateMotdSetting", setting, slider.TextArea:GetValue() )
+	end
+end
+
+local function registerMOTDChangeEventsColor( colorpicker, setting )
+	colorpicker.OnChange = function( self, color )
+		RunConsoleCommand( "xgui", "updateMotdSetting", setting, colorToHex( color ) )
+	end
+end
+
+registerMOTDChangeEventsCombobox( pnlFontServerName.name, "style.fonts.server_name.family" )
+registerMOTDChangeEventsSlider( pnlFontServerName.size, "style.fonts.server_name.size" )
+registerMOTDChangeEventsCombobox( pnlFontServerName.weight, "style.fonts.server_name.weight" )
+registerMOTDChangeEventsCombobox( pnlFontSubtitle.name, "style.fonts.subtitle.family" )
+registerMOTDChangeEventsSlider( pnlFontSubtitle.size, "style.fonts.subtitle.size" )
+registerMOTDChangeEventsCombobox( pnlFontSubtitle.weight, "style.fonts.subtitle.weight" )
+registerMOTDChangeEventsCombobox( pnlFontSection.name, "style.fonts.section_title.family" )
+registerMOTDChangeEventsSlider( pnlFontSection.size, "style.fonts.section_title.size" )
+registerMOTDChangeEventsCombobox( pnlFontSection.weight, "style.fonts.section_title.weight" )
+registerMOTDChangeEventsCombobox( pnlFontRegular.name, "style.fonts.regular.family" )
+registerMOTDChangeEventsSlider( pnlFontRegular.size, "style.fonts.regular.size" )
+registerMOTDChangeEventsCombobox( pnlFontRegular.weight, "style.fonts.regular.weight" )
+
+registerMOTDChangeEventsColor( pnlColorBackground, "style.colors.background_color" )
+registerMOTDChangeEventsColor( pnlColorHeaderBackground, "style.colors.header_color" )
+registerMOTDChangeEventsColor( pnlColorHeader, "style.colors.header_text_color" )
+registerMOTDChangeEventsColor( pnlColorSection, "style.colors.section_text_color" )
+registerMOTDChangeEventsColor( pnlColorText, "style.colors.text_color" )
+
+registerMOTDChangeEventsColor( pnlBorderColor, "style.borders.border_color" )
+registerMOTDChangeEventsSlider( pnlBorderThickness, "style.borders.border_thickness" )
+
+
+plist.updateMOTDSettings = function( data )
+	local borders = xgui.data.motdsettings.style.borders
+	local colors = xgui.data.motdsettings.style.colors
+	local fonts = xgui.data.motdsettings.style.fonts
+
+	-- Fonts
+	pnlFontServerName.name:SetText( fonts.server_name.family )
+	pnlFontServerName.size:SetValue( unitToNumber( fonts.server_name.size ) )
+	pnlFontServerName.weight:SetText( fonts.server_name.weight )
+	pnlFontSubtitle.name:SetText( fonts.subtitle.family )
+	pnlFontSubtitle.size:SetValue( unitToNumber( fonts.subtitle.size ) )
+	pnlFontSubtitle.weight:SetText( fonts.subtitle.weight )
+	pnlFontSection.name:SetText( fonts.section_title.family )
+	pnlFontSection.size:SetValue( unitToNumber( fonts.section_title.size ) )
+	pnlFontSection.weight:SetText( fonts.section_title.weight )
+	pnlFontRegular.name:SetText( fonts.regular.family )
+	pnlFontRegular.size:SetValue( unitToNumber( fonts.regular.size ) )
+	pnlFontRegular.weight:SetText( fonts.regular.weight )
+
+	-- Colors
+	pnlColorBackground:SetColor( hexToColor( colors.background_color ) )
+	pnlColorHeaderBackground:SetColor( hexToColor( colors.header_color ) )
+	pnlColorHeader:SetColor( hexToColor( colors.header_text_color ) )
+	pnlColorSection:SetColor( hexToColor( colors.section_text_color ) )
+	pnlColorText:SetColor( hexToColor( colors.text_color ) )
+
+	-- Borders
+	pnlBorderThickness:SetValue( unitToNumber( borders.border_thickness ) )
+	pnlBorderColor:SetColor( hexToColor( borders.border_color ) )
+end
+
+xgui.hookEvent( "motdsettings", "process", plist.updateMOTDSettings, "serverUpdateMOTDSettings" )
+xgui.addSubModule( "ULX MOTD", plist, nil, "server" )
 
 -----------------------Player Votemap List-----------------------
 xgui.prepareDataType( "votemaps", ulx.votemaps )
