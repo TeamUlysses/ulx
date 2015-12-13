@@ -84,11 +84,11 @@ function ulx.ban( calling_ply, target_ply, minutes, reason )
 		return
 	end
 
-	local time = "for #i minute(s)"
+	local time = "for #s"
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned #T " .. time
 	if reason and reason ~= "" then str = str .. " (#s)" end
-	ulx.fancyLogAdmin( calling_ply, str, target_ply, minutes ~= 0 and minutes or reason, reason )
+	ulx.fancyLogAdmin( calling_ply, str, target_ply, minutes ~= 0 and ULib.secondsToStringTime( minutes * 60 ) or reason, reason )
 	-- Delay by 1 frame to ensure any chat hook finishes with player intact. Prevents a crash.
 	ULib.queueFunctionCall( ULib.kickban, target_ply, minutes, reason, calling_ply )
 end
@@ -116,7 +116,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 		end
 	end
 
-	local time = "for #i minute(s)"
+	local time = "for #s"
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned steamid #s "
 	displayid = steamid
@@ -125,7 +125,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	end
 	str = str .. time
 	if reason and reason ~= "" then str = str .. " (#4s)" end
-	ulx.fancyLogAdmin( calling_ply, str, displayid, minutes ~= 0 and minutes or reason, reason )
+	ulx.fancyLogAdmin( calling_ply, str, displayid, minutes ~= 0 and ULib.secondsToStringTime( minutes * 60 ) or reason, reason )
 	-- Delay by 1 frame to ensure any chat hook finishes with player intact. Prevents a crash.
 	ULib.queueFunctionCall( ULib.addBan, steamid, minutes, reason, name, calling_ply )
 end
