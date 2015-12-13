@@ -176,10 +176,14 @@ local template_footer = [[
 </html>
 ]]
 
+local function escape(str)
+	return (str:gsub("<", "&lt;"):gsub(">", "&gt;")) -- Wrapped in parenthesis so we ignore other return vals
+end
+
 local function renderItemTemplate(items, template)
 	local output = ""
 	for i=1, #items do
-		output = output .. string.gsub( template, "%%content%%", items[i] or "")
+		output = output .. string.gsub( template, "%%content%%", escape(items[i] or ""))
 	end
 	return output
 end
@@ -189,11 +193,11 @@ local function renderMods()
 	for a=1, #ulx.motdSettings.addons do
 		local addon = ulx.motdSettings.addons[a]
 		if addon.workshop_id then
-			local item = string.gsub( template_item_workshop, "%%title%%", addon.title )
-			output = output .. string.gsub( item, "%%workshop_id%%", addon.workshop_id or "" )
+			local item = string.gsub( template_item_workshop, "%%title%%", escape(addon.title) )
+			output = output .. string.gsub( item, "%%workshop_id%%", escape(addon.workshop_id or "") )
 		else
-			local item = string.gsub( template_item_addon, "%%title%%", addon.title or "" )
-			output = output .. string.gsub( item, "%%author%%", addon.author or "" )
+			local item = string.gsub( template_item_addon, "%%title%%", escape(addon.title or "") )
+			output = output .. string.gsub( item, "%%author%%", escape(addon.author or "") )
 		end
 	end
 
@@ -201,8 +205,8 @@ local function renderMods()
 end
 
 function ulx.generateMotdHTML()
-	local header = string.gsub( template_header, "%%hostname%%", GetHostName() or "" )
-	header = string.gsub( header, "{{(.-)}}", function(a) return ULib.findVar("ulx.motdSettings." .. a) or "" end )
+	local header = string.gsub( template_header, "%%hostname%%", escape(GetHostName() or "") )
+	header = string.gsub( header, "{{(.-)}}", function(a) return escape(ULib.findVar("ulx.motdSettings." .. a) or "") end )
 
 	local body = ""
 
@@ -234,7 +238,7 @@ function ulx.generateMotdHTML()
 			content = string.gsub( template_section_ul, "%%items%%", renderItemTemplate(users, template_item_li) )
 		end
 
-		local section = string.gsub( template_section, "%%title%%", data.title or "" )
+		local section = string.gsub( template_section, "%%title%%", escape(data.title or "") )
 		body = body .. string.gsub( section, "%%content%%", content )
 	end
 
