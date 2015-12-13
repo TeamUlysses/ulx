@@ -358,7 +358,7 @@ files["motd.txt"] =
 		"type" "ordered_list"
 		"contents"
 		{
-			"DON'T MESS WITH OTHER PLAYERS STUFF. If they want help, they'll ask!"
+			"DON'T MESS WITH OTHER PLAYERS' STUFF. If they want help, they'll ask!"
 			"Don't spam."
 			"Have fun."
 		}
@@ -392,7 +392,7 @@ files["motd.txt"] =
 	"borders"
 	{
 		"border_color" "#000000"
-		"border_thickness" "1px"
+		"border_thickness" "2px"
 	}
 	"colors"
 	{
