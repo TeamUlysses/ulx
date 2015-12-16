@@ -98,6 +98,13 @@ local function doReasonsCfg( path, noMount )
 	end
 end
 
+local function doMessageCfg( path, noMount )
+	local message = ULib.stripComments( ULib.fileRead( path, noMount ), ";" ):Trim()
+	if message and message:find("%W") then
+		ULib.BanMessage = message
+	end
+end
+
 local function doCfg()
 	local things_to_execute = { -- Indexed by name, value of function to execute
 		["config.txt"] = doMainCfg,
@@ -106,6 +113,7 @@ local function doCfg()
 		["adverts.txt"] = doAdvertCfg,
 		["votemaps.txt"] = doVotemapsCfg,
 		["banreasons.txt"] = doReasonsCfg,
+		["banmessage.txt"] = doMessageCfg,
 	}
 
 	local gamemode_name = GAMEMODE.Name:lower()
