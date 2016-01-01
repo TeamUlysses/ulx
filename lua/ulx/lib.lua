@@ -71,7 +71,9 @@ local function advertiseNewVersions( ply )
 				table.insert( updatesFor, name )
 			end
 		end
-		ULib.tsay( ply, "Updates available for " .. string.Implode( ", ", updatesFor ) )
+		if #updatesFor > 0 then
+			ULib.tsay( ply, "[ULX] Updates available for " .. string.Implode( ", ", updatesFor ) )
+		end
 		ply.ULX_UpdatesAdvertised = true
 	end
 end
