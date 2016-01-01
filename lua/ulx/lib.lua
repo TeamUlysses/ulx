@@ -65,8 +65,8 @@ local function advertiseNewVersions( ply )
 	if ply:IsAdmin() and not ply.ULX_UpdatesAdvertised then
 		local updatesFor = {}
 		for name, plugin in pairs (ULib.plugins) do
-			myBuild = tonumber( plugin.build )
-			curBuild = tonumber( plugin.buildOnline )
+			myBuild = tonumber( plugin.BuildNumLocal )
+			curBuild = tonumber( plugin.BuildNumRemote )
 			if myBuild and curBuild and myBuild < curBuild then
 				table.insert( updatesFor, name )
 			end
