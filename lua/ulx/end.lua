@@ -111,6 +111,13 @@ local function doMotdCfg( path, noMount )
 	ulx.populateMotdData()
 end
 
+local function doMessageCfg( path, noMount )
+	local message = ULib.stripComments( ULib.fileRead( path, noMount ), ";" ):Trim()
+	if message and message:find("%W") then
+		ULib.BanMessage = message
+	end
+end
+
 local function doCfg()
 	local things_to_execute = { -- Indexed by name, value of function to execute
 		["config.txt"] = doMainCfg,
@@ -120,6 +127,7 @@ local function doCfg()
 		["votemaps.txt"] = doVotemapsCfg,
 		["banreasons.txt"] = doReasonsCfg,
 		["motd.txt"] = doMotdCfg,
+		["banmessage.txt"] = doMessageCfg,
 	}
 
 	local gamemode_name = GAMEMODE.Name:lower()

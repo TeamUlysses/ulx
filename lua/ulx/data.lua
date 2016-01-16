@@ -41,6 +41,25 @@ files["adverts.txt"] =
 }
 ]]
 
+files["banmessage.txt"] = [[
+; Possible variables here are as follows:
+; {{BANNED_BY}} - The person (and steamid) who initiated the ban
+; {{BAN_START}} - The date/time of the ban, in the server's time zone
+; {{REASON}} - The ban reason
+; {{TIME_LEFT}} - The time left in the ban
+; {{STEAMID}} - The banned player's Steam ID (excluding non-number characters)
+; {{STEAMID64}} - The banned player's 64-bit Steam ID
+; The two steam ID vairables are useful for constructing URLs for appealing bans
+-------===== [ BANNED ] =====-------
+
+---= Reason =---
+{{REASON}}
+
+---= Time Left =---
+{{TIME_LEFT}}
+]]
+
+
 files["banreasons.txt"] =
 [[; This file is used to store default reasons for kicking and banning users.
 ; These reasons show up in console autocomplete and in XGUI dropdowns.
