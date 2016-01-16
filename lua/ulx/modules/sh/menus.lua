@@ -38,56 +38,58 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 	motdmenu:help( "Show the message of the day." )
 	if SERVER then ulx.convar( "showMotd", "1", " <0/1/(url)> - Shows the motd to clients on startup. Can specify URL here.", ULib.ACCESS_ADMIN ) end
 
-	function ulx.populateMotdData()
-		if ulx.motdSettings == nil then return end
+	if SERVER then
+		function ulx.populateMotdData()
+			if ulx.motdSettings == nil then return end
 
-		ulx.motdSettings.admins = {}
-		ulx.motdSettings.addons = nil
+			ulx.motdSettings.admins = {}
+			ulx.motdSettings.addons = nil
 
-		local getAddonInfo = false
+			local getAddonInfo = false
 
-		-- Gather addon/admin information to display
-		for i=1, #ulx.motdSettings.info do
-			local sectionInfo = ulx.motdSettings.info[i]
-			if sectionInfo.type == "mods" then
-				getAddonInfo = true
-			elseif sectionInfo.type == "admins" then
-				for a=1, #sectionInfo.contents do
-					ulx.motdSettings.admins[sectionInfo.contents[a]] = true
+			-- Gather addon/admin information to display
+			for i=1, #ulx.motdSettings.info do
+				local sectionInfo = ulx.motdSettings.info[i]
+				if sectionInfo.type == "mods" then
+					getAddonInfo = true
+				elseif sectionInfo.type == "admins" then
+					for a=1, #sectionInfo.contents do
+						ulx.motdSettings.admins[sectionInfo.contents[a]] = true
+					end
+				end
+			end
+
+			if getAddonInfo then
+				ulx.motdSettings.addons = {}
+				local addons = engine.GetAddons()
+				for i=1, #addons do
+					local addon = addons[i]
+					if addon.mounted then
+						table.insert( ulx.motdSettings.addons, { title=addon.title, workshop_id=addon.file:gsub("%D", "") } )
+					end
+				end
+
+				local _, possibleaddons = file.Find( "addons/*", "GAME" )
+				for _, addon in ipairs( possibleaddons ) do
+					if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
+						local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
+						table.insert( ulx.motdSettings.addons, { title=addon, author=t.author_name } )
+					end
+				end
+
+				table.sort( ulx.motdSettings.addons, function(a,b) return string.lower(a.title) < string.lower(b.title) end )
+			end
+
+			for group, _ in pairs( ulx.motdSettings.admins ) do
+				ulx.motdSettings.admins[group] = {}
+				for steamID, data in pairs( ULib.ucl.users ) do
+					if data.group == group and data.name then
+						table.insert( ulx.motdSettings.admins[group], data.name )
+					end
 				end
 			end
 		end
-
-		if getAddonInfo then
-			ulx.motdSettings.addons = {}
-			local addons = engine.GetAddons()
-			for i=1, #addons do
-				local addon = addons[i]
-				if addon.mounted then
-					table.insert( ulx.motdSettings.addons, { title=addon.title, workshop_id=addon.file:gsub("%D", "") } )
-				end
-			end
-
-			local _, possibleaddons = file.Find( "addons/*", "GAME" )
-			for _, addon in ipairs( possibleaddons ) do
-				if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
-					local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
-					table.insert( ulx.motdSettings.addons, { title=addon, author=t.author_name } )
-				end
-			end
-
-			table.sort( ulx.motdSettings.addons, function(a,b) return string.lower(a.title) < string.lower(b.title) end )
-		end
-
-		for group, _ in pairs( ulx.motdSettings.admins ) do
-			ulx.motdSettings.admins[group] = {}
-			for steamID, data in pairs( ULib.ucl.users ) do
-				if data.group == group and data.name then
-					table.insert( ulx.motdSettings.admins[group], data.name )
-				end
-			end
-		end
+		hook.Add( ULib.HOOK_UCLCHANGED, "ulx.updateMotd.adminsChanged", ulx.populateMotdData )
 	end
-	hook.Add( ULib.HOOK_UCLCHANGED, "ulx.updateMotd.adminsChanged", ulx.populateMotdData )
 
 end
