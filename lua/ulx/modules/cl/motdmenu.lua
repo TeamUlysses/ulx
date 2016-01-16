@@ -206,7 +206,10 @@ end
 
 function ulx.generateMotdHTML()
 	local header = string.gsub( template_header, "%%hostname%%", escape(GetHostName() or "") )
-	header = string.gsub( header, "{{(.-)}}", function(a) return escape(ULib.findVar("ulx.motdSettings." .. a) or "") end )
+	header = string.gsub( header, "{{(.-)}}", function(a)
+		local success, value = ULib.findVar(a, ulx.motdSettings)
+		return escape( value or "")
+	end )
 
 	local body = ""
 

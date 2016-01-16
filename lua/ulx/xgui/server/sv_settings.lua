@@ -275,15 +275,8 @@ function settings.init()
 		if ULib.ucl.query( ply, "xgui_svsettings" ) then
 			if not args[1] or not args[2] then return end
 
-			-- Black magic to save value (args[2]) to string path (args[1])
-			local x = ulx.motdSettings
-			local path = ULib.explode( "%.", args[1] )
-			for i=1, #path-1 do
-				x = x[ path[i] ]
-				if not x then return end
-			end
-			if x[path[#path]] then
-				x[path[#path]] = args[2]
+			local success, prev = ULib.setVar( args[1], args[2], ulx.motdSettings )
+			if (success and prev ~= args[2]) then
 				settings.saveMotdSettings()
 				xgui.sendDataTable( {}, "motdsettings" )
 			end
