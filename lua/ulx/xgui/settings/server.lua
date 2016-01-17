@@ -800,7 +800,7 @@ plist.updateMOTDSettings = function( data )
 end
 
 xgui.hookEvent( "motdsettings", "process", plist.updateMOTDSettings, "serverUpdateMOTDSettings" )
-xgui.addSubModule( "ULX MOTD", plist, nil, "server" )
+xgui.addSubModule( "ULX MOTD", plist, "ulx showmotd", "server" )
 
 -----------------------Player Votemap List-----------------------
 xgui.prepareDataType( "votemaps", ulx.votemaps )
