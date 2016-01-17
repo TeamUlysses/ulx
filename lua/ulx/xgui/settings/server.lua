@@ -612,8 +612,194 @@ testButton.DoClick = function()
 end
 plist:Add( testButton )
 
-plist:Add( xlib.makelabel{ label="\nMOTD Generator Configuration <coming soon>" } )
-plist:Add( xlib.makelabel{ label="\nYou can configure the MOTD in data/ulx/motd.txt" } )
+plist:Add( xlib.makelabel{ label="\nMOTD Generator Fonts" } )
+
+plist:Add( xlib.makelabel{ label="\nServer Name (Title)" } )
+pnlFontServerName = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontServerName }
+pnlFontServerName.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontServerName }
+pnlFontServerName.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontServerName }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontServerName }
+pnlFontServerName.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontServerName }
+plist:Add( pnlFontServerName )
+
+plist:Add( xlib.makelabel{ label="\nServer Description (Subtitle)" } )
+local pnlFontSubtitle = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSubtitle }
+pnlFontSubtitle.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSubtitle }
+pnlFontSubtitle.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSubtitle }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSubtitle }
+pnlFontSubtitle.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSubtitle }
+plist:Add( pnlFontSubtitle )
+
+plist:Add( xlib.makelabel{ label="\nSection Title" } )
+local pnlFontSection = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSection }
+pnlFontSection.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSection }
+pnlFontSection.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSection }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSection }
+pnlFontSection.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSection }
+plist:Add( pnlFontSection )
+
+plist:Add( xlib.makelabel{ label="\nRegular Text" } )
+local pnlFontRegular = xlib.makepanel{ h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontRegular }
+pnlFontRegular.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontRegular }
+pnlFontRegular.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontRegular }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontRegular }
+pnlFontRegular.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontRegular }
+plist:Add( pnlFontRegular )
+
+
+plist:Add( xlib.makelabel{ label="\nMOTD Generator Colors\n" } )
+
+plist:Add( xlib.makelabel{ label="Background Color" } )
+local pnlColorBackground = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorBackground )
+plist:Add( xlib.makelabel{ label="Header Color" } )
+local pnlColorHeaderBackground = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorHeaderBackground )
+plist:Add( xlib.makelabel{ label="Header Text Color" } )
+local pnlColorHeader = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorHeader )
+plist:Add( xlib.makelabel{ label="Section Header Text Color" } )
+local pnlColorSection = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorSection )
+plist:Add( xlib.makelabel{ label="Default Text Color" } )
+local pnlColorText = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlColorText )
+
+plist:Add( xlib.makelabel{ label="\nMOTD Generator Top/Bottom Borders\n" } )
+
+local pnlBorderThickness = xlib.makeslider{ label="Border Thickness (Pixels)", value=1, min=0, max=32, parent=pnlBorderThickness }
+plist:Add( pnlBorderThickness )
+plist:Add( xlib.makelabel{ label="Border Color" } )
+local pnlBorderColor = xlib.makecolorpicker{ noalphamodetwo=true }
+plist:Add( pnlBorderColor )
+
+
+
+local function unitToNumber(value)
+	return tonumber( string.gsub(value, "[^%d]", "" ), _ )
+end
+
+local function hexToColor(value)
+	value = string.gsub(value, "#","")
+	return Color(tonumber("0x"..value:sub(1,2)), tonumber("0x"..value:sub(3,4)), tonumber("0x"..value:sub(5,6)))
+end
+
+local function colorToHex(color)
+	return string.format("#%02x%02x%02x", color.r, color.g, color.b )
+end
+
+local didPressEnter = false
+local function registerMOTDChangeEventsTextbox( textbox, setting )
+	textbox.OnEnter = function( self )
+		didPressEnter = true
+	end
+
+	textbox.OnLoseFocus = function( self )
+		hook.Call( "OnTextEntryLoseFocus", nil, self )
+
+		-- OnLoseFocus gets called twice when pressing enter. This will hackishly take care of one of them.
+		if didPressEnter then
+			didPressEnter = false
+			return
+		end
+
+		if self:GetValue() then
+			RunConsoleCommand( "xgui", "updateMotdSetting", setting, self:GetValue() )
+		end
+	end
+end
+
+local function registerMOTDChangeEventsCombobox( combobox, setting )
+	registerMOTDChangeEventsTextbox( combobox.TextEntry, setting )
+
+	combobox.OnSelect = function( self )
+		RunConsoleCommand( "xgui", "updateMotdSetting", setting, self:GetValue() )
+	end
+end
+
+local function registerMOTDChangeEventsSlider( slider, setting )
+	registerMOTDChangeEventsTextbox( slider.TextArea, setting )
+
+	local tmpfunc = slider.Slider.SetDragging
+	slider.Slider.SetDragging = function( self, bval )
+		tmpfunc( self, bval )
+		if ( !bval ) then
+			RunConsoleCommand( "xgui", "updateMotdSetting", setting, slider.TextArea:GetValue() )
+		end
+	end
+
+	local tmpfunc2 = slider.Scratch.OnMouseReleased
+	slider.Scratch.OnMouseReleased = function( self, mousecode )
+		tmpfunc2( self, mousecode )
+		RunConsoleCommand( "xgui", "updateMotdSetting", setting, slider.TextArea:GetValue() )
+	end
+end
+
+local function registerMOTDChangeEventsColor( colorpicker, setting )
+	colorpicker.OnChange = function( self, color )
+		RunConsoleCommand( "xgui", "updateMotdSetting", setting, colorToHex( color ) )
+	end
+end
+
+registerMOTDChangeEventsCombobox( pnlFontServerName.name, "style.fonts.server_name.family" )
+registerMOTDChangeEventsSlider( pnlFontServerName.size, "style.fonts.server_name.size" )
+registerMOTDChangeEventsCombobox( pnlFontServerName.weight, "style.fonts.server_name.weight" )
+registerMOTDChangeEventsCombobox( pnlFontSubtitle.name, "style.fonts.subtitle.family" )
+registerMOTDChangeEventsSlider( pnlFontSubtitle.size, "style.fonts.subtitle.size" )
+registerMOTDChangeEventsCombobox( pnlFontSubtitle.weight, "style.fonts.subtitle.weight" )
+registerMOTDChangeEventsCombobox( pnlFontSection.name, "style.fonts.section_title.family" )
+registerMOTDChangeEventsSlider( pnlFontSection.size, "style.fonts.section_title.size" )
+registerMOTDChangeEventsCombobox( pnlFontSection.weight, "style.fonts.section_title.weight" )
+registerMOTDChangeEventsCombobox( pnlFontRegular.name, "style.fonts.regular.family" )
+registerMOTDChangeEventsSlider( pnlFontRegular.size, "style.fonts.regular.size" )
+registerMOTDChangeEventsCombobox( pnlFontRegular.weight, "style.fonts.regular.weight" )
+
+registerMOTDChangeEventsColor( pnlColorBackground, "style.colors.background_color" )
+registerMOTDChangeEventsColor( pnlColorHeaderBackground, "style.colors.header_color" )
+registerMOTDChangeEventsColor( pnlColorHeader, "style.colors.header_text_color" )
+registerMOTDChangeEventsColor( pnlColorSection, "style.colors.section_text_color" )
+registerMOTDChangeEventsColor( pnlColorText, "style.colors.text_color" )
+
+registerMOTDChangeEventsColor( pnlBorderColor, "style.borders.border_color" )
+registerMOTDChangeEventsSlider( pnlBorderThickness, "style.borders.border_thickness" )
+
+
+plist.updateMOTDSettings = function( data )
+	local borders = xgui.data.motdsettings.style.borders
+	local colors = xgui.data.motdsettings.style.colors
+	local fonts = xgui.data.motdsettings.style.fonts
+
+	-- Fonts
+	pnlFontServerName.name:SetText( fonts.server_name.family )
+	pnlFontServerName.size:SetValue( unitToNumber( fonts.server_name.size ) )
+	pnlFontServerName.weight:SetText( fonts.server_name.weight )
+	pnlFontSubtitle.name:SetText( fonts.subtitle.family )
+	pnlFontSubtitle.size:SetValue( unitToNumber( fonts.subtitle.size ) )
+	pnlFontSubtitle.weight:SetText( fonts.subtitle.weight )
+	pnlFontSection.name:SetText( fonts.section_title.family )
+	pnlFontSection.size:SetValue( unitToNumber( fonts.section_title.size ) )
+	pnlFontSection.weight:SetText( fonts.section_title.weight )
+	pnlFontRegular.name:SetText( fonts.regular.family )
+	pnlFontRegular.size:SetValue( unitToNumber( fonts.regular.size ) )
+	pnlFontRegular.weight:SetText( fonts.regular.weight )
+
+	-- Colors
+	pnlColorBackground:SetColor( hexToColor( colors.background_color ) )
+	pnlColorHeaderBackground:SetColor( hexToColor( colors.header_color ) )
+	pnlColorHeader:SetColor( hexToColor( colors.header_text_color ) )
+	pnlColorSection:SetColor( hexToColor( colors.section_text_color ) )
+	pnlColorText:SetColor( hexToColor( colors.text_color ) )
+
+	-- Borders
+	pnlBorderThickness:SetValue( unitToNumber( borders.border_thickness ) )
+	pnlBorderColor:SetColor( hexToColor( borders.border_color ) )
+end
+xgui.hookEvent( "motdsettings", "process", plist.updateMOTDSettings, "serverUpdateMOTDSettings" )
+
 xgui.addSubModule( "ULX MOTD", plist, "ulx showmotd", "server" )
 
 -----------------------Player Votemap List-----------------------
