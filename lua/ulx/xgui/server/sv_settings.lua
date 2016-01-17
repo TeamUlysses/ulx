@@ -270,30 +270,6 @@ function settings.init()
 		ULib.fileWrite( "data/ulx/votemaps.txt", new_file )
 		settings.updatevotemaps()
 	end
-
-	function settings.updateMotdSetting( ply, args )
-		if ULib.ucl.query( ply, "xgui_svsettings" ) then
-			if not args[1] or not args[2] then return end
-
-			local success, prev = ULib.setVar( args[1], args[2], ulx.motdSettings )
-			if (success and prev ~= args[2]) then
-				settings.saveMotdSettings()
-				xgui.sendDataTable( {}, "motdsettings" )
-			end
-		end
-	end
-	xgui.addCmd( "updateMotdSetting", settings.updateMotdSetting )
-
-	function settings.saveMotdSettings()
-		local orig_file = ULib.fileRead( "data/ulx/motd.txt" )
-		local comment = xgui.getCommentHeader( orig_file )
-		local new_file = comment
-
-		local motdSave = { info=ulx.motdSettings.info, style=ulx.motdSettings.style }
-		new_file = new_file .. ULib.makeKeyValues( motdSave )
-
-		ULib.fileWrite( "data/ulx/motd.txt", new_file )
-	end
 end
 
 function settings.postinit()
