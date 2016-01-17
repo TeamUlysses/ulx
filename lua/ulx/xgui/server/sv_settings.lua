@@ -289,7 +289,8 @@ function settings.init()
 		local comment = xgui.getCommentHeader( orig_file )
 		local new_file = comment
 
-		new_file = new_file .. ULib.makeKeyValues( ulx.motdSettings )
+		local motdSave = { info=ulx.motdSettings.info, style=ulx.motdSettings.style }
+		new_file = new_file .. ULib.makeKeyValues( motdSave )
 
 		ULib.fileWrite( "data/ulx/motd.txt", new_file )
 	end
