@@ -2,7 +2,7 @@ local CATEGORY_NAME = "Menus"
 
 if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists then
 	CreateConVar( "motdfile", "ulx_motd.txt" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
-	CreateConVar( "motdurl", "garrysmod.com/updates/" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
+	CreateConVar( "motdurl", "ulyssesmod.net" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
 	local function sendMotd( ply, showMotd )
 		if showMotd == "1" then -- Assume it's a file
 			if ply.ulxHasMotd then return end -- This player already has the motd

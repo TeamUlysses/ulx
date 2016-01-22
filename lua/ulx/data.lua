@@ -80,7 +80,7 @@ files["config.txt"] =
 ;specific config only.
 ;Any line starting with a ';' is a comment!
 
-ulx showMotd 0 ; MOTD mode
+ulx showMotd 2 ; MOTD mode
 ; MOTD modes:
 ; 0 - OFF No MOTD shown
 ; 1 - FILE Show the players the contents of the file from the 'motdfile' cvar
@@ -88,7 +88,7 @@ ulx showMotd 0 ; MOTD mode
 ; 3 - URL Show the player the URL specified by the 'motdurl' cvar
 ; In a URL, you can use %curmap% and %steamid% in the URL to have it automagically parsed for you (eg, server.com/?map=%curmap%&id=%steamid%).
 motdfile ulx_motd.txt ; The MOTD to show, if using a file. Put this file in the root of the garry's mod directory.
-motdurl garrysmod.com/updates/ ; The MOTD to show, if using a URL.
+motdurl ulyssesmod.net ; The MOTD to show, if using a URL.
 
 
 ulx chattime 0 ; Players can only chat every x seconds (anti-spam). 0 to disable
