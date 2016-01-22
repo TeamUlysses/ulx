@@ -32,7 +32,7 @@ A word about superadmins: Superadmins are considered the highest usergroup. They
 
 All commands are preceded by `ulx `. Type `ulx help` in a console without the quotes for help.
 
-**To give yourself a jump start into ULX, simply remember the commands `ulx help` and `ulx menu`..**
+**To give yourself a jump start into ULX, simply remember the commands `ulx help` and `ulx menu`.**
 
 Check out the config folder in ulx for some more goodies.
 
