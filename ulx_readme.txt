@@ -68,6 +68,7 @@ v3.70 - *(00/00/00)*
 	* [ADD] Steam ID parameter to "ulx who" to lookup users by Steam ID.
 	* [ADD] Cvar "ulx meChatEnabled" added to enable or disable the /me chat feature, or set it to Sandbox only.
 	* [ADD] "ulx version" command for easily checking the version being run.
+	* [ADD] New dynamic MOTD generator.
 	* [ADD] XGUI: Added methods for developers to be able to open a specific client or server setting module.
 	* [FIX] The usual random slew of Garry-breakages (Thanks, Fuzzik).
 	* [FIX] Changing weapons while cloaked would keep them hidden when uncloaked. (Thanks, TheRealAyCe).
@@ -89,6 +90,8 @@ v3.70 - *(00/00/00)*
 	* [FIX] XGUI: Server error in some cases when sorting bans by Unban Date after a new ban has been added.
 	* [FIX] XGUI: Right-clicking an advert group and renaming it was broken.
 	* [CHANGE] MOTD now uses DHTML (Awesomium framework).
+	* [CHANGE] MOTD configuration changes and new "motdurl" CVAR.
+	* [CHANGE] Data files are now injected from a Lua script rather than included directly, in order to be Workshop-friendly.
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.
 	* [CHANGE] You can now spectate another player while spectating someone else.

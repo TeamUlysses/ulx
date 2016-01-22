@@ -1,12 +1,23 @@
 local CATEGORY_NAME = "Menus"
 
 if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists then
-
+	CreateConVar( "motdfile", "ulx_motd.txt" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
+	CreateConVar( "motdurl", "garrysmod.com/updates/" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
 	local function sendMotd( ply, showMotd )
 		if showMotd == "1" then -- Assume it's a file
-			ULib.clientRPC( ply, "ulx.rcvMotd", false, ulx.motdSettings )
+			if ply.ulxHasMotd then return end -- This player already has the motd
+			if not ULib.fileExists( GetConVarString( "motdfile" ) ) then return end -- Invalid
+			local f = ULib.fileRead( GetConVarString( "motdfile" ) )
+
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, f )
+
+			ply.ulxHasMotd = true
+
+		elseif showMotd == "2" then
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, ulx.motdSettings )
+
 		else -- Assume URL
-			ULib.clientRPC( ply, "ulx.rcvMotd", true, showMotd )
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, GetConVarString( "motdurl" ) )
 		end
 	end
 
@@ -36,7 +47,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 	local motdmenu = ulx.command( CATEGORY_NAME, "ulx motd", ulx.motd, "!motd" )
 	motdmenu:defaultAccess( ULib.ACCESS_ALL )
 	motdmenu:help( "Show the message of the day." )
-	if SERVER then ulx.convar( "showMotd", "1", " <0/1/(url)> - Shows the motd to clients on startup. Can specify URL here.", ULib.ACCESS_ADMIN ) end
+	if SERVER then ulx.convar( "showMotd", "2", " <0/1/2/3> - MOTD mode. 0 is off.", ULib.ACCESS_ADMIN ) end
 
 	if SERVER then
 		function ulx.populateMotdData()
