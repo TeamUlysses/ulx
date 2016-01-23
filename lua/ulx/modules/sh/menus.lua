@@ -42,6 +42,11 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 			return
 		end
 
+		if GetConVarString( "ulx_showMotd" ) == "1" and not ULib.fileExists( GetConVarString( "motdfile" ) ) then
+			ULib.tsay( calling_ply, "The MOTD file could not be found." )
+			return
+		end
+
 		showMotd( calling_ply )
 	end
 	local motdmenu = ulx.command( CATEGORY_NAME, "ulx motd", ulx.motd, "!motd" )
