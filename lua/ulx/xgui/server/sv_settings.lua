@@ -280,7 +280,7 @@ function settings.init()
 	net.Receive( "XGUI.PreviewBanMessage", function( len, ply )
 	if ULib.ucl.query( ply, "xgui_svsettings" ) then
 			-- Create fake ban info for testing
-			ULib.bans["STEAM_1:1:1111111"] = {
+			local banData = {
 				admin   = "Mr. Admin Man (STEAM_1:1:1111111)",
 				name    = "Bob Troll",
 				reason  = "Disobeying the rules",
@@ -288,18 +288,11 @@ function settings.init()
 				time    = os.time(),
 				unban   = os.time() + 1654654
 			}
-
-			-- Temporarily replace BanMessage
-			local oldBanMessage = ULib.BanMessage
-			ULib.BanMessage = net.ReadString()
+			local templateMessage = net.ReadString():Trim()
 
 			-- Generate preview and send to client
-			local message = ULib.getBanMessage( "STEAM_1:1:1111111" )
+			local message = ULib.getBanMessage( "STEAM_1:1:1111111", banData, templateMessage )
 			ULib.clientRPC( ply, "xgui.handleBanPreview", message )
-
-			-- Clear fake ban info and restore original BanMessage
-			ULib.bans["STEAM_1:1:1111111"] = nil
-			ULib.BanMessage = oldBanMessage
 		end
 	end)
 
