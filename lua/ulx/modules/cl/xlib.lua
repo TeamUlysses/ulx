@@ -119,6 +119,7 @@ function xlib.makebutton( t )
 	pnl:SetDisabled( t.disabled )
 	pnl:SetZPos( t.zpos or 0 )
 	if t.icon then pnl:SetIcon( t.icon ) end
+	if t.font then pnl:SetFont( t.font ) end
 	if t.btype and t.btype == "close" then
 		pnl.Paint = function( panel, w, h ) derma.SkinHook( "Paint", "WindowCloseButton", panel, w, h ) end
 	end
@@ -184,6 +185,7 @@ function xlib.maketextbox( t )
 	if t.convar then pnl:SetConVar( t.convar ) end
 	if t.text then pnl:SetText( t.text ) end
 	if t.enableinput then pnl:SetEnabled( t.enableinput ) end
+	if t.multiline then pnl:SetMultiline( t.multiline ) end
 	pnl.selectAll = t.selectall
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
@@ -1021,6 +1023,12 @@ end
 vgui.Register( "xlibColorPanel", PANEL, "DPanel" )
 
 
+-- Create font for Ban Message preview to match the font used in the actual banned/disconnect dialog.
+surface.CreateFont ("DefaultLarge", {
+	font = "Tahoma",
+	size = 16,
+	weight = 0,
+})
 
 -------------------------
 --Custom Animation System
