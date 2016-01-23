@@ -236,9 +236,9 @@ function settings.init()
 					end
 				end
 			end
+			settings.saveVotemaps( GetConVar( "ulx_votemapMapmode" ):GetInt() )
+			xgui.sendDataTable( {}, "votemaps" )
 		end
-		settings.saveVotemaps( GetConVar( "ulx_votemapMapmode" ):GetInt() )
-		xgui.sendDataTable( {}, "votemaps" )
 	end
 	xgui.addCmd( "removeVotemaps", settings.removeVotemaps )
 
