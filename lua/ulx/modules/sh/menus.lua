@@ -4,14 +4,12 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 	CreateConVar( "motdfile", "ulx_motd.txt" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
 	CreateConVar( "motdurl", "ulyssesmod.net" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
 	local function sendMotd( ply, showMotd )
+		if ply.ulxHasMotd then return end -- This player already has the motd data
 		if showMotd == "1" then -- Assume it's a file
-			if ply.ulxHasMotd then return end -- This player already has the motd
 			if not ULib.fileExists( GetConVarString( "motdfile" ) ) then return end -- Invalid
 			local f = ULib.fileRead( GetConVarString( "motdfile" ) )
 
 			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, f )
-
-			ply.ulxHasMotd = true
 
 		elseif showMotd == "2" then
 			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, ulx.motdSettings )
@@ -19,6 +17,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		else -- Assume URL
 			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, GetConVarString( "motdurl" ) )
 		end
+		ply.ulxHasMotd = true
 	end
 
 	local function showMotd( ply )
@@ -30,6 +29,19 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		ULib.clientRPC( ply, "ulx.showMotdMenu", ply:SteamID() ) -- Passing it because they may get it before LocalPlayer() is valid
 	end
 	hook.Add( "PlayerInitialSpawn", "showMotd", showMotd )
+
+	function ulx.motdUpdated()
+		for i=1, #player.GetAll() do
+			player.GetAll()[i].ulxHasMotd = false
+		end
+	end
+
+	local function conVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
+		if string.lower( cl_cvar ) == "ulx_showmotd" or string.lower( cl_cvar ) == "rep_motdfile" or string.lower( cl_cvar ) == "rep_motdurl" then
+			ulx.motdUpdated()
+		end
+	end
+	hook.Add( "ULibReplicatedCvarChanged", "ulx.clearMotdCache", conVarUpdated )
 
 	function ulx.motd( calling_ply )
 		if not calling_ply:IsValid() then
