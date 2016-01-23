@@ -69,6 +69,7 @@ v3.70 - *(00/00/00)*
 	* [ADD] Cvar "ulx meChatEnabled" added to enable or disable the /me chat feature, or set it to Sandbox only.
 	* [ADD] "ulx version" command for easily checking the version being run.
 	* [ADD] New dynamic MOTD generator.
+	* [ADD] Ban Message customization with XGUI editor
 	* [ADD] XGUI: Added methods for developers to be able to open a specific client or server setting module.
 	* [FIX] The usual random slew of Garry-breakages (Thanks, Fuzzik).
 	* [FIX] Changing weapons while cloaked would keep them hidden when uncloaked. (Thanks, TheRealAyCe).
@@ -95,10 +96,12 @@ v3.70 - *(00/00/00)*
 	* [CHANGE] Hook calls to match ULib's new format.
 	* [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.
 	* [CHANGE] You can now spectate another player while spectating someone else.
+	* [CHANGE] XGUI: Moved MOTD settings to their own section, updated to accomodate latest MOTD changes.
 	* [CHANGE] XGUI: No longer autoexecutes skins to ensure they have been installed.
 	* [CHANGE] XGUI: Added "name" parameter to xgui.hookEvent to prevent event duplication. (Aids with autorefresh, is backwards compatible with old XGUI modules)
 	* [CHANGE] XGUI: Modules that no longer exist will be removed from the customizable sort order.
 	* [CHANGE] XGUI: Sliders for arguments on the Cmds tab with a small min/max delta (e.g. from 0 to 1) will now allow up to 2 decimal places, if the arg does not have cmds.round flag.
+	* [CHANGE] XLIB: Added ZPos support for most controls, ability to set font for buttons, ability to set multiline for textboxes, and added "DefaultLarge" font for more accurate ban message preview.
 
 v3.62 - *(03/09/15)*
 	* [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).

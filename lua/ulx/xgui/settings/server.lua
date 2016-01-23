@@ -390,6 +390,68 @@ adverts.updateAdverts() -- For autorefresh
 xgui.hookEvent( "adverts", "process", adverts.updateAdverts, "serverUpdateAdverts" )
 xgui.addSubModule( "ULX Adverts", adverts, nil, "server" )
 
+---------------------------Ban Message---------------------------
+xgui.prepareDataType( "banmessage" )
+local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
+plist:Add( xlib.makelabel{ label="Message Shown to Banned Users", zpos=1 } )
+plist.txtBanMessage = xlib.maketextbox{ zpos=2, h=236, multiline=true }
+plist:Add( plist.txtBanMessage )
+plist:Add( xlib.makelabel{ label="Insert variable:", zpos=3 } )
+plist.variablePicker = xlib.makecombobox{ choices={ "Banned By - Admin:SteamID who created the ban", "Ban Start - Date/Time the ban was created", "Reason", "Time Left", "SteamID (excluding non-number characters)", "SteamID64 (useful for constructing URLs for appealing bans)" }, zpos=4 }
+plist:Add( plist.variablePicker )
+
+plist.btnPreview = xlib.makebutton{ label="Preview Ban Message", zpos=4 }
+plist.btnPreview.DoClick = function()
+	net.Start( "XGUI.PreviewBanMessage" )
+		net.WriteString( plist.txtBanMessage:GetText() )
+	net.SendToServer()
+end
+xgui.handleBanPreview = function( message )
+	local preview = xlib.makeframe{ w=380, h=200 }
+	local message = xlib.makelabel{ x=20, y=35, label=message, textcolor=Color( 191, 191, 191, 255 ), font="DefaultLarge", parent=preview }
+	message:SizeToContents()
+	local close = xlib.makebutton{ x=288, y=message:GetTall()+42, w=72, h=24, label="Close", font="DefaultLarge", parent=preview }
+	close.DoClick = function()
+		preview:Remove()
+	end
+	preview:SetTall( message:GetTall() + 85 )
+end
+plist:Add( plist.btnPreview )
+plist.btnSave = xlib.makebutton{ label="Save Ban Message", zpos=5 }
+plist.btnSave.DoClick = function()
+	net.Start( "XGUI.SaveBanMessage" )
+		net.WriteString( plist.txtBanMessage:GetText() )
+	net.SendToServer()
+end
+plist:Add( plist.btnSave )
+
+plist.variablePicker.OnSelect = function( self, index, value, data )
+	self:SetValue( "" )
+	local newVariable = ""
+	if index == 1 then
+		newVariable = "{{BANNED_BY}}"
+	elseif index == 2 then
+		newVariable = "{{BAN_START}}"
+	elseif index == 3 then
+		newVariable = "{{REASON}}"
+	elseif index == 4 then
+		newVariable = "{{TIME_LEFT}}"
+	elseif index == 5 then
+		newVariable = "{{STEAMID}}"
+	elseif index == 6 then
+		newVariable = "{{STEAMID64}}"
+	end
+	plist.txtBanMessage:SetText( plist.txtBanMessage:GetText() .. newVariable )
+end
+
+plist.updateBanMessage = function()
+	plist.txtBanMessage:SetText( xgui.data.banmessage.message or "" )
+end
+plist.updateBanMessage()
+xgui.hookEvent( "banmessage", "process", plist.updateBanMessage, "serverUpdateBanMessage" )
+
+xgui.addSubModule( "ULX Ban Message", plist, nil, "server" )
+
 ------------------------------Echo-------------------------------
 local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Command/Event echo settings" } )
