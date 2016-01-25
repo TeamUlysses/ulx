@@ -22,6 +22,7 @@ To install ULX, simply extract the files from the downloaded archive to your gar
 When you've done this, you should have a file structure like this:
 
 `(garrysmod)/addons/ulx/lua/ulib/modules/ulx_init.lua`
+
 `(garrysmod)/addons/ulx/lua/ulx/modules/fun.lua`
 
 You absolutely, positively have to do a full server restart after installing the files. A simple map change will not cut it!
