@@ -1,5 +1,5 @@
 # ULX Changelog
-v3.70 - *(00/00/00)*
+## v3.70 - *(00/00/00)*
 * [ADD] XGUI: Ability to set the 'nextlevel' cvar from the maps tab, if you have access to "ulx map".
 * [ADD] Reason to votekick log (Thanks, CSchulz).
 * [ADD] Steam ID parameter to "ulx who" to lookup users by Steam ID.
@@ -40,7 +40,7 @@ v3.70 - *(00/00/00)*
 * [CHANGE] XGUI: Sliders for arguments on the Cmds tab with a small min/max delta (e.g. from 0 to 1) will now allow up to 2 decimal places, if the arg does not have cmds.round flag.
 * [CHANGE] XLIB: Added ZPos support for most controls, ability to set font for buttons, ability to set multiline for textboxes, and added "DefaultLarge" font for more accurate ban message preview.
 
-v3.62 - *(03/09/15)*
+## v3.62 - *(03/09/15)*
 * [ADD] "ulx return" to return target to previous location they were in before a teleport command was used (Thanks for the idea, ludalex).
 * [ADD] Networked variables for gimp, mute, and gag (Thanks iSnipeu).
 * [ADD] XGUI: Added more sorting and filtering options for bans.
@@ -69,7 +69,7 @@ v3.62 - *(03/09/15)*
 * [CHANGE] ULX vote variable is now global so other addons can tell if a vote is in progress. ulx.doVote() also returns whether or not it actually started a vote (Thanks for the ideas, arduinium).
 * [CHANGE] XGUI: Changed gamemode dropdown on maps tab to honor player/group restrictions. (Thanks chaos12135).
 
-v3.61 - *(08/30/13)*
+## v3.61 - *(08/30/13)*
 * [ADD] cl_pickupplayers (defaults to 1) to allow an admin to disable the ability to pickup players (so they don't do it on accident). Done in collaboration with FPtje.
 * [ADD] %curmap% and %steamid% variables in "ulx showMotd" URL for custom-served MOTDs (Thanks Mors-Quaedam).
 * [ADD] XGUI: Bans are now searchable. (Thanks to iSnipeu for the code contribution!)
@@ -86,7 +86,7 @@ v3.61 - *(08/30/13)*
 * [CHANGE] Updated PvP damage cvar to reflect Garry's changes (Thanks Mors-Quadam).
 * [CHANGE] "ulx gag" now uses a server-side hook (much more robust).
 
-v3.60 - *(01/27/13)*
+## v3.60 - *(01/27/13)*
 * [ADD] "ulx jailtp" - A combination of tp <player> and jail <player> (Thanks HellFox).
 * [ADD] "ulx resettodefaults" - Resets ULX and ULib config to defaults.
 * [ADD] XGUI: Added ability to edit lower-level restrictions from a higher-level group.
@@ -111,13 +111,13 @@ v3.60 - *(01/27/13)*
 * [FIX] XGUI: Changed startup code to initialize faster, handle strange server load scenarios better.
 * [FIX] XGUI: BoolArgs in the Cmds tab now obey restrictions.
 
-v3.54 - *(04/27/12)*
+## v3.54 - *(04/27/12)*
 * [FIX] XGUI: Hard crash with the os.date function when bans have an extremely long unban time.
 
-v3.53 - *(01/01/12)*
+## v3.53 - *(01/01/12)*
 * [FIX] Garry breakages.
 
-v3.52 - *(09/22/11)*
+## v3.52 - *(09/22/11)*
 * [ADD] Support for "time strings" in ulx ban and ulx banid. EG, "5w4d3h2" would ban for 5 weeks, 4 days, 3 hours, 2 minutes (Thanks lavacano201014).
 * [ADD] XGUI: New customization options-- You can now change XGUI's position and the open/close animations.
 * [ADD] XGUI: Double-click a player on the commands tab to execute the command with the parameters on the right.
@@ -150,11 +150,11 @@ v3.52 - *(09/22/11)*
 * [CHANGE] XGUI: Serverside xgui.removeData much more more robust.
 * [REMOVE] XGUI: xgui_oldcheck.lua (No longer checks for a pre-svn version of XGUI installed.)
 
-v3.51 - *(05/14/11)*
+## v3.51 - *(05/14/11)*
 * [FIX] XGUI: Votemaps and kick/ban reasons not getting refreshed properly.
 * [FIX] XGUI: Ban menu was incorrectly visible to everyone.
 
-v3.50 - *(05/13/11)*
+## v3.50 - *(05/13/11)*
 * [ADD] Autocomplete to ulx playsound.
 * [ADD] Hook, "ULXLoaded".
 * [ADD] Documentation for new keywords to "ulx help". Keywords for target self, target group, target picker, and negate.
@@ -203,7 +203,7 @@ v3.50 - *(05/13/11)*
 * [REMOVE] ulx ghost, I was never happy with it.
 * [REMOVE] Old menus, uses XGUI now.
 
-v3.40 - *(06/20/09)*
+## v3.40 - *(06/20/09)*
 * [ADD] Alltalk to the admin menu
 * [FIX] Umsgs being sent too early in certain circumstances.
 * [FIX] The .ini files not loading properly on listen servers.
@@ -223,7 +223,7 @@ v3.40 - *(06/20/09)*
 * [CHANGE] Menus are derma'tized.
 * [CHANGE] Updated how it handles svn version information.
 
-v3.31 - *(06/08/08)*
+## v3.31 - *(06/08/08)*
 * [ADD] ulx adduserid - Add a user by steam id (ie STEAM_0:1:1234...) (Does not actually verify user validity) (Thanks Mr.President)
 * [FIX] Garry's 1/29/08 update breaking MOTD.
 * [FIX] Links not working on MOTD.
@@ -237,7 +237,7 @@ v3.31 - *(06/08/08)*
 * [CHANGE] Can no longer set hp or armor to less than 0.
 * [REMOVE] ulx mingekick, useless now.
 
-v3.30 - *(01/26/08)*
+## v3.30 - *(01/26/08)*
 * [ADD] ulx strip - Strips player(s) weapons
 * [ADD] ulx armor - Sets player(s) armor
 * [ADD] We now log NPC spawns
@@ -260,7 +260,7 @@ v3.30 - *(01/26/08)*
 * [CHANGE] Converted all calls from ULib.consoleCommand( "exec ..." ) to ULib.execFile() to avoid running into the block on "exec" without our module.
 
 
-v3.20 - *(09/23/07)*
+## v3.20 - *(09/23/07)*
 * [ADD] ulx send - Allows admin to transport a player to another player (no more goto then bring!)
 * [ADD] ulx maul - Maul a player with fast zombies
 * [ADD] ulx gag - Silence individual player's microphone/sound input on voice enabled servers.
@@ -310,7 +310,7 @@ v3.20 - *(09/23/07)*
 * [CHANGE] ulx help is now categorized. (Reserved slots, teleportation, chat, etc )
 * [CHANGE] ulx thetime can now only be used once every minute (server wide)
 
-v3.11 - *(06/19/07)*
+## v3.11 - *(06/19/07)*
 * [FIX] ulx vote. No longer public, people can't vote more than once, won't continue to hog the binds.
 * [FIX] rslots will now set rslots on dedicated server start
 * [FIX] Bring/goto getting you stuck in player sometimes.
@@ -320,7 +320,7 @@ v3.11 - *(06/19/07)*
 * [CHANGE] Player physgun now only works in sandbox, lower admins can't physgun immune admins, freezes player while held.
 * [CHANGE] Unblocked custom groups from ulx adduser.
 
-v3.10 - *(05/05/07)*
+## v3.10 - *(05/05/07)*
 * [ADD] Admins with slap access can move players now.
 * [ADD] Chat anti-spam
 * [ADD] ulx addForcedDownload for configs
@@ -345,14 +345,14 @@ v3.10 - *(05/05/07)*
 * [CHANGE] ulx ignite will now last until you die and can spread.
 * [CHANGE] Global toolmode deny doesn't affect admins.
 
-v3.02 - *(01/10/07)*
+## v3.02 - *(01/10/07)*
 * [CHANGE] Admin menu won't spam console so bad now
 * [FIX] Some more command crossbreeding issues (IE ragdolling jailed player)
 * [FIX] Teleport commands able to put someone in a wall. This is still possible, but much less likely.
 * [ADD] Motd manipulation. Auto-shows on startup and !motd
 * [ADD] toolallow, tooldeny, tooluserallow, tooluserdeny. Works fine, but is EXPERIMENTAL!
 
-v3.01 - *(01/07/07)*
+## v3.01 - *(01/07/07)*
 * [ADD] ulx whip
 * [ADD] ulx adduser
 * [ADD] ulx userallow - Allow users access to commands
@@ -375,5 +375,5 @@ v3.01 - *(01/07/07)*
 * [FIX] Uncloak works properly now
 * [FIX] Various problems using commands on users in vehicles. (Thanks Jalit)
 
-v3.0  - *(01/01/07)*
+## v3.0  - *(01/01/07)*
 * Initial version for GM10
