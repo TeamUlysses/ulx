@@ -71,7 +71,7 @@ function xgui.init()
 
 	ULib.cmds.addCommand( "ulx menu", function( ply, cmd, args )
 		if ply and ply:IsValid() then
-			ULib.clientRPC( ply, "xgui.toggle", args ) 
+			ULib.clientRPC( ply, "xgui.toggle", args )
 		end
 	end, xgui.ulxmenu_tab_completes )
 
