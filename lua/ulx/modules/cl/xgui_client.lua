@@ -564,4 +564,4 @@ ULib.cmds.addCommandClient( "xgui hide", xgui.hide )
 ULib.cmds.addCommandClient( "xgui toggle", function() xgui.toggle() end )
 
 --local ulxmenu = ulx.command( CATEGORY_NAME, "ulx menu", ulx.menu, "!menu" )
-ULib.cmds.addCommandClient( "ulx menu", function( ply, cmd, args ) xgui.toggle( args ) end, xgui.ulxmenu_tab_completes )
+ULib.cmds.addCommand( "ulx menu", function( ply, cmd, args ) xgui.toggle( args ) end, xgui.ulxmenu_tab_completes )
