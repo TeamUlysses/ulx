@@ -394,13 +394,13 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate, bandata )
 			end
 			xgui_banwindow:Remove()
 		else
-			local ply = ULib.getUser( name:GetValue() )
+			local ply, message = ULib.getUser( name:GetValue() )
 			if ply then
 				RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( ply ), banpanel:GetValue(), reason:GetValue() )
 				xgui_banwindow:Remove()
 				return
 			end
-			Derma_Message( "Invalid SteamID, player name, or multiple player targets found!" )
+			Derma_Message( message )
 		end
 	end
 
