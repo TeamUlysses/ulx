@@ -302,8 +302,9 @@ function settings.init()
 			local comment = xgui.getCommentHeader( orig_file )
 			local new_file = comment
 
-			ULib.BanMessage = net.ReadString()
+			ULib.BanMessage = net.ReadString():Trim()
 			ULib.fileWrite( "data/ulx/banmessage.txt", new_file .. ULib.BanMessage )
+			xgui.sendDataTable( {}, "banmessage" )
 		end
 	end)
 end
