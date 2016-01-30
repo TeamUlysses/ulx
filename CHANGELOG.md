@@ -28,7 +28,7 @@
 * [FIX] XGUI: Server error in some cases when sorting bans by Unban Date after a new ban has been added.
 * [FIX] XGUI: Right-clicking an advert group and renaming it was broken.
 * [CHANGE] MOTD now uses DHTML (Awesomium framework).
-* [CHANGE] MOTD configuration changes and new "motdurl" CVAR.
+* [CHANGE] MOTD configuration changes and new "ulx_motdurl" CVAR.
 * [CHANGE] Data files are now injected from a Lua script rather than included directly, in order to be Workshop-friendly.
 * [CHANGE] Hook calls to match ULib's new format.
 * [CHANGE] ULX convar updates will now append an entry to data/config.txt if it is not defined in the file. Previously, these changes would not be saved.

@@ -184,6 +184,18 @@ local template_footer = [[
 </html>
 ]]
 
+local template_error = [[
+<html>
+	<head>
+	</head>
+	<body style="background-color: white">
+		<div class="footer">
+			<h3>ULX: MOTD Generator error. Could not parse settings file.</h3>
+		</div>
+	</body>
+</html>
+]]
+
 local function escape(str)
 	return (str:gsub("<", "&lt;"):gsub(">", "&gt;")) -- Wrapped in parenthesis so we ignore other return vals
 end
@@ -213,6 +225,8 @@ local function renderMods()
 end
 
 function ulx.generateMotdHTML()
+	if ulx.motdSettings == nil or ulx.motdSettings.info == nil then return template_error end
+
 	local header = string.gsub( template_header, "%%hostname%%", escape(GetHostName() or "") )
 	header = string.gsub( header, "{{(.-)}}", function(a)
 		local success, value = ULib.findVar(a, ulx.motdSettings)

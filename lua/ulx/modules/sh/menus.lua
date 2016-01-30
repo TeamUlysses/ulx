@@ -70,7 +70,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		ulx.convar( "motdurl", "ulyssesmod.net", "MOTD URL to use if ulx showMotd is 3.", ULib.ACCESS_ADMIN )
 
 		function ulx.populateMotdData()
-			if ulx.motdSettings == nil then return end
+			if ulx.motdSettings == nil or ulx.motdSettings.info == nil then return end
 
 			ulx.motdSettings.admins = {}
 			ulx.motdSettings.addons = nil
