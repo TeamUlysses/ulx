@@ -599,9 +599,9 @@ local commonFonts = { "Arial", "Arial Black", "Calibri", "Candara", "Cambria", "
 
 plist:Add( xlib.makelabel{ label="MOTD Mode:", zpos=0 } )
 plist:Add( xlib.makecombobox{ repconvar="ulx_showmotd", isNumberConvar=true, choices={ "0 - Disabled", "1 - Local File", "2 - MOTD Generator", "3 - URL" }, zpos=1 } )
-plist.txtMotdFile = xlib.maketextbox{ repconvar="rep_motdfile", zpos=2 }
+plist.txtMotdFile = xlib.maketextbox{ repconvar="ulx_motdfile", zpos=2 }
 plist:Add( plist.txtMotdFile )
-plist.txtMotdURL = xlib.maketextbox{ repconvar="rep_motdurl", zpos=3 }
+plist.txtMotdURL = xlib.maketextbox{ repconvar="ulx_motdurl", zpos=3 }
 plist:Add( plist.txtMotdURL )
 plist.lblDescription = xlib.makelabel{ zpos=4 }
 plist:Add( plist.lblDescription )

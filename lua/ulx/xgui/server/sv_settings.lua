@@ -20,8 +20,6 @@ function settings.init()
 	ULib.replicatedWritableCvar( "ai_ignoreplayers", "rep_ai_ignoreplayers", GetConVarNumber( "ai_ignoreplayers" ), false, false, "xgui_svsettings" )
 	ULib.replicatedWritableCvar( "sv_gravity", "rep_sv_gravity", GetConVarNumber( "sv_gravity" ), false, false, "xgui_svsettings" )
 	ULib.replicatedWritableCvar( "phys_timescale", "rep_phys_timescale", GetConVarNumber( "phys_timescale" ), false, false, "xgui_svsettings" )
-	ULib.replicatedWritableCvar( "motdfile", "rep_motdfile", GetConVarString( "motdfile" ), false, false, "ulx showmotd" )
-	ULib.replicatedWritableCvar( "motdurl", "rep_motdurl", GetConVarString( "motdurl" ), false, false, "ulx showmotd" )
 
 	util.AddNetworkString( "XGUI.SaveBanMessage" )
 	util.AddNetworkString( "XGUI.PreviewBanMessage" )

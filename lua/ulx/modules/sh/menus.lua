@@ -37,7 +37,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 	end
 
 	local function conVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-		if string.lower( cl_cvar ) == "ulx_showmotd" or string.lower( cl_cvar ) == "rep_motdfile" or string.lower( cl_cvar ) == "rep_motdurl" then
+		if string.lower( cl_cvar ) == "ulx_showmotd" or string.lower( cl_cvar ) == "ulx_motdfile" or string.lower( cl_cvar ) == "ulx_motdurl" then
 			ulx.motdUpdated()
 		end
 	end
