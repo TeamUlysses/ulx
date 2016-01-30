@@ -11,6 +11,7 @@ function xlib.makecheckbox( t )
 	pnl:SetText( t.label or "" )
 	pnl:SizeToContents()
 	pnl:SetValue( t.value or 0 )
+	pnl:SetZPos( t.zpos or 0 )
 	if t.convar then pnl:SetConVar( t.convar ) end
 
 	if t.textcolor then
@@ -67,6 +68,7 @@ function xlib.makelabel( t )
 	local pnl = vgui.Create( "DLabel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetText( t.label or "" )
+	pnl:SetZPos( t.zpos or 0 )
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
 		if t.tooltipwidth ~= 0 then
@@ -100,6 +102,7 @@ function xlib.makelistlayout( t )
 	pnl.scroll:SetSize( t.w, t.h )
 	pnl:SetSize( t.w, t.h )
 	pnl.scroll:AddItem( pnl )
+	pnl:SetZPos( t.zpos or 0 )
 
 	function pnl:PerformLayout()
 		self:SizeToChildren( false, true )
@@ -114,7 +117,9 @@ function xlib.makebutton( t )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetText( t.label or "" )
 	pnl:SetDisabled( t.disabled )
+	pnl:SetZPos( t.zpos or 0 )
 	if t.icon then pnl:SetIcon( t.icon ) end
+	if t.font then pnl:SetFont( t.font ) end
 	if t.btype and t.btype == "close" then
 		pnl.Paint = function( panel, w, h ) derma.SkinHook( "Paint", "WindowCloseButton", panel, w, h ) end
 	end
@@ -176,9 +181,11 @@ function xlib.maketextbox( t )
 	pnl:SetWide( t.w )
 	pnl:SetTall( t.h or 20 )
 	pnl:SetEnterAllowed( true )
+	pnl:SetZPos( t.zpos or 0 )
 	if t.convar then pnl:SetConVar( t.convar ) end
 	if t.text then pnl:SetText( t.text ) end
 	if t.enableinput then pnl:SetEnabled( t.enableinput ) end
+	if t.multiline then pnl:SetMultiline( t.multiline ) end
 	pnl.selectAll = t.selectall
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
@@ -296,6 +303,7 @@ function xlib.makenumberwang( t )
 	pnl:SetMinMax( t.min or 0, t.max or 255 )
 	pnl:SizeToContents()
 	pnl:SetValue( t.value )
+	pnl:SetZPos( t.zpos or 0 )
 	if t.w then pnl:SetWide( t.w ) end
 	if t.h then pnl:SetTall( t.h ) end
 	return pnl
@@ -307,6 +315,7 @@ function xlib.makecombobox( t )
 	t.h = t.h or 20
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
+	pnl:SetZPos( t.zpos or 0 )
 
 	--Create a textbox to use in place of the button
 	if ( t.enableinput == true ) then
@@ -534,6 +543,7 @@ function xlib.makeslider( t )
 	pnl.TextArea:SetDrawBackground( true )
 	pnl.TextArea.selectAll = t.selectall
 	pnl.Label:SizeToContents()
+	pnl:SetZPos( t.zpos or 0 )
 
 	if t.textcolor then
 		pnl.Label:SetTextColor( t.textcolor )
@@ -1013,6 +1023,12 @@ end
 vgui.Register( "xlibColorPanel", PANEL, "DPanel" )
 
 
+-- Create font for Ban Message preview to match the font used in the actual banned/disconnect dialog.
+surface.CreateFont ("DefaultLarge", {
+	font = "Tahoma",
+	size = 16,
+	weight = 0,
+})
 
 -------------------------
 --Custom Animation System

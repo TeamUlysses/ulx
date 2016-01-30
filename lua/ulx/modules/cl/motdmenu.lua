@@ -1,9 +1,13 @@
 ulx.motdmenu_exists = true
 
-local isUrl
+local mode
 local url
 
 function ulx.showMotdMenu( steamid )
+	if mode == nil then
+		return -- No data provided
+	end
+
 	local window = vgui.Create( "DFrame" )
 	if ScrW() > 640 then -- Make it larger if we can.
 		window:SetSize( ScrW()*0.9, ScrH()*0.9 )
@@ -26,20 +30,24 @@ function ulx.showMotdMenu( steamid )
 
 	html:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
 	html:SetPos( 10, 30 )
-	if not isUrl then
+	if mode == "1" then -- file
+		html:SetHTML( ULib.fileRead( "data/ulx_motd.txt" ) or "" )
+	elseif mode == "2" then -- generator
 		html:SetHTML( ulx.generateMotdHTML() or "" )
-	else
+	else -- URL
 		url = string.gsub( url, "%%curmap%%", game.GetMap() )
 		url = string.gsub( url, "%%steamid%%", steamid )
 		html:OpenURL( url )
 	end
 end
 
-function ulx.rcvMotd( isUrl_, data )
-	isUrl = isUrl_
-	if not isUrl then
+function ulx.rcvMotd( mode_, data )
+	mode = mode_
+	if mode == "1" then -- file
+		ULib.fileWrite( "data/ulx_motd.txt", data )
+	elseif mode == "2" then -- generator
 		ulx.motdSettings = data
-	else
+	else -- URL
 		if data:find( "://", 1, true ) then
 			url = data
 		else
@@ -176,6 +184,18 @@ local template_footer = [[
 </html>
 ]]
 
+local template_error = [[
+<html>
+	<head>
+	</head>
+	<body style="background-color: white">
+		<div class="footer">
+			<h3>ULX: MOTD Generator error. Could not parse settings file.</h3>
+		</div>
+	</body>
+</html>
+]]
+
 local function escape(str)
 	return (str:gsub("<", "&lt;"):gsub(">", "&gt;")) -- Wrapped in parenthesis so we ignore other return vals
 end
@@ -205,6 +225,8 @@ local function renderMods()
 end
 
 function ulx.generateMotdHTML()
+	if ulx.motdSettings == nil or ulx.motdSettings.info == nil then return template_error end
+
 	local header = string.gsub( template_header, "%%hostname%%", escape(GetHostName() or "") )
 	header = string.gsub( header, "{{(.-)}}", function(a)
 		local success, value = ULib.findVar(a, ulx.motdSettings)

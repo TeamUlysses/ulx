@@ -69,6 +69,12 @@ function xgui.init()
 	end
 	concommand.Add( "_xgui", xgui.cmd )
 
+	ULib.cmds.addCommand( "ulx menu", function( ply, cmd, args )
+		if ply and ply:IsValid() then
+			ULib.clientRPC( ply, "xgui.toggle", args )
+		end
+	end, xgui.ulxmenu_tab_completes )
+
 
 	-----------------
 	--XGUI data stuff

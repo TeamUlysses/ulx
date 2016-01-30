@@ -274,7 +274,7 @@ function ulx.addForcedDownload( path )
 end
 
 function ulx.debuginfo( calling_ply )
-	local str = string.format( "ULX version: %s\nULib version: %.2f\n", ULib.pluginVersionStr( "ULX" ), ULib.pluginVersionStr( "ULib" ) )
+	local str = string.format( "ULX version: %s\nULib version: %s\n", ULib.pluginVersionStr( "ULX" ), ULib.pluginVersionStr( "ULib" ) )
 	str = str .. string.format( "Gamemode: %s\nMap: %s\n", GAMEMODE.Name, game.GetMap() )
 	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 

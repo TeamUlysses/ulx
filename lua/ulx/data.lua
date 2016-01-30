@@ -80,9 +80,15 @@ files["config.txt"] =
 ;specific config only.
 ;Any line starting with a ';' is a comment!
 
-ulx showMotd 0 ; Set to 0 to disable showing motd on connect. Shows the file the cvar motdfile says to.
-; Set showMotd to a URL to show a URL. You can use %curmap% and %steamid% in the URL to have it automagically parsed for you (eg, server.com/?map=%curmap%&id=%steamid%).
-; motdfile ulx_motd.txt ; The motd to show, if using a file. Put this file in the root of the garry's mod directory.
+ulx showMotd 2 ; MOTD mode
+; MOTD modes:
+; 0 - OFF No MOTD shown
+; 1 - FILE Show the players the contents of the file from the 'motdfile' cvar
+; 2 - GENERATOR Uses the MOTD generator to create a MOTD for the player (use XGUI for this)
+; 3 - URL Show the player the URL specified by the 'motdurl' cvar
+; In a URL, you can use %curmap% and %steamid% in the URL to have it automagically parsed for you (eg, server.com/?map=%curmap%&id=%steamid%).
+ulx motdfile ulx_motd.txt ; The MOTD to show, if using a file. Put this file in the root of the garry's mod directory.
+ulx motdurl ulyssesmod.net ; The MOTD to show, if using a URL.
 
 
 ulx chattime 0 ; Players can only chat every x seconds (anti-spam). 0 to disable

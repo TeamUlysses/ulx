@@ -390,6 +390,68 @@ adverts.updateAdverts() -- For autorefresh
 xgui.hookEvent( "adverts", "process", adverts.updateAdverts, "serverUpdateAdverts" )
 xgui.addSubModule( "ULX Adverts", adverts, nil, "server" )
 
+---------------------------Ban Message---------------------------
+xgui.prepareDataType( "banmessage" )
+local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
+plist:Add( xlib.makelabel{ label="Message Shown to Banned Users", zpos=1 } )
+plist.txtBanMessage = xlib.maketextbox{ zpos=2, h=236, multiline=true }
+plist:Add( plist.txtBanMessage )
+plist:Add( xlib.makelabel{ label="Insert variable:", zpos=3 } )
+plist.variablePicker = xlib.makecombobox{ choices={ "Banned By - Admin:SteamID who created the ban", "Ban Start - Date/Time the ban was created", "Reason", "Time Left", "SteamID (excluding non-number characters)", "SteamID64 (useful for constructing URLs for appealing bans)" }, zpos=4 }
+plist:Add( plist.variablePicker )
+
+plist.btnPreview = xlib.makebutton{ label="Preview Ban Message", zpos=4 }
+plist.btnPreview.DoClick = function()
+	net.Start( "XGUI.PreviewBanMessage" )
+		net.WriteString( plist.txtBanMessage:GetText() )
+	net.SendToServer()
+end
+xgui.handleBanPreview = function( message )
+	local preview = xlib.makeframe{ w=380, h=200 }
+	local message = xlib.makelabel{ x=20, y=35, label=message, textcolor=Color( 191, 191, 191, 255 ), font="DefaultLarge", parent=preview }
+	message:SizeToContents()
+	local close = xlib.makebutton{ x=288, y=message:GetTall()+42, w=72, h=24, label="Close", font="DefaultLarge", parent=preview }
+	close.DoClick = function()
+		preview:Remove()
+	end
+	preview:SetTall( message:GetTall() + 85 )
+end
+plist:Add( plist.btnPreview )
+plist.btnSave = xlib.makebutton{ label="Save Ban Message", zpos=5 }
+plist.btnSave.DoClick = function()
+	net.Start( "XGUI.SaveBanMessage" )
+		net.WriteString( plist.txtBanMessage:GetText() )
+	net.SendToServer()
+end
+plist:Add( plist.btnSave )
+
+plist.variablePicker.OnSelect = function( self, index, value, data )
+	self:SetValue( "" )
+	local newVariable = ""
+	if index == 1 then
+		newVariable = "{{BANNED_BY}}"
+	elseif index == 2 then
+		newVariable = "{{BAN_START}}"
+	elseif index == 3 then
+		newVariable = "{{REASON}}"
+	elseif index == 4 then
+		newVariable = "{{TIME_LEFT}}"
+	elseif index == 5 then
+		newVariable = "{{STEAMID}}"
+	elseif index == 6 then
+		newVariable = "{{STEAMID64}}"
+	end
+	plist.txtBanMessage:SetText( plist.txtBanMessage:GetText() .. newVariable )
+end
+
+plist.updateBanMessage = function()
+	plist.txtBanMessage:SetText( xgui.data.banmessage.message or "" )
+end
+plist.updateBanMessage()
+xgui.hookEvent( "banmessage", "process", plist.updateBanMessage, "serverUpdateBanMessage" )
+
+xgui.addSubModule( "ULX Ban Message", plist, nil, "server" )
+
 ------------------------------Echo-------------------------------
 local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Command/Event echo settings" } )
@@ -534,65 +596,54 @@ local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 local fontWeights = { "normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900", "lighter", "bolder" }
 local commonFonts = { "Arial", "Arial Black", "Calibri", "Candara", "Cambria", "Consolas", "Courier New", "Fraklin Gothic Medium", "Futura", "Georgia", "Helvetica", "Impact", "Lucida Console", "Segoe UI", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana" }
 
-plist:Add( xlib.makelabel{ label="MOTD Settings" } )
---Very custom convar handling for ulx_showMotd
-plist.motdEnabled = xlib.makecheckbox{ label="Show MOTD when players join" }
-function plist.motdEnabled:Toggle() self.Button:DoClick() end
-plist.motdEnabled.Button.DoClick = function( self )
-	self:Toggle()
-	local bVal = self:GetChecked()
-	if bVal == true then
-		if plist.motdURLEnabled:GetChecked() then
-			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
-		else
-			RunConsoleCommand( "ulx_showMotd", "1" )
-		end
-	else
-		RunConsoleCommand( "ulx_showMotd", "0" )
-	end
-end
-plist.motdURLEnabled = xlib.makecheckbox{ label="Use URL instead of MOTD Generator:" }
 
-function plist.motdURLEnabled:Toggle() self.Button:DoClick() end
-plist.motdURLEnabled.Button.DoClick = function( self )
-	self:Toggle()
-	local bVal = self:GetChecked()
-	if bVal == true then
-		if plist.motdURLText:GetValue() ~= "" then
-			RunConsoleCommand( "ulx_showMotd", plist.motdURLText:GetValue() )
-		end
-		plist.motdURLText:SetDisabled( false )
-	else
-		RunConsoleCommand( "ulx_showMotd", "1" )
-		plist.motdURLText:SetDisabled( true )
-	end
+plist:Add( xlib.makelabel{ label="MOTD Mode:", zpos=0 } )
+plist:Add( xlib.makecombobox{ repconvar="ulx_showmotd", isNumberConvar=true, choices={ "0 - Disabled", "1 - Local File", "2 - MOTD Generator", "3 - URL" }, zpos=1 } )
+plist.txtMotdFile = xlib.maketextbox{ repconvar="ulx_motdfile", zpos=2 }
+plist:Add( plist.txtMotdFile )
+plist.txtMotdURL = xlib.maketextbox{ repconvar="ulx_motdurl", zpos=3 }
+plist:Add( plist.txtMotdURL )
+plist.lblDescription = xlib.makelabel{ zpos=4 }
+plist:Add( plist.lblDescription )
+
+plist.btnPreview = xlib.makebutton{ label="Preview MOTD", zpos=5 }
+plist.btnPreview.DoClick = function()
+	RunConsoleCommand( "ulx", "motd" )
 end
-plist.motdURLText = xlib.maketextbox{ selectall=true }
-function plist.motdURLText:UpdateConvarValue()
-	if plist.motdURLText:GetValue() ~= "" then
-		RunConsoleCommand( "ulx_showMotd", self:GetValue() )
-	end
-end
-function plist.motdURLText:OnEnter() self:UpdateConvarValue() end
+plist:Add( plist.btnPreview )
+
+plist.generator = xlib.makelistlayout{ w=275, h=250, zpos=6 }
+plist:Add( plist.generator )
+
+plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Configuration <coming soon>" } )
+plist.generator:Add( xlib.makelabel{ label="\nYou can configure the MOTD in data/ulx/motd.txt" } )
+
 function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 	if string.lower( cl_cvar ) == "ulx_showmotd" then
-		if tonumber( new_val ) == nil then --MOTD is enabled and set to a URL
-			plist.motdEnabled:SetValue( 1 )
-			plist.motdURLEnabled:SetValue( 1 )
-			plist.motdURLEnabled:SetDisabled( false )
-			plist.motdURLText:SetValue( new_val )
-			plist.motdURLText:SetDisabled( false )
-		else
-			plist.motdEnabled:SetValue( new_val )
-			if new_val == "1" then
-				plist.motdURLEnabled:SetValue( 0 )
-				plist.motdURLEnabled:SetDisabled( false )
-				plist.motdURLText:SetDisabled( true )
-			elseif new_val == "0" then
-				plist.motdURLEnabled:SetDisabled( true )
-				plist.motdURLText:SetDisabled( true )
-			end
+		local previewDisabled = false
+		local showMotdFile = false
+		local showGenerator = false
+		local showURL = false
+
+		if new_val == "0" then
+			previewDisabled = true
+			plist.lblDescription:SetText( "MOTD is completely disabled.\n" )
+		elseif new_val == "1" then
+			showMotdFile = true
+			plist.lblDescription:SetText( "MOTD is the contents of the given file.\nFile is located in the server's garrysmod root.\n" )
+		elseif new_val == "2" then
+			showGenerator = true
+			plist.lblDescription:SetText( "MOTD is generated using a basic template and the\nsettings below.\n" )
+		elseif new_val == "3" then
+			showURL = true
+			plist.lblDescription:SetText( "MOTD is the given URL.\nYou can use %curmap% nand %steamid%\n(eg, server.com/?map=%curmap%&id=%steamid%)\n" )
 		end
+
+		plist.btnPreview:SetDisabled( previewDisabled )
+		plist.txtMotdFile:SetVisible( showMotdFile )
+		plist.generator:SetVisible( showGenerator )
+		plist.txtMotdURL:SetVisible( showURL )
+		plist.lblDescription:SizeToContents()
 	end
 end
 hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated )

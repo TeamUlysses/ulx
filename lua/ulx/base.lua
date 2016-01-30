@@ -105,7 +105,7 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	local config = ULib.fileRead( path )
 	config, found = config:gsub( ULib.makePatternSafe( sv_cvar ):gsub( "%a", function( c ) return "[" .. c:lower() .. c:upper() .. "]" end ) .. "%s+[^;\r\n]*", replacement ) -- The gsub makes us case neutral
 	if found == 0 then -- Configuration option does not exist in config- append it
-		newline = config:match("\r?\n")
+		newline = config:match("\r?\n") or "\n"
 		if not config:find("\r?\n$") then config = config .. newline end
 		config = config .. "ulx " .. replacement .. "; " .. ulx.cvars[ command ].help .. newline
 	end

@@ -16,9 +16,18 @@ end
 xbans.banlist.OnRowRightClick = function( self, LineID, line )
 	local menu = DermaMenu()
 	menu:SetSkin(xgui.settings.skin)
-	menu:AddOption( "Details...", function() xbans.ShowBanDetailsWindow( xgui.data.bans.cache[LineID] ) end )
-	menu:AddOption( "Edit Ban...", function() xgui.ShowBanWindow( nil, line:GetValue( 5 ), nil, true, xgui.data.bans.cache[LineID] ) end )
-	menu:AddOption( "Remove", function() xbans.RemoveBan( line:GetValue( 5 ), xgui.data.bans.cache[LineID] ) end )
+	menu:AddOption( "Details...", function()
+		if not line:IsValid() then return end
+		xbans.ShowBanDetailsWindow( xgui.data.bans.cache[LineID] )
+	end )
+	menu:AddOption( "Edit Ban...", function()
+		if not line:IsValid() then return end
+		xgui.ShowBanWindow( nil, line:GetValue( 5 ), nil, true, xgui.data.bans.cache[LineID] )
+	end )
+	menu:AddOption( "Remove", function()
+		if not line:IsValid() then return end
+		xbans.RemoveBan( line:GetValue( 5 ), xgui.data.bans.cache[LineID] )
+	end )
 	menu:Open()
 end
 -- Change the column sorting method to hook into our own custom sort stuff.
@@ -105,7 +114,10 @@ local function banUserList( doFreeze )
 	local menu = DermaMenu()
 	menu:SetSkin(xgui.settings.skin)
 	for k, v in ipairs( player.GetAll() ) do
-		menu:AddOption( v:Nick(), function() xgui.ShowBanWindow( v, v:SteamID(), doFreeze ) end )
+		menu:AddOption( v:Nick(), function()
+			if not v:IsValid() then return end
+			xgui.ShowBanWindow( v, v:SteamID(), doFreeze )
+		end )
 	end
 	menu:AddSpacer()
 	if LocalPlayer():query("ulx banid") then menu:AddOption( "Ban by STEAMID...", function() xgui.ShowBanWindow() end ) end
@@ -382,13 +394,13 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate, bandata )
 			end
 			xgui_banwindow:Remove()
 		else
-			local ply = ULib.getUser( name:GetValue() )
+			local ply, message = ULib.getUser( name:GetValue() )
 			if ply then
 				RunConsoleCommand( "ulx", "ban", "$" .. ULib.getUniqueIDForPlayer( ply ), banpanel:GetValue(), reason:GetValue() )
 				xgui_banwindow:Remove()
 				return
 			end
-			Derma_Message( "Invalid SteamID, player name, or multiple player targets found!" )
+			Derma_Message( message )
 		end
 	end
 

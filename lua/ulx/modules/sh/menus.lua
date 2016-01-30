@@ -1,13 +1,21 @@
 local CATEGORY_NAME = "Menus"
 
 if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists then
-
 	local function sendMotd( ply, showMotd )
+		if ply.ulxHasMotd then return end -- This player already has the motd data
 		if showMotd == "1" then -- Assume it's a file
-			ULib.clientRPC( ply, "ulx.rcvMotd", false, ulx.motdSettings )
+			if not ULib.fileExists( GetConVarString( "ulx_motdfile" ) ) then return end -- Invalid
+			local f = ULib.fileRead( GetConVarString( "ulx_motdfile" ) )
+
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, f )
+
+		elseif showMotd == "2" then
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, ulx.motdSettings )
+
 		else -- Assume URL
-			ULib.clientRPC( ply, "ulx.rcvMotd", true, showMotd )
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, GetConVarString( "ulx_motdurl" ) )
 		end
+		ply.ulxHasMotd = true
 	end
 
 	local function showMotd( ply )
@@ -20,6 +28,19 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 	end
 	hook.Add( "PlayerInitialSpawn", "showMotd", showMotd )
 
+	function ulx.motdUpdated()
+		for i=1, #player.GetAll() do
+			player.GetAll()[i].ulxHasMotd = false
+		end
+	end
+
+	local function conVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
+		if string.lower( cl_cvar ) == "ulx_showmotd" or string.lower( cl_cvar ) == "ulx_motdfile" or string.lower( cl_cvar ) == "ulx_motdurl" then
+			ulx.motdUpdated()
+		end
+	end
+	hook.Add( "ULibReplicatedCvarChanged", "ulx.clearMotdCache", conVarUpdated )
+
 	function ulx.motd( calling_ply )
 		if not calling_ply:IsValid() then
 			Msg( "You can't see the motd from the console.\n" )
@@ -31,16 +52,25 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 			return
 		end
 
+		if GetConVarString( "ulx_showMotd" ) == "1" and not ULib.fileExists( GetConVarString( "ulx_motdfile" ) ) then
+			ULib.tsay( calling_ply, "The MOTD file could not be found." )
+			return
+		end
+
 		showMotd( calling_ply )
 	end
 	local motdmenu = ulx.command( CATEGORY_NAME, "ulx motd", ulx.motd, "!motd" )
 	motdmenu:defaultAccess( ULib.ACCESS_ALL )
 	motdmenu:help( "Show the message of the day." )
-	if SERVER then ulx.convar( "showMotd", "1", " <0/1/(url)> - Shows the motd to clients on startup. Can specify URL here.", ULib.ACCESS_ADMIN ) end
+	if SERVER then  end
 
 	if SERVER then
+		ulx.convar( "showMotd", "2", " <0/1/2/3> - MOTD mode. 0 is off.", ULib.ACCESS_ADMIN )
+		ulx.convar( "motdfile", "ulx_motd.txt", "MOTD filepath from gmod root to use if ulx showMotd is 1.", ULib.ACCESS_ADMIN )
+		ulx.convar( "motdurl", "ulyssesmod.net", "MOTD URL to use if ulx showMotd is 3.", ULib.ACCESS_ADMIN )
+
 		function ulx.populateMotdData()
-			if ulx.motdSettings == nil then return end
+			if ulx.motdSettings == nil or ulx.motdSettings.info == nil then return end
 
 			ulx.motdSettings.admins = {}
 			ulx.motdSettings.addons = nil
