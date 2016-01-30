@@ -1,13 +1,11 @@
 local CATEGORY_NAME = "Menus"
 
 if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists then
-	CreateConVar( "motdfile", "ulx_motd.txt" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
-	CreateConVar( "motdurl", "ulyssesmod.net" ) -- Garry likes to add and remove this cvar a lot, so it's here just in case he removes it again.
 	local function sendMotd( ply, showMotd )
 		if ply.ulxHasMotd then return end -- This player already has the motd data
 		if showMotd == "1" then -- Assume it's a file
-			if not ULib.fileExists( GetConVarString( "motdfile" ) ) then return end -- Invalid
-			local f = ULib.fileRead( GetConVarString( "motdfile" ) )
+			if not ULib.fileExists( GetConVarString( "ulx_motdfile" ) ) then return end -- Invalid
+			local f = ULib.fileRead( GetConVarString( "ulx_motdfile" ) )
 
 			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, f )
 
@@ -15,7 +13,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, ulx.motdSettings )
 
 		else -- Assume URL
-			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, GetConVarString( "motdurl" ) )
+			ULib.clientRPC( ply, "ulx.rcvMotd", showMotd, GetConVarString( "ulx_motdurl" ) )
 		end
 		ply.ulxHasMotd = true
 	end
@@ -54,7 +52,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 			return
 		end
 
-		if GetConVarString( "ulx_showMotd" ) == "1" and not ULib.fileExists( GetConVarString( "motdfile" ) ) then
+		if GetConVarString( "ulx_showMotd" ) == "1" and not ULib.fileExists( GetConVarString( "ulx_motdfile" ) ) then
 			ULib.tsay( calling_ply, "The MOTD file could not be found." )
 			return
 		end
@@ -64,9 +62,13 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 	local motdmenu = ulx.command( CATEGORY_NAME, "ulx motd", ulx.motd, "!motd" )
 	motdmenu:defaultAccess( ULib.ACCESS_ALL )
 	motdmenu:help( "Show the message of the day." )
-	if SERVER then ulx.convar( "showMotd", "2", " <0/1/2/3> - MOTD mode. 0 is off.", ULib.ACCESS_ADMIN ) end
+	if SERVER then  end
 
 	if SERVER then
+		ulx.convar( "showMotd", "2", " <0/1/2/3> - MOTD mode. 0 is off.", ULib.ACCESS_ADMIN )
+		ulx.convar( "motdfile", "ulx_motd.txt", "MOTD filepath from gmod root to use if ulx showMotd is 1.", ULib.ACCESS_ADMIN )
+		ulx.convar( "motdurl", "ulyssesmod.net", "MOTD URL to use if ulx showMotd is 3.", ULib.ACCESS_ADMIN )
+
 		function ulx.populateMotdData()
 			if ulx.motdSettings == nil then return end
 
