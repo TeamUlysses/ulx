@@ -612,124 +612,8 @@ plist.btnPreview.DoClick = function()
 end
 plist:Add( plist.btnPreview )
 
-plist.generator = xlib.makelistlayout{ w=275, h=250, zpos=6 }
-plist:Add( plist.generator )
 
-plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Configuration <coming soon>" } )
-plist.generator:Add( xlib.makelabel{ label="\nYou can configure the MOTD in data/ulx/motd.txt" } )
-
-function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
-	if string.lower( cl_cvar ) == "ulx_showmotd" then
-		local previewDisabled = false
-		local showMotdFile = false
-		local showGenerator = false
-		local showURL = false
-
-		if new_val == "0" then
-			previewDisabled = true
-			plist.lblDescription:SetText( "MOTD is completely disabled.\n" )
-		elseif new_val == "1" then
-			showMotdFile = true
-			plist.lblDescription:SetText( "MOTD is the contents of the given file.\nFile is located in the server's garrysmod root.\n" )
-		elseif new_val == "2" then
-			showGenerator = true
-			plist.lblDescription:SetText( "MOTD is generated using a basic template and the\nsettings below.\n" )
-		elseif new_val == "3" then
-			showURL = true
-			plist.lblDescription:SetText( "MOTD is the given URL.\nYou can use %curmap% nand %steamid%\n(eg, server.com/?map=%curmap%&id=%steamid%)\n" )
-		end
-
-		plist.btnPreview:SetDisabled( previewDisabled )
-		plist.txtMotdFile:SetVisible( showMotdFile )
-		plist.generator:SetVisible( showGenerator )
-		plist.txtMotdURL:SetVisible( showURL )
-		plist.lblDescription:SizeToContents()
-	end
-end
-hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated )
-
-xlib.checkRepCvarCreated( "ulx_showMotd" )
-plist.ConVarUpdated( nil, "ulx_showMotd", nil, nil, GetConVar( "ulx_showMotd" ):GetString() )
-
-plist:Add( plist.motdEnabled )
-plist:Add( plist.motdURLEnabled )
-plist:Add( plist.motdURLText )
-
-plist:Add( xlib.makelabel{ label="\nMOTD Generator" } )
-
-local testButton = xlib.makebutton{ label="Preview MOTD" }
-testButton.DoClick = function()
-	RunConsoleCommand( "ulx", "motd" )
-end
-plist:Add( testButton )
-
-plist:Add( xlib.makelabel{ label="\nMOTD Generator Fonts" } )
-
-plist:Add( xlib.makelabel{ label="\nServer Name (Title)" } )
-pnlFontServerName = xlib.makepanel{h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontServerName }
-pnlFontServerName.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontServerName }
-pnlFontServerName.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontServerName }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontServerName }
-pnlFontServerName.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontServerName }
-plist:Add( pnlFontServerName )
-
-plist:Add( xlib.makelabel{ label="\nServer Description (Subtitle)" } )
-local pnlFontSubtitle = xlib.makepanel{h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSubtitle }
-pnlFontSubtitle.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSubtitle }
-pnlFontSubtitle.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSubtitle }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSubtitle }
-pnlFontSubtitle.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSubtitle }
-plist:Add( pnlFontSubtitle )
-
-plist:Add( xlib.makelabel{ label="\nSection Title" } )
-local pnlFontSection = xlib.makepanel{h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSection }
-pnlFontSection.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSection }
-pnlFontSection.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSection }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSection }
-pnlFontSection.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSection }
-plist:Add( pnlFontSection )
-
-plist:Add( xlib.makelabel{ label="\nRegular Text" } )
-local pnlFontRegular = xlib.makepanel{ h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontRegular }
-pnlFontRegular.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontRegular }
-pnlFontRegular.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontRegular }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontRegular }
-pnlFontRegular.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontRegular }
-plist:Add( pnlFontRegular )
-
-
-plist:Add( xlib.makelabel{ label="\nMOTD Generator Colors\n" } )
-
-plist:Add( xlib.makelabel{ label="Background Color" } )
-local pnlColorBackground = xlib.makecolorpicker{ noalphamodetwo=true }
-plist:Add( pnlColorBackground )
-plist:Add( xlib.makelabel{ label="Header Color" } )
-local pnlColorHeaderBackground = xlib.makecolorpicker{ noalphamodetwo=true }
-plist:Add( pnlColorHeaderBackground )
-plist:Add( xlib.makelabel{ label="Header Text Color" } )
-local pnlColorHeader = xlib.makecolorpicker{ noalphamodetwo=true }
-plist:Add( pnlColorHeader )
-plist:Add( xlib.makelabel{ label="Section Header Text Color" } )
-local pnlColorSection = xlib.makecolorpicker{ noalphamodetwo=true }
-plist:Add( pnlColorSection )
-plist:Add( xlib.makelabel{ label="Default Text Color" } )
-local pnlColorText = xlib.makecolorpicker{ noalphamodetwo=true }
-plist:Add( pnlColorText )
-
-plist:Add( xlib.makelabel{ label="\nMOTD Generator Top/Bottom Borders\n" } )
-
-local pnlBorderThickness = xlib.makeslider{ label="Border Thickness (Pixels)", value=1, min=0, max=32, parent=pnlBorderThickness }
-plist:Add( pnlBorderThickness )
-plist:Add( xlib.makelabel{ label="Border Color" } )
-local pnlBorderColor = xlib.makecolorpicker{ noalphamodetwo=true }
-plist:Add( pnlBorderColor )
-
-
-
+----- MOTD Generator helper methods
 local function unitToNumber(value)
 	return tonumber( string.gsub(value, "[^%d]", "" ), _ )
 end
@@ -796,6 +680,77 @@ local function registerMOTDChangeEventsColor( colorpicker, setting )
 	end
 end
 
+
+-- MOTD Generator UI
+plist.generator = xlib.makelistlayout{ w=255, h=250, zpos=6 }
+plist:Add( plist.generator )
+
+plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Fonts" } )
+
+plist.generator:Add( xlib.makelabel{ label="\nServer Name (Title)" } )
+pnlFontServerName = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontServerName }
+pnlFontServerName.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontServerName }
+pnlFontServerName.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontServerName }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontServerName }
+pnlFontServerName.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontServerName }
+plist.generator:Add( pnlFontServerName )
+
+plist.generator:Add( xlib.makelabel{ label="\nServer Description (Subtitle)" } )
+local pnlFontSubtitle = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSubtitle }
+pnlFontSubtitle.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSubtitle }
+pnlFontSubtitle.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSubtitle }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSubtitle }
+pnlFontSubtitle.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSubtitle }
+plist.generator:Add( pnlFontSubtitle )
+
+plist.generator:Add( xlib.makelabel{ label="\nSection Title" } )
+local pnlFontSection = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSection }
+pnlFontSection.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSection }
+pnlFontSection.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSection }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSection }
+pnlFontSection.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSection }
+plist.generator:Add( pnlFontSection )
+
+plist.generator:Add( xlib.makelabel{ label="\nRegular Text" } )
+local pnlFontRegular = xlib.makepanel{ h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontRegular }
+pnlFontRegular.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontRegular }
+pnlFontRegular.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontRegular }
+xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontRegular }
+pnlFontRegular.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontRegular }
+plist.generator:Add( pnlFontRegular )
+
+
+plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Colors\n" } )
+
+plist.generator:Add( xlib.makelabel{ label="Background Color" } )
+local pnlColorBackground = xlib.makecolorpicker{ noalphamodetwo=true }
+plist.generator:Add( pnlColorBackground )
+plist.generator:Add( xlib.makelabel{ label="Header Color" } )
+local pnlColorHeaderBackground = xlib.makecolorpicker{ noalphamodetwo=true }
+plist.generator:Add( pnlColorHeaderBackground )
+plist.generator:Add( xlib.makelabel{ label="Header Text Color" } )
+local pnlColorHeader = xlib.makecolorpicker{ noalphamodetwo=true }
+plist.generator:Add( pnlColorHeader )
+plist.generator:Add( xlib.makelabel{ label="Section Header Text Color" } )
+local pnlColorSection = xlib.makecolorpicker{ noalphamodetwo=true }
+plist.generator:Add( pnlColorSection )
+plist.generator:Add( xlib.makelabel{ label="Default Text Color" } )
+local pnlColorText = xlib.makecolorpicker{ noalphamodetwo=true }
+plist.generator:Add( pnlColorText )
+
+plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Top/Bottom Borders\n" } )
+
+local pnlBorderThickness = xlib.makeslider{ label="Border Thickness (Pixels)", w=200, value=1, min=0, max=32 }
+plist.generator:Add( pnlBorderThickness )
+plist.generator:Add( xlib.makelabel{ label="Border Color" } )
+local pnlBorderColor = xlib.makecolorpicker{ noalphamodetwo=true }
+plist.generator:Add( pnlBorderColor )
+
+
 registerMOTDChangeEventsCombobox( pnlFontServerName.name, "style.fonts.server_name.family" )
 registerMOTDChangeEventsSlider( pnlFontServerName.size, "style.fonts.server_name.size" )
 registerMOTDChangeEventsCombobox( pnlFontServerName.weight, "style.fonts.server_name.weight" )
@@ -819,7 +774,9 @@ registerMOTDChangeEventsColor( pnlBorderColor, "style.borders.border_color" )
 registerMOTDChangeEventsSlider( pnlBorderThickness, "style.borders.border_thickness" )
 
 
-plist.updateMOTDSettings = function( data )
+
+-- MOTD Cvar and data handling
+plist.updateGeneratorSettings = function( data )
 	local borders = xgui.data.motdsettings.style.borders
 	local colors = xgui.data.motdsettings.style.colors
 	local fonts = xgui.data.motdsettings.style.fonts
@@ -849,7 +806,42 @@ plist.updateMOTDSettings = function( data )
 	pnlBorderThickness:SetValue( unitToNumber( borders.border_thickness ) )
 	pnlBorderColor:SetColor( hexToColor( borders.border_color ) )
 end
-xgui.hookEvent( "motdsettings", "process", plist.updateMOTDSettings, "serverUpdateMOTDSettings" )
+xgui.hookEvent( "motdsettings", "process", plist.updateGeneratorSettings, "serverUpdateGeneratorSettings" )
+
+function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
+	if string.lower( cl_cvar ) == "ulx_showmotd" then
+		local previewDisabled = false
+		local showMotdFile = false
+		local showGenerator = false
+		local showURL = false
+
+		if new_val == "0" then
+			previewDisabled = true
+			plist.lblDescription:SetText( "MOTD is completely disabled.\n" )
+		elseif new_val == "1" then
+			showMotdFile = true
+			plist.lblDescription:SetText( "MOTD is the contents of the given file.\nFile is located in the server's garrysmod root.\n" )
+		elseif new_val == "2" then
+			showGenerator = true
+			plist.lblDescription:SetText( "MOTD is generated using a basic template and the\nsettings below.\n" )
+		elseif new_val == "3" then
+			showURL = true
+			plist.lblDescription:SetText( "MOTD is the given URL.\nYou can use %curmap% nand %steamid%\n(eg, server.com/?map=%curmap%&id=%steamid%)\n" )
+		end
+
+		plist.btnPreview:SetDisabled( previewDisabled )
+		plist.txtMotdFile:SetVisible( showMotdFile )
+		plist.generator:SetVisible( showGenerator )
+		plist.txtMotdURL:SetVisible( showURL )
+		plist.lblDescription:SizeToContents()
+
+		plist.scroll:InvalidateChildren()
+	end
+end
+hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated )
+
+xlib.checkRepCvarCreated( "ulx_showMotd" )
+plist.ConVarUpdated( nil, "ulx_showMotd", nil, nil, GetConVar( "ulx_showMotd" ):GetString() )
 
 xgui.addSubModule( "ULX MOTD", plist, "ulx showmotd", "server" )
 
