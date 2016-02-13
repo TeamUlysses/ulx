@@ -21,9 +21,6 @@ function settings.init()
 	ULib.replicatedWritableCvar( "sv_gravity", "rep_sv_gravity", GetConVarNumber( "sv_gravity" ), false, false, "xgui_svsettings" )
 	ULib.replicatedWritableCvar( "phys_timescale", "rep_phys_timescale", GetConVarNumber( "phys_timescale" ), false, false, "xgui_svsettings" )
 
-	util.AddNetworkString( "XGUI.SaveBanMessage" )
-	util.AddNetworkString( "XGUI.PreviewBanMessage" )
-
 	function settings.addGimp( ply, args )
 		if ULib.ucl.query( ply, "xgui_svsettings" ) then
 			ulx.addGimpSay( args[1] )
@@ -275,8 +272,10 @@ function settings.init()
 		settings.updatevotemaps()
 	end
 
+
+	util.AddNetworkString( "XGUI.PreviewBanMessage" )
 	net.Receive( "XGUI.PreviewBanMessage", function( len, ply )
-	if ULib.ucl.query( ply, "xgui_svsettings" ) then
+		if ULib.ucl.query( ply, "xgui_svsettings" ) then
 			-- Create fake ban info for testing
 			local banData = {
 				admin   = "Mr. Admin Man (STEAM_1:1:1111111)",
@@ -294,6 +293,7 @@ function settings.init()
 		end
 	end)
 
+	util.AddNetworkString( "XGUI.SaveBanMessage" )
 	net.Receive( "XGUI.SaveBanMessage", function( len, ply )
 		if ULib.ucl.query( ply, "xgui_svsettings" ) then
 			local orig_file = ULib.fileRead( "data/ulx/banmessage.txt" )
@@ -306,18 +306,35 @@ function settings.init()
 		end
 	end)
 
-	function settings.updateMotdSetting( ply, args )
+	util.AddNetworkString( "XGUI.UpdateMotdStyle" )
+	net.Receive( "XGUI.UpdateMotdStyle", function( len, ply )
 		if ULib.ucl.query( ply, "ulx showmotd" ) then
-			if not args[1] or not args[2] then return end
 
-			local success, prev = ULib.setVar( args[1], args[2], ulx.motdSettings )
-			if (success and prev ~= args[2]) then
+			local setting = net.ReadString()
+			local value = net.ReadString()
+
+			local success, prev = ULib.setVar( setting, value, ulx.motdSettings )
+			if (success and prev ~= value) then
 				settings.saveMotdSettings()
+				ulx.motdUpdated()
 				xgui.sendDataTable( {}, "motdsettings" )
 			end
 		end
-	end
-	xgui.addCmd( "updateMotdSetting", settings.updateMotdSetting )
+	end)
+
+	util.AddNetworkString( "XGUI.SetMotdInfo" )
+	net.Receive( "XGUI.SetMotdInfo", function( len, ply )
+		if ULib.ucl.query( ply, "ulx showmotd" ) then
+
+			local data = net.ReadTable()
+			if data == ulx.motdSettings.info then return end
+
+			ulx.motdSettings.info = data
+			settings.saveMotdSettings()
+			ulx.motdUpdated()
+			xgui.sendDataTable( {}, "motdsettings" )
+		end
+	end)
 
 	function settings.saveMotdSettings()
 		local orig_file = ULib.fileRead( "data/ulx/motd.txt" )

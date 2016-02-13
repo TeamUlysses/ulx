@@ -643,7 +643,10 @@ local function registerMOTDChangeEventsTextbox( textbox, setting )
 		end
 
 		if self:GetValue() then
-			RunConsoleCommand( "xgui", "updateMotdSetting", setting, self:GetValue() )
+			net.Start( "XGUI.UpdateMotdStyle" )
+				net.WriteString( setting )
+				net.WriteString( self:GetValue() )
+			net.SendToServer()
 		end
 	end
 end
@@ -652,7 +655,10 @@ local function registerMOTDChangeEventsCombobox( combobox, setting )
 	registerMOTDChangeEventsTextbox( combobox.TextEntry, setting )
 
 	combobox.OnSelect = function( self )
-		RunConsoleCommand( "xgui", "updateMotdSetting", setting, self:GetValue() )
+		net.Start( "XGUI.UpdateMotdStyle" )
+			net.WriteString( setting )
+			net.WriteString( self:GetValue() )
+		net.SendToServer()
 	end
 end
 
@@ -663,20 +669,29 @@ local function registerMOTDChangeEventsSlider( slider, setting )
 	slider.Slider.SetDragging = function( self, bval )
 		tmpfunc( self, bval )
 		if ( !bval ) then
-			RunConsoleCommand( "xgui", "updateMotdSetting", setting, slider.TextArea:GetValue() )
+			net.Start( "XGUI.UpdateMotdStyle" )
+				net.WriteString( setting )
+				net.WriteString( slider.TextArea:GetValue() )
+			net.SendToServer()
 		end
 	end
 
 	local tmpfunc2 = slider.Scratch.OnMouseReleased
 	slider.Scratch.OnMouseReleased = function( self, mousecode )
 		tmpfunc2( self, mousecode )
-		RunConsoleCommand( "xgui", "updateMotdSetting", setting, slider.TextArea:GetValue() )
+		net.Start( "XGUI.UpdateMotdStyle" )
+			net.WriteString( setting )
+			net.WriteString( slider.TextArea:GetValue() )
+		net.SendToServer()
 	end
 end
 
 local function registerMOTDChangeEventsColor( colorpicker, setting )
 	colorpicker.OnChange = function( self, color )
-		RunConsoleCommand( "xgui", "updateMotdSetting", setting, colorToHex( color ) )
+		net.Start( "XGUI.UpdateMotdStyle" )
+			net.WriteString( setting )
+			net.WriteString( colorToHex( color ) )
+		net.SendToServer()
 	end
 end
 
