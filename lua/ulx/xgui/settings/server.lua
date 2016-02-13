@@ -700,41 +700,46 @@ end
 plist.generator = xlib.makelistlayout{ w=255, h=250, zpos=6 }
 plist:Add( plist.generator )
 
+plist.generator:Add( xlib.makelabel{ label="\nMOTD Title:", zpos=-2 } )
+
+local txtServerDescription = xlib.maketextbox{ zpos=-1 }
+plist.generator:Add( txtServerDescription )
+
 plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Fonts" } )
 
 plist.generator:Add( xlib.makelabel{ label="\nServer Name (Title)" } )
-pnlFontServerName = xlib.makepanel{h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontServerName }
+local pnlFontServerName = xlib.makepanel{h=80, parent=xgui.null }
+xlib.makelabel{ x=5, y=8, label="Font Name", parent=pnlFontServerName }
 pnlFontServerName.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontServerName }
 pnlFontServerName.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontServerName }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontServerName }
+xlib.makelabel{ x=5, y=58, label="Font Weight", parent=pnlFontServerName }
 pnlFontServerName.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontServerName }
 plist.generator:Add( pnlFontServerName )
 
 plist.generator:Add( xlib.makelabel{ label="\nServer Description (Subtitle)" } )
 local pnlFontSubtitle = xlib.makepanel{h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSubtitle }
+xlib.makelabel{ x=5, y=8, label="Font Name", parent=pnlFontSubtitle }
 pnlFontSubtitle.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSubtitle }
 pnlFontSubtitle.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSubtitle }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSubtitle }
+xlib.makelabel{ x=5, y=58, label="Font Weight", parent=pnlFontSubtitle }
 pnlFontSubtitle.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSubtitle }
 plist.generator:Add( pnlFontSubtitle )
 
 plist.generator:Add( xlib.makelabel{ label="\nSection Title" } )
 local pnlFontSection = xlib.makepanel{h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontSection }
+xlib.makelabel{ x=5, y=8, label="Font Name", parent=pnlFontSection }
 pnlFontSection.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontSection }
 pnlFontSection.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontSection }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontSection }
+xlib.makelabel{ x=5, y=58, label="Font Weight", parent=pnlFontSection }
 pnlFontSection.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontSection }
 plist.generator:Add( pnlFontSection )
 
 plist.generator:Add( xlib.makelabel{ label="\nRegular Text" } )
 local pnlFontRegular = xlib.makepanel{ h=80, parent=xgui.null }
-xlib.makelabel{ x=5, y=8, label="Font Name:", parent=pnlFontRegular }
+xlib.makelabel{ x=5, y=8, label="Font Name", parent=pnlFontRegular }
 pnlFontRegular.name = xlib.makecombobox{ x=65, y=5, w=190, enableinput=true, selectall=true, choices=commonFonts, parent=pnlFontRegular }
 pnlFontRegular.size = xlib.makeslider{ x=5, y=30, w=250, label="Font Size (Pixels)", value=16, min=4, max=72, parent=pnlFontRegular }
-xlib.makelabel{ x=5, y=58, label="Font Weight:", parent=pnlFontRegular }
+xlib.makelabel{ x=5, y=58, label="Font Weight", parent=pnlFontRegular }
 pnlFontRegular.weight = xlib.makecombobox{ x=72, y=55, w=183, enableinput=true, selectall=true, choices=fontWeights, parent=pnlFontRegular }
 plist.generator:Add( pnlFontRegular )
 
@@ -765,6 +770,7 @@ plist.generator:Add( xlib.makelabel{ label="Border Color" } )
 local pnlBorderColor = xlib.makecolorpicker{ noalphamodetwo=true }
 plist.generator:Add( pnlBorderColor )
 
+registerMOTDChangeEventsTextbox( txtServerDescription, "info.description" )
 
 registerMOTDChangeEventsCombobox( pnlFontServerName.name, "style.fonts.server_name.family" )
 registerMOTDChangeEventsSlider( pnlFontServerName.size, "style.fonts.server_name.size" )
@@ -792,9 +798,15 @@ registerMOTDChangeEventsSlider( pnlBorderThickness, "style.borders.border_thickn
 
 -- MOTD Cvar and data handling
 plist.updateGeneratorSettings = function( data )
-	local borders = xgui.data.motdsettings.style.borders
-	local colors = xgui.data.motdsettings.style.colors
-	local fonts = xgui.data.motdsettings.style.fonts
+	if not data then data = xgui.data.motdsettings end
+	if not data or not data.style then return end
+
+	local borders = data.style.borders
+	local colors = data.style.colors
+	local fonts = data.style.fonts
+
+	-- Description
+	txtServerDescription:SetText( data.info.description )
 
 	-- Fonts
 	pnlFontServerName.name:SetText( fonts.server_name.family )
@@ -822,6 +834,7 @@ plist.updateGeneratorSettings = function( data )
 	pnlBorderColor:SetColor( hexToColor( borders.border_color ) )
 end
 xgui.hookEvent( "motdsettings", "process", plist.updateGeneratorSettings, "serverUpdateGeneratorSettings" )
+plist.updateGeneratorSettings()
 
 function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 	if string.lower( cl_cvar ) == "ulx_showmotd" then
