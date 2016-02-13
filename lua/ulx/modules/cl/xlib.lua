@@ -282,6 +282,7 @@ function xlib.makepanel( t )
 	local pnl = vgui.Create( "DPanel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
+	pnl:SetZPos( t.zpos or 0 )
 	if t.skin then pnl:SetSkin( t.skin ) end
 	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
 	return pnl
