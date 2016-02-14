@@ -591,7 +591,8 @@ xgui.addSubModule( "ULX Logs", plist, nil, "server" )
 
 ------------------------------Motd-------------------------------
 xgui.prepareDataType( "motdsettings" )
-local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
+local motdpnl = xlib.makepanel{ w=275, h=322, parent=xgui.null }
+local plist = xlib.makelistlayout{ w=275, h=298, parent=motdpnl }
 
 local fontWeights = { "normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900", "lighter", "bolder" }
 local commonFonts = { "Arial", "Arial Black", "Calibri", "Candara", "Cambria", "Consolas", "Courier New", "Fraklin Gothic Medium", "Futura", "Georgia", "Helvetica", "Impact", "Lucida Console", "Segoe UI", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana" }
@@ -605,12 +606,6 @@ plist.txtMotdURL = xlib.maketextbox{ repconvar="ulx_motdurl", zpos=3 }
 plist:Add( plist.txtMotdURL )
 plist.lblDescription = xlib.makelabel{ zpos=4 }
 plist:Add( plist.lblDescription )
-
-plist.btnPreview = xlib.makebutton{ label="Preview MOTD", zpos=5 }
-plist.btnPreview.DoClick = function()
-	RunConsoleCommand( "ulx", "motd" )
-end
-plist:Add( plist.btnPreview )
 
 
 ----- MOTD Generator helper methods
@@ -628,12 +623,16 @@ local function colorToHex(color)
 end
 
 local didPressEnter = false
-local function registerMOTDChangeEventsTextbox( textbox, setting )
+local selectedPanelTag = nil
+local function registerMOTDChangeEventsTextbox( textbox, setting, sendTable )
+	textbox.hasChanged = false
+
 	textbox.OnEnter = function( self )
 		didPressEnter = true
 	end
 
 	textbox.OnLoseFocus = function( self )
+		selectedPanelTag = nil
 		hook.Call( "OnTextEntryLoseFocus", nil, self )
 
 		-- OnLoseFocus gets called twice when pressing enter. This will hackishly take care of one of them.
@@ -642,20 +641,44 @@ local function registerMOTDChangeEventsTextbox( textbox, setting )
 			return
 		end
 
-		if self:GetValue() then
-			net.Start( "XGUI.UpdateMotdStyle" )
-				net.WriteString( setting )
-				net.WriteString( self:GetValue() )
-			net.SendToServer()
+		if self:GetValue() and textbox.hasChanged then
+			textbox.hasChanged = false
+			if sendTable then
+				net.Start( "XGUI.SetMotdData" )
+					net.WriteString( setting )
+					net.WriteTable( ULib.explode( "\n", self:GetValue() ) )
+				net.SendToServer()
+			else
+				net.Start( "XGUI.UpdateMotdData" )
+					net.WriteString( setting )
+					net.WriteString( self:GetValue() )
+				net.SendToServer()
+			end
 		end
 	end
+
+	-- Don't submit the data if the text hasn't changed.
+	textbox:SetUpdateOnType( true )
+	textbox.OnValueChange = function( self, strValue )
+		textbox.hasChanged = true
+	end
+
+	-- Store focused setting so we can re-set the focused element when the panels are recreated.
+	textbox.OnGetFocus = function( self )
+		hook.Run( "OnTextEntryGetFocus", self )
+		selectedPanelTag = setting
+	end
+	if selectedPanelTag == setting then
+		timer.Simple( 0, function() textbox:RequestFocus() end )
+	end
+
 end
 
 local function registerMOTDChangeEventsCombobox( combobox, setting )
 	registerMOTDChangeEventsTextbox( combobox.TextEntry, setting )
 
 	combobox.OnSelect = function( self )
-		net.Start( "XGUI.UpdateMotdStyle" )
+		net.Start( "XGUI.UpdateMotdData" )
 			net.WriteString( setting )
 			net.WriteString( self:GetValue() )
 		net.SendToServer()
@@ -669,7 +692,7 @@ local function registerMOTDChangeEventsSlider( slider, setting )
 	slider.Slider.SetDragging = function( self, bval )
 		tmpfunc( self, bval )
 		if ( !bval ) then
-			net.Start( "XGUI.UpdateMotdStyle" )
+			net.Start( "XGUI.UpdateMotdData" )
 				net.WriteString( setting )
 				net.WriteString( slider.TextArea:GetValue() )
 			net.SendToServer()
@@ -679,7 +702,7 @@ local function registerMOTDChangeEventsSlider( slider, setting )
 	local tmpfunc2 = slider.Scratch.OnMouseReleased
 	slider.Scratch.OnMouseReleased = function( self, mousecode )
 		tmpfunc2( self, mousecode )
-		net.Start( "XGUI.UpdateMotdStyle" )
+		net.Start( "XGUI.UpdateMotdData" )
 			net.WriteString( setting )
 			net.WriteString( slider.TextArea:GetValue() )
 		net.SendToServer()
@@ -688,22 +711,88 @@ end
 
 local function registerMOTDChangeEventsColor( colorpicker, setting )
 	colorpicker.OnChange = function( self, color )
-		net.Start( "XGUI.UpdateMotdStyle" )
+		net.Start( "XGUI.UpdateMotdData" )
 			net.WriteString( setting )
 			net.WriteString( colorToHex( color ) )
 		net.SendToServer()
 	end
 end
 
+local function performMOTDInfoUpdate( data, setting )
+	net.Start( "XGUI.SetMotdData" )
+		net.WriteString( setting )
+		net.WriteTable( data )
+	net.SendToServer()
+end
+
 
 -- MOTD Generator UI
 plist.generator = xlib.makelistlayout{ w=255, h=250, zpos=6 }
 plist:Add( plist.generator )
+plist.generator:SetVisible( false )
 
-plist.generator:Add( xlib.makelabel{ label="\nMOTD Title:", zpos=-2 } )
+plist.generator:Add( xlib.makelabel{ label="MOTD Generator Title:", zpos=-2 } )
 
 local txtServerDescription = xlib.maketextbox{ zpos=-1 }
 plist.generator:Add( txtServerDescription )
+
+plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Info" } )
+local pnlInfo = xlib.makelistlayout{ w=271 }
+plist.generator:Add( pnlInfo )
+
+plist.generator:Add( xlib.makelabel{} )
+
+local btnAddSection = xlib.makebutton{ label="Add a New Section..." }
+btnAddSection.DoClick = function()
+	local menu = DermaMenu()
+	menu:SetSkin(xgui.settings.skin)
+	menu:AddOption( "Text Content", function()
+		local info = xgui.data.motdsettings.info
+		table.insert( info, {
+			type="text",
+			title="About This Server",
+			contents={"Enter server description here!"}
+		})
+		performMOTDInfoUpdate( info[#info], "info["..#info.."]" )
+	end )
+	menu:AddOption( "Bulleted List", function()
+		local info = xgui.data.motdsettings.info
+		table.insert( info, {
+			type="list",
+			title="Example List",
+			contents={"Each newline becomes its own bullet point.", "You can add as many as you need!"}
+		})
+		performMOTDInfoUpdate( info[#info], "info["..#info.."]" )
+	end )
+	menu:AddOption( "Numbered List", function()
+		local info = xgui.data.motdsettings.info
+		table.insert( info, {
+			type="ordered_list",
+			title="Example Numbered List",
+			contents={"Each newline becomes its own numbered item.", "You can add as many as you need!"}
+		})
+		performMOTDInfoUpdate( info[#info], "info["..#info.."]" )
+	end )
+	menu:AddOption( "Installed Addons", function()
+		local info = xgui.data.motdsettings.info
+		table.insert( info, {
+			type="mods",
+			title="Installed Addons"
+		})
+		performMOTDInfoUpdate( info[#info], "info["..#info.."]" )
+	end )
+	menu:AddOption( "List Users in Group", function()
+		local info = xgui.data.motdsettings.info
+		table.insert( info, {
+			type="admins",
+			title="Our Admins",
+			contents={"superadmin", "admin"}
+		})
+		performMOTDInfoUpdate( info[#info], "info["..#info.."]" )
+	end )
+	menu:Open()
+end
+plist.generator:Add( btnAddSection )
 
 plist.generator:Add( xlib.makelabel{ label="\nMOTD Generator Fonts" } )
 
@@ -799,7 +888,8 @@ registerMOTDChangeEventsSlider( pnlBorderThickness, "style.borders.border_thickn
 -- MOTD Cvar and data handling
 plist.updateGeneratorSettings = function( data )
 	if not data then data = xgui.data.motdsettings end
-	if not data or not data.style then return end
+	if not data or not data.style or not data.info then return end
+	if not plist.generator:IsVisible() then return end
 
 	local borders = data.style.borders
 	local colors = data.style.colors
@@ -807,6 +897,128 @@ plist.updateGeneratorSettings = function( data )
 
 	-- Description
 	txtServerDescription:SetText( data.info.description )
+
+	-- Section panels
+	pnlInfo:Clear()
+	for i=1, #data.info do
+		local section = data.info[i]
+		local sectionPanel = xlib.makelistlayout{ w=270 }
+
+		if section.type == "text" then
+			sectionPanel:Add( xlib.makelabel{ label="\n"..i..": Text Content", zpos=0 } )
+
+			local sectionTitle = xlib.maketextbox{ zpos=1 }
+			registerMOTDChangeEventsTextbox( sectionTitle, "info["..i.."].title" )
+			sectionTitle:SetText( section.title )
+			sectionPanel:Add( sectionTitle )
+
+			local sectionText = xlib.maketextbox{ h=100, multiline=true, zpos=2 }
+			registerMOTDChangeEventsTextbox( sectionText, "info["..i.."].contents", true )
+			sectionText:SetText( table.concat( section.contents, "\n" ) )
+			sectionPanel:Add( sectionText )
+
+		elseif section.type == "ordered_list" then
+			sectionPanel:Add( xlib.makelabel{ label="\n"..i..": Numbered List" } )
+
+			local sectionTitle = xlib.maketextbox{ zpos=1 }
+			registerMOTDChangeEventsTextbox( sectionTitle, "info["..i.."].title" )
+			sectionTitle:SetText( section.title )
+			sectionPanel:Add( sectionTitle )
+
+			local sectionOrderedList = xlib.maketextbox{ h=110, multiline=true, zpos=2 }
+			registerMOTDChangeEventsTextbox( sectionOrderedList, "info["..i.."].contents", true )
+			sectionOrderedList:SetText( table.concat( section.contents, "\n" ) )
+			sectionPanel:Add( sectionOrderedList )
+
+		elseif section.type == "list" then
+			sectionPanel:Add( xlib.makelabel{ label="\n"..i..": Bulleted List" } )
+
+			local sectionTitle = xlib.maketextbox{ zpos=1 }
+			registerMOTDChangeEventsTextbox( sectionTitle, "info["..i.."].title" )
+			sectionTitle:SetText( section.title )
+			sectionPanel:Add( sectionTitle )
+
+			local sectionList = xlib.maketextbox{ h=100, multiline=true, zpos=2 }
+			registerMOTDChangeEventsTextbox( sectionList, "info["..i.."].contents", true )
+			sectionList:SetText( table.concat( section.contents, "\n" ) )
+			sectionPanel:Add( sectionList )
+
+		elseif section.type == "mods" then
+			sectionPanel:Add( xlib.makelabel{ label="\n"..i..": Installed Addons" } )
+
+			local modsTitle = xlib.maketextbox{ zpos=1 }
+			registerMOTDChangeEventsTextbox( modsTitle, "info["..i.."].title" )
+			modsTitle:SetText( section.title )
+			sectionPanel:Add( modsTitle )
+
+		elseif section.type == "admins" then
+			sectionPanel:Add( xlib.makelabel{ label="\n"..i..": List Users in Group" } )
+
+			local adminsTitle = xlib.maketextbox{ zpos=1 }
+			registerMOTDChangeEventsTextbox( adminsTitle, "info["..i.."].title" )
+			adminsTitle:SetText( section.title )
+			sectionPanel:Add( adminsTitle )
+
+			for j=1, #section.contents do
+				local group = section.contents[j]
+				local adminPnl = xlib.makepanel{ h=20, w=270, zpos=i+j }
+				xlib.makelabel{ h=20, w=200, label=group, parent=adminPnl }
+				local adminBtn = xlib.makebutton{ x=204, w=50, label="Remove", parent=adminPnl }
+				adminBtn.DoClick = function()
+					table.remove( section.contents, j )
+					performMOTDInfoUpdate( section.contents, "info["..i.."].contents" )
+				end
+				sectionPanel:Add( adminPnl )
+			end
+
+			local adminAddPnl = xlib.makepanel{ h=20, w=270, zpos=99 }
+			local adminBtn = xlib.makebutton{ w=100, label="Add Group...", parent=adminAddPnl }
+			adminBtn.DoClick = function()
+				local menu = DermaMenu()
+				menu:SetSkin(xgui.settings.skin)
+				for j=1, #xgui.data.groups do
+					local group = xgui.data.groups[j]
+					if not table.HasValue( section.contents, group ) then
+						menu:AddOption( group, function()
+							table.insert( section.contents, group )
+							performMOTDInfoUpdate( section.contents, "info["..i.."].contents" )
+						end )
+					end
+				end
+				menu:Open()
+			end
+			sectionPanel:Add( adminAddPnl )
+
+		end
+
+		local actionPnl = xlib.makepanel{ w=270, h=20, zpos=100 }
+		local btnRemove = xlib.makebutton{ w=100, label="Remove Section", parent=actionPnl }
+		btnRemove.DoClick = function()
+			Derma_Query( "Are you sure you want to remove the section \"" .. section.title .. "\"?", "XGUI WARNING",
+				"Remove",	function()
+								table.remove( data.info, i )
+								performMOTDInfoUpdate( data.info, "info" )
+							end,
+				"Cancel", 	function() end )
+		end
+		local btnUp = xlib.makebutton{ x=214, w=20, icon="icon16/bullet_arrow_up.png", centericon=true, disabled=(i==1), parent=actionPnl }
+		btnUp.DoClick = function()
+			local tmp = data.info[i-1]
+			data.info[i-1] = data.info[i]
+			data.info[i] = tmp
+			performMOTDInfoUpdate( data.info, "info" )
+		end
+		local btnDown = xlib.makebutton{ x=234, w=20, icon="icon16/bullet_arrow_down.png", centericon=true, disabled=(i==#data.info), parent=actionPnl }
+		btnDown.DoClick = function()
+			local tmp = data.info[i+1]
+			data.info[i+1] = data.info[i]
+			data.info[i] = tmp
+			performMOTDInfoUpdate( data.info, "info" )
+		end
+		sectionPanel:Add( actionPnl )
+
+		pnlInfo:Add( sectionPanel )
+	end
 
 	-- Fonts
 	pnlFontServerName.name:SetText( fonts.server_name.family )
@@ -836,6 +1048,11 @@ end
 xgui.hookEvent( "motdsettings", "process", plist.updateGeneratorSettings, "serverUpdateGeneratorSettings" )
 plist.updateGeneratorSettings()
 
+plist.btnPreview = xlib.makebutton{ label="Preview MOTD", w=275, y=302, parent=motdpnl }
+plist.btnPreview.DoClick = function()
+	RunConsoleCommand( "ulx", "motd" )
+end
+
 function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 	if string.lower( cl_cvar ) == "ulx_showmotd" then
 		local previewDisabled = false
@@ -862,6 +1079,7 @@ function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 		plist.generator:SetVisible( showGenerator )
 		plist.txtMotdURL:SetVisible( showURL )
 		plist.lblDescription:SizeToContents()
+		plist.updateGeneratorSettings()
 
 		plist.scroll:InvalidateChildren()
 	end
@@ -871,7 +1089,7 @@ hook.Add( "ULibReplicatedCvarChanged", "XGUI_ulx_showMotd", plist.ConVarUpdated 
 xlib.checkRepCvarCreated( "ulx_showMotd" )
 plist.ConVarUpdated( nil, "ulx_showMotd", nil, nil, GetConVar( "ulx_showMotd" ):GetString() )
 
-xgui.addSubModule( "ULX MOTD", plist, "ulx showmotd", "server" )
+xgui.addSubModule( "ULX MOTD", motdpnl, "ulx showmotd", "server" )
 
 -----------------------Player Votemap List-----------------------
 xgui.prepareDataType( "votemaps", ulx.votemaps )
