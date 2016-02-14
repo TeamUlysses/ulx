@@ -255,8 +255,10 @@ function ulx.generateMotdHTML()
 			local users = {}
 			for g=1, #data.contents do
 				local group = data.contents[g]
-				for u=1, #ulx.motdSettings.admins[group] do
-					table.insert( users, ulx.motdSettings.admins[group][u] )
+				if ulx.motdSettings.admins[group] then
+					for u=1, #ulx.motdSettings.admins[group] do
+						table.insert( users, ulx.motdSettings.admins[group][u] )
+					end
 				end
 			end
 			table.sort( users )
