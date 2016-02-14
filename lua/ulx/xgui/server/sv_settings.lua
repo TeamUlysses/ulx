@@ -306,33 +306,32 @@ function settings.init()
 		end
 	end)
 
-	util.AddNetworkString( "XGUI.UpdateMotdStyle" )
-	net.Receive( "XGUI.UpdateMotdStyle", function( len, ply )
-		if ULib.ucl.query( ply, "ulx showmotd" ) then
 
+	local function updateMOTDGeneratorData(setting, data)
+		local success, prev = ULib.setVar( setting, data, ulx.motdSettings )
+		if (success and prev ~= data) then
+			settings.saveMotdSettings()
+			ulx.populateMotdData()
+			ulx.motdUpdated()
+			xgui.sendDataTable( {}, "motdsettings" )
+		end
+	end
+
+	util.AddNetworkString( "XGUI.UpdateMotdData" )
+	net.Receive( "XGUI.UpdateMotdData", function( len, ply )
+		if ULib.ucl.query( ply, "ulx showmotd" ) then
 			local setting = net.ReadString()
 			local value = net.ReadString()
-
-			local success, prev = ULib.setVar( setting, value, ulx.motdSettings )
-			if (success and prev ~= value) then
-				settings.saveMotdSettings()
-				ulx.motdUpdated()
-				xgui.sendDataTable( {}, "motdsettings" )
-			end
+			updateMOTDGeneratorData( setting, value )
 		end
 	end)
 
-	util.AddNetworkString( "XGUI.SetMotdInfo" )
-	net.Receive( "XGUI.SetMotdInfo", function( len, ply )
+	util.AddNetworkString( "XGUI.SetMotdData" )
+	net.Receive( "XGUI.SetMotdData", function( len, ply )
 		if ULib.ucl.query( ply, "ulx showmotd" ) then
-
+			local setting = net.ReadString()
 			local data = net.ReadTable()
-			if data == ulx.motdSettings.info then return end
-
-			ulx.motdSettings.info = data
-			settings.saveMotdSettings()
-			ulx.motdUpdated()
-			xgui.sendDataTable( {}, "motdsettings" )
+			updateMOTDGeneratorData( setting, data )
 		end
 	end)
 
