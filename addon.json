@@ -8,7 +8,8 @@
 		".editorconfig",
 		".git*",
 		"ulx.build",
-		"ulx_readme.txt"
+		"README.md",
+		"CHANGELOG.md"
 	],
 	"workshopid": 557962280
 }

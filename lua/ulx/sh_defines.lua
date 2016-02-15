@@ -1,7 +1,7 @@
 ulx.LOW_ARGS = "You did not specify enough arguments for this command. Type 'ulx help' in console for help."
 
-ulx.version = 3.62 -- Current release version. Don't access directly, use ULib.pluginVersionStr( "ULX" ) instead.
-ulx.release = false -- Is this the release?
+ulx.version = 3.70 -- Current release version. Don't access directly, use ULib.pluginVersionStr( "ULX" ) instead.
+ulx.release = true -- Is this the release?
 
 ulx.ID_ORIGINAL = 1
 ulx.ID_PLAYER_HELP = 2

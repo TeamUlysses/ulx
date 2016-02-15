@@ -1,5 +1,6 @@
 # ULX Changelog
-## v3.70 - *(00/00/00)*
+
+## v3.70 - *(02/15/16)*
 * [ADD] XGUI: Ability to set the 'nextlevel' cvar from the maps tab, if you have access to "ulx map".
 * [ADD] Reason to votekick log (Thanks, CSchulz).
 * [ADD] Steam ID parameter to "ulx who" to lookup users by Steam ID.
