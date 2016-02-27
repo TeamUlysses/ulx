@@ -101,7 +101,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 				local _, possibleaddons = file.Find( "addons/*", "GAME" )
 				for _, addon in ipairs( possibleaddons ) do
 					if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
-						local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
+						local t = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ), "//" ) )
 						table.insert( ulx.motdSettings.addons, { title=addon, author=t.author_name } )
 					end
 				end

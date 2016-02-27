@@ -298,7 +298,7 @@ function ulx.debuginfo( calling_ply )
 		str = str .. plyline .. "\n"
 	end
 
-	local gmoddefault = util.KeyValuesToTable( ULib.fileRead( "settings/users.txt", true ) )
+	local gmoddefault = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "settings/users.txt", true ), "//" ) )
 	str = str .. "\n\nULib.ucl.users (#=" .. table.Count( ULib.ucl.users ) .. "):\n" .. ulx.dumpTable( ULib.ucl.users, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.groups (#=" .. table.Count( ULib.ucl.groups ) .. "):\n" .. ulx.dumpTable( ULib.ucl.groups, 1 ) .. "\n\n"
 	str = str .. "ULib.ucl.authed (#=" .. table.Count( ULib.ucl.authed ) .. "):\n" .. ulx.dumpTable( ULib.ucl.authed, 1 ) .. "\n\n"
@@ -322,7 +322,7 @@ function ulx.debuginfo( calling_ply )
 			local name = addon
 			local author, version, date
 			if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
-				local t = util.KeyValuesToTable( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) )
+				local t = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ), "//" ) )
 				if t.name then name = t.name end
 				if t.version then version = t.version end
 				if tonumber( version ) then version = string.format( "%g", version ) end -- Removes innaccuracy in floating point numbers
