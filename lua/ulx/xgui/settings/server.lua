@@ -1117,7 +1117,9 @@ panel.remove.DoClick = function()
 	for _, v in ipairs( panel.votemaps:GetSelected() ) do
 		table.insert( temp, v:GetColumnText(1) )
 	end
-	RunConsoleCommand( "xgui", "removeVotemaps", unpack( temp ) )
+	net.Start( "XGUI.RemoveVotemaps" )
+		net.WriteTable( temp )
+	net.SendToServer()
 end
 panel.add = xlib.makebutton{ x=140, y=282, w=135, label="<-- Add", disabled=true, parent=panel }
 panel.add.DoClick = function()
@@ -1126,7 +1128,9 @@ panel.add.DoClick = function()
 	for _, v in ipairs( panel.remainingmaps:GetSelected() ) do
 		table.insert( temp, v:GetColumnText(1) )
 	end
-	RunConsoleCommand( "xgui", "addVotemaps", unpack( temp ) )
+	net.Start( "XGUI.AddVotemaps" )
+		net.WriteTable( temp )
+	net.SendToServer()
 end
 panel.votemapmode = xlib.makecombobox{ y=302, w=275, repconvar="ulx_votemapMapmode", isNumberConvar=true, numOffset=0, choices={ "Include new maps by default", "Exclude new maps by default" }, parent=panel }
 panel.updateList = function()

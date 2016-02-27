@@ -214,23 +214,27 @@ function settings.init()
 		ULib.fileWrite( "data/ulx/adverts.txt", new_file )
 	end
 
-	function settings.addVotemaps( ply, args )
+	util.AddNetworkString( "XGUI.AddVotemaps" )
+	net.Receive( "XGUI.AddVotemaps", function( len, ply )
 		if ULib.ucl.query( ply, "xgui_svsettings" ) then
-			for _, votemap in ipairs( args ) do
-				table.insert( ulx.votemaps, votemap )
+			local maps = net.ReadTable()
+			for i=1,#maps do
+				table.insert( ulx.votemaps, maps[i] )
 			end
+			settings.saveVotemaps( GetConVar( "ulx_votemapMapmode" ):GetInt() )
+			xgui.sendDataTable( {}, "votemaps" )
 		end
-		settings.saveVotemaps( GetConVar( "ulx_votemapMapmode" ):GetInt() )
-		xgui.sendDataTable( {}, "votemaps" )
-	end
-	xgui.addCmd( "addVotemaps", settings.addVotemaps )
+	end )
 
-	function settings.removeVotemaps( ply, args )
+	util.AddNetworkString( "XGUI.RemoveVotemaps" )
+	net.Receive( "XGUI.RemoveVotemaps", function( len, ply )
 		if ULib.ucl.query( ply, "xgui_svsettings" ) then
-			for _, votemap in ipairs( args ) do
-				for i, map in ipairs( ulx.votemaps ) do
-					if map == votemap then
-						table.remove( ulx.votemaps, i )
+			local maps = net.ReadTable()
+			if not maps then return end
+			for i=1,#maps do
+				for j=1,#ulx.votemaps do
+					if maps[i] == ulx.votemaps[j] then
+						table.remove( ulx.votemaps, j )
 						break
 					end
 				end
@@ -238,8 +242,7 @@ function settings.init()
 			settings.saveVotemaps( GetConVar( "ulx_votemapMapmode" ):GetInt() )
 			xgui.sendDataTable( {}, "votemaps" )
 		end
-	end
-	xgui.addCmd( "removeVotemaps", settings.removeVotemaps )
+	end )
 
 	function settings.updatevotemaps()  --Populates a table of votemaps that gets sent to the admins.
 		settings.votemaps = {}
