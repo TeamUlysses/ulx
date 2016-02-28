@@ -290,7 +290,8 @@ function groups.postinit()
 	--Get user information from Garry's users.txt
 	groups.garryUsers = {}
 	if ULib.fileExists( "settings/users.txt" ) then
-		for group, users in pairs ( ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "settings/users.txt", true ), "//" ) ) ) do
+		local t = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "settings/users.txt", true ), "//" ) ) or {}
+		for group, users in pairs ( t ) do
 			for user, steamID in pairs( users ) do
 				groups.garryUsers[steamID] = { name=user, group=group }
 			end
