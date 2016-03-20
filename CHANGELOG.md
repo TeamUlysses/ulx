@@ -2,6 +2,7 @@
 
 ## v3.71 - *(00/00/00)*
 * [FIX] Reading information from corrupted addons (Thanks, Jindego).
+* [FIX] XGUI showing all commands if the UCL contained an empty string (Thanks, Steven).
 
 ## v3.70 - *(02/15/16)*
 * [ADD] XGUI: Ability to set the 'nextlevel' cvar from the maps tab, if you have access to "ulx map".

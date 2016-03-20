@@ -298,8 +298,8 @@ cmds.refresh = function( permissionChanged )
 	local sortcategories = {}
 	local matchedCmdFound = false
 	for cmd, data in pairs( ULib.cmds.translatedCmds ) do
-		local opposite = data.opposite or ""
-		if opposite ~= cmd and ( LocalPlayer():query( data.cmd ) or LocalPlayer():query( opposite ) ) then
+		local opposite = data.opposite
+		if opposite ~= cmd and ( LocalPlayer():query( data.cmd ) or (opposite and LocalPlayer():query( opposite ) )) then
 			local catname = data.category
 			if catname == nil or catname == "" then catname = "_Uncategorized" end
 			if not cmds.cmd_contents[catname] then
