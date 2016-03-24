@@ -82,6 +82,7 @@ end
 if SERVER then concommand.Add( "ulx_vote", ulx.voteCallback ) end
 
 function ulx.voteDone( cancelled )
+	if not ulx.voteInProgress then return end
 	local players = player.GetAll()
 	for _, ply in ipairs( players ) do -- Clear voting tags
 		ply.ulxVoted = nil
