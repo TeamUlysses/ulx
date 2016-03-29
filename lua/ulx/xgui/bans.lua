@@ -42,7 +42,7 @@ end
 
 local searchFilter = ""
 xbans.searchbox = xlib.maketextbox{ x=5, y=6, w=175, text="Search...", selectall=true, parent=xbans }
-local txtCol = xbans.searchbox:GetTextColor()
+local txtCol = xbans.searchbox:GetTextColor() or Color( 0, 0, 0, 255 ) -- Temp fix for https://github.com/garrynewman/garrysmod/pull/1141
 xbans.searchbox:SetTextColor( Color( txtCol.r, txtCol.g, txtCol.b, 196 ) ) -- Set initial color
 xbans.searchbox.OnChange = function( pnl )
 	if pnl:GetText() == "" then
