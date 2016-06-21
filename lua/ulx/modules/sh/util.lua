@@ -322,7 +322,7 @@ function ulx.debuginfo( calling_ply )
 			local name = addon
 			local author, version, date
 			if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
-				local t = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ), "//" ) )
+				local t = ULib.parseKeyValues( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ) ).AddonInfo
 				if t then
 					if t.name then name = t.name end
 					if t.version then version = t.version end
