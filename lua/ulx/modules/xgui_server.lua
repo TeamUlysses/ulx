@@ -3,18 +3,25 @@
 xgui = xgui or {}
 xgui.svmodules = {}
 function xgui.addSVModule( name, initFunc, postinitFunc )
-	local found = false
+	local t = { name=name, init=initFunc, postinit=postinitFunc }
+	local key
+
 	for i, svmodule in pairs( xgui.svmodules ) do
 		if svmodule.name == name then
-			table.remove( xgui.svmodules, i )
-			found = true
+			key = i
 			break
 		end
 	end
-	table.insert( xgui.svmodules, { name=name, init=initFunc, postinit=postinitFunc } )
-	if found then -- Autorefresh
+
+	if key then -- Autorefreshed
+		xgui.svmodules[key] = t
+
 		initFunc()
-		postinitFunc()
+		if postinitFunc then
+			postinitFunc()
+		end
+	else
+		table.insert( xgui.svmodules, t )
 	end
 end
 
