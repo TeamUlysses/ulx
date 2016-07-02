@@ -1,5 +1,8 @@
 # ULX Changelog
 
+## v3.72 - *(00/00/00)*
+* [FIX] More fixes for reading data from addon information (Thanks, Xylios).
+
 ## v3.71 - *(05/22/16)*
 * [FIX] Reading information from corrupted addons (Thanks, Jindego).
 * [FIX] XGUI showing all commands if the UCL contained an empty string (Thanks, Steven).

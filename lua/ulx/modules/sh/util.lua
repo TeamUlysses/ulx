@@ -323,7 +323,8 @@ function ulx.debuginfo( calling_ply )
 			local author, version, date
 			if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
 				local t = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ), "//" ) )
-				if t then
+				if t and t.AddonInfo then
+					t = t.AddonInfo
 					if t.name then name = t.name end
 					if t.version then version = t.version end
 					if tonumber( version ) then version = string.format( "%g", version ) end -- Removes innaccuracy in floating point numbers

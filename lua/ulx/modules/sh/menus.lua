@@ -102,8 +102,9 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 				for _, addon in ipairs( possibleaddons ) do
 					if ULib.fileExists( "addons/" .. addon .. "/addon.txt" ) then
 						local t = ULib.parseKeyValues( ULib.stripComments( ULib.fileRead( "addons/" .. addon .. "/addon.txt" ), "//" ) )
-						if t then
-							table.insert( ulx.motdSettings.addons, { title=addon, author=t.author_name } )
+						if t and t.AddonInfo then
+							local name = t.AddonInfo.name or addon
+							table.insert( ulx.motdSettings.addons, { title=name, author=t.AddonInfo.author_name } )
 						end
 					end
 				end
