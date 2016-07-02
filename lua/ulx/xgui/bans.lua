@@ -197,6 +197,9 @@ end
 
 function xbans.ShowBanDetailsWindow( bandata )
 	local wx, wy
+
+	if not bandata then return end
+
 	if xbans.openWindows[bandata.steamID] then
 		wx, wy = xbans.openWindows[bandata.steamID]:GetPos()
 		xbans.openWindows[bandata.steamID]:Remove()
