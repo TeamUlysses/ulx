@@ -173,3 +173,7 @@ function ulx.dumpTable( t, indent, done )
 
 	return str
 end
+
+function ulx.uteamEnabled()
+	return ULib.isSandbox() and GAMEMODE.Name ~= "DarkRP"
+end

@@ -188,7 +188,7 @@ function groups.init()
 	xgui.addCmd( "updateTeamValue", groups.updateTeamValue )
 
 	function groups.refreshTeams()
-		if not ULib.isSandbox() then return	end --Do not perform any of the following code if UTeam is disabled.
+		if not ulx.uteamEnabled() then return	end --Do not perform any of the following code if UTeam is disabled.
 
 		ulx.teams = table.Copy( xgui.teams )
 		ulx.saveTeams() --Let ULX reprocess the teams (Empty/new teams would be lost here)

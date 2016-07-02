@@ -81,7 +81,7 @@ function ulx.saveTeams()
 end
 
 function ulx.refreshTeams()
-	if not ULib.isSandbox() then
+	if not ulx.uteamEnabled() then
 		return
 	end
 

@@ -121,12 +121,12 @@ groups.cplayer.DoClick = function()
 	end
 end
 xlib.makelabel{ x=5, y=240, label="Team:", parent=groups.pnlG1}
-groups.teams = xlib.makecombobox{ x=5, y=255, w=160, disabled=not ULib.isSandbox(), parent=groups.pnlG1 }
+groups.teams = xlib.makecombobox{ x=5, y=255, w=160, disabled=not ulx.uteamEnabled(), parent=groups.pnlG1 }
 groups.teams.OnSelect = function( self, index, value, data )
 	if value == "<None>" then value = "" end
 	RunConsoleCommand( "xgui", "changeGroupTeam", groups.list:GetValue(), value )
 end
-groups.teambutton = xlib.makebutton{ x=5, y=275, w=160, label="Manage Teams >>", disabled=not ULib.isSandbox(), parent=groups.pnlG1 }
+groups.teambutton = xlib.makebutton{ x=5, y=275, w=160, label="Manage Teams >>", disabled=not ulx.uteamEnabled(), parent=groups.pnlG1 }
 groups.teambutton.DoClick = function( self )
 	if not groups.pnlG3:IsVisible() then
 		self:SetText( "Manage Teams <<" )
