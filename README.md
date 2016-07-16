@@ -30,7 +30,7 @@ You absolutely, positively have to do a full server restart after installing the
 ## Usage
 **To give yourself a jump start into ULX, simply remember the commands `ulx help` and `ulx menu`.**
 
-To access the commands and settings in ULX, you can open the GUI with `ulx menu` in console. It is recommended to bind this command to a keyboard key. Additionally, you can use console commands in the form of `ulx (command) (arguments)` or chat commands in the form of `!ulx (command) (arguments)`.
+To access the commands and settings in ULX, you can open the GUI with `ulx menu` in console. It is recommended to bind this command to a keyboard key. Additionally, you can use console commands in the form of `ulx (command) (arguments)` or chat commands in the form of `!(command) (arguments)`.
 
 To add users to usergroups, navigate to the "Groups" tab of the GUI and select a group. Then use the "Add" button to add connected players. You can also use the `ulx adduser (user) (group)` command. If you absolutely need to, you can also edit the `data/lib/users.txt` file.
 
