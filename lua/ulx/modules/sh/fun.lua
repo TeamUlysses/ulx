@@ -994,14 +994,19 @@ end
 hook.Add( "PlayerDisconnected", "ULXMaulDisconnectedCheck", maulDisconnectedCheck, HOOK_MONITOR_HIGH )
 
 ------------------------------ Strip ------------------------------
-function ulx.stripweapons( calling_ply, target_plys )
+function ulx.stripweapons( calling_ply, target_plys, wep )
 	for i=1, #target_plys do
-		target_plys[ i ]:StripWeapons()
+		if wep and target_plys[ i ]:HasWeapon(wep) then
+			target_plys[ i ]:StripWeapon(wep)
+		else
+			target_plys[ i ]:StripWeapons()
+		end
 	end
 
 	ulx.fancyLogAdmin( calling_ply, "#A stripped weapons from #T", target_plys )
 end
 local strip = ulx.command( CATEGORY_NAME, "ulx strip", ulx.stripweapons, "!strip" )
 strip:addParam{ type=ULib.cmds.PlayersArg }
+strip:addParam{ type=ULib.cmds.StringArg, hint="weapon", ULib.cmds.optional, ULib.cmds.takeRestOfLine }
 strip:defaultAccess( ULib.ACCESS_ADMIN )
 strip:help( "Strip weapons from target(s)." )
