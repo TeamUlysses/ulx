@@ -996,7 +996,7 @@ hook.Add( "PlayerDisconnected", "ULXMaulDisconnectedCheck", maulDisconnectedChec
 ------------------------------ Strip ------------------------------
 function ulx.stripweapons( calling_ply, target_plys, wep )
 	for i=1, #target_plys do
-		if wep and target_plys[ i ]:HasWeapon(wep) then
+		if wep then
 			target_plys[ i ]:StripWeapon(wep)
 		else
 			target_plys[ i ]:StripWeapons()
