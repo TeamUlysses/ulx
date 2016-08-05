@@ -36,7 +36,7 @@ end
 function ulx.addToHelpManually( category, cmd, string, access_tag )
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
 	for i=#ulx.cmdsByCategory[ category ],1,-1 do
-		existingCmd = ulx.cmdsByCategory[ category ][i]
+		local existingCmd = ulx.cmdsByCategory[ category ][i]
 		if existingCmd.cmd == cmd and existingCmd.manual == true then
 			table.remove( ulx.cmdsByCategory[ category ], i)
 			break
@@ -103,9 +103,10 @@ function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )
 	if new_value:find( "[%s:']" ) then new_value = string.format( "%q", new_value ) end
 	local replacement = string.format( "%s %s ", sv_cvar, new_value:gsub( "%%", "%%%%" ) ) -- Because we're feeding it through gsub below, need to expand '%'s
 	local config = ULib.fileRead( path )
+	local found
 	config, found = config:gsub( ULib.makePatternSafe( sv_cvar ):gsub( "%a", function( c ) return "[" .. c:lower() .. c:upper() .. "]" end ) .. "%s+[^;\r\n]*", replacement ) -- The gsub makes us case neutral
 	if found == 0 then -- Configuration option does not exist in config- append it
-		newline = config:match("\r?\n") or "\n"
+		local newline = config:match("\r?\n") or "\n"
 		if not config:find("\r?\n$") then config = config .. newline end
 		config = config .. "ulx " .. replacement .. "; " .. ulx.cvars[ command ].help .. newline
 	end

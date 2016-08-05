@@ -79,7 +79,7 @@ function ulx.ent( calling_ply, classname, params )
 	end
 
 	classname = classname:lower()
-	newEnt = ents.Create( classname )
+	local newEnt = ents.Create( classname )
 
 	-- Make sure it's a valid ent
 	if not newEnt or not newEnt:IsValid() then

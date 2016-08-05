@@ -182,12 +182,12 @@ function bans.init()
 		--local perfTimer = os.clock() --Debug
 
 		-- Default params
-		sortType = tonumber( args[1] ) or 0
-		filterString = args[2] ~= "" and string.lower( args[2] ) or nil
-		filterPermaBan = args[3] and tonumber( args[3] ) or 0
-		filterIncomplete = args[4] and tonumber( args[4] ) or 0
-		page = tonumber( args[5] ) or 1
-		ascending = tonumber( args[6] ) == 1 or false
+		local sortType = tonumber( args[1] ) or 0
+		local filterString = args[2] ~= "" and string.lower( args[2] ) or nil
+		local filterPermaBan = args[3] and tonumber( args[3] ) or 0
+		local filterIncomplete = args[4] and tonumber( args[4] ) or 0
+		local page = tonumber( args[5] ) or 1
+		local ascending = tonumber( args[6] ) == 1 or false
 
 		-- Get cached sort table to use to reference the real data.
 		sortTable = bans.getSortTable( sortType )

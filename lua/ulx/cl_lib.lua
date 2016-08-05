@@ -73,7 +73,7 @@ local function optionsDraw()
 	local totalh = h * 12 + 20
 	draw.RoundedBox( 8, 10, ScrH()*0.4 - 10, w + 20, totalh, Color( 111, 124, 138, 200 ) )
 
-	optiontxt = ""
+	local optiontxt = ""
 	for i=1, 10 do
 		if options[ i ] and options[ i ] ~= "" then
 			optiontxt = optiontxt .. math.modf( i, 10 ) .. ". " .. options[ i ]
