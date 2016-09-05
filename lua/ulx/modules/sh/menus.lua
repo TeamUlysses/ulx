@@ -72,14 +72,13 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 			if ulx.motdSettings == nil or ulx.motdSettings.info == nil then return end
 
 			ulx.motdSettings.admins = {}
-			ulx.motdSettings.addons = nil
 
 			local getAddonInfo = false
 
 			-- Gather addon/admin information to display
 			for i=1, #ulx.motdSettings.info do
 				local sectionInfo = ulx.motdSettings.info[i]
-				if sectionInfo.type == "mods" then
+				if sectionInfo.type == "mods" and not ulx.motdSettings.addons then
 					getAddonInfo = true
 				elseif sectionInfo.type == "admins" then
 					for a=1, #sectionInfo.contents do
