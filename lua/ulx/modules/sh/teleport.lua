@@ -144,6 +144,8 @@ function ulx.bring( calling_ply, target_plys )
       table.insert( teleportable_plys, target )
     else
       if target:InVehicle() then target:ExitVehicle() end
+			target.ulx_prevpos = target:GetPos()
+			target.ulx_prevang = target:EyeAngles()
       target:SetPos( t.endpos )
       target:SetEyeAngles( (calling_ply:GetPos() - t.endpos):Angle() )
       target:SetLocalVelocity( Vector( 0, 0, 0 ) )
