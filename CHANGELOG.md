@@ -5,6 +5,7 @@
 * [CHANGE] "ulx bring" can now bring multiple targets (Thanks for the code, Timmy).
 * [FIX] More fixes for reading data from addon information (Thanks, Xylios).
 * [FIX] Server error when autorefreshing some XGUI server files (Thanks, Yupi2).
+* [FIX] Unexpected tags passed along in a log input (Thanks, mcNuggets1).
 
 ## v3.71 - *(05/22/16)*
 * [FIX] Reading information from corrupted addons (Thanks, Jindego).

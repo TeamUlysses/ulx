@@ -448,16 +448,19 @@ function ulx.fancyLogAdmin( calling_ply, format, ... )
 
 	local no_targets = false
 	format:gsub( "([^#]*)#([%.%d]*[%a])([^#]*)", function( prefix, tag, postfix )
+		local arg = args[ arg_pos ]
+		arg_pos = arg_pos + 1
+
 		if prefix and prefix ~= "" then
 			insertToAll( playerStrs, default_color )
 			insertToAll( playerStrs, prefix )
 		end
 
 		local specifier = tag:sub( -1, -1 )
-		local arg = args[ arg_pos ]
-		arg_pos = arg_pos + 1
 		local color, str
-		if specifier == "T" or specifier == "P" or (specifier == "A" and calling_ply) then
+		if not arg then -- not a valid arg
+			insertToAll( playerStrs, "#" .. tag )
+		elseif specifier == "T" or specifier == "P" or (specifier == "A" and calling_ply) then
 			if specifier == "A" then
 				arg_pos = arg_pos - 1 -- This doesn't have an arg since it's at the start
 				arg = { calling_ply }
