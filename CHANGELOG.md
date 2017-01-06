@@ -3,6 +3,7 @@
 ## v3.72 - *(00/00/00)*
 * [CHANGE] UTeam is now disabled for DarkRP gamemodes to prevent conflicts (Thanks, Bo98).
 * [CHANGE] "ulx bring" can now bring multiple targets (Thanks for the code, Timmy).
+* [CHANGE] Can no longer kick or ban (or use the vote variants) on the listen server host.
 * [FIX] More fixes for reading data from addon information (Thanks, Xylios).
 * [FIX] Server error when autorefreshing some XGUI server files (Thanks, Yupi2).
 * [FIX] Unexpected tags passed along in a log input (Thanks, mcNuggets1).

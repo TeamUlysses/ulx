@@ -62,6 +62,11 @@ map:defaultAccess( ULib.ACCESS_ADMIN )
 map:help( "Changes map and gamemode." )
 
 function ulx.kick( calling_ply, target_ply, reason )
+	if target_ply:IsListenServerHost() then
+		ULib.tsayError( calling_ply, "This player is immune to kicking", true )
+		return
+	end
+
 	if reason and reason ~= "" then
 		ulx.fancyLogAdmin( calling_ply, "#A kicked #T (#s)", target_ply, reason )
 	else
@@ -79,8 +84,8 @@ kick:help( "Kicks target." )
 
 ------------------------------ Ban ------------------------------
 function ulx.ban( calling_ply, target_ply, minutes, reason )
-	if target_ply:IsBot() then
-		ULib.tsayError( calling_ply, "Cannot ban a bot", true )
+	if target_ply:IsListenServerHost() or target_ply:IsBot() then
+		ULib.tsayError( calling_ply, "This player is immune to banning", true )
 		return
 	end
 
@@ -107,13 +112,19 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 		return
 	end
 
-	local name
+	local name, target_ply
 	local plys = player.GetAll()
 	for i=1, #plys do
 		if plys[ i ]:SteamID() == steamid then
-			name = plys[ i ]:Nick()
+			target_ply = plys[ i ]
+			name = target_ply:Nick()
 			break
 		end
+	end
+
+	if target_ply and (target_ply:IsListenServerHost() or target_ply:IsBot()) then
+		ULib.tsayError( calling_ply, "This player is immune to banning", true )
+		return
 	end
 
 	local time = "for #s"

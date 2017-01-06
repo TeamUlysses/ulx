@@ -292,6 +292,11 @@ local function voteKickDone( t, target, time, ply, reason )
 end
 
 function ulx.votekick( calling_ply, target_ply, reason )
+	if target_ply:IsListenServerHost() then
+		ULib.tsayError( calling_ply, "This player is immune to kicking", true )
+		return
+	end
+
 	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
@@ -367,6 +372,11 @@ local function voteBanDone( t, nick, steamid, time, ply, reason )
 end
 
 function ulx.voteban( calling_ply, target_ply, minutes, reason )
+	if target_ply:IsListenServerHost() or target_ply:IsBot() then
+		ULib.tsayError( calling_ply, "This player is immune to banning", true )
+		return
+	end
+
 	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
 		return
