@@ -458,10 +458,11 @@ function ulx.fancyLogAdmin( calling_ply, format, ... )
 
 		local specifier = tag:sub( -1, -1 )
 		local color, str
-		if not arg then -- not a valid arg
+		local isAdminArg = specifier == "A" and calling_ply
+		if not (arg or isAdminArg) then -- not a valid arg
 			insertToAll( playerStrs, "#" .. tag )
-		elseif specifier == "T" or specifier == "P" or (specifier == "A" and calling_ply) then
-			if specifier == "A" then
+		elseif specifier == "T" or specifier == "P" or isAdminArg then
+			if isAdminArg then
 				arg_pos = arg_pos - 1 -- This doesn't have an arg since it's at the start
 				arg = { calling_ply }
 			elseif type( arg ) ~= "table" then
