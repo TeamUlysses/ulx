@@ -7,6 +7,7 @@
 * [FIX] More fixes for reading data from addon information (Thanks, Xylios).
 * [FIX] Server error when autorefreshing some XGUI server files (Thanks, Yupi2).
 * [FIX] Unexpected tags passed along in a log input (Thanks, mcNuggets1).
+* [FIX] Bad format spacing on UTF names for ulx who and and ulx debuginfo (Thanks for the code, toxsa).
 
 ## v3.71 - *(05/22/16)*
 * [FIX] Reading information from corrupted addons (Thanks, Jindego).
