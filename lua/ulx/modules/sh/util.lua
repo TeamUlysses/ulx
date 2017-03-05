@@ -290,14 +290,15 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 
 	local players = player.GetAll()
-	str = str .. string.format( "Currently connected players:\nNick%s steamid%s uid%s id lsh\n", str.rep( " ", 27 ), str.rep( " ", 11 ), str.rep( " ", 7 ) )
+	str = str .. string.format( "Currently connected players:\nNick%s steamid%s uid%s id lsh\n", str.rep( " ", 27 ), str.rep( " ", 12 ), str.rep( " ", 7 ) )
 	for _, ply in ipairs( players ) do
 		local id = string.format( "%i", ply:EntIndex() )
 		local steamid = ply:SteamID()
 		local uid = tostring( ply:UniqueID() )
+		local name = utf8.force( ply:Nick() )
 
-		local plyline = ply:Nick() .. str.rep( " ", 32 - ply:Nick():len() ) -- Name
-		plyline = plyline .. steamid .. str.rep( " ", 19 - steamid:len() ) -- Steamid
+		local plyline = name .. str.rep( " ", 32 - utf8.len( name ) ) -- Name
+		plyline = plyline .. steamid .. str.rep( " ", 20 - steamid:len() ) -- Steamid
 		plyline = plyline .. uid .. str.rep( " ", 11 - uid:len() ) -- Steamid
 		plyline = plyline .. id .. str.rep( " ", 3 - id:len() ) -- id
 		if ply:IsListenServerHost() then
@@ -320,8 +321,8 @@ function ulx.debuginfo( calling_ply )
 	for i=1, #addons do
 		local addon = addons[i]
 		if addon.mounted then
-			local name = addon.title
-			str = str .. string.format( "%s%s workshop ID %s\n", name, str.rep( " ", 32 - name:len() ), addon.file:gsub( "%D", "" ) )
+			local name = utf8.force( addon.title )
+			str = str .. string.format( "%s%s workshop ID %s\n", name, str.rep( " ", 32 - utf8.len( name ) ), addon.file:gsub( "%D", "" ) )
 		end
 	end
 	str = str .. "\n"
@@ -344,7 +345,8 @@ function ulx.debuginfo( calling_ply )
 				end
 			end
 
-			str = str .. name .. str.rep( " ", 32 - name:len() )
+			name = utf8.force( name )
+			str = str .. name .. str.rep( " ", 32 - utf8.len( name ) )
 			if author then
 				str = string.format( "%s by %s%s", str, author, version and "," or "" )
 			end
