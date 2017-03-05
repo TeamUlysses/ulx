@@ -8,7 +8,7 @@ function ulx.who( calling_ply, steamid )
 		local players = player.GetAll()
 		for _, player in ipairs( players ) do
 			local id = tostring( player:UserID() )
-			local nick = utf8.force( ply:Nick() )
+			local nick = utf8.force( player:Nick() )
 			local text = string.format( "%i%s %s%s ", id, string.rep( " ", 2 - id:len() ), nick, string.rep( " ", 31 - utf8.len( nick ) ) )
 
 			text = text .. player:GetUserGroup()
