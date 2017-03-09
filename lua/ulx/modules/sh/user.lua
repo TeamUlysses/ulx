@@ -58,7 +58,7 @@ function ulx.adduser( calling_ply, target_ply, group_name )
 
 	ulx.fancyLogAdmin( calling_ply, "#A added #T to group #s", target_ply, group_name )
 end
-local adduser = ulx.command( CATEGORY_NAME, "ulx adduser", ulx.adduser )
+local adduser = ulx.command( CATEGORY_NAME, "ulx adduser", ulx.adduser, nil, false, false, true )
 adduser:addParam{ type=ULib.cmds.PlayerArg }
 adduser:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names_no_user, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 adduser:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -79,7 +79,7 @@ function ulx.adduserid( calling_ply, id, group_name )
 		ulx.fancyLogAdmin( calling_ply, "#A added userid #s to group #s", id, group_name )
 	end
 end
-local adduserid = ulx.command( CATEGORY_NAME, "ulx adduserid", ulx.adduserid )
+local adduserid = ulx.command( CATEGORY_NAME, "ulx adduserid", ulx.adduserid, nil, false, false, true )
 adduserid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
 adduserid:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names_no_user, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 adduserid:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -90,7 +90,7 @@ function ulx.removeuser( calling_ply, target_ply )
 
 	ulx.fancyLogAdmin( calling_ply, "#A removed all access rights from #T", target_ply )
 end
-local removeuser = ulx.command( CATEGORY_NAME, "ulx removeuser", ulx.removeuser )
+local removeuser = ulx.command( CATEGORY_NAME, "ulx removeuser", ulx.removeuser, nil, false, false, true )
 removeuser:addParam{ type=ULib.cmds.PlayerArg }
 removeuser:defaultAccess( ULib.ACCESS_SUPERADMIN )
 removeuser:help( "Permanently removes a user's access." )
@@ -116,7 +116,7 @@ function ulx.removeuserid( calling_ply, id )
 		ulx.fancyLogAdmin( calling_ply, "#A removed all access rights from #s", id )
 	end
 end
-local removeuserid = ulx.command( CATEGORY_NAME, "ulx removeuserid", ulx.removeuserid )
+local removeuserid = ulx.command( CATEGORY_NAME, "ulx removeuserid", ulx.removeuserid, nil, false, false, true )
 removeuserid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
 removeuserid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 removeuserid:help( "Permanently removes a user's access by ID." )
@@ -145,7 +145,7 @@ function ulx.userallow( calling_ply, target_ply, access_string, access_tag )
 		end
 	end
 end
-local userallow = ulx.command( CATEGORY_NAME, "ulx userallow", ulx.userallow )
+local userallow = ulx.command( CATEGORY_NAME, "ulx userallow", ulx.userallow, nil, false, false, true )
 userallow:addParam{ type=ULib.cmds.PlayerArg }
 userallow:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 userallow:addParam{ type=ULib.cmds.StringArg, hint="access tag", ULib.cmds.optional }
@@ -183,7 +183,7 @@ function ulx.userallowid( calling_ply, id, access_string, access_tag )
 		end
 	end
 end
-local userallowid = ulx.command( CATEGORY_NAME, "ulx userallowid", ulx.userallowid )
+local userallowid = ulx.command( CATEGORY_NAME, "ulx userallowid", ulx.userallowid, nil, false, false, true )
 userallowid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
 userallowid:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 userallowid:addParam{ type=ULib.cmds.StringArg, hint="access tag", ULib.cmds.optional }
@@ -210,7 +210,7 @@ function ulx.userdeny( calling_ply, target_ply, access_string, should_use_neutra
 		end
 	end
 end
-local userdeny = ulx.command( CATEGORY_NAME, "ulx userdeny", ulx.userdeny )
+local userdeny = ulx.command( CATEGORY_NAME, "ulx userdeny", ulx.userdeny, nil, false, false, true )
 userdeny:addParam{ type=ULib.cmds.PlayerArg }
 userdeny:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 userdeny:addParam{ type=ULib.cmds.BoolArg, hint="remove explicit allow or deny instead of outright denying", ULib.cmds.optional }
@@ -248,7 +248,7 @@ function ulx.userdenyid( calling_ply, id, access_string, should_use_neutral )
 		end
 	end
 end
-local userdenyid = ulx.command( CATEGORY_NAME, "ulx userdenyid", ulx.userdenyid )
+local userdenyid = ulx.command( CATEGORY_NAME, "ulx userdenyid", ulx.userdenyid, nil, false, false, true )
 userdenyid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
 userdenyid:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 userdenyid:addParam{ type=ULib.cmds.BoolArg, hint="remove explicit allow or deny instead of outright denying", ULib.cmds.optional }
@@ -269,7 +269,7 @@ function ulx.addgroup( calling_ply, group_name, inherit_from )
 	ULib.ucl.addGroup( group_name, _, inherit_from )
 	ulx.fancyLogAdmin( calling_ply, "#A created group #s which inherits rights from group #s", group_name, inherit_from )
 end
-local addgroup = ulx.command( CATEGORY_NAME, "ulx addgroup", ulx.addgroup )
+local addgroup = ulx.command( CATEGORY_NAME, "ulx addgroup", ulx.addgroup, nil, false, false, true )
 addgroup:addParam{ type=ULib.cmds.StringArg, hint="group" }
 addgroup:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names, hint="inherits from", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes, default="user", ULib.cmds.optional }
 addgroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -284,7 +284,7 @@ function ulx.renamegroup( calling_ply, current_group, new_group )
 	ULib.ucl.renameGroup( current_group, new_group )
 	ulx.fancyLogAdmin( calling_ply, "#A renamed group #s to #s", current_group, new_group )
 end
-local renamegroup = ulx.command( CATEGORY_NAME, "ulx renamegroup", ulx.renamegroup )
+local renamegroup = ulx.command( CATEGORY_NAME, "ulx renamegroup", ulx.renamegroup, nil, false, false, true )
 renamegroup:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names_no_user, hint="current group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 renamegroup:addParam{ type=ULib.cmds.StringArg, hint="new group" }
 renamegroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -299,7 +299,7 @@ function ulx.setGroupCanTarget( calling_ply, group, can_target )
 		ulx.fancyLogAdmin( calling_ply, "#A changed group #s to be able to target anyone", group )
 	end
 end
-local setgroupcantarget = ulx.command( CATEGORY_NAME, "ulx setgroupcantarget", ulx.setGroupCanTarget )
+local setgroupcantarget = ulx.command( CATEGORY_NAME, "ulx setgroupcantarget", ulx.setGroupCanTarget, nil, false, false, true )
 setgroupcantarget:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 setgroupcantarget:addParam{ type=ULib.cmds.StringArg, hint="target string", ULib.cmds.optional }
 setgroupcantarget:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -309,7 +309,7 @@ function ulx.removegroup( calling_ply, group_name )
 	ULib.ucl.removeGroup( group_name )
 	ulx.fancyLogAdmin( calling_ply, "#A removed group #s", group_name )
 end
-local removegroup = ulx.command( CATEGORY_NAME, "ulx removegroup", ulx.removegroup )
+local removegroup = ulx.command( CATEGORY_NAME, "ulx removegroup", ulx.removegroup, nil, false, false, true )
 removegroup:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names_no_user, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 removegroup:defaultAccess( ULib.ACCESS_SUPERADMIN )
 removegroup:help( "Removes a group. USE WITH CAUTION." )
@@ -335,7 +335,7 @@ function ulx.groupallow( calling_ply, group_name, access_string, access_tag )
 		end
 	end
 end
-local groupallow = ulx.command( CATEGORY_NAME, "ulx groupallow", ulx.groupallow )
+local groupallow = ulx.command( CATEGORY_NAME, "ulx groupallow", ulx.groupallow, nil, false, false, true )
 groupallow:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 groupallow:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 groupallow:addParam{ type=ULib.cmds.StringArg, hint="access tag", ULib.cmds.optional }
@@ -357,7 +357,7 @@ function ulx.groupdeny( calling_ply, group_name, access_string )
 		ULib.tsayError( calling_ply, string.format( "Group \"%s\" doesn't have access to \"%s\"", group_name, access_string ), true )
 	end
 end
-local groupdeny = ulx.command( CATEGORY_NAME, "ulx groupdeny", ulx.groupdeny )
+local groupdeny = ulx.command( CATEGORY_NAME, "ulx groupdeny", ulx.groupdeny, nil, false, false, true )
 groupdeny:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 groupdeny:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 groupdeny:defaultAccess( ULib.ACCESS_SUPERADMIN )
