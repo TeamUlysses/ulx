@@ -9,7 +9,7 @@ end
 hook.Add( "Initialize", "ULXInitialize", init )
 
 local function doMainCfg( path, noMount )
-	ULib.execString( ULib.stripComments( ULib.fileRead( path, noMount ), ";" ), "ULXConfigExec" )
+	ULib.execStringULib( ULib.stripComments( ULib.fileRead( path, noMount ), ";" ), true )
 end
 
 local function doDownloadCfg( path, noMount )

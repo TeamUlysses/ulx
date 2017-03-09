@@ -6,7 +6,7 @@ function ulx.rcon( calling_ply, command )
 
 	ulx.fancyLogAdmin( calling_ply, true, "#A ran rcon command: #s", command )
 end
-local rcon = ulx.command( CATEGORY_NAME, "ulx rcon", ulx.rcon, "!rcon", true )
+local rcon = ulx.command( CATEGORY_NAME, "ulx rcon", ulx.rcon, "!rcon", true, false, true )
 rcon:addParam{ type=ULib.cmds.StringArg, hint="command", ULib.cmds.takeRestOfLine }
 rcon:defaultAccess( ULib.ACCESS_SUPERADMIN )
 rcon:help( "Execute command on server console." )
@@ -39,7 +39,7 @@ function ulx.luaRun( calling_ply, command )
 
 	ulx.fancyLogAdmin( calling_ply, true, "#A ran lua: #s", command )
 end
-local luarun = ulx.command( CATEGORY_NAME, "ulx luarun", ulx.luaRun )
+local luarun = ulx.command( CATEGORY_NAME, "ulx luarun", ulx.luaRun, nil, false, false, true )
 luarun:addParam{ type=ULib.cmds.StringArg, hint="command", ULib.cmds.takeRestOfLine }
 luarun:defaultAccess( ULib.ACCESS_SUPERADMIN )
 luarun:help( "Executes lua in server console. (Use '=' for output)" )
@@ -54,7 +54,7 @@ function ulx.exec( calling_ply, config )
 	ULib.execFile( "cfg/" .. config )
 	ulx.fancyLogAdmin( calling_ply, "#A executed file #s", config )
 end
-local exec = ulx.command( CATEGORY_NAME, "ulx exec", ulx.exec )
+local exec = ulx.command( CATEGORY_NAME, "ulx exec", ulx.exec, nil, false, false, true )
 exec:addParam{ type=ULib.cmds.StringArg, hint="file" }
 exec:defaultAccess( ULib.ACCESS_SUPERADMIN )
 exec:help( "Execute a file from the cfg directory on the server." )
@@ -66,7 +66,7 @@ function ulx.cexec( calling_ply, target_plys, command )
 
 	ulx.fancyLogAdmin( calling_ply, "#A ran #s on #T", command, target_plys )
 end
-local cexec = ulx.command( CATEGORY_NAME, "ulx cexec", ulx.cexec, "!cexec" )
+local cexec = ulx.command( CATEGORY_NAME, "ulx cexec", ulx.cexec, "!cexec", false, false, true )
 cexec:addParam{ type=ULib.cmds.PlayersArg }
 cexec:addParam{ type=ULib.cmds.StringArg, hint="command", ULib.cmds.takeRestOfLine }
 cexec:defaultAccess( ULib.ACCESS_SUPERADMIN )
@@ -113,7 +113,7 @@ function ulx.ent( calling_ply, classname, params )
 		ulx.fancyLogAdmin( calling_ply, "#A created ent #s with params #s", classname, params )
 	end
 end
-local ent = ulx.command( CATEGORY_NAME, "ulx ent", ulx.ent )
+local ent = ulx.command( CATEGORY_NAME, "ulx ent", ulx.ent, nil, false, false, true )
 ent:addParam{ type=ULib.cmds.StringArg, hint="classname" }
 ent:addParam{ type=ULib.cmds.StringArg, hint="<flag> : <value> |", ULib.cmds.takeRestOfLine, ULib.cmds.optional }
 ent:defaultAccess( ULib.ACCESS_SUPERADMIN )

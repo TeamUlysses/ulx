@@ -55,9 +55,9 @@ function ulxCommand:getUsage( ply )
 end
 
 ulx.cmdsByCategory = ulx.cmdsByCategory or {}
-function ulx.command( category, command, fn, say_cmd, hide_say, nospace )
+function ulx.command( category, command, fn, say_cmd, hide_say, nospace, unsafe )
 	if type( say_cmd ) == "string" then say_cmd = { say_cmd } end
-	local obj = ulxCommand( command, fn, say_cmd, hide_say, nospace )
+	local obj = ulxCommand( command, fn, say_cmd, hide_say, nospace, unsafe )
 	obj:addParam{ type=ULib.cmds.CallingPlayerArg }
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
 	for cat, cmds in pairs( ulx.cmdsByCategory ) do
