@@ -1,6 +1,6 @@
 # ULX Changelog
 
-## v3.72 - *(00/00/00)*
+## v3.72 - *(03/19/17)*
 * [CHANGE] UTeam is now disabled for DarkRP gamemodes to prevent conflicts (Thanks, Bo98).
 * [CHANGE] "ulx bring" can now bring multiple targets (Thanks for the code, Timmy).
 * [CHANGE] Can no longer kick or ban (or use the vote variants) on the listen server host.
