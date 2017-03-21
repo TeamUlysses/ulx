@@ -1,5 +1,7 @@
 # ULX Changelog
 
+## v3.74 - *(00/00/00)*
+
 ## v3.73 - *(03/21/17)*
 * [CHANGE] Setting an ULX cvar now no longer needless routes the cvar change through the console.
 

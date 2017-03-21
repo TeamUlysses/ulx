@@ -1,8 +1,8 @@
 "AddonInfo"
 {
 	"name"            "ULX"
-	"version"         "3.73"
-	"up_date"         "03/21/17"
+	"version"         "3.73d"
+	"up_date"         "00/00/00"
 	"author_name"     "Team Ulysses"
 	"author_email"    "teamulysses@ulyssesmod.net"
 	"author_url"      "http://www.ulyssesmod.net/"
