@@ -16,7 +16,7 @@ function ulx.who( calling_ply, steamid )
 			ULib.console( calling_ply, text )
 		end
 	else
-		data = ULib.ucl.getUserInfoFromID( steamid )
+		local data = ULib.ucl.getUserInfoFromID( steamid )
 
 		if not data then
 			ULib.console( calling_ply, "No information for provided id exists" )
@@ -130,7 +130,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	local time = "for #s"
 	if minutes == 0 then time = "permanently" end
 	local str = "#A banned steamid #s "
-	displayid = steamid
+	local displayid = steamid
 	if name then
 		displayid = displayid .. "(" .. name .. ") "
 	end
@@ -154,7 +154,7 @@ function ulx.unban( calling_ply, steamid )
 		return
 	end
 
-	name = ULib.bans[ steamid ] and ULib.bans[ steamid ].name
+	local name = ULib.bans[ steamid ] and ULib.bans[ steamid ].name
 
 	ULib.unban( steamid, calling_ply )
 	if name then
@@ -273,7 +273,7 @@ spectate:help( "Spectate target." )
 
 function ulx.addForcedDownload( path )
 	if ULib.fileIsDir( path ) then
-		files = ULib.filesInDir( path )
+		local files = ULib.filesInDir( path )
 		for _, v in ipairs( files ) do
 			ulx.addForcedDownload( path .. "/" .. v )
 		end

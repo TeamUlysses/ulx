@@ -1151,7 +1151,7 @@ xlib.addToAnimQueue = function( obj, ... )
 		table.insert( outTable, function() xlib.animRunning = true  obj( unpack( arg ) )  xlib.animQueue_call() end )
 	elseif type( obj ) == "string" and xlib.animTypes[obj] then
 		--arg[1] should be data table, arg[2] should be length
-		length = arg[2] or xgui.settings.animTime or 1
+		local length = arg[2] or xgui.settings.animTime or 1
 		xlib.animStep = xlib.animStep + 1
 		table.insert( outTable, function() xlib.animRunning = xlib.animTypes[obj]  xlib.animRunning:Start( ( xlib.curAnimStep ~= -1 and ( length/xlib.curAnimStep ) or 0 ), arg[1] ) end )
 	else

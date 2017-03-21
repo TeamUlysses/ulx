@@ -278,7 +278,7 @@ function adverts.removeAdvert( node )
 	end
 end
 function adverts.RenameAdvert( old )
-	advertRename = xlib.makeframe{ label="Set Name of Advert Group - " .. old, w=400, h=80, showclose=true, skin=xgui.settings.skin }
+	local advertRename = xlib.makeframe{ label="Set Name of Advert Group - " .. old, w=400, h=80, showclose=true, skin=xgui.settings.skin }
 	advertRename.text = xlib.maketextbox{ x=10, y=30, w=380, h=20, text=old, parent=advertRename }
 	advertRename.text.OnEnter = function( self )
 		RunConsoleCommand( "xgui", "renameAdvertGroup", old, self:GetValue() )
@@ -331,7 +331,7 @@ function adverts.updateAdverts()
 		adverts.createNode( adverts.tree, xgui.data.adverts[advert.group][1], advert.group, 1, xgui.data.adverts[advert.group][1].message, lastNode )
 	end
 	for _, group in ipairs( sortGroups ) do
-		advertgroup = xgui.data.adverts[group]
+		local advertgroup = xgui.data.adverts[group]
 		adverts.hasGroups = true
 		local foldernode = adverts.tree:AddNode( group, "icon16/folder.png" )
 		adverts.group:AddChoice( group )

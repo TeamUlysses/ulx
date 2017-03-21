@@ -496,7 +496,7 @@ local function jailCheck()
 end
 
 jailableArea = function( pos )
-	entList = ents.FindInBox( pos - Vector( 35, 35, 5 ), pos + Vector( 35, 35, 110 ) )
+	local entList = ents.FindInBox( pos - Vector( 35, 35, 5 ), pos + Vector( 35, 35, 110 ) )
 	for i=1, #entList do
 		if entList[ i ]:GetClass() == "trigger_remove" then
 			return false
@@ -818,7 +818,7 @@ zombieDeath = function( ent, ply )
 			-- Make sure we didn't make a headcrab!
 			local ents = ents.FindByClass( "npc_headcrab_fast" )
 			for _, ent in ipairs( ents ) do
-				dist = ent:GetPos():Distance( pos )
+				local dist = ent:GetPos():Distance( pos )
 				if dist < 128 then -- Assume it's from the zombies
 					ent:Remove()
 				end

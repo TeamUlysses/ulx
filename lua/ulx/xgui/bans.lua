@@ -158,7 +158,7 @@ function xbans.pageSelector:OnSelect( index )
 	xbans.retrieveBans()
 end
 function xbans.pageSelector.TextEntry:OnEnter()
-	pg = math.Clamp( tonumber( self:GetValue() ) or 1, 1, numPages )
+	local pg = math.Clamp( tonumber( self:GetValue() ) or 1, 1, numPages )
 	xbans.setPage( pg )
 	xbans.retrieveBans()
 end
@@ -363,7 +363,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate, bandata )
 				RunConsoleCommand( "xgui", "updateBan", steamID:GetValue(), btime, reason:GetValue(), name:GetValue() )
 				xgui_banwindow:Remove()
 			end
-			btime = banpanel:GetMinutes()
+			local btime = banpanel:GetMinutes()
 			if btime ~= 0 and bandata and btime * 60 + bandata.time < os.time() then
 				Derma_Query( "WARNING! The new ban time you have specified will cause this ban to expire.\nThe minimum time required in order to change the ban length successfully is " 
 						.. xgui.ConvertTime( os.time() - bandata.time ) .. ".\nAre you sure you wish to continue?", "XGUI WARNING",
