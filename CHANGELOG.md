@@ -1,6 +1,7 @@
 # ULX Changelog
 
 ## v3.73 - *(00/00/00)*
+* [CHANGE] Setting an ULX cvar now no longer needless routes the cvar change through the console.
 
 ## v3.72 - *(03/19/17)*
 * [CHANGE] UTeam is now disabled for DarkRP gamemodes to prevent conflicts (Thanks, Bo98).

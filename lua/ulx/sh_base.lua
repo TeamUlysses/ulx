@@ -99,7 +99,7 @@ local function cc_ulx( ply, command, argv )
 				-- But it's only the '%', or we'd use ULib.makePatternSafe instead of this.
 				ply:ConCommand( "ulx_" .. cvar.cvar .. " \"" .. args:gsub( "(%%)", "%%%1" ) .. "\"" )
 			else
-				RunConsoleCommand( "ulx_" .. cvar.cvar, argv[ 2 ] )
+				cvar.obj:SetString( argv[ 2 ] )
 			end
 			return
 		end

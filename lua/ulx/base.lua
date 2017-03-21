@@ -26,9 +26,9 @@ function ulx.convar( command, value, help, access )
 	-- table.insert( ulx.convarhelp[ currentCategory ], { cmd=command, access=access, help=help } ) -- TODO
 
 	local nospaceCommand = command:gsub( " ", "_" )
-	ulx.cvars[ command:lower() ] = { help=help, cvar=nospaceCommand, original=command }
 	local cvarName = "ulx_" .. nospaceCommand
 	local obj = ULib.replicatedWritableCvar( cvarName, cvarName, value, false, false, "ulx " .. command )
+	ulx.cvars[ command:lower() ] = { help=help, cvar=nospaceCommand, original=command, obj=obj }
 
 	return obj
 end
