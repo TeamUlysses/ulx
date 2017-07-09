@@ -221,6 +221,8 @@ function ulx.spectate( calling_ply, target_ply )
 
 	local pos = calling_ply:GetPos()
 	local ang = calling_ply:GetAngles()
+	
+	local wasAlive = calling_ply:Alive()
 
 	local function stopSpectate( player )
 		if player ~= calling_ply then -- For the spawning, make sure it's them doing the spawning
@@ -243,7 +245,9 @@ function ulx.spectate( calling_ply, target_ply )
 		if key ~= IN_FORWARD and key ~= IN_BACK and key ~= IN_MOVELEFT and key ~= IN_MOVERIGHT then return end -- Not a key we're interested in
 
 		hook.Remove( "PlayerSpawn", "ulx_unspectatedspawn_" .. calling_ply:EntIndex() ) -- Otherwise spawn would cause infinite loop
-		ULib.spawn( player, true ) -- Get out of spectate.
+		if wasAlive then -- We don't want to spawn them if they were already dead.
+		    ULib.spawn( player, true ) -- Get out of spectate.
+		end
 		stopSpectate( player )
 		player:SetPos( pos )
 		player:SetAngles( ang )
