@@ -127,10 +127,13 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 		return
 	end
 
-	if not calling_ply:CheckGroup( target_ply:GetUserGroup() ) then 
-		ULib.tsayError( calling_ply, "Command \"ulx banid\", argument #1: you cannot target this person." )
-		return
-	end
+	local targetable = ULib.getUsers( ULib.ucl.getGroupCanTarget( calling_ply:GetUserGroup() ), true, calling_ply )
+	for i = 1, #targetable do 
+		if not targetable[ i ] == target_ply then 
+			ULib.tsayError( calling_ply, "Command \"ulx banid\", argument #1: you cannot target this person." )
+ +			return
+		end
+ +	end
 
 	local time = "for #s"
 	if minutes == 0 then time = "permanently" end
