@@ -1,13 +1,5 @@
 -- Load our configs
 
-local function init()
-	-- Load our banned users
-	if ULib.fileExists( "cfg/banned_user.cfg", true ) then
-		ULib.execFile( "cfg/banned_user.cfg", "ULX-EXEC", true )
-	end
-end
-hook.Add( "Initialize", "ULXInitialize", init )
-
 local function doMainCfg( path, noMount )
 	ULib.execStringULib( ULib.stripComments( ULib.fileRead( path, noMount ), ";" ), true )
 end
