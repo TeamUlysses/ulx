@@ -649,7 +649,7 @@ local function ragdollPlayer( v )
 	ragdoll:Spawn()
 	ragdoll:Activate()
 	v:SetParent( ragdoll ) -- So their player ent will match up (position-wise) with where their ragdoll is.
-	-- Set velocity for each peice of the ragdoll
+	-- Set velocity for each piece of the ragdoll
 	local j = 1
 	while true do -- Break inside
 		local phys_obj = ragdoll:GetPhysicsObjectNum( j )
