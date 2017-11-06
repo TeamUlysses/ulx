@@ -30,6 +30,7 @@ function ulx.showMotdMenu( steamid )
 
 	html:SetSize( window:GetWide() - 20, window:GetTall() - button:GetTall() - 50 )
 	html:SetPos( 10, 30 )
+	html:SetAllowLua( true )
 	if mode == "1" then -- file
 		html:SetHTML( ULib.fileRead( "data/ulx_motd.txt" ) or "" )
 	elseif mode == "2" then -- generator
@@ -171,7 +172,7 @@ local template_item_addon = [[
 ]]
 
 local template_item_workshop = [[
-						<li><b>%title%</b> - <a href="http://steamcommunity.com/sharedfiles/filedetails/?id=%workshop_id%">View on Workshop</a></li>
+						<li><b>%title%</b> - <a href="http://steamcommunity.com/sharedfiles/filedetails/?id=%workshop_id%" onclick="console.log('RUNLUA:steamworks.ViewFile(%workshop_id%)');return false;">View on Workshop</a></li>
 ]]
 
 local template_footer = [[
