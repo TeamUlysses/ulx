@@ -3,6 +3,7 @@
 ## v3.74 - *(00/00/00)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
 * [FIX] Don't respawn when done spectating if the user was not alive to start with (Thanks, PixeLInc).
+* [FIX] XGUI: Player list on the Cmds tab was not sorted alphabetically.
 
 ## v3.73 - *(03/21/17)*
 * [CHANGE] Setting an ULX cvar now no longer needless routes the cvar change through the console.

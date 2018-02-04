@@ -98,6 +98,7 @@ function cmds.refreshPlist( arg )
 
 	cmds.plist:Clear()
 	cmds.plist:SetMultiSelect( arg.type == ULib.cmds.PlayersArg )
+
 	for _, ply in ipairs( targets ) do
 		local line = cmds.plist:AddLine( ply:Nick(), ply:GetUserGroup() )
 		line.ply = ply
@@ -122,6 +123,9 @@ function cmds.refreshPlist( arg )
 			cmds.plist:SelectItem( line )
 		end
 	end
+
+	cmds.plist:SortByColumn( 1, false )
+
 	--Select only the first item if multiselect is disabled.
 	if not cmds.plist:GetMultiSelect() then
 		local firstSelected = cmds.plist:GetSelected()[1]
