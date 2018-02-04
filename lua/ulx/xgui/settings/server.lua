@@ -1071,7 +1071,7 @@ function plist.ConVarUpdated( sv_cvar, cl_cvar, ply, old_val, new_val )
 			plist.lblDescription:SetText( "MOTD is generated using a basic template and the\nsettings below.\n" )
 		elseif new_val == "3" then
 			showURL = true
-			plist.lblDescription:SetText( "MOTD is the given URL.\nYou can use %curmap% nand %steamid%\n(eg, server.com/?map=%curmap%&id=%steamid%)\n" )
+			plist.lblDescription:SetText( "MOTD is the given URL.\nYou can use %curmap% and %steamid%\n(eg, server.com/?map=%curmap%&id=%steamid%)\n" )
 		end
 
 		plist.btnPreview:SetDisabled( previewDisabled )
