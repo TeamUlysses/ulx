@@ -157,6 +157,7 @@ function xgui.load_helpers()
 			self:SetFraction( self.value / self.max )
 			self.Label:SetText( "Getting data: " .. datatype .. " - " .. string.format("%.2f", (self.value / self.max) * 100) .. "%" )
 			if self.value == self.max then
+				xgui.dataInitialized = true
 				xgui.expectingdata = nil
 				self.Label:SetText( "Waiting for clientside processing..." )
 				xgui.queueFunctionCall( xgui.chunkbox.SetVisible, "chunkbox", xgui.chunkbox, false )

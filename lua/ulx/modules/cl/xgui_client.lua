@@ -520,7 +520,7 @@ end
 
 --If the player's group is changed, reprocess the XGUI modules for permissions, and request for extra data if needed
 function xgui.PermissionsChanged( ply )
-	if ply == LocalPlayer() and xgui.isInstalled then
+	if ply == LocalPlayer() and xgui.isInstalled and xgui.dataInitialized then
 		xgui.processModules()
 		local types = {}
 		for dtype, data in pairs( xgui.data ) do
