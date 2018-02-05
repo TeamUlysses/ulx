@@ -66,6 +66,7 @@ function xgui.init()
 		xgui.cmds[name] = func
 	end
 	function xgui.cmd( ply, cmd, args )
+		-- print("xgui.cmd:", args[1], table.concat( args, " ", 2 ))
 		local name=args[1]
 		table.remove( args, 1 )
 		if xgui.cmds[name] then
@@ -160,6 +161,12 @@ function xgui.init()
 		for k, ply in pairs( plys ) do
 			if not xgui.readyPlayers[ply:UniqueID()] then return end --Ignore requests to players who are not ready, they'll get the data as soon as they can.
 
+			-- print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+			-- print("sendDataTable attempt. Will defer?", xgui.activeUsers[ply:UniqueID()] and not forceSend)
+			-- PrintTable(datatypes)
+			-- print(debug.traceback())
+			-- print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+
 			if xgui.activeUsers[ply:UniqueID()] and not forceSend then --If data is currently being sent to the client
 				for _, dtype in ipairs( datatypes ) do
 					local exists = false
@@ -237,6 +244,13 @@ function xgui.init()
 	function xgui.sendDataEvent( plys, evtype, dtype, entry )
 		plys = plyToTable( plys )
 		for k, ply in pairs( plys ) do
+
+			-- print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
+			-- print("sendDataEvent attempt. Will defer?", xgui.activeUsers[ply:UniqueID()])
+			-- print(evtype, dtype, entry)
+			-- print(debug.traceback())
+			-- print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+
 			if xgui.activeUsers[ply:UniqueID()] then
 				table.insert( xgui.activeUsers[ply:UniqueID()].events, { evtype, dtype, entry } )
 				return
