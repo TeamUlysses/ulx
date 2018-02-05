@@ -449,8 +449,8 @@ end
 function xgui.getChunk( flag, datatype, data )
 	if xgui.expectingdata then
 		--print( datatype, flag ) --Debug
-		xgui.chunkbox:Progress( datatype )
-		if flag == -1 then return --Ignore these chunks
+		if flag == -1 then
+			--Ignore these chunks
 		elseif flag == 0 then --Data should be purged
 			if xgui.data[datatype] then
 				table.Empty( xgui.data[datatype] )
@@ -487,6 +487,7 @@ function xgui.getChunk( flag, datatype, data )
 		elseif flag == 7 then --Pass the data directly to the module to be handled.
 			xgui.callUpdate( datatype, "data", data )
 		end
+		xgui.chunkbox:Progress( datatype )
 	end
 end
 
