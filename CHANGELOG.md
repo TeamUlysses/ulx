@@ -3,6 +3,7 @@
 ## v3.74 - *(00/00/00)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
 * [FIX] Don't respawn when done spectating if the user was not alive to start with (Thanks, PixeLInc).
+* [FIX] XGUI: Some CAMI-registered accesses may not have shown up in the menus.
 * [FIX] XGUI: Player list on the Cmds tab was not sorted alphabetically.
 * [FIX] XGUI: Server data was potentially being sent down twice to clients on join.
 
