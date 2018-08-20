@@ -96,28 +96,18 @@ function ulx.voteDone( cancelled )
 end
 -- End our helper functions
 
-
-
-
-
-local function voteDone( t )
-	local results = t.results
-	local winner
-	local winnernum = 0
-	for id, numvotes in pairs( results ) do
-		if numvotes > winnernum then
-			winner = id
-			winnernum = numvotes
-		end
-	end
-
-	local str
-	if not winner then
+function voteDone( t )
+	local str = nil
+	if t.voters == 0 then
 		str = "Vote results: No option won because no one voted!"
 	else
-		str = "Vote results: Option '" .. t.options[ winner ] .. "' won. (" .. winnernum .. "/" .. t.voters .. ")"
+		ULib.tsay( _, t.voters .. " Players voted. Vote results: ")
+		str = t.voters .. " Players voted. Vote results: "
+		for id, numvotes in pairs( t.results ) do
+			ULib.tsay( _, t.options[id] .. " has " .. numvotes .. " Votes" ) -- TODO, color?
+			str = str .. t.options[id] .. " has " .. numvotes .. " Votes "
+		end
 	end
-	ULib.tsay( _, str ) -- TODO, color?
 	ulx.logString( str )
 	Msg( str .. "\n" )
 end
