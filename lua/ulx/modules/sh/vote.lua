@@ -94,19 +94,30 @@ function ulx.voteDone( cancelled )
 		ULib.pcallError( vip.callback, vip, unpack( vip.args, 1, 10 ) ) -- Unpack is explicit in length to avoid odd LuaJIT quirk.
 	end
 end
+
+local function resultHelper(t, id)
+	if t.results[id] then
+		return t.results[id]
+	else
+		return 0
+	end
+end
+
 -- End our helper functions
 
 function voteDone( t )
 	local str = nil
 	if t.voters == 0 then
-		str = "Vote results: No option won because no one voted!"
+		str = "Vote results: No Option has won, because nobody voted!"
 	else
-		ULib.tsay( _, t.voters .. " Players voted. Vote results: ")
-		str = t.voters .. " Players voted. Vote results: "
-		for id, numvotes in pairs( t.results ) do
-			ULib.tsay( _, t.options[id] .. " has " .. numvotes .. " Votes" ) -- TODO, color?
-			str = str .. t.options[id] .. " has " .. numvotes .. " Votes "
+		ULib.tsay( _, t.votes .. " players have voted. The result is: ")
+		str = t.votes .. " players have voted. The result is: "
+		for id, option in pairs( t.options ) do
+			ULib.tsay( _, t.options[id] .. " has " .. resultHelper(t, id) .. " vote" .. ((quantity ~= 1) and "s") ) -- TODO, color?
+			str = str .. t.options[id] .. " has " .. resultHelper(t, id) .. " vote" .. ((quantity ~= 1) and "s")
 		end
+		ULib.tsay( _, t.voters - t.votes .. " players have not voted " ) -- TODO, color?
+		str = str .. t.voters - t.votes .. " players have not voted "
 	end
 	ulx.logString( str )
 	Msg( str .. "\n" )
