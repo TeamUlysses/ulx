@@ -245,7 +245,7 @@ groups.newgroup = xlib.makebutton{ x=245, y=175, w=100, label="Create New...", p
 groups.newgroup.DoClick = function()
 	if not ULib.ucl.groups[groups.gname:GetValue()] then
 		RunConsoleCommand( "ulx", "addgroup", groups.gname:GetValue(), groups.ginherit:GetValue() )
-		if groups.gcantarget:GetValue() ~= "" && groups.gcantarget:GetValue() ~= "*" then
+		if groups.gcantarget:GetValue() ~= "" and groups.gcantarget:GetValue() ~= "*" then
 			ULib.queueFunctionCall( RunConsoleCommand, "ulx", "setgroupcantarget", groups.gname:GetValue(), groups.gcantarget:GetValue() )
 		end
 	else
