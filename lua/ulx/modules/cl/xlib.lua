@@ -591,7 +591,7 @@ function xlib.makeslider( t )
 		if t.clampmin then val = math.max( tonumber( val ) or 0, self:GetMin() ) end
 		if t.clampmax then val = math.min( tonumber( val ) or 0, self:GetMax() ) end
 		self.Slider:SetSlideX( self.Scratch:GetFraction( val ) )
-		if ( self.TextArea != vgui.GetKeyboardFocus() ) then
+		if ( self.TextArea ~= vgui.GetKeyboardFocus() ) then
 			self.TextArea:SetValue( self.Scratch:GetTextValue() )
 		end
 		self:OnValueChanged( val )
@@ -628,7 +628,7 @@ function xlib.makeslider( t )
 	local tmpfunc = pnl.Slider.SetDragging
 	pnl.Slider.SetDragging = function( self, bval )
 		tmpfunc( self, bval )
-		if ( !bval ) then pnl:SetValue( pnl.TextArea:GetText() ) end
+		if ( not bval ) then pnl:SetValue( pnl.TextArea:GetText() ) end
 	end
 	pnl.Slider.OnMouseReleased = function( self, mcode )
 		self:SetDragging( false )
@@ -637,7 +637,7 @@ function xlib.makeslider( t )
 
 	--Scratch
 	function pnl.Scratch:OnCursorMoved( x, y )
-		if ( !self:GetActive() ) then return end
+		if ( not self:GetActive() ) then return end
 
 		x = x - math.floor( self:GetWide() * 0.5 )
 		y = y - math.floor( self:GetTall() * 0.5 )

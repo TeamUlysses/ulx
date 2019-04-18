@@ -191,7 +191,7 @@ function xgui.init()
 					if ULib.ucl.query( ply, data.access ) then
 						local t = data.getData()
 						local size = data.maxchunk or 0 --Split the table into "chunks" of per-datatype specified size to even out data flow. 0 to disable
-						if t and table.Count( t ) > size and size != 0 then
+						if t and table.Count( t ) > size and size ~= 0 then
 							table.insert( chunks, { 5, dtype } ) --Signify beginning of split chunks
 							local c = 1
 							local part = {}

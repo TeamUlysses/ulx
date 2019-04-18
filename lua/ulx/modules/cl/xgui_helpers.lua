@@ -261,7 +261,7 @@ function xgui.load_helpers()
 			function outPanel.val:ValueChanged( val )
 				val = math.Clamp( tonumber( val ) or 0, self.minvalue or 0, self.maxvalue or 0 )
 				self.Slider:SetSlideX( self.Scratch:GetFraction( val ) )
-				if ( self.TextArea != vgui.GetKeyboardFocus() ) then
+				if ( self.TextArea ~= vgui.GetKeyboardFocus() ) then
 					self.TextArea:SetValue( self.Scratch:GetTextValue() )
 				end
 				self:OnValueChanged( val )
