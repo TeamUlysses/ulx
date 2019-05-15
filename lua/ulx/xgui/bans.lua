@@ -179,9 +179,9 @@ end
 function xbans.RemoveBan( ID, bandata )
 	local tempstr = "<Unknown>"
 	if bandata then tempstr = bandata.name or "<Unknown>" end
-	Derma_Query( "Are you sure you would like to unban " .. tempstr .. " - " .. ID .. "?", "XGUI WARNING", 
+	Derma_Query( "Are you sure you would like to unban " .. tempstr .. " - " .. ID .. "?", "XGUI WARNING",
 		"Remove",	function()
-						RunConsoleCommand( "ulx", "unban", ID ) 
+						RunConsoleCommand( "ulx", "unban", ID )
 						xbans.RemoveBanDetailsWindow( ID )
 					end,
 		"Cancel", 	function() end )
@@ -365,7 +365,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate, bandata )
 			end
 			btime = banpanel:GetMinutes()
 			if btime ~= 0 and bandata and btime * 60 + bandata.time < os.time() then
-				Derma_Query( "WARNING! The new ban time you have specified will cause this ban to expire.\nThe minimum time required in order to change the ban length successfully is " 
+				Derma_Query( "WARNING! The new ban time you have specified will cause this ban to expire.\nThe minimum time required in order to change the ban length successfully is "
 						.. xgui.ConvertTime( os.time() - bandata.time ) .. ".\nAre you sure you wish to continue?", "XGUI WARNING",
 					"Expire Ban", function()
 						performUpdate(btime)
