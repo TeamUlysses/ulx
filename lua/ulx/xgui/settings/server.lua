@@ -266,7 +266,7 @@ adverts.nodedown.DoClick = function()
 end
 function adverts.removeAdvert( node )
 	if node then
-		Derma_Query( "Are you sure you want to delete this " .. ( node.data and "advert?" or "advert group?" ), "XGUI WARNING", 
+		Derma_Query( "Are you sure you want to delete this " .. ( node.data and "advert?" or "advert group?" ), "XGUI WARNING",
 		"Delete", function()
 			if node.data then --Remove a single advert
 				RunConsoleCommand( "xgui", "removeAdvert", node.group, node.number, type( node.group ) )

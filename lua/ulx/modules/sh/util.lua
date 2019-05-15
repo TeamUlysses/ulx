@@ -221,7 +221,7 @@ function ulx.spectate( calling_ply, target_ply )
 
 	local pos = calling_ply:GetPos()
 	local ang = calling_ply:GetAngles()
-	
+
 	local wasAlive = calling_ply:Alive()
 
 	local function stopSpectate( player )
