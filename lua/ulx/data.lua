@@ -49,7 +49,7 @@ files["banmessage.txt"] = [[
 ; {{TIME_LEFT}} - The time left in the ban
 ; {{STEAMID}} - The banned player's Steam ID (excluding non-number characters)
 ; {{STEAMID64}} - The banned player's 64-bit Steam ID
-; The two steam ID vairables are useful for constructing URLs for appealing bans
+; The two steam ID variables are useful for constructing URLs for appealing bans
 -------===== [ BANNED ] =====-------
 
 ---= Reason =---
@@ -164,20 +164,20 @@ ulx votemapEnabled 1 ; Enable/Disable the entire votemap command
 ulx votemapMintime 10 ; Time after map change before votes count.
 ulx votemapWaittime 5 ; Time before a user must wait before they can change their vote.
 ulx votemapSuccessratio 0.4 ; Ratio of (votes for map)/(total players) needed to change map. (Rounds up)
-ulx votemapMinvotes 3 ; Number of minimum votes needed to change map (Prevents llamas). This supercedes the above convar on small servers.
+ulx votemapMinvotes 3 ; Number of minimum votes needed to change map (Prevents llamas). This supersedes the above convar on small servers.
 ulx votemapVetotime 30 ; Time in seconds an admin has after a successful votemap to veto the vote. Set to 0 to disable.
 ulx votemapMapmode 1 ; 1 = Use all maps but what's specified in votemaps.txt, 2 = Use only the maps specified in votemaps.txt.
 
 ulx voteEcho 0 ; 1 = Echo what every player votes (this does not apply to votemap). 0 = Don't echo
 
 ulx votemap2Successratio 0.5 ; Ratio of (votes for map)/(total players) needed to change map. (Rounds up)
-ulx votemap2Minvotes 3 ; Number of minimum votes needed to change map (Pevents llamas). This supercedes the above convar on small servers.
+ulx votemap2Minvotes 3 ; Number of minimum votes needed to change map (Prevents llamas). This supersedes the above convar on small servers.
 
 ulx votekickSuccessratio 0.6 ; Ratio of (votes for kick)/(total players) needed to kick player. (Rounds up)
-ulx votekickMinvotes 2 ; Number of minimum votes needed to kick player (Pevents llamas). This supercedes the above convar on small servers.
+ulx votekickMinvotes 2 ; Number of minimum votes needed to kick player (Prevents llamas). This supersedes the above convar on small servers.
 
 ulx votebanSuccessratio 0.7 ; Ratio of (votes for ban)/(total players) needed to ban player. (Rounds up)
-ulx votebanMinvotes 3 ; Number of minimum votes needed to ban player (Pevents llamas). This supercedes the above convar on small servers.
+ulx votebanMinvotes 3 ; Number of minimum votes needed to ban player (Prevents llamas). This supersedes the above convar on small servers.
 ]]
 
 files["downloads.txt"] =
