@@ -25,7 +25,7 @@ local spawnechoAccess = "ulx spawnecho"
 ULib.ucl.registerAccess( spawnechoAccess, ULib.ACCESS_ADMIN, "Ability to see spawn echoes and steamids from joined players in console", "Other" ) -- Give admins access to see spawn echoes by default
 
 local seeadminonlyechoAccess = "ulx seeadminonlyechoes"
-ULib.ucl.registerAccess(seeadminonlyechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 1")
+ULib.ucl.registerAccess(seeadminonlyechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 1", "Other") -- Allows only admins to see command echoes, no one else
 
 local curDateStr = os.date( "%Y-%m-%d" ) -- This will hold the date string (YYYY-mm-dd) we think it is right now.
 
