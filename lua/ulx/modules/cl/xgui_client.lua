@@ -115,7 +115,7 @@ function xgui.init( ply )
 	xgui.infobar.Paint = function( self, w, h )
 		draw.RoundedBoxEx( 4, 0, 1, 580, 20, xgui.settings.infoColor, false, false, true, true )
 	end
-	local infoLabel = string.format( "\nULX Admin Mod :: XGUI - Team Ulysses |  ULX %s  |  ULib %s", ULib.pluginVersionStr("ULX"), ULib.pluginVersionStr("ULib") )
+	local infoLabel = string.format( "\nULX Admin Mod :: XGUI - Team Ulysses |  ULX %s  |  ULib %s")
 	xlib.makelabel{ x=5, y=-10, label=infoLabel, parent=xgui.infobar }:NoClipping( true )
 	xgui.thetime = xlib.makelabel{ x=515, y=-10, label="", parent=xgui.infobar }
 	xgui.thetime:NoClipping( true )
