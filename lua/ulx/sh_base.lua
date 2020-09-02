@@ -143,7 +143,7 @@ function ulx.help( ply )
 	end
 
 
-	ULib.console( ply, "\n-End of help\nULX version: " .. ULib.pluginVersionStr( "ULX" ) .. "\n" )
+	ULib.console( ply, "\n-End of help\n" )
 end
 local help = ulx.command( "Utility", "ulx help", ulx.help )
 help:help( "Shows this help." )
