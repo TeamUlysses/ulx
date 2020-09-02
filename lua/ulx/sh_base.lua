@@ -11,10 +11,6 @@ ULib.registerPlugin{
 	--BuildNumRemoteReceivedCallback = nil
 }
 
-function ulx.getVersion() -- This function will be removed in the future
-	return ULib.pluginVersionStr( "ULX" )
-end
-
 local ulxCommand = inheritsFrom( ULib.cmds.TranslateCommand )
 
 function ulxCommand:logString( str )
