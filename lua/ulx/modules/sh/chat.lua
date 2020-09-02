@@ -107,7 +107,6 @@ local function doAdvert( group, id )
 
 	local message = string.gsub( info.message, "%%curmap%%", game.GetMap() )
 	message = string.gsub( message, "%%host%%", GetConVarString( "hostname" ) )
-	message = string.gsub( message, "%%ulx_version%%", ULib.pluginVersionStr( "ULX" ) )
 
 	if not info.len then -- tsay
 		local lines = ULib.explode( "\\n", message )
