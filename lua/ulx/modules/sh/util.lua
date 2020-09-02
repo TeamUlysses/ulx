@@ -34,15 +34,6 @@ who:addParam{ type=ULib.cmds.StringArg, hint="steamid", ULib.cmds.optional }
 who:defaultAccess( ULib.ACCESS_ALL )
 who:help( "See information about currently online users." )
 
------------------------------- Version ------------------------------
-function ulx.versionCmd( calling_ply )
-	ULib.tsay( calling_ply, "ULib " .. ULib.pluginVersionStr("ULib"), true )
-	ULib.tsay( calling_ply, "ULX " .. ULib.pluginVersionStr("ULX"), true )
-end
-local version = ulx.command( CATEGORY_NAME, "ulx version", ulx.versionCmd, "!version" )
-version:defaultAccess( ULib.ACCESS_ALL )
-version:help( "See version information." )
-
 ------------------------------ Map ------------------------------
 function ulx.map( calling_ply, map, gamemode )
 	if not gamemode or gamemode == "" then
