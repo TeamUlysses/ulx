@@ -19,10 +19,13 @@ local hiddenechoAccess = "ulx hiddenecho"
 ULib.ucl.registerAccess( hiddenechoAccess, ULib.ACCESS_SUPERADMIN, "Ability to see hidden echoes", "Other" ) -- Give superadmins access to see hidden echoes by default
 
 local seeanonymousechoAccess = "ulx seeanonymousechoes"
-ULib.ucl.registerAccess( seeanonymousechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 1", "Other" )
+ULib.ucl.registerAccess( seeanonymousechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 2", "Other" )
 
 local spawnechoAccess = "ulx spawnecho"
 ULib.ucl.registerAccess( spawnechoAccess, ULib.ACCESS_ADMIN, "Ability to see spawn echoes and steamids from joined players in console", "Other" ) -- Give admins access to see spawn echoes by default
+
+local seeadminonlyechoAccess = "ulx seeadminonlyechoes"
+ULib.ucl.registerAccess(seeadminonlyechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 1")
 
 local curDateStr = os.date( "%Y-%m-%d" ) -- This will hold the date string (YYYY-mm-dd) we think it is right now.
 
@@ -72,7 +75,7 @@ function ulx.logUserAct( ply, target, action, hide_echo )
 
 	if not hide_echo and level > 0 then
 		local echo
-		if level == 1 then
+		if level == 2 then
 			echo = action:gsub( "#A", nick, 1 )
 			ULib.tsay( _, echo, true )
 		end
@@ -110,7 +113,7 @@ function ulx.logServAct( ply, action, hide_echo )
 
 	if not hide_echo and level > 0 then
 		local echo
-		if level == 1 then
+		if level == 2 then
 			echo = action:gsub( "#A", nick, 1 )
 			ULib.tsay( _, echo, true )
 		end
@@ -434,6 +437,17 @@ function ulx.fancyLogAdmin( calling_ply, format, ... )
 			end
 		end
 	end
+	
+	local adminOnly = logEcho:GetInt() == 1
+	if adminOnly then
+		for i=#players, 1, -1 do
+			if not ULib.ucl.query( players[ i ], seeadminonlyechoAccess ) and players[ i ] ~= calling_ply then
+				table.remove( players, i )
+			end
+		end
+	end
+	
+	
 	table.insert( players, "CONSOLE" ) -- Dummy player used for logging and printing to dedicated console window
 
 	local playerStrs = {}
