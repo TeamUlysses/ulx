@@ -39,6 +39,11 @@ function bans.init()
 		local reason = args[3]
 		local name = args[4]
 
+		-- Check steamid
+		if not ULib.isValidSteamID(steamID) then
+			ULib.tsayError( ply, "Invalid steamid", true )
+			return
+		end
 
 		-- Check restrictions
 		local cmd = ULib.cmds.translatedCmds[ "ulx ban" ]
