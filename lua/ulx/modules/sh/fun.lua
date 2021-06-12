@@ -188,15 +188,19 @@ unigniteall:defaultAccess( ULib.ACCESS_ADMIN )
 unigniteall:help( "Extinguishes all players and all entities." )
 
 ------------------------------ Playsound ------------------------------
+if SERVER then
+	util.AddNetworkString( "ulib_sound" )
+end
+
 function ulx.playsound( calling_ply, sound )
 	if not ULib.fileExists( "sound/" .. sound ) then
 		ULib.tsayError( calling_ply, "That sound doesn't exist on the server!", true )
 		return
 	end
 
-	umsg.Start( "ulib_sound" )
-		umsg.String( Sound( sound ) )
-	umsg.End()
+	net.Start( "ulib_sound" )
+		net.WriteString( Sound( sound ) )
+	net.Broadcast()
 
 	ulx.fancyLogAdmin( calling_ply, "#A played sound #s", sound )
 end
@@ -346,13 +350,17 @@ cloak:help( "Cloaks target(s)." )
 cloak:setOpposite( "ulx uncloak", {_, _, _, true}, "!uncloak" )
 
 ------------------------------ Blind ------------------------------
+if SERVER then
+	util.AddNetworkString( "ulx_blind" )
+end
 function ulx.blind( calling_ply, target_plys, amount, should_unblind )
 	for i=1, #target_plys do
 		local v = target_plys[ i ]
-		umsg.Start( "ulx_blind", v )
-			umsg.Bool( not should_unblind )
-			umsg.Short( amount )
-		umsg.End()
+		
+		net.Start( "ulx_blind" )
+			net.WriteBool( not should_unblind )
+			net.WriteInt( amount, 16 )
+		net.Send( v )
 
 		if should_unblind then
 			if v.HadCamera then
@@ -732,7 +740,7 @@ local ragdoll = ulx.command( CATEGORY_NAME, "ulx ragdoll", ulx.ragdoll, "!ragdol
 ragdoll:addParam{ type=ULib.cmds.PlayersArg }
 ragdoll:addParam{ type=ULib.cmds.BoolArg, invisible=true }
 ragdoll:defaultAccess( ULib.ACCESS_ADMIN )
-ragdoll:help( "Ragdolls target(s)." )
+ragdoll:help( "ragdolls target(s)." )
 ragdoll:setOpposite( "ulx unragdoll", {_, _, true}, "!unragdoll" )
 
 local function ragdollSpawnCheck( ply )
