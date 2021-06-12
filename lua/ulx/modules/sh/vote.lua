@@ -5,6 +5,9 @@ local CATEGORY_NAME = "Voting"
 ---------------
 if SERVER then ulx.convar( "voteEcho", "0", _, ULib.ACCESS_SUPERADMIN ) end -- Echo votes?
 
+if SERVER then
+	util.AddNetworkString( "ulx_vote" )
+end
 -- First, our helper function to make voting so much easier!
 function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 	timeout = timeout or 20
@@ -29,12 +32,14 @@ function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 			voters = voters + 1
 		end
 	end
-
-	umsg.Start( "ulx_vote", rp )
-		umsg.String( title )
-		umsg.Short( timeout )
-		ULib.umsgSend( options )
-	umsg.End()
+	
+	
+	net.Start("ulx_vote")
+		net.WriteString( title )
+		net.WriteInt( timeout, 16 )
+		net.WriteTable( options )
+	net.Broadcast()
+	
 
 	ulx.voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, args={...} }
 
