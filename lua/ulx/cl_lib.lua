@@ -48,13 +48,14 @@ function ulx.blindUser( bool, amt )
 	end
 end
 
-local function rcvBlind( um )
-	local bool = um:ReadBool()
-	local amt = um:ReadShort()
-	ulx.blindUser( bool, amt )
-end
-usermessage.Hook( "ulx_blind", rcvBlind )
 
+
+net.Receive( "ulx_blind", function( ln )
+	print("ADAD")
+	local bool = net.ReadBool()
+	local amt = net.ReadInt(16)
+	ulx.blindUser( bool, amt )
+end )
 
 local curVote
 
@@ -83,10 +84,11 @@ local function optionsDraw()
 	draw.DrawText( title .. "\n\n" .. optiontxt, "Default", 20, ScrH()*0.4, Color( 255, 255, 255, 255 ), TEXT_ALIGN_LEFT )
 end
 
-local function rcvVote( um )
-	local title = um:ReadString()
-	local timeout = um:ReadShort()
-	local options = ULib.umsgRcv( um )
+
+net.Receive( "ulx_vote", function( ln )
+	local title = net.ReadString()
+	local timeout = net.ReadInt(16)
+	local options = net.ReadTable()
 
 	local function callback( id )
 		if id == 0 then id = 10 end
@@ -102,8 +104,8 @@ local function rcvVote( um )
 	LocalPlayer():AddPlayerOption( title, timeout, callback, optionsDraw )
 
 	curVote = { title=title, options=options, endtime=CurTime()+timeout }
-end
-usermessage.Hook( "ulx_vote", rcvVote )
+	
+end )
 
 -- Any language stuff for ULX should go here...
 
