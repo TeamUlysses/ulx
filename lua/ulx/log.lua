@@ -1,4 +1,4 @@
-local logEcho                   = ulx.convar( "logEcho", "2", "Echo mode 0-Off 1-Anonymous 2-Full", ULib.ACCESS_SUPERADMIN )
+local logEcho                   = ulx.convar( "logEcho", "3", "Echo mode 0-Off 1-Admins 2-Anonymous 3-Full", ULib.ACCESS_SUPERADMIN )
 local logEchoColors             = ulx.convar( "logEchoColors", "1", "Whether or not echoed commands in chat are colored", ULib.ACCESS_SUPERADMIN )
 local logEchoColorDefault       = ulx.convar( "logEchoColorDefault", "151 211 255", "The default text color (RGB)", ULib.ACCESS_SUPERADMIN )
 local logEchoColorConsole       = ulx.convar( "logEchoColorConsole", "0 0 0", "The color that Console gets when using actions", ULib.ACCESS_SUPERADMIN )
@@ -19,10 +19,13 @@ local hiddenechoAccess = "ulx hiddenecho"
 ULib.ucl.registerAccess( hiddenechoAccess, ULib.ACCESS_SUPERADMIN, "Ability to see hidden echoes", "Other" ) -- Give superadmins access to see hidden echoes by default
 
 local seeanonymousechoAccess = "ulx seeanonymousechoes"
-ULib.ucl.registerAccess( seeanonymousechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 1", "Other" )
+ULib.ucl.registerAccess( seeanonymousechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 2", "Other" )
 
 local spawnechoAccess = "ulx spawnecho"
 ULib.ucl.registerAccess( spawnechoAccess, ULib.ACCESS_ADMIN, "Ability to see spawn echoes and steamids from joined players in console", "Other" ) -- Give admins access to see spawn echoes by default
+
+local seeadminonlyechoAccess = "ulx seeadminonlyechoes"
+ULib.ucl.registerAccess(seeadminonlyechoAccess, ULib.ACCESS_ADMIN, "Ability to see who uses a command even with ulx logEcho set to 1", "Other") -- Allows only admins to see command echoes, no one else
 
 local curDateStr = os.date( "%Y-%m-%d" ) -- This will hold the date string (YYYY-mm-dd) we think it is right now.
 
@@ -72,7 +75,7 @@ function ulx.logUserAct( ply, target, action, hide_echo )
 
 	if not hide_echo and level > 0 then
 		local echo
-		if level == 1 then
+		if level == 2 then
 			echo = action:gsub( "#A", nick, 1 )
 			ULib.tsay( _, echo, true )
 		end
@@ -110,7 +113,7 @@ function ulx.logServAct( ply, action, hide_echo )
 
 	if not hide_echo and level > 0 then
 		local echo
-		if level == 1 then
+		if level == 2 then
 			echo = action:gsub( "#A", nick, 1 )
 			ULib.tsay( _, echo, true )
 		end
@@ -350,8 +353,9 @@ end
 
 local function makePlayerList( calling_ply, target_list, showing_ply, use_self_suffix, is_admin_part )
 	local players = player.GetAll()
+
 	-- Is the calling player acting anonymously in the eyes of the player this is being showed to?
-	local anonymous = showing_ply ~= "CONSOLE" and not ULib.ucl.query( showing_ply, seeanonymousechoAccess ) and logEcho:GetInt() == 1
+	local anonymous = showing_ply ~= "CONSOLE" and not ULib.ucl.query( showing_ply, seeanonymousechoAccess ) and logEcho:GetInt() == 2
 
 	if #players > 1 and #target_list == #players then
 		return { everyone_color, "Everyone" }
@@ -430,6 +434,15 @@ function ulx.fancyLogAdmin( calling_ply, format, ... )
 	if hide_echo then
 		for i=#players, 1, -1 do
 			if not ULib.ucl.query( players[ i ], hiddenechoAccess ) and players[ i ] ~= calling_ply then
+				table.remove( players, i )
+			end
+		end
+	end
+
+	local adminOnly = logEcho:GetInt() == 1
+	if adminOnly then
+		for i=#players, 1, -1 do
+			if not ULib.ucl.query( players[ i ], seeadminonlyechoAccess ) and players[ i ] ~= calling_ply then
 				table.remove( players, i )
 			end
 		end

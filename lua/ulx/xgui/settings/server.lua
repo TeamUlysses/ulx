@@ -456,7 +456,7 @@ xgui.addSubModule( "ULX Ban Message", plist, nil, "server" )
 local plist = xlib.makelistlayout{ w=275, h=322, parent=xgui.null }
 plist:Add( xlib.makelabel{ label="Command/Event echo settings" } )
 plist:Add( xlib.makecheckbox{ label="Echo players vote choices", repconvar="ulx_voteEcho" } )
-plist:Add( xlib.makecombobox{ repconvar="ulx_logEcho", isNumberConvar=true, choices={ "Do not echo admin commands", "Echo admin commands anonymously", "Echo commands and identify admin" } } )
+plist:Add( xlib.makecombobox{ repconvar="ulx_logEcho", isNumberConvar=true, choices={ "Do not echo admin commands", "Echo admin commands to admins only", "Echo admin commands anonymously", "Echo commands and identify admin" } } )
 plist:Add( xlib.makecombobox{ repconvar="ulx_logSpawnsEcho", isNumberConvar=true, choices={ "Do not echo spawns", "Echo spawns to admins only", "Echo spawns to everyone" } } )
 plist:Add( xlib.makecheckbox{ label="Enable colored event echoes", repconvar="ulx_logEchoColors" } )
 
