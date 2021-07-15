@@ -71,7 +71,8 @@ function ulx.adduserid( calling_ply, id, group_name )
 	if not checkForValidId( calling_ply, id ) then return false end
 
 	-- Now add the fool!
-	ULib.ucl.addUser( id, allows, denies, group_name )
+	local userInfo = ULib.ucl.users[ id ] or ULib.DEFAULT_GRANT_ACCESS
+	ULib.ucl.addUser( id, userInfo.allow, userInfo.deny, group_name )
 
 	if ULib.ucl.users[ id ] and ULib.ucl.users[ id ].name then
 		ulx.fancyLogAdmin( calling_ply, "#A added #s to group #s", ULib.ucl.users[ id ].name, group_name )
