@@ -12,12 +12,13 @@ function xlib.makecheckbox( t )
 	pnl:SizeToContents()
 	pnl:SetValue( t.value or 0 )
 	pnl:SetZPos( t.zpos or 0 )
+	if t.skin then pnl:SetSkin( t.skin ) end
 	if t.convar then pnl:SetConVar( t.convar ) end
 
 	if t.textcolor then
 		pnl:SetTextColor( t.textcolor )
 	else
-		pnl:SetTextColor( SKIN.text_dark )
+		pnl:SetTextColor( pnl:GetSkin().text_dark )
 	end
 
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
@@ -69,6 +70,7 @@ function xlib.makelabel( t )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetText( t.label or "" )
 	pnl:SetZPos( t.zpos or 0 )
+	if t.skin then pnl:SetSkin( t.skin ) end
 	if not t.tooltipwidth then t.tooltipwidth = 250 end
 	if t.tooltip then
 		if t.tooltipwidth ~= 0 then
@@ -88,7 +90,7 @@ function xlib.makelabel( t )
 	if t.textcolor then
 		pnl:SetTextColor( t.textcolor )
 	else
-		pnl:SetTextColor( SKIN.text_dark )
+		pnl:SetTextColor( pnl:GetSkin().text_dark )
 	end
 
 	return pnl
@@ -515,7 +517,7 @@ end
 
 function xlib.makeprogressbar( t )
 	local pnl = vgui.Create( "DProgress", t.parent )
-	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), textcolor=SKIN.text_dark, parent=pnl }
+	pnl.Label = xlib.makelabel{ x=5, y=3, w=(t.w or 100), parent=pnl }
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w or 100, t.h or 20 )
 	pnl:SetFraction( t.value or 0 )
@@ -545,11 +547,12 @@ function xlib.makeslider( t )
 	pnl.TextArea.selectAll = t.selectall
 	pnl.Label:SizeToContents()
 	pnl:SetZPos( t.zpos or 0 )
+	if t.skin then pnl.Label:SetSkin( t.skin ) end
 
 	if t.textcolor then
 		pnl.Label:SetTextColor( t.textcolor )
 	else
-		pnl.Label:SetTextColor( SKIN.text_dark )
+		pnl.Label:SetTextColor( pnl:GetSkin().text_dark )
 	end
 
 	if t.fixclip then pnl.Slider.Knob:NoClipping( false ) end --Fixes clipping on the knob, an example is the sandbox limit sliders.
