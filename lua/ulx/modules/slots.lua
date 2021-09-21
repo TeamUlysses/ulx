@@ -50,7 +50,7 @@ local function playerAccess( ply )
 
 	local visible = ULib.toBool( GetConVarString( "ulx_rslotsVisible" ) )
 	local slots = calcSlots()
-	local cur = #player.GetAll()
+	local cur = player.GetCount()
 	local max = game.MaxPlayers()
 
 	if ply:query( access ) then -- If they have access, handle this differently
