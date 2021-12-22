@@ -38,7 +38,7 @@ function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 		net.WriteString( title )
 		net.WriteInt( timeout, 16 )
 		net.WriteTable( options )
-	net.Broadcast()
+	net.Send(rp)
 	
 
 	ulx.voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, args={...} }
