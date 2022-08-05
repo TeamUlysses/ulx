@@ -1,5 +1,8 @@
 # ULX Changelog
 
+## v3.81 - *(00/00/0000)*
+* [ADD] Added chat commands to both banid and unban. (Thanks, TheByKotik)
+
 ## v3.80 - *(08/04/2022)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
 * [FIX] Don't respawn when done spectating if the user was not alive to start with (Thanks, PixeLInc).
