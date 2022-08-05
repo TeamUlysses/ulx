@@ -140,7 +140,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	-- Delay by 1 frame to ensure any chat hook finishes with player intact. Prevents a crash.
 	ULib.queueFunctionCall( ULib.addBan, steamid, minutes, reason, name, calling_ply )
 end
-local banid = ulx.command( CATEGORY_NAME, "ulx banid", ulx.banid, nil, false, false, true )
+local banid = ulx.command( CATEGORY_NAME, "ulx banid", ulx.banid, "!banid", false, false, true )
 banid:addParam{ type=ULib.cmds.StringArg, hint="steamid" }
 banid:addParam{ type=ULib.cmds.NumArg, hint="minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
 banid:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.cmds.takeRestOfLine, completes=ulx.common_kick_reasons }
@@ -163,7 +163,7 @@ function ulx.unban( calling_ply, steamid )
 		ulx.fancyLogAdmin( calling_ply, "#A unbanned steamid #s", steamid )
 	end
 end
-local unban = ulx.command( CATEGORY_NAME, "ulx unban", ulx.unban, nil, false, false, true )
+local unban = ulx.command( CATEGORY_NAME, "ulx unban", ulx.unban, "!unban", false, false, true )
 unban:addParam{ type=ULib.cmds.StringArg, hint="steamid" }
 unban:defaultAccess( ULib.ACCESS_ADMIN )
 unban:help( "Unbans steamid." )
