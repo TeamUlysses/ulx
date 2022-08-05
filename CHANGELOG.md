@@ -2,6 +2,7 @@
 
 ## v3.81 - *(00/00/0000)*
 * [ADD] Added chat commands to both banid and unban. (Thanks, TheByKotik)
+* [FIX] Recipient filter was not being used with vote confirmations. (Thanks, plally)
 
 ## v3.80 - *(08/04/2022)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
