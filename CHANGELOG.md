@@ -1,6 +1,6 @@
 # ULX Changelog
 
-## v3.74 - *(00/00/00)*
+## v3.80 - *(08/04/2022)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
 * [FIX] Don't respawn when done spectating if the user was not alive to start with (Thanks, PixeLInc).
 * [FIX] XGUI: Some CAMI-registered accesses may not have shown up in the menus.
