@@ -286,16 +286,7 @@ function ulx.teleport( calling_ply, target_ply )
 		return
 	end
 
-	local t = {}
-	t.start = calling_ply:GetPos() + Vector( 0, 0, 32 ) -- Move them up a bit so they can travel across the ground
-	t.endpos = calling_ply:GetPos() + calling_ply:EyeAngles():Forward() * 16384
-	t.filter = target_ply
-	if target_ply ~= calling_ply then
-		t.filter = { target_ply, calling_ply }
-	end
-	local tr = util.TraceEntity( t, target_ply )
-
-	local pos = tr.HitPos
+ 	local pos = calling_ply:GetEyeTrace().HitPos
 
 	if target_ply == calling_ply and pos:Distance( target_ply:GetPos() ) < 64 then -- Laughable distance
 		return
