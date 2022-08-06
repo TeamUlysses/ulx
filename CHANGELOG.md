@@ -4,6 +4,7 @@
 * [ADD] Added chat commands to both banid and unban. (Thanks, TheByKotik)
 * [FIX] Recipient filter was not being used with vote confirmations. (Thanks, plally)
 * [FIX] ulx resettodefaults will now also reset bans and users in SQLite.
+* [FIX] Changed how the eye trace on the player for teleport is calculated to make it more accurate.
 
 ## v3.80 - *(08/04/2022)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
