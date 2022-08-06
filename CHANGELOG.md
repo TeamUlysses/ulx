@@ -2,6 +2,7 @@
 
 ## v3.81 - *(00/00/0000)*
 * [ADD] Added chat commands to both banid and unban. (Thanks, TheByKotik)
+* [ADD] Added convar (ulx_motdDisabledMessage <0/1>) to disable the MOTD Disabled on server message if desired.
 * [FIX] Recipient filter was not being used with vote confirmations. (Thanks, plally)
 * [FIX] ulx resettodefaults will now also reset bans and users in SQLite.
 * [FIX] Changed how the eye trace on the player for teleport is calculated to make it more accurate.
