@@ -639,9 +639,8 @@ end
 hook.Add( "PhysgunDrop", "ulxPlayerDropJailCheck", playerDrop )
 
 ------------------------------ Ragdoll ------------------------------
-local function ragdollPlayer( v )
+function ulx.ragdollPlayer( v )
 	if v:InVehicle() then
-		local vehicle = v:GetParent()
 		v:ExitVehicle()
 	end
 
@@ -673,7 +672,7 @@ local function ragdollPlayer( v )
 	v:SpectateEntity( ragdoll )
 	v:StripWeapons() -- Otherwise they can still use the weapons.
 
-	ragdoll:DisallowDeleting( true, function( old, new )
+	ragdoll:DisallowDeleting( true, function( _, new )
 		if v:IsValid() then v.ragdoll = new end
 	end )
 	v:DisallowSpawning( true )
@@ -682,7 +681,7 @@ local function ragdollPlayer( v )
 	ulx.setExclusive( v, "ragdolled" )
 end
 
-local function unragdollPlayer( v )
+function ulx.unragdollPlayer( v )
 	v:DisallowSpawning( false )
 	v:SetParent()
 
@@ -721,11 +720,11 @@ function ulx.ragdoll( calling_ply, target_plys, should_unragdoll )
 			elseif not v:Alive() then
 				ULib.tsayError( calling_ply, v:Nick() .. " is dead and cannot be ragdolled!", true )
 			else
-				ragdollPlayer( v )
+				ulx.ragdollPlayer( v )
 				table.insert( affected_plys, v )
 			end
 		elseif v.ragdoll then -- Only if they're ragdolled...
-			unragdollPlayer( v )
+			ulx.unragdollPlayer( v )
 			table.insert( affected_plys, v )
 		end
 	end
@@ -769,7 +768,7 @@ local function removeRagdollOnCleanup()
 		local ply = players[i]
 		if ply.ragdoll then
 			ply.ragdollAfterCleanup = true
-			unragdollPlayer( ply )
+			ulx.unragdollPlayer( ply )
 		end
 	end
 end
@@ -782,7 +781,7 @@ local function createRagdollAfterCleanup()
 		if ply.ragdollAfterCleanup then
 			ply.ragdollAfterCleanup = nil
 			timer.Simple( 0.1, function() -- Doesn't like us re-creating the ragdoll immediately
-				ragdollPlayer( ply )
+				ulx.ragdollPlayer( ply )
 			end)
 		end
 	end
