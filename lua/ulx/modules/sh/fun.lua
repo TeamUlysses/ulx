@@ -188,15 +188,19 @@ unigniteall:defaultAccess( ULib.ACCESS_ADMIN )
 unigniteall:help( "Extinguishes all players and all entities." )
 
 ------------------------------ Playsound ------------------------------
+if SERVER then
+	util.AddNetworkString( "ulib_sound" )
+end
+
 function ulx.playsound( calling_ply, sound )
 	if not ULib.fileExists( "sound/" .. sound ) then
 		ULib.tsayError( calling_ply, "That sound doesn't exist on the server!", true )
 		return
 	end
 
-	umsg.Start( "ulib_sound" )
-		umsg.String( Sound( sound ) )
-	umsg.End()
+	net.Start( "ulib_sound" )
+		net.WriteString( Sound( sound ) )
+	net.Broadcast()
 
 	ulx.fancyLogAdmin( calling_ply, "#A played sound #s", sound )
 end
@@ -346,13 +350,17 @@ cloak:help( "Cloaks target(s)." )
 cloak:setOpposite( "ulx uncloak", {_, _, _, true}, "!uncloak" )
 
 ------------------------------ Blind ------------------------------
+if SERVER then
+	util.AddNetworkString( "ulx_blind" )
+end
 function ulx.blind( calling_ply, target_plys, amount, should_unblind )
 	for i=1, #target_plys do
 		local v = target_plys[ i ]
-		umsg.Start( "ulx_blind", v )
-			umsg.Bool( not should_unblind )
-			umsg.Short( amount )
-		umsg.End()
+		
+		net.Start( "ulx_blind" )
+			net.WriteBool( not should_unblind )
+			net.WriteInt( amount, 16 )
+		net.Send( v )
 
 		if should_unblind then
 			if v.HadCamera then
@@ -631,9 +639,8 @@ end
 hook.Add( "PhysgunDrop", "ulxPlayerDropJailCheck", playerDrop )
 
 ------------------------------ Ragdoll ------------------------------
-local function ragdollPlayer( v )
+function ulx.ragdollPlayer( v )
 	if v:InVehicle() then
-		local vehicle = v:GetParent()
 		v:ExitVehicle()
 	end
 
@@ -665,7 +672,7 @@ local function ragdollPlayer( v )
 	v:SpectateEntity( ragdoll )
 	v:StripWeapons() -- Otherwise they can still use the weapons.
 
-	ragdoll:DisallowDeleting( true, function( old, new )
+	ragdoll:DisallowDeleting( true, function( _, new )
 		if v:IsValid() then v.ragdoll = new end
 	end )
 	v:DisallowSpawning( true )
@@ -674,7 +681,7 @@ local function ragdollPlayer( v )
 	ulx.setExclusive( v, "ragdolled" )
 end
 
-local function unragdollPlayer( v )
+function ulx.unragdollPlayer( v )
 	v:DisallowSpawning( false )
 	v:SetParent()
 
@@ -713,11 +720,11 @@ function ulx.ragdoll( calling_ply, target_plys, should_unragdoll )
 			elseif not v:Alive() then
 				ULib.tsayError( calling_ply, v:Nick() .. " is dead and cannot be ragdolled!", true )
 			else
-				ragdollPlayer( v )
+				ulx.ragdollPlayer( v )
 				table.insert( affected_plys, v )
 			end
 		elseif v.ragdoll then -- Only if they're ragdolled...
-			unragdollPlayer( v )
+			ulx.unragdollPlayer( v )
 			table.insert( affected_plys, v )
 		end
 	end
@@ -732,7 +739,7 @@ local ragdoll = ulx.command( CATEGORY_NAME, "ulx ragdoll", ulx.ragdoll, "!ragdol
 ragdoll:addParam{ type=ULib.cmds.PlayersArg }
 ragdoll:addParam{ type=ULib.cmds.BoolArg, invisible=true }
 ragdoll:defaultAccess( ULib.ACCESS_ADMIN )
-ragdoll:help( "Ragdolls target(s)." )
+ragdoll:help( "ragdolls target(s)." )
 ragdoll:setOpposite( "ulx unragdoll", {_, _, true}, "!unragdoll" )
 
 local function ragdollSpawnCheck( ply )
@@ -761,7 +768,7 @@ local function removeRagdollOnCleanup()
 		local ply = players[i]
 		if ply.ragdoll then
 			ply.ragdollAfterCleanup = true
-			unragdollPlayer( ply )
+			ulx.unragdollPlayer( ply )
 		end
 	end
 end
@@ -774,7 +781,7 @@ local function createRagdollAfterCleanup()
 		if ply.ragdollAfterCleanup then
 			ply.ragdollAfterCleanup = nil
 			timer.Simple( 0.1, function() -- Doesn't like us re-creating the ragdoll immediately
-				ragdollPlayer( ply )
+				ulx.ragdollPlayer( ply )
 			end)
 		end
 	end

@@ -48,7 +48,9 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		end
 
 		if GetConVarString( "ulx_showMotd" ) == "0" then
-			ULib.tsay( calling_ply, "The MOTD has been disabled on this server." )
+			if GetConVarString( "ulx_motdDisabledMessage" ) == "1" then
+				ULib.tsay( calling_ply, "The MOTD has been disabled on this server." )
+			end
 			return
 		end
 
@@ -67,6 +69,7 @@ if ULib.fileExists( "lua/ulx/modules/cl/motdmenu.lua" ) or ulx.motdmenu_exists t
 		ulx.convar( "showMotd", "2", " <0/1/2/3> - MOTD mode. 0 is off.", ULib.ACCESS_ADMIN )
 		ulx.convar( "motdfile", "ulx_motd.txt", "MOTD filepath from gmod root to use if ulx showMotd is 1.", ULib.ACCESS_ADMIN )
 		ulx.convar( "motdurl", "ulyssesmod.net", "MOTD URL to use if ulx showMotd is 3.", ULib.ACCESS_ADMIN )
+		ulx.convar( "motdDisabledMessage", "1", "<0/1> - Show disabled message when MOTD command is run if MOTD is disabled by the server. 0 is off.", ULib.ACCESS_ADMIN )
 
 		function ulx.populateMotdData()
 			if ulx.motdSettings == nil or ulx.motdSettings.info == nil then return end

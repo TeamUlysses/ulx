@@ -34,11 +34,16 @@ function bans.init()
 			return
 		end
 
-		local steamID = args[1]
+		local steamID = args[1] or ""
 		local bantime = tonumber( args[2] )
 		local reason = args[3]
 		local name = args[4]
 
+		-- Check steamid
+		if not ULib.isValidSteamID(steamID) then
+			ULib.tsayError( ply, "Invalid steamid", true )
+			return
+		end
 
 		-- Check restrictions
 		local cmd = ULib.cmds.translatedCmds[ "ulx ban" ]
@@ -100,10 +105,9 @@ function bans.init()
 		xgui.bansbyunban = {}
 		xgui.bansbybanlength = {}
 	end
-
-	function bans.getSortTable( sortType )
-		-- Retrieve the sorted table of bans. If type hasn't been sorted, then sort and cache.
-		if sortType == 1 then
+	
+	local sortTypeTable = {
+		[1] = function()
 			-- Bans by Name
 			if next( xgui.bansbyname ) == nil then
 				for k, v in pairs( ULib.bans ) do
@@ -113,7 +117,8 @@ function bans.init()
 			end
 			return xgui.bansbyname
 
-		elseif sortType == 2 then
+		end,
+		[2] = function()
 			-- Bans by SteamID
 			if next( xgui.bansbyid ) == nil then
 				for k, v in pairs( ULib.bans ) do
@@ -123,7 +128,8 @@ function bans.init()
 			end
 			return xgui.bansbyid
 
-		elseif sortType == 3 then
+		end,
+		[3] = function()
 			-- Bans by Admin
 			if next( xgui.bansbyadmin ) == nil then
 				for k, v in pairs( ULib.bans ) do
@@ -133,7 +139,8 @@ function bans.init()
 			end
 			return xgui.bansbyadmin
 
-		elseif sortType == 4 then
+		end,
+		[4] = function()
 			-- Bans by Reason
 			if next( xgui.bansbyreason ) == nil then
 				for k, v in pairs( ULib.bans ) do
@@ -142,8 +149,9 @@ function bans.init()
 				table.sort( xgui.bansbyreason, function( a, b ) return a[2] < b[2] end )
 			end
 			return xgui.bansbyreason
-
-		elseif sortType == 5 then
+			
+		end,
+		[5] = function()
 			-- Bans by Unban Date
 			if next( xgui.bansbyunban ) == nil then
 				for k, v in pairs( ULib.bans ) do
@@ -153,7 +161,8 @@ function bans.init()
 			end
 			return xgui.bansbyunban
 
-		elseif sortType == 6 then
+		end,
+		[6] = function()
 			-- Bans by Ban Length
 			if next( xgui.bansbybanlength ) == nil then
 				for k, v in pairs( ULib.bans ) do
@@ -163,7 +172,9 @@ function bans.init()
 			end
 			return xgui.bansbybanlength
 
-		else
+		end,
+		[7] = function()
+			-- Bans by Ban Date
 			if next( xgui.bansbydate ) == nil then
 				for k, v in pairs( ULib.bans ) do
 					table.insert( xgui.bansbydate, { k, v.time or 0 } )
@@ -171,7 +182,12 @@ function bans.init()
 				table.sort( xgui.bansbydate, function( a, b ) return tonumber( a[2] ) > tonumber( b[2] ) end )
 			end
 			return xgui.bansbydate
-		end
+		end,
+	}
+	function bans.getSortTable( sortType )
+		-- Retrieve the sorted table of bans. If type hasn't been sorted, then sort and cache.
+		local value = sortTypeTable[sortType] and sortTypeTable[sortType]() or sortTypeTable[7]()
+		return value
 	end
 
 	function bans.sendBansToUser( ply, args )
