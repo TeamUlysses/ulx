@@ -64,7 +64,7 @@ map:help( "Changes map and gamemode." )
 function ulx.kick( calling_ply, target_ply, reason )
 	if target_ply:IsListenServerHost() then
 		ULib.tsayError( calling_ply, "This player is immune to kicking", true )
-		return
+		return false
 	end
 
 	if reason and reason ~= "" then
@@ -86,7 +86,7 @@ kick:help( "Kicks target." )
 function ulx.ban( calling_ply, target_ply, minutes, reason )
 	if target_ply:IsListenServerHost() or target_ply:IsBot() then
 		ULib.tsayError( calling_ply, "This player is immune to banning", true )
-		return
+		return false
 	end
 
 	local time = "for #s"
@@ -109,7 +109,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 	steamid = steamid:upper()
 	if not ULib.isValidSteamID( steamid ) then
 		ULib.tsayError( calling_ply, "Invalid steamid." )
-		return
+		return false
 	end
 
 	local name, target_ply
@@ -124,7 +124,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 
 	if target_ply and (target_ply:IsListenServerHost() or target_ply:IsBot()) then
 		ULib.tsayError( calling_ply, "This player is immune to banning", true )
-		return
+		return false
 	end
 
 	local time = "for #s"
@@ -151,7 +151,7 @@ function ulx.unban( calling_ply, steamid )
 	steamid = steamid:upper()
 	if not ULib.isValidSteamID( steamid ) then
 		ULib.tsayError( calling_ply, "Invalid steamid." )
-		return
+		return false
 	end
 
 	name = ULib.bans[ steamid ] and ULib.bans[ steamid ].name

@@ -5,7 +5,7 @@ CATEGORY_NAME = "Chat"
 function ulx.psay( calling_ply, target_ply, message )
 	if calling_ply:GetNWBool( "ulx_muted", false ) then
 		ULib.tsayError( calling_ply, "You are muted, and therefore cannot speak! Use asay for admin chat if urgent.", true )
-		return
+		return false
 	end
 
 	ulx.fancyLog( { target_ply, calling_ply }, "#P to #P: " .. message, calling_ply, target_ply )
@@ -77,7 +77,7 @@ local lasttimeusage = -waittime
 function ulx.thetime( calling_ply )
 	if lasttimeusage + waittime > CurTime() then
 		ULib.tsayError( calling_ply, "I just told you what time it is! Please wait " .. waittime .. " seconds before using this command again", true )
-		return
+		return false
 	end
 
 	lasttimeusage = CurTime()

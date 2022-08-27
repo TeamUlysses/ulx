@@ -130,7 +130,7 @@ end
 function ulx.vote( calling_ply, title, ... )
 	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
-		return
+		return false
 	end
 
 	ulx.doVote( title, { ... }, voteDone )
@@ -146,7 +146,7 @@ vote:help( "Starts a public vote." )
 function ulx.stopVote( calling_ply )
 	if not ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is no vote currently in progress.", true )
-		return
+		return false
 	end
 
 	ulx.voteDone( true )
@@ -217,13 +217,13 @@ function ulx.votemap2( calling_ply, ... )
 
 	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
-		return
+		return false
 	end
 
 	for i=2, #argv do
 	    if ULib.findInTable( argv, argv[ i ], 1, i-1 ) then
 	        ULib.tsayError( calling_ply, "Map " .. argv[ i ] .. " was listed twice. Please try again" )
-	        return
+	        return false
 	    end
 	end
 
@@ -299,12 +299,12 @@ end
 function ulx.votekick( calling_ply, target_ply, reason )
 	if target_ply:IsListenServerHost() then
 		ULib.tsayError( calling_ply, "This player is immune to kicking", true )
-		return
+		return false
 	end
 
 	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
-		return
+		return false
 	end
 
 	local msg = "Kick " .. target_ply:Nick() .. "?"
@@ -379,12 +379,12 @@ end
 function ulx.voteban( calling_ply, target_ply, minutes, reason )
 	if target_ply:IsListenServerHost() or target_ply:IsBot() then
 		ULib.tsayError( calling_ply, "This player is immune to banning", true )
-		return
+		return false
 	end
 
 	if ulx.voteInProgress then
 		ULib.tsayError( calling_ply, "There is already a vote in progress. Please wait for the current one to end.", true )
-		return
+		return false
 	end
 
 	local msg = "Ban " .. target_ply:Nick() .. " for " .. minutes .. " minutes?"
