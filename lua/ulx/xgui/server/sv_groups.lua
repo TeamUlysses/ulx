@@ -31,7 +31,7 @@ function groups.init()
 	xgui.addCmd( "setinheritance", groups.setInheritance )
 
 	function xgui.playerExistsByID( id )
-		for k, v in pairs( player.GetAll() ) do
+		for k, v in ipairs( player.GetAll() ) do
 			if v:SteamID() == id or v:UniqueID() == id or ULib.splitPort( v:IPAddress() ) == id then
 				return v
 			end
