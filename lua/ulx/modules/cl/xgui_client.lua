@@ -524,7 +524,7 @@ function xgui.PermissionsChanged( ply )
 		xgui.processModules()
 		local types = {}
 		for dtype, data in pairs( xgui.data ) do
-			if table.Count( data ) > 0 then table.insert( types, dtype ) end
+			if not table.IsEmpty(data) then table.insert( types, dtype ) end
 		end
 		RunConsoleCommand( "xgui", "refreshdata", unpack( types ) )
 	end
