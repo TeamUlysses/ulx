@@ -51,7 +51,6 @@ end
 
 
 net.Receive( "ulx_blind", function( ln )
-	print("ADAD")
 	local bool = net.ReadBool()
 	local amt = net.ReadInt(16)
 	ulx.blindUser( bool, amt )
