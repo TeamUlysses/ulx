@@ -1030,6 +1030,8 @@ function groups.updateTeams()
 		groups.upbtn:SetDisabled( true )
 		groups.downbtn:SetDisabled( true )
 		groups.teamdelete:SetDisabled( true )
+		groups.teammodadd:SetDisabled( true )
+		groups.teammodremove:SetDisabled( true )
 	end
 	groups.teams:SetText( groups.getGroupsTeam( groups.list:GetValue() ) )
 end
