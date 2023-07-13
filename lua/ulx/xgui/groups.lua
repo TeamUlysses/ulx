@@ -489,7 +489,11 @@ xgui.allowedTeamModifiers = {
 
 groups.teammodadd = xlib.makebutton{ x=110, y=180, w=75, label="Add..", disabled=true, parent=groups.pnlG3 }
 groups.teammodadd.DoClick = function()
-	local team = groups.teamlist:GetSelected()[1]:GetColumnText(1)
+	local selectedItem = groups.teamlist:GetSelected()[1]
+	if selectedItem == nil then
+		return
+	end
+	local team = selectedItem:GetColumnText(1)
 	local teamdata
 	for i, v in pairs( xgui.data.teams ) do
 		if v.name == team then teamdata = v end
@@ -519,7 +523,11 @@ groups.teammodadd.DoClick = function()
 end
 groups.teammodremove = xlib.makebutton{ x=185, y=180, w=75, label="Remove", disabled=true, parent=groups.pnlG3 }
 groups.teammodremove.DoClick = function()
-	local team = groups.teamlist:GetSelected()[1]:GetColumnText(1)
+	local selectedItem = groups.teamlist:GetSelected()[1]
+	if selectedItem == nil then
+		return
+	end
+	local team = selectedItem:GetColumnText(1)
 	local modifier = groups.teammodifiers:GetSelected()[1]:GetColumnText(1)
 	RunConsoleCommand( "xgui", "updateTeamValue", team, modifier, "" )
 end
