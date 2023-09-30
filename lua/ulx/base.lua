@@ -36,7 +36,7 @@ end
 function ulx.addToHelpManually( category, cmd, string, access_tag )
 	ulx.cmdsByCategory[ category ] = ulx.cmdsByCategory[ category ] or {}
 	for i=#ulx.cmdsByCategory[ category ],1,-1 do
-		existingCmd = ulx.cmdsByCategory[ category ][i]
+		local existingCmd = ulx.cmdsByCategory[ category ][i]
 		if existingCmd.cmd == cmd and existingCmd.manual == true then
 			table.remove( ulx.cmdsByCategory[ category ], i)
 			break
