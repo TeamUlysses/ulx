@@ -1227,3 +1227,18 @@ local function fadeAnim_end( data )
 	if data.panelIn then data.panelIn:SetAlpha( 255 ) end
 end
 xlib.registerAnimType( "pnlFade", fadeAnim_run, fadeAnim_start, fadeAnim_end )
+
+
+-------------------------
+-- Convar/Listen helpers
+-------------------------
+
+-- Useful for switching between cvar or replicated cvar depending on if the player is the host
+xlib.ifListenHost = function(value)
+	if LocalPlayer():IsListenServerHost() then return value end
+	return nil
+end
+xlib.ifNotListenHost = function(value)
+	if not LocalPlayer():IsListenServerHost() then return value end
+	return nil
+end
