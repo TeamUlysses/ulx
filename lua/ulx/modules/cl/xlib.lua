@@ -9,7 +9,7 @@ function xlib.makecheckbox( t )
 	local pnl = vgui.Create( "DCheckBoxLabel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetText( t.label or "" )
-	if t.dock then pnl:Dock( t.dock ) end // NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
 	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
 	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[2], t.dockpadding[3], t.dockpadding[4] ) end
 	pnl:SizeToContents()
@@ -70,7 +70,7 @@ end
 function xlib.makelabel( t )
 	local pnl = vgui.Create( "DLabel", t.parent )
 	pnl:SetPos( t.x, t.y )
-	if t.dock then pnl:Dock( t.dock ) end // NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
 	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
 	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[2], t.dockpadding[3], t.dockpadding[4] ) end
 	pnl:SetText( t.label or "" )
@@ -186,7 +186,7 @@ function xlib.maketextbox( t )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetWide( t.w )
 	pnl:SetTall( t.h or 20 )
-	if t.dock then pnl:Dock( t.dock ) end // NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
 	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
 	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[3], t.dockpadding[3], t.dockpadding[4] ) end
 	pnl:SetEnterAllowed( true )
@@ -291,7 +291,7 @@ function xlib.makepanel( t )
 	local pnl = vgui.Create( "DPanel", t.parent )
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
-	if t.dock then pnl:Dock( t.dock ) end // NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
 	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
 	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[2], t.dockpadding[3], t.dockpadding[4] ) end
 	pnl:SetZPos( t.zpos or 0 )
@@ -551,7 +551,7 @@ function xlib.makeslider( t )
 	pnl:SetWide( t.w or 100 )
 	pnl:SetTall( t.h or 20 )
 	pnl:SetText( t.label or "" )
-	if t.dock then pnl:Dock( t.dock ) end // NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
 	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
 	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[2], t.dockpadding[3], t.dockpadding[4] ) end
 	pnl:SetMinMax( t.min or 0, t.max or 100 )
