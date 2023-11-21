@@ -300,6 +300,19 @@ function xlib.makepanel( t )
 	return pnl
 end
 
+function xlib.makescrollpanel( t )
+	local pnl = vgui.Create( "DScrollPanel", t.parent )
+	pnl:SetPos( t.x, t.y )
+	pnl:SetSize( t.w, t.h )
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
+	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[2], t.dockpadding[3], t.dockpadding[4] ) end
+	pnl:SetZPos( t.zpos or 0 )
+	if t.skin then pnl:SetSkin( t.skin ) end
+	if t.visible ~= nil then pnl:SetVisible( t.visible ) end
+	return pnl
+end
+
 function xlib.makeXpanel( t )
 	local pnl = vgui.Create( "xlib_Panel", t.parent )
 	pnl:MakePopup()
