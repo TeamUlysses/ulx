@@ -4,20 +4,20 @@
 local server = xlib.makepanel{ parent=xgui.null }
 
 --------------------------GMOD Settings--------------------------
-xlib.makecheckbox{ x=10, y=10, label="Enable Voice Chat", repconvar="rep_sv_voiceenable", parent=server }
+xlib.makecheckbox{ x=10, y=10, label="Enable Voice Chat", convar=xlib.ifListenHost("sv_voiceenable"), repconvar=xlib.ifNotListenHost("rep_sv_voiceenable"), parent=server }
 xlib.makelabel{ x=10, y=33, label="Alltalk setting:", parent=server }
 xlib.makecombobox{ x=10, y=50, w=120, repconvar="rep_sv_alltalk", isNumberConvar=true, choices={ "Team near you", "Team only", "Everyone near you", "Everyone" }, parent=server }
-xlib.makecheckbox{ x=10, y=75, label="Disable AI", repconvar="rep_ai_disabled", parent=server }
-xlib.makecheckbox{ x=10, y=95, label="AI Ignore Players", repconvar="rep_ai_ignoreplayers", parent=server }
+xlib.makecheckbox{ x=10, y=75, label="Disable AI", convar=xlib.ifListenHost("ai_disabled"), repconvar=xlib.ifNotListenHost("rep_ai_disabled"), parent=server }
+xlib.makecheckbox{ x=10, y=95, label="AI Ignore Players", convar=xlib.ifListenHost("ai_ignoreplayers"), repconvar=xlib.ifNotListenHost("rep_ai_ignoreplayers"), parent=server }
 local offset = 0
 if game.SinglePlayer() then
 	offset = 20
-	xlib.makecheckbox{ x=10, y=115, label="Keep AI Ragdolls", repconvar="rep_ai_keepragdolls", parent=server }
+	xlib.makecheckbox{ x=10, y=115, label="Keep AI Ragdolls", convar=xlib.ifListenHost("ai_keepragdolls"), repconvar=xlib.ifNotListenHost("rep_ai_keepragdolls"), parent=server }
 end
 xlib.makelabel{ x=10, y=120+offset, label="sv_gravity", parent=server }
-xlib.makeslider{ x=10, y=135+offset, label="<--->", w=125, min=-1000, max=1000, repconvar="rep_sv_gravity", parent=server }
+xlib.makeslider{ x=10, y=135+offset, label="<--->", w=125, min=-1000, max=1000, convar=xlib.ifListenHost("sv_gravity"), repconvar=xlib.ifNotListenHost("rep_sv_gravity"), parent=server }
 xlib.makelabel{ x=10, y=165+offset, label="phys_timescale", parent=server }
-xlib.makeslider{ x=10, y=180+offset, label="<--->", w=125, min=0, max=4, decimal=2, repconvar="rep_phys_timescale", parent=server }
+xlib.makeslider{ x=10, y=180+offset, label="<--->", w=125, min=0, max=4, decimal=2, convar=xlib.ifListenHost("phys_timescale"), repconvar=xlib.ifNotListenHost("rep_phys_timescale"), parent=server }
 
 ------------------------ULX Category Menu------------------------
 server.mask = xlib.makepanel{ x=295, y=5, w=290, h=322, parent=server }
