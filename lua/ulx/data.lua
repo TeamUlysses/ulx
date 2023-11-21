@@ -207,22 +207,22 @@ Not yet, I'm being attacked by an... OH CRAP!
 files["sbox_limits.txt"] =
 [[;The number by each cvar indicates the maximum value for the slider in XGUI.
 |Sandbox
-sbox_maxballoons 100
+sbox_maxballoons 200
 sbox_maxbuttons 200
-sbox_maxcameras 50
-sbox_maxdynamite 75
+sbox_maxcameras 200
+sbox_maxdynamite 200
 sbox_maxeffects 200
-sbox_maxemitters 100
+sbox_maxemitters 200
 sbox_maxhoverballs 200
-sbox_maxlamps 50
-sbox_maxlights 50
-sbox_maxnpcs 50
+sbox_maxlamps 200
+sbox_maxlights 200
+sbox_maxnpcs 200
 sbox_maxprops 1000
-sbox_maxragdolls 50
+sbox_maxragdolls 200
 sbox_maxsents 1024
 sbox_maxthrusters 200
-sbox_maxturrets 50
-sbox_maxvehicles 50
+sbox_maxturrets 200
+sbox_maxvehicles 200
 sbox_maxwheels 200
 |Other
 sbox_maxdoors 100
