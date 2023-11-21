@@ -5,16 +5,24 @@ local function init()
 	if ULib.isSandbox() then --Only execute the following code if it's a sandbox gamemode
 		xgui.addDataType( "sboxlimits", function() return xgui.sboxLimits end, "xgui_gmsettings", 0, -20 )
 
-		ULib.replicatedWritableCvar( "physgun_limited", "rep_physgun_limited", GetConVarNumber( "physgun_limited" ), false, false, "xgui_gmsettings" )
-		ULib.replicatedWritableCvar( "sbox_noclip", "rep_sbox_noclip", GetConVarNumber( "sbox_noclip" ), false, false, "xgui_gmsettings" )
-		ULib.replicatedWritableCvar( "sbox_godmode", "rep_sbox_godmode", GetConVarNumber( "sbox_godmode" ), false, false, "xgui_gmsettings" )
-		ULib.replicatedWritableCvar( "sbox_playershurtplayers", "rep_sbox_playershurtplayers", GetConVarNumber( "sbox_playershurtplayers" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_weapons", "rep_sbox_weapons", GetConVarNumber( "sbox_weapons" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_godmode", "rep_sbox_godmode", GetConVarNumber( "sbox_godmode" ), false, false, "xgui_gmsettings" )
 
-		ULib.replicatedWritableCvar( "sbox_persist", "rep_sbox_persist", GetConVarNumber( "sbox_persist" ), false, false, "xgui_gmsettings" )
-		ULib.replicatedWritableCvar( "sbox_bonemanip_misc", "rep_sbox_bonemanip_misc", GetConVarNumber( "sbox_bonemanip_misc" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_playershurtplayers", "rep_sbox_playershurtplayers", GetConVarNumber( "sbox_playershurtplayers" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_noclip", "rep_sbox_noclip", GetConVarNumber( "sbox_noclip" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_bonemanip_npc", "rep_sbox_bonemanip_npc", GetConVarNumber( "sbox_bonemanip_npc" ), false, false, "xgui_gmsettings" )
 		ULib.replicatedWritableCvar( "sbox_bonemanip_player", "rep_sbox_bonemanip_player", GetConVarNumber( "sbox_bonemanip_player" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "sbox_bonemanip_misc", "rep_sbox_bonemanip_misc", GetConVarNumber( "sbox_bonemanip_misc" ), false, false, "xgui_gmsettings" )
+
+		ULib.replicatedWritableCvar( "physgun_limited", "rep_physgun_limited", GetConVarNumber( "physgun_limited" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "physgun_maxrange", "rep_physgun_maxrange", GetConVarNumber( "physgun_maxrange" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "physgun_teleportDistance", "rep_physgun_teleportDistance", GetConVarNumber( "physgun_teleportDistance" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "physgun_maxSpeed", "rep_physgun_maxSpeed", GetConVarNumber( "physgun_maxSpeed" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "physgun_maxAngular", "rep_physgun_maxAngular", GetConVarNumber( "physgun_maxAngular" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "physgun_timeToArrive", "rep_physgun_timeToArrive", GetConVarNumber( "physgun_timeToArrive" ), false, false, "xgui_gmsettings" )
+		ULib.replicatedWritableCvar( "physgun_timeToArriveRagdoll", "rep_physgun_timeToArriveRagdoll", GetConVarString( "physgun_timeToArriveRagdoll" ), false, false, "xgui_gmsettings" )
+
+		ULib.replicatedWritableCvar( "sbox_persist", "rep_sbox_persist", GetConVarNumber( "sbox_persist" ), false, false, "xgui_gmsettings" )
 
 		--Process the list of known Sandbox Cvar Limits and check if they exist
 		xgui.sboxLimits = {}
