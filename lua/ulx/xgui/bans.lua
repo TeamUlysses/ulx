@@ -284,7 +284,7 @@ function xgui.ShowBanWindow( ply, ID, doFreeze, isUpdate, bandata )
 	local name
 	if not isUpdate then
 		name = xlib.makecombobox{ x=75, y=30, w=200, parent=xgui_banwindow, enableinput=true, selectall=true }
-		for k,v in pairs( player.GetAll() ) do
+		for k,v in ipairs( player.GetAll() ) do
 			name:AddChoice( v:Nick(), v:SteamID() )
 		end
 		name.OnSelect = function( self, index, value, data )

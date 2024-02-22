@@ -377,7 +377,7 @@ function xlib.makecombobox( t )
 
 	--Garrys function with no comments, just adding support for Spacers and setting the skin.
 	function pnl:OpenMenu()
-		if ( #self.Choices == 0 ) then return end
+		if ( table.IsEmpty(self.Choices) ) then return end
 		if ( IsValid( self.Menu ) ) then
 			self.Menu:Remove()
 			self.Menu = nil
@@ -1126,14 +1126,14 @@ xlib.animQueue_forceStop = function()
 end
 
 xlib.animQueue_call = function()
-	if #xlib.animQueue > 0 then
+	if not table.IsEmpty(xlib.animQueue) then
 		local func = xlib.animQueue[1]
 		table.remove( xlib.animQueue, 1 )
 		func()
 	else
 		xlib.animRunning = nil
 		--Check for queues in the backup that haven't been started.
-		if #xlib.animBackupQueue > 0 then
+		if not table.IsEmpty(xlib.animBackupQueue) then
 			xlib.animQueue = table.Copy( xlib.animBackupQueue )
 			xlib.animBackupQueue = {}
 			xlib.animQueue_start()

@@ -139,7 +139,7 @@ function xgui.init()
 		if type( plys ) == "Player" then
 			plys = { plys }
 		elseif #plys == 0 then
-			for _, v in pairs( player.GetAll() ) do
+			for _, v in ipairs( player.GetAll() ) do
 				table.insert( plys, v )
 			end
 		end
@@ -324,7 +324,7 @@ function xgui.postInit()
 	for _, v in ipairs( xgui.svmodules ) do if v.postinit then v.postinit() end end
 
 	--Fix any users who requested data before the server was ready
-	for _, ply in pairs( player.GetAll() ) do
+	for _, ply in ipairs( player.GetAll() ) do
 		for UID, data in pairs( xgui.activeUsers ) do
 			if ply:UniqueID() == UID then
 				ULib.clientRPC( ply, "xgui.getChunk", -1, "Initializing..." )
