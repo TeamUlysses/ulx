@@ -11,10 +11,26 @@ xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Enable Voice Chat", co
 xlib.makecheckbox{ dock=TOP, dockmargin={0,20,0,0}, label="Disable AI", convar=xlib.ifListenHost("ai_disabled"), repconvar=xlib.ifNotListenHost("rep_ai_disabled"), parent=sidepanel }
 xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="AI Ignore Players", convar=xlib.ifListenHost("ai_ignoreplayers"), repconvar=xlib.ifNotListenHost("rep_ai_ignoreplayers"), parent=sidepanel }
 xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Keep Corpses", convar=xlib.ifListenHost("ai_serverragdolls"), repconvar=xlib.ifNotListenHost("rep_ai_serverragdolls"), parent=sidepanel }
+xlib.makecheckbox{ dock=TOP, dockmargin={0,20,0,0}, label="Stick to ground", convar=xlib.ifListenHost("sv_sticktoground"), repconvar=xlib.ifNotListenHost("rep_sv_sticktoground"), parent=sidepanel }
+xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="USE key prop pickups", convar=xlib.ifListenHost("sv_playerpickupallowed"), repconvar=xlib.ifNotListenHost("rep_sv_playerpickupallowed"), parent=sidepanel }
+xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Realistic fall damage", convar=xlib.ifListenHost("mp_falldamage"), repconvar=xlib.ifNotListenHost("rep_mp_falldamage"), parent=sidepanel }
+xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="HEV Suit functionality", convar=xlib.ifListenHost("gmod_suit"), repconvar=xlib.ifNotListenHost("rep_gmod_suit"), parent=sidepanel }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Gravity", parent=sidepanel }
 xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=-1000, max=1000, convar=xlib.ifListenHost("sv_gravity"), repconvar=xlib.ifNotListenHost("rep_sv_gravity"), parent=sidepanel, fixclip=true }
+xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Ground Friction", parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=-2, max=16, convar=xlib.ifListenHost("sv_friction"), repconvar=xlib.ifNotListenHost("rep_sv_friction"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Physics Timescale", parent=sidepanel }
 xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=4, decimal=2, convar=xlib.ifListenHost("phys_timescale"), repconvar=xlib.ifNotListenHost("rep_phys_timescale"), parent=sidepanel, fixclip=true }
+xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Weapon Deploy Speed", parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0.1, max=10, decimal=2, convar=xlib.ifListenHost("sv_defaultdeployspeed"), repconvar=xlib.ifNotListenHost("rep_sv_defaultdeployspeed"), parent=sidepanel, fixclip=true }
+xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Noclip Speed", parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=1, max=10, convar=xlib.ifListenHost("sv_noclipspeed"), repconvar=xlib.ifNotListenHost("rep_sv_noclipspeed"), parent=sidepanel, fixclip=true }
+xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Ammo Limit", parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=9999, convar=xlib.ifListenHost("gmod_maxammo"), repconvar=xlib.ifNotListenHost("rep_gmod_maxammo"), parent=sidepanel, fixclip=true }
+xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Physics Iterations", parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10, convar=xlib.ifListenHost("gmod_physiterations"), repconvar=xlib.ifNotListenHost("rep_gmod_physiterations"), parent=sidepanel, fixclip=true }
+xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Client Timeout", parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=60, max=300, convar=xlib.ifListenHost("sv_timeout"), repconvar=xlib.ifNotListenHost("rep_sv_timeout"), parent=sidepanel, fixclip=true }
 
 ------------------------ULX Category Menu------------------------
 server.mask = xlib.makepanel{ x=300, y=5, w=285, h=322, parent=server }
