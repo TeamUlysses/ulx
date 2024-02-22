@@ -3,10 +3,18 @@
 ## v3.81 - *(00/00/0000)*
 * [ADD] Added chat commands to both banid and unban. (Thanks, TheByKotik)
 * [ADD] Added convar (ulx_motdDisabledMessage <0/1>) to disable the MOTD Disabled on server message if desired.
+* [ADD] XGUI: Support new sandbox and server settings in the Server and Sandbox settings tabs, removed deprecated settings.
 * [FIX] Recipient filter was not being used with vote confirmations. (Thanks, plally)
 * [FIX] ulx resettodefaults will now also reset bans and users in SQLite.
 * [FIX] Changed how the eye trace on the player for teleport is calculated to make it more accurate.
+* [FIX] On listen servers, using the slider on some gmod server settings would cause the setting to constantly jump around.
+* [FIX] XGUI: "Keep AI Ragdoll" setting replaced with "Keep Corpses", which should work now.
+* [FIX] XGUI: Sandbox "Persist" setting now supports setting the persistence file name.
+* [FIX] XLIB: Alpha slider bar no longer saves decimal, no longer backwards while typing in a value.
 * [CHANGE] Exposed ragdoll and unragdoll functions to the ulx table so they can be called externally. (Thanks, brandonsturgeon)
+* [CHANGE] XGUI: Update sandbox limit definitions and slider maximums, removed deprecated limits.
+* [ADD] XLIB: New helper element "Scrollable panel".
+* [ADD] XLIB: Some helper elements now suport DOCK layout.
 
 ## v3.80 - *(08/04/2022)*
 * [CHANGE] Muted players can no longer use psay (thanks, PixeLInc).
