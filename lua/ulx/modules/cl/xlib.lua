@@ -917,7 +917,7 @@ function PANEL:AddAlphaBar()
 		local val = tonumber( self:GetValue() )
 		if not val then val = 0 end
 		if val ~= math.Clamp( val, 0, 255 ) then self:SetValue( math.Clamp( val, 0, 255 ) ) end
-		p.AlphaBar:SetValue( 1 - ( val / 255) )
+		p.AlphaBar:SetValue( val / 255 )
 		p:OnChangeImmediate( p:GetColor() )
 	end
 	self.txtA.OnLoseFocus = function( self )
@@ -942,7 +942,7 @@ function PANEL:AddAlphaBar()
 	end
 
 	self.AlphaBar = vgui.Create( "DAlphaBar", self )
-	self.AlphaBar.OnChange = function( ctrl, alpha ) self:SetColorAlpha( alpha*255 ) end
+	self.AlphaBar.OnChange = function( ctrl, alpha ) self:SetColorAlpha( math.floor( ( alpha * 255 ) ) ) end
 	self.AlphaBar:SetPos( 25,5 )
 	self.AlphaBar:SetSize( 15, 100 )
 	self.AlphaBar:SetValue( 1 )
