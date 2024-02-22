@@ -339,6 +339,9 @@ function xlib.makecombobox( t )
 	local pnl = vgui.Create( "DComboBox", t.parent )
 	t.w = t.w or 100
 	t.h = t.h or 20
+	if t.dock then pnl:Dock( t.dock ) end -- NODOCK, FILL, LEFT, RIGHT, TOP, BOTTOM
+	if t.dockmargin then pnl:DockMargin( t.dockmargin[1], t.dockmargin[2], t.dockmargin[3], t.dockmargin[4] ) end
+	if t.dockpadding then pnl:DockPadding( t.dockpadding[1], t.dockpadding[2], t.dockpadding[3], t.dockpadding[4] ) end
 	pnl:SetPos( t.x, t.y )
 	pnl:SetSize( t.w, t.h )
 	pnl:SetZPos( t.zpos or 0 )
