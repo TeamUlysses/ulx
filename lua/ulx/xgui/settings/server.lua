@@ -14,9 +14,9 @@ if game.SinglePlayer() then
 	xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Keep AI Ragdolls", convar=xlib.ifListenHost("ai_keepragdolls"), repconvar=xlib.ifNotListenHost("rep_ai_keepragdolls"), parent=sidepanel }
 end
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Gravity", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,0,0}, label="<--->", w=125, min=-1000, max=1000, convar=xlib.ifListenHost("sv_gravity"), repconvar=xlib.ifNotListenHost("rep_sv_gravity"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,0,0}, label="<--->", w=125, min=-1000, max=1000, convar=xlib.ifListenHost("sv_gravity"), repconvar=xlib.ifNotListenHost("rep_sv_gravity"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Physics Timescale", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,0,0}, label="<--->", w=125, min=0, max=4, decimal=2, convar=xlib.ifListenHost("phys_timescale"), repconvar=xlib.ifNotListenHost("rep_phys_timescale"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,0,0}, label="<--->", w=125, min=0, max=4, decimal=2, convar=xlib.ifListenHost("phys_timescale"), repconvar=xlib.ifNotListenHost("rep_phys_timescale"), parent=sidepanel, fixclip=true }
 
 ------------------------ULX Category Menu------------------------
 server.mask = xlib.makepanel{ x=295, y=5, w=290, h=322, parent=server }

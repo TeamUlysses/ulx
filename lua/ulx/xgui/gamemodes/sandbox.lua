@@ -16,17 +16,17 @@ xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Bone manip. everything
 
 xlib.makecheckbox{ dock=TOP, dockmargin={0,20,0,0}, label="Limited physgun", convar=xlib.ifListenHost("physgun_limited"), repconvar=xlib.ifNotListenHost("rep_physgun_limited"), parent=sidepanel }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Max beam range", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=128, max=8192, convar=xlib.ifListenHost("physgun_maxrange"), repconvar=xlib.ifNotListenHost("rep_physgun_maxrange"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=128, max=8192, convar=xlib.ifListenHost("physgun_maxrange"), repconvar=xlib.ifNotListenHost("rep_physgun_maxrange"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Teleport Distance", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10000, convar=xlib.ifListenHost("physgun_teleportDistance"), repconvar=xlib.ifNotListenHost("rep_physgun_teleportDistance"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10000, convar=xlib.ifListenHost("physgun_teleportDistance"), repconvar=xlib.ifNotListenHost("rep_physgun_teleportDistance"), parent=sidepanel, fixclip=true  }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Max Prop Speed", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10000, convar=xlib.ifListenHost("physgun_maxSpeed"), repconvar=xlib.ifNotListenHost("rep_physgun_maxSpeed"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10000, convar=xlib.ifListenHost("physgun_maxSpeed"), repconvar=xlib.ifNotListenHost("rep_physgun_maxSpeed"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Max Angular Speed", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10000, convar=xlib.ifListenHost("physgun_maxAngular"), repconvar=xlib.ifNotListenHost("rep_physgun_maxAngular"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=10000, convar=xlib.ifListenHost("physgun_maxAngular"), repconvar=xlib.ifNotListenHost("rep_physgun_maxAngular"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Time To Arrive", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=2, decimal=2, convar=xlib.ifListenHost("physgun_timeToArrive"), repconvar=xlib.ifNotListenHost("rep_physgun_timeToArrive"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=2, decimal=2, convar=xlib.ifListenHost("physgun_timeToArrive"), repconvar=xlib.ifNotListenHost("rep_physgun_timeToArrive"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Time To Arrive (Ragdolls)", parent=sidepanel }
-xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=2, decimal=2, convar=xlib.ifListenHost("physgun_timeToArriveRagdoll"), repconvar=xlib.ifNotListenHost("rep_physgun_timeToArriveRagdoll"), parent=sidepanel }
+xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=0, max=2, decimal=2, convar=xlib.ifListenHost("physgun_timeToArriveRagdoll"), repconvar=xlib.ifNotListenHost("rep_physgun_timeToArriveRagdoll"), parent=sidepanel, fixclip=true }
 
 xlib.makelabel{ dock=TOP, dockmargin={0,20,0,0}, w=138, label="Persistence file:", parent=sidepanel }
 xlib.maketextbox{ h=25, dock=TOP, dockmargin={0,5,5,0}, label="Persist Props", convar=xlib.ifListenHost("sbox_persist"), repconvar=xlib.ifNotListenHost("rep_sbox_persist"), parent=sidepanel }
