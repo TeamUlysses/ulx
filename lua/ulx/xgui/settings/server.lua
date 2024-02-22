@@ -8,11 +8,9 @@ local sidepanel = xlib.makescrollpanel{ x=5, y=5, w=140, h=322, spacing=4, paren
 xlib.makelabel{ dock=TOP, dockmargin={0,0,0,0}, label="Alltalk setting:", parent=sidepanel }
 xlib.makecombobox{ dock=TOP, dockmargin={0,2,0,0}, w=140, repconvar="rep_sv_alltalk", isNumberConvar=true, choices={ "Team near you", "Team only", "Everyone near you", "Everyone" }, parent=sidepanel }
 xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Enable Voice Chat", convar=xlib.ifListenHost("sv_voiceenable"), repconvar=xlib.ifNotListenHost("rep_sv_voiceenable"), parent=sidepanel }
-xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Disable AI", convar=xlib.ifListenHost("ai_disabled"), repconvar=xlib.ifNotListenHost("rep_ai_disabled"), parent=sidepanel }
+xlib.makecheckbox{ dock=TOP, dockmargin={0,20,0,0}, label="Disable AI", convar=xlib.ifListenHost("ai_disabled"), repconvar=xlib.ifNotListenHost("rep_ai_disabled"), parent=sidepanel }
 xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="AI Ignore Players", convar=xlib.ifListenHost("ai_ignoreplayers"), repconvar=xlib.ifNotListenHost("rep_ai_ignoreplayers"), parent=sidepanel }
-if game.SinglePlayer() then
-	xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Keep AI Ragdolls", convar=xlib.ifListenHost("ai_keepragdolls"), repconvar=xlib.ifNotListenHost("rep_ai_keepragdolls"), parent=sidepanel }
-end
+xlib.makecheckbox{ dock=TOP, dockmargin={0,5,0,0}, label="Keep Corpses", convar=xlib.ifListenHost("ai_serverragdolls"), repconvar=xlib.ifNotListenHost("rep_ai_serverragdolls"), parent=sidepanel }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Gravity", parent=sidepanel }
 xlib.makeslider{ dock=TOP, dockmargin={0,2,5,0}, label="<--->", w=125, min=-1000, max=1000, convar=xlib.ifListenHost("sv_gravity"), repconvar=xlib.ifNotListenHost("rep_sv_gravity"), parent=sidepanel, fixclip=true }
 xlib.makelabel{ dock=TOP, dockmargin={0,5,0,0}, label="Physics Timescale", parent=sidepanel }
