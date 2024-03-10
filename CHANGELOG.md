@@ -10,6 +10,7 @@
 * [FIX] On listen servers, using the slider on some gmod server settings would cause the setting to constantly jump around.
 * [FIX] XGUI: "Keep AI Ragdoll" setting replaced with "Keep Corpses", which should work now.
 * [FIX] XGUI: Sandbox "Persist" setting now supports setting the persistence file name.
+* [FIX] XGUI: Creating or editing adverts would cause server errors instead of showing the advert until mapchange.
 * [FIX] XLIB: Alpha slider bar no longer saves decimal, no longer backwards while typing in a value.
 * [CHANGE] Exposed ragdoll and unragdoll functions to the ulx table so they can be called externally. (Thanks, brandonsturgeon)
 * [CHANGE] XGUI: Update sandbox limit definitions and slider maximums, removed deprecated limits.

@@ -107,7 +107,7 @@ function settings.init()
 	function settings.addAdvert( ply, args )
 		if ULib.ucl.query( ply, "xgui_svsettings" ) then
 			if args[3] == "<No Group>" then args[3] = nil end
-			local color = { r = tonumber( args[4] ), g = tonumber( args[5] ), b = tonumber( args[6] ), a = 255 } or nil
+			local color = Color( tonumber( args[4] ), tonumber( args[5] ), tonumber( args[6] ), 255 ) or nil
 			ulx.addAdvert( args[1], tonumber( args[2] ), args[3], color, tonumber( args[7] ) )
 			if args[8] ~= "hold" then
 				xgui.sendDataTable( {}, "adverts" )
@@ -126,7 +126,7 @@ function settings.init()
 			local advert = ulx.adverts[group][number]
 			advert.message = args[4]
 			advert.rpt = tonumber( args[5] )
-			advert.color = { a=255, r=tonumber( args[6] ), g=tonumber( args[7] ), b=tonumber( args[8] ) }
+			advert.color = Color( tonumber( args[6] ), tonumber( args[7] ), tonumber( args[8] ), 255 )
 			advert.len = tonumber( args[9] )
 			xgui.sendDataTable( {}, "adverts" )
 			settings.saveAdverts()
