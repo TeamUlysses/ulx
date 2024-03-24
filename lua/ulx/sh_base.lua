@@ -4,7 +4,7 @@ ULib.registerPlugin{
 	Version       = string.format( "%.2f", ulx.version ),
 	IsRelease     = ulx.release,
 	Author        = "Team Ulysses",
-	URL           = "http://ulyssesmod.net",
+	URL           = "https://ulyssesmod.net",
 	WorkshopID    = 557962280,
 	BuildNumLocal         = tonumber(ULib.fileRead( "ulx.build" )),
 	BuildNumRemoteURL      = ulxBuildNumURL,

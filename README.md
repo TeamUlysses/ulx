@@ -1,12 +1,12 @@
 # ULX
-ULX is an admin mod for [Garry's Mod](http://garrysmod.com/).
+ULX is an admin mod for [Garry's Mod](https://gmod.facepunch.com/).
 
 ULX offers server admins an AMXX-style support. It allows multiple admins with different access levels on the same server.
 It features commands from basic kick, ban, and slay to fancier commands such as blind, freeze, voting, and more.
 
-Visit our homepage at http://ulyssesmod.net.
+Visit our homepage at https://ulyssesmod.net.
 
-You can talk to us on our forums at http://forums.ulyssesmod.net.
+You can talk to us on our forums at https://forums.ulyssesmod.net.
 
 ## Requirements
 ULX requires the latest version of [ULib](https://github.com/TeamUlysses/ulib) to be installed on the server.
@@ -14,8 +14,8 @@ ULX requires the latest version of [ULib](https://github.com/TeamUlysses/ulib) t
 ## Installation
 
 ### Workshop
-ULX's workshop ID is `557962280`. You can subscribe to ULX via Workshop [here](http://steamcommunity.com/sharedfiles/filedetails/?id=557962280).
-Don't forget you'll also need ULib, whose workshop ID is `557962238` and can be found [here](http://steamcommunity.com/sharedfiles/filedetails/?id=557962238).
+ULX's workshop ID is `557962280`. You can subscribe to ULX via Workshop [here](https://steamcommunity.com/sharedfiles/filedetails/?id=557962280).
+Don't forget you'll also need ULib, whose workshop ID is `557962238` and can be found [here](https://steamcommunity.com/sharedfiles/filedetails/?id=557962238).
 
 ### Classic
 To install ULX, simply extract the files from the downloaded archive to your garrysmod/addons/ folder.

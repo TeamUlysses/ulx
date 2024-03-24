@@ -171,7 +171,7 @@ local template_item_addon = [[
 ]]
 
 local template_item_workshop = [[
-						<li><b>%title%</b> - <a href="http://steamcommunity.com/sharedfiles/filedetails/?id=%workshop_id%">View on Workshop</a></li>
+						<li><b>%title%</b> - <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=%workshop_id%">View on Workshop</a></li>
 ]]
 
 local template_footer = [[

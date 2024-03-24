@@ -5,5 +5,5 @@
 	"up_date"         "00/00/00"
 	"author_name"     "Team Ulysses"
 	"author_email"    "teamulysses@ulyssesmod.net"
-	"author_url"      "http://www.ulyssesmod.net/"
+	"author_url"      "https://www.ulyssesmod.net/"
 }
