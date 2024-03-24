@@ -2,7 +2,7 @@
 {
 	"name"            "ULX"
 	"version"         "3.81"
-	"up_date"         "00/00/00"
+	"up_date"         "03/24/24"
 	"author_name"     "Team Ulysses"
 	"author_email"    "teamulysses@ulyssesmod.net"
 	"author_url"      "https://www.ulyssesmod.net/"
