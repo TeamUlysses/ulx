@@ -82,17 +82,17 @@ function ulx.bring( calling_ply, target_plys )
 
   if ulx.getExclusive( calling_ply, calling_ply ) then
     ULib.tsayError( calling_ply, ulx.getExclusive( calling_ply, calling_ply ), true )
-    return
+    return false
   end
 
   if not calling_ply:Alive() then
     ULib.tsayError( calling_ply, "You are dead!", true )
-    return
+    return false
   end
 
   if calling_ply:InVehicle() then
     ULib.tsayError( calling_ply, "Please leave the vehicle first!", true )
-    return
+    return false
   end
 
 	local t = {
@@ -104,7 +104,7 @@ function ulx.bring( calling_ply, target_plys )
 
   if tr.Hit then
     ULib.tsayError( calling_ply, "Can't teleport when you're inside the world!", true )
-    return
+    return false
   end
 
   local teleportable_plys = {}
@@ -169,33 +169,33 @@ bring:help( "Brings target(s) to you." )
 function ulx.goto( calling_ply, target_ply )
 	if not calling_ply:IsValid() then
 		Msg( "You may not step down into the mortal world from console.\n" )
-		return
+		return false
 	end
 
 	if ulx.getExclusive( calling_ply, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( calling_ply, calling_ply ), true )
-		return
+		return false
 	end
 
 	if not target_ply:Alive() then
 		ULib.tsayError( calling_ply, target_ply:Nick() .. " is dead!", true )
-		return
+		return false
 	end
 
 	if not calling_ply:Alive() then
 		ULib.tsayError( calling_ply, "You are dead!", true )
-		return
+		return false
 	end
 
 	if target_ply:InVehicle() and calling_ply:GetMoveType() ~= MOVETYPE_NOCLIP then
 		ULib.tsayError( calling_ply, "Target is in a vehicle! Noclip and use this command to force a goto.", true )
-		return
+		return false
 	end
 
 	local newpos = playerSend( calling_ply, target_ply, calling_ply:GetMoveType() == MOVETYPE_NOCLIP )
 	if not newpos then
 		ULib.tsayError( calling_ply, "Can't find a place to put you! Noclip and use this command to force a goto.", true )
-		return
+		return false
 	end
 
 	if calling_ply:InVehicle() then
@@ -218,17 +218,17 @@ goto:help( "Goto target." )
 function ulx.send( calling_ply, target_from, target_to )
 	if target_from == target_to then
 		ULib.tsayError( calling_ply, "You listed the same target twice! Please use two different targets.", true )
-		return
+		return false
 	end
 
 	if ulx.getExclusive( target_from, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( target_from, calling_ply ), true )
-		return
+		return false
 	end
 
 	if ulx.getExclusive( target_to, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( target_to, calling_ply ), true )
-		return
+		return false
 	end
 
 	local nick = target_from:Nick() -- Going to use this for our error (if we have one)
@@ -238,18 +238,18 @@ function ulx.send( calling_ply, target_from, target_to )
 			nick = target_to:Nick()
 		end
 		ULib.tsayError( calling_ply, nick .. " is dead!", true )
-		return
+		return false
 	end
 
 	if target_to:InVehicle() and target_from:GetMoveType() ~= MOVETYPE_NOCLIP then
 		ULib.tsayError( calling_ply, "Target is in a vehicle!", true )
-		return
+		return false
 	end
 
 	local newpos = playerSend( target_from, target_to, target_from:GetMoveType() == MOVETYPE_NOCLIP )
 	if not newpos then
 		ULib.tsayError( calling_ply, "Can't find a place to put them!", true )
-		return
+		return false
 	end
 
 	if target_from:InVehicle() then
@@ -273,23 +273,23 @@ send:help( "Goto target." )
 function ulx.teleport( calling_ply, target_ply )
 	if not calling_ply:IsValid() then
 		Msg( "You are the console, you can't teleport or teleport others since you can't see the world!\n" )
-		return
+		return false
 	end
 
 	if ulx.getExclusive( target_ply, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( target_ply, calling_ply ), true )
-		return
+		return false
 	end
 
 	if not target_ply:Alive() then
 		ULib.tsayError( calling_ply, target_ply:Nick() .. " is dead!", true )
-		return
+		return false
 	end
 
  	local pos = calling_ply:GetEyeTrace().HitPos
 
 	if target_ply == calling_ply and pos:Distance( target_ply:GetPos() ) < 64 then -- Laughable distance
-		return
+		return false
 	end
 
 	target_ply.ulx_prevpos = target_ply:GetPos()
@@ -314,22 +314,22 @@ teleport:help( "Teleports target." )
 function ulx.retrn( calling_ply, target_ply )
 	if not target_ply:IsValid() then
 		Msg( "Return where? The console may never return to the mortal realm.\n" )
-		return
+		return false
 	end
 
 	if not target_ply.ulx_prevpos then
 		ULib.tsayError( calling_ply, target_ply:Nick() .. " does not have any previous locations to send them to.", true )
-		return
+		return false
 	end
 
 	if ulx.getExclusive( target_ply, calling_ply ) then
 		ULib.tsayError( calling_ply, ulx.getExclusive( target_ply, calling_ply ), true )
-		return
+		return false
 	end
 
 	if not target_ply:Alive() then
 		ULib.tsayError( calling_ply, target_ply:Nick() .. " is dead!", true )
-		return
+		return false
 	end
 
 	if target_ply:InVehicle() then
