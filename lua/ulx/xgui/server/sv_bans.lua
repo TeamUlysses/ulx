@@ -105,7 +105,7 @@ function bans.init()
 		xgui.bansbyunban = {}
 		xgui.bansbybanlength = {}
 	end
-	
+
 	local sortTypeTable = {
 		[1] = function()
 			-- Bans by Name
@@ -149,7 +149,7 @@ function bans.init()
 				table.sort( xgui.bansbyreason, function( a, b ) return a[2] < b[2] end )
 			end
 			return xgui.bansbyreason
-			
+
 		end,
 		[5] = function()
 			-- Bans by Unban Date
@@ -199,7 +199,7 @@ function bans.init()
 
 		-- Default params
 		sortType = tonumber( args[1] ) or 0
-		filterString = args[2] ~= "" and string.lower( args[2] ) or nil
+		filterString = (args[2] ~= "" and args[2] ~= nil) and string.lower( args[2] ) or nil
 		filterPermaBan = args[3] and tonumber( args[3] ) or 0
 		filterIncomplete = args[4] and tonumber( args[4] ) or 0
 		page = tonumber( args[5] ) or 1
