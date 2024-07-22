@@ -32,7 +32,7 @@ function groups.init()
 
 	function xgui.playerExistsByID( id )
 		for k, v in ipairs( player.GetAll() ) do
-			if v:SteamID() == id or v:UniqueID() == id or ULib.splitPort( v:IPAddress() ) == id then
+			if v:SteamID() == id or v:SteamID64() == id or v:UniqueID() == id or ULib.splitPort( v:IPAddress() ) == id then
 				return v
 			end
 		end

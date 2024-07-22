@@ -294,16 +294,16 @@ function ulx.debuginfo( calling_ply )
 	str = str .. "Dedicated server: " .. tostring( game.IsDedicated() ) .. "\n\n"
 
 	local players = player.GetAll()
-	str = str .. string.format( "Currently connected players:\nNick%s steamid%s uid%s id lsh\n", str.rep( " ", 27 ), str.rep( " ", 12 ), str.rep( " ", 7 ) )
+	str = str .. string.format( "Currently connected players:\nNick%s steamid%s steamid64%s id lsh\n", str.rep( " ", 27 ), str.rep( " ", 12 ), str.rep( " ", 7 ) )
 	for _, ply in ipairs( players ) do
 		local id = string.format( "%i", ply:EntIndex() )
 		local steamid = ply:SteamID()
-		local uid = tostring( ply:UniqueID() )
+		local steamid64 = tostring( ply:SteamID64() )
 		local name = utf8.force( ply:Nick() )
 
 		local plyline = name .. str.rep( " ", 32 - utf8.len( name ) ) -- Name
 		plyline = plyline .. steamid .. str.rep( " ", 20 - steamid:len() ) -- Steamid
-		plyline = plyline .. uid .. str.rep( " ", 11 - uid:len() ) -- Steamid
+		plyline = plyline .. steamid64 .. str.rep( " ", 11 - steamid64:len() ) -- Steamid
 		plyline = plyline .. id .. str.rep( " ", 3 - id:len() ) -- id
 		if ply:IsListenServerHost() then
 			plyline = plyline .. "y	  "
