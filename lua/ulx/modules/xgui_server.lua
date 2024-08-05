@@ -110,13 +110,13 @@ function xgui.init()
 	--Let the server know when players are/aren't ready to receive data.
 	function xgui.getInstalled( ply )
 		ULib.clientRPC( ply, "xgui.getInstalled" )
-		xgui.readyPlayers[ply:UniqueID()] = 1
+		xgui.readyPlayers[ply:SteamID64()] = 1
 	end
 	xgui.addCmd( "getInstalled", xgui.getInstalled )
 
 	function xgui.onDisconnect( ply )
-		xgui.activeUsers[ply:UniqueID()] = nil
-		xgui.readyPlayers[ply:UniqueID()] = nil
+		xgui.activeUsers[ply:SteamID64()] = nil
+		xgui.readyPlayers[ply:SteamID64()] = nil
 	end
 	hook.Add( "PlayerDisconnected", "xgui_ply_disconnect", xgui.onDisconnect )
 
@@ -159,25 +159,25 @@ function xgui.init()
 		plys = plyToTable( plys )
 
 		for k, ply in pairs( plys ) do
-			if not xgui.readyPlayers[ply:UniqueID()] then return end --Ignore requests to players who are not ready, they'll get the data as soon as they can.
+			if not xgui.readyPlayers[ply:SteamID64()] then return end --Ignore requests to players who are not ready, they'll get the data as soon as they can.
 
 			-- print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			-- print("sendDataTable attempt. Will defer?", xgui.activeUsers[ply:UniqueID()] and not forceSend)
+			-- print("sendDataTable attempt. Will defer?", xgui.activeUsers[ply:SteamID64()] and not forceSend)
 			-- PrintTable(datatypes)
 			-- print(debug.traceback())
 			-- print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-			if xgui.activeUsers[ply:UniqueID()] and not forceSend then --If data is currently being sent to the client
+			if xgui.activeUsers[ply:SteamID64()] and not forceSend then --If data is currently being sent to the client
 				for _, dtype in ipairs( datatypes ) do
 					local exists = false
-					for _,existingArg in ipairs(xgui.activeUsers[ply:UniqueID()].tables) do
+					for _,existingArg in ipairs(xgui.activeUsers[ply:SteamID64()].tables) do
 						if dtype == existingArg then exists=true break end
 					end
-					if not exists then table.insert( xgui.activeUsers[ply:UniqueID()].tables, dtype ) end
+					if not exists then table.insert( xgui.activeUsers[ply:SteamID64()].tables, dtype ) end
 					--Clear any events relating to this data type, since those changes will be reflected whenever the new table is sent.
-					for i=#xgui.activeUsers[ply:UniqueID()].events,1,-1 do
-						if xgui.activeUsers[ply:UniqueID()].events[i][2] == dtype then
-							table.remove( xgui.activeUsers[ply:UniqueID()].events, i )
+					for i=#xgui.activeUsers[ply:SteamID64()].events,1,-1 do
+						if xgui.activeUsers[ply:SteamID64()].events[i][2] == dtype then
+							table.remove( xgui.activeUsers[ply:SteamID64()].events, i )
 						end
 					end
 				end
@@ -246,13 +246,13 @@ function xgui.init()
 		for k, ply in pairs( plys ) do
 
 			-- print("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv")
-			-- print("sendDataEvent attempt. Will defer?", xgui.activeUsers[ply:UniqueID()])
+			-- print("sendDataEvent attempt. Will defer?", xgui.activeUsers[ply:SteamID64()])
 			-- print(evtype, dtype, entry)
 			-- print(debug.traceback())
 			-- print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-			if xgui.activeUsers[ply:UniqueID()] then
-				table.insert( xgui.activeUsers[ply:UniqueID()].events, { evtype, dtype, entry } )
+			if xgui.activeUsers[ply:SteamID64()] then
+				table.insert( xgui.activeUsers[ply:SteamID64()].events, { evtype, dtype, entry } )
 				return
 			end
 
@@ -264,26 +264,26 @@ function xgui.init()
 
 	function xgui.sendChunks( ply, chunks )
 		ULib.clientRPC( ply, "xgui.expectChunks", #chunks )
-		if not xgui.activeUsers[ply:UniqueID()] then xgui.activeUsers[ply:UniqueID()] = { tables={}, events={} } end
+		if not xgui.activeUsers[ply:SteamID64()] then xgui.activeUsers[ply:SteamID64()] = { tables={}, events={} } end
 		for _, chunk in ipairs( chunks ) do
 			ULib.queueFunctionCall( ULib.clientRPC, ply, "xgui.getChunk", chunk[1], chunk[2], chunk[3] )
 		end
 	end
 
 	function xgui.chunksFinished( ply )
-		if xgui.activeUsers[ply:UniqueID()] then
-			if #xgui.activeUsers[ply:UniqueID()].tables > 0 then --Data tables have been requested while the player was transferring data
-				xgui.sendDataTable( ply, xgui.activeUsers[ply:UniqueID()].tables, true )
-				xgui.activeUsers[ply:UniqueID()].tables = {}
-			elseif #xgui.activeUsers[ply:UniqueID()].events > 0 then --No data tables are needed, and events have occurred while the player was transferring data
+		if xgui.activeUsers[ply:SteamID64()] then
+			if #xgui.activeUsers[ply:SteamID64()].tables > 0 then --Data tables have been requested while the player was transferring data
+				xgui.sendDataTable( ply, xgui.activeUsers[ply:SteamID64()].tables, true )
+				xgui.activeUsers[ply:SteamID64()].tables = {}
+			elseif #xgui.activeUsers[ply:SteamID64()].events > 0 then --No data tables are needed, and events have occurred while the player was transferring data
 				local chunks = {}
-				for _,v in ipairs( xgui.activeUsers[ply:UniqueID()].events ) do
+				for _,v in ipairs( xgui.activeUsers[ply:SteamID64()].events ) do
 					table.insert( chunks, v )
 				end
 				xgui.sendChunks( ply, chunks )
-				xgui.activeUsers[ply:UniqueID()].events = {}
+				xgui.activeUsers[ply:SteamID64()].events = {}
 			else --Client is up-to-date!
-				xgui.activeUsers[ply:UniqueID()] = nil
+				xgui.activeUsers[ply:SteamID64()] = nil
 			end
 		end
 	end
@@ -326,7 +326,7 @@ function xgui.postInit()
 	--Fix any users who requested data before the server was ready
 	for _, ply in pairs( player.GetAll() ) do
 		for UID, data in pairs( xgui.activeUsers ) do
-			if ply:UniqueID() == UID then
+			if ply:SteamID64() == UID then
 				ULib.clientRPC( ply, "xgui.getChunk", -1, "Initializing..." )
 			end
 		end

@@ -353,7 +353,7 @@ function xgui.show( tabname )
 		return
 	end
 
-	if not game.SinglePlayer() and not ULib.ucl.authed[LocalPlayer():UniqueID()] then
+	if not game.SinglePlayer() and not ULib.ucl.authed[LocalPlayer():SteamID64()] then
 		local unauthedWarning = xlib.makeframe{ label="XGUI Error!", w=250, h=90, showclose=true, skin=xgui.settings.skin }
 		xlib.makelabel{ label="Your ULX player has not been Authed!", x=10, y=30, parent=unauthedWarning }
 		xlib.makelabel{ label="Please wait a couple seconds and try again.", x=10, y=45, parent=unauthedWarning }
