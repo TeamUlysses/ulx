@@ -48,7 +48,7 @@ function ulx.exec( calling_ply, config )
 	if string.sub( config, -4 ) ~= ".cfg" then config = config .. ".cfg" end
 	if not ULib.fileExists( "cfg/" .. config ) then
 		ULib.tsayError( calling_ply, "That config does not exist!", true )
-		return
+		return false
 	end
 
 	ULib.execFile( "cfg/" .. config )
@@ -84,7 +84,7 @@ function ulx.ent( calling_ply, classname, params )
 	-- Make sure it's a valid ent
 	if not newEnt or not newEnt:IsValid() then
 		ULib.tsayError( calling_ply, "Unknown entity type (" .. classname .. "), aborting.", true )
-		return
+		return false
 	end
 
 	local trace = calling_ply:GetEyeTrace()
