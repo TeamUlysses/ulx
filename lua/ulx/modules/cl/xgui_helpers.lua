@@ -236,7 +236,7 @@ function xgui.load_helpers()
 			local max = restrictions.max or 10 * 60 * 24 * 365 --default slider max 10 years
 
 			local outPanel = xlib.makepanel{ h=40, parent=parent }
-			xlib.makelabel{ x=5, y=3, label="Ban Length:", parent=outPanel }
+			xlib.makelabel{ x=5, y=3, label=arg.hint or "Time:", parent=outPanel }
 			outPanel.interval = xlib.makecombobox{ x=90, w=75, parent=outPanel }
 			outPanel.val = xlib.makeslider{ w=165, y=20, label="<--->", min=min, max=max, value=min, decimal=0, parent=outPanel }
 

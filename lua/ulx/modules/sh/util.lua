@@ -99,7 +99,7 @@ function ulx.ban( calling_ply, target_ply, minutes, reason )
 end
 local ban = ulx.command( CATEGORY_NAME, "ulx ban", ulx.ban, "!ban", false, false, true )
 ban:addParam{ type=ULib.cmds.PlayerArg }
-ban:addParam{ type=ULib.cmds.NumArg, hint="minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
+ban:addParam{ type=ULib.cmds.NumArg, hint="Ban Length", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
 ban:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.cmds.takeRestOfLine, completes=ulx.common_kick_reasons }
 ban:defaultAccess( ULib.ACCESS_ADMIN )
 ban:help( "Bans target." )
@@ -142,7 +142,7 @@ function ulx.banid( calling_ply, steamid, minutes, reason )
 end
 local banid = ulx.command( CATEGORY_NAME, "ulx banid", ulx.banid, "!banid", false, false, true )
 banid:addParam{ type=ULib.cmds.StringArg, hint="steamid" }
-banid:addParam{ type=ULib.cmds.NumArg, hint="minutes, 0 for perma", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
+banid:addParam{ type=ULib.cmds.NumArg, hint="Ban Length", ULib.cmds.optional, ULib.cmds.allowTimeString, min=0 }
 banid:addParam{ type=ULib.cmds.StringArg, hint="reason", ULib.cmds.optional, ULib.cmds.takeRestOfLine, completes=ulx.common_kick_reasons }
 banid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 banid:help( "Bans steamid." )
