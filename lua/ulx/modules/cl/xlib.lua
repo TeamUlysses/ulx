@@ -100,7 +100,7 @@ function xlib.makelabel( t )
 	return pnl
 end
 
-function xlib.makelistlayout( t )
+function xlib.makescrolledlistlayout( t )
 	local pnl = vgui.Create( "DListLayout" )
 	pnl.scroll = vgui.Create( "DScrollPanel", t.parent )
 
@@ -114,6 +114,26 @@ function xlib.makelistlayout( t )
 		self:SizeToChildren( false, true )
 		self:SetWide( self.scroll:GetWide() - ( self.scroll.VBar.Enabled and 16 or 0 ) )
 	end
+
+	return pnl
+end
+
+function xlib.makelistlayout( t )
+	-- Backwards compat (if a parent is provided, make it scrollable)
+	if IsValid( t.parent ) and t.parent ~= xgui.null then
+		return xlib.makescrolledlistlayout( t )
+	end
+
+	local pnl = vgui.Create( "DListLayout" )
+
+	pnl:SetPos( t.x, t.y )
+	pnl:SetSize( t.w, t.h )
+	pnl:SetZPos( t.zpos or 0 )
+
+	function pnl:PerformLayout()
+		self:SizeToChildren( false, true )
+	end
+
 	return pnl
 end
 
