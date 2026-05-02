@@ -138,6 +138,7 @@ function ulx.userallow( calling_ply, target_ply, access_string, access_tag )
 	local success = ULib.ucl.userAllow( id, accessTable )
 	if not success then
 		ULib.tsayError( calling_ply, string.format( "User \"%s\" already has access to \"%s\"", target_ply:Nick(), access_string ), true )
+		return false
 	else
 		if not access_tag or access_tag == "" then
 			ulx.fancyLogAdmin( calling_ply, "#A granted access #q to #T", access_string, target_ply )
@@ -176,12 +177,13 @@ function ulx.userallowid( calling_ply, id, access_string, access_tag )
 	local name = (ULib.ucl.authed[ id ] and ULib.ucl.authed[ id ].name) or (ULib.ucl.users[ id ] and ULib.ucl.users[ id ].name) or id
 	if not success then
 		ULib.tsayError( calling_ply, string.format( "User \"%s\" already has access to \"%s\"", name, access_string ), true )
+		return false
+	end
+
+	if not access_tag or access_tag == "" then
+		ulx.fancyLogAdmin( calling_ply, "#A granted access #q to #s", access_string, name )
 	else
-		if not access_tag or access_tag == "" then
-			ulx.fancyLogAdmin( calling_ply, "#A granted access #q to #s", access_string, name )
-		else
-			ulx.fancyLogAdmin( calling_ply, "#A granted access #q with tag #q to #s", access_string, access_tag, name )
-		end
+		ulx.fancyLogAdmin( calling_ply, "#A granted access #q with tag #q to #s", access_string, access_tag, name )
 	end
 end
 local userallowid = ulx.command( CATEGORY_NAME, "ulx userallowid", ulx.userallowid, nil, false, false, true )
@@ -198,17 +200,19 @@ function ulx.userdeny( calling_ply, target_ply, access_string, should_use_neutra
 	end
 
 	if should_use_neutral then
-		if success then
-			ulx.fancyLogAdmin( calling_ply, "#A made access #q neutral to #T", access_string, target_ply )
-		else
+		if not success then
 			ULib.tsayError( calling_ply, string.format( "User \"%s\" isn't denied or allowed access to \"%s\"", target_ply:Nick(), access_string ), true )
+			return false
 		end
+
+		ulx.fancyLogAdmin( calling_ply, "#A made access #q neutral to #T", access_string, target_ply )
 	else
 		if not success then
 			ULib.tsayError( calling_ply, string.format( "User \"%s\" is already denied access to \"%s\"", target_ply:Nick(), access_string ), true )
-		else
-			ulx.fancyLogAdmin( calling_ply, "#A denied access #q to #T", access_string, target_ply )
+			return false
 		end
+
+		ulx.fancyLogAdmin( calling_ply, "#A denied access #q to #T", access_string, target_ply )
 	end
 end
 local userdeny = ulx.command( CATEGORY_NAME, "ulx userdeny", ulx.userdeny, nil, false, false, true )
@@ -236,17 +240,19 @@ function ulx.userdenyid( calling_ply, id, access_string, should_use_neutral )
 
 	local name = (ULib.ucl.authed[ id ] and ULib.ucl.authed[ id ].name) or (ULib.ucl.users[ id ] and ULib.ucl.users[ id ].name) or id
 	if should_use_neutral then
-		if success then
-			ulx.fancyLogAdmin( calling_ply, "#A made access #q neutral to #s", access_string, name )
-		else
+		if not success then
 			ULib.tsayError( calling_ply, string.format( "User \"%s\" isn't denied or allowed access to \"%s\"", name, access_string ), true )
+			return false
 		end
+
+		ulx.fancyLogAdmin( calling_ply, "#A made access #q neutral to #s", access_string, name )
 	else
 		if not success then
 			ULib.tsayError( calling_ply, string.format( "User \"%s\" is already denied access to \"%s\"", name, access_string ), true )
-		else
-			ulx.fancyLogAdmin( calling_ply, "#A denied access #q to #s", access_string, name )
+			return false
 		end
+
+		ulx.fancyLogAdmin( calling_ply, "#A denied access #q to #s", access_string, name )
 	end
 end
 local userdenyid = ulx.command( CATEGORY_NAME, "ulx userdenyid", ulx.userdenyid, nil, false, false, true )
@@ -259,12 +265,12 @@ userdenyid:help( "Remove from a user's access." )
 function ulx.addgroup( calling_ply, group_name, inherit_from )
 	if ULib.ucl.groups[ group_name ] ~= nil then
 		ULib.tsayError( calling_ply, "This group already exists!", true )
-		return
+		return false
 	end
 
 	if not ULib.ucl.groups[ inherit_from ] then
 		ULib.tsayError( calling_ply, "The group you specified for inheritence doesn't exist!", true )
-		return
+		return false
 	end
 
 	ULib.ucl.addGroup( group_name, _, inherit_from )
@@ -279,7 +285,7 @@ addgroup:help( "Create a new group with optional inheritance." )
 function ulx.renamegroup( calling_ply, current_group, new_group )
 	if ULib.ucl.groups[ new_group ] then
 		ULib.tsayError( calling_ply, "The target group already exists!", true )
-		return
+		return false
 	end
 
 	ULib.ucl.renameGroup( current_group, new_group )
@@ -328,12 +334,13 @@ function ulx.groupallow( calling_ply, group_name, access_string, access_tag )
 	local success = ULib.ucl.groupAllow( group_name, accessTable )
 	if not success then
 		ULib.tsayError( calling_ply, string.format( "Group \"%s\" already has access to \"%s\"", group_name, access_string ), true )
+		return false
+	end
+
+	if not access_tag or access_tag == "" then
+		ulx.fancyLogAdmin( calling_ply, "#A granted access #q to group #s", access_string, group_name )
 	else
-		if not access_tag or access_tag == "" then
-			ulx.fancyLogAdmin( calling_ply, "#A granted access #q to group #s", access_string, group_name )
-		else
-			ulx.fancyLogAdmin( calling_ply, "#A granted access #q with tag #q to group #s", access_string, access_tag, group_name )
-		end
+		ulx.fancyLogAdmin( calling_ply, "#A granted access #q with tag #q to group #s", access_string, access_tag, group_name )
 	end
 end
 local groupallow = ulx.command( CATEGORY_NAME, "ulx groupallow", ulx.groupallow, nil, false, false, true )
@@ -352,11 +359,12 @@ function ulx.groupdeny( calling_ply, group_name, access_string )
 	end
 
 	local success = ULib.ucl.groupAllow( group_name, access_string, true )
-	if success then
-		ulx.fancyLogAdmin( calling_ply, "#A revoked access #q to group #s", access_string, group_name )
-	else
+	if not success then
 		ULib.tsayError( calling_ply, string.format( "Group \"%s\" doesn't have access to \"%s\"", group_name, access_string ), true )
+		return false
 	end
+
+	ulx.fancyLogAdmin( calling_ply, "#A revoked access #q to group #s", access_string, group_name )
 end
 local groupdeny = ulx.command( CATEGORY_NAME, "ulx groupdeny", ulx.groupdeny, nil, false, false, true )
 groupdeny:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
