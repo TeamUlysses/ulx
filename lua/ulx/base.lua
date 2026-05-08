@@ -84,7 +84,6 @@ local function sendAutocompletes( ply )
 	ULib.clientRPC( ply, "ulx.populateKickReasons", ulx.common_kick_reasons )
 end
 hook.Add( ULib.HOOK_UCLAUTH, "sendAutoCompletes", sendAutocompletes )
-hook.Add( "PlayerInitialSpawn", "sendAutoCompletes", sendAutocompletes )
 
 -- Cvar saving
 function cvarChanged( sv_cvar, cl_cvar, ply, old_value, new_value )

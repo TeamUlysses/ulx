@@ -13,8 +13,8 @@ local function checkForValidId( calling_ply, id )
 			ULib.tsayError( calling_ply, "Invalid steamid.", true )
 			return false
 		end
-	elseif not tonumber( id ) then -- Assume uniqueid and check
-		ULib.tsayError( calling_ply, "Invalid Unique ID", true )
+	elseif not tonumber( id ) then -- Assume UniqueID/SteamID64 and check
+		ULib.tsayError( calling_ply, "Invalid UniqueID/SteamID64", true )
 		return false
 	end
 
@@ -49,7 +49,7 @@ usermanagementhelp:defaultAccess( ULib.ACCESS_ALL )
 usermanagementhelp:help( "See the user management help." )
 
 function ulx.adduser( calling_ply, target_ply, group_name )
-	local userInfo = ULib.ucl.authed[ target_ply:UniqueID() ]
+	local userInfo = ULib.ucl.authed[ target_ply:SteamID64() ]
 
 	local id = ULib.ucl.getUserRegisteredID( target_ply )
 	if not id then id = target_ply:SteamID() end
@@ -81,13 +81,13 @@ function ulx.adduserid( calling_ply, id, group_name )
 	end
 end
 local adduserid = ulx.command( CATEGORY_NAME, "ulx adduserid", ulx.adduserid, nil, false, false, true )
-adduserid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
+adduserid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, SteamID64, IP, or UniqueID" }
 adduserid:addParam{ type=ULib.cmds.StringArg, completes=ulx.group_names_no_user, hint="group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
 adduserid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 adduserid:help( "Add a user by ID to specified group." )
 
 function ulx.removeuser( calling_ply, target_ply )
-	ULib.ucl.removeUser( target_ply:UniqueID() )
+	ULib.ucl.removeUser( target_ply:SteamID64() )
 
 	ulx.fancyLogAdmin( calling_ply, "#A removed all access rights from #T", target_ply )
 end
@@ -118,7 +118,7 @@ function ulx.removeuserid( calling_ply, id )
 	end
 end
 local removeuserid = ulx.command( CATEGORY_NAME, "ulx removeuserid", ulx.removeuserid, nil, false, false, true )
-removeuserid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
+removeuserid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, SteamID64, IP, or UniqueID" }
 removeuserid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 removeuserid:help( "Permanently removes a user's access by ID." )
 
@@ -185,16 +185,16 @@ function ulx.userallowid( calling_ply, id, access_string, access_tag )
 	end
 end
 local userallowid = ulx.command( CATEGORY_NAME, "ulx userallowid", ulx.userallowid, nil, false, false, true )
-userallowid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
+userallowid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, SteamID64, IP, or UniqueID" }
 userallowid:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 userallowid:addParam{ type=ULib.cmds.StringArg, hint="access tag", ULib.cmds.optional }
 userallowid:defaultAccess( ULib.ACCESS_SUPERADMIN )
 userallowid:help( "Add to a user's access." )
 
 function ulx.userdeny( calling_ply, target_ply, access_string, should_use_neutral )
-	local success = ULib.ucl.userAllow( target_ply:UniqueID(), access_string, should_use_neutral, true )
+	local success = ULib.ucl.userAllow( target_ply:SteamID64(), access_string, should_use_neutral, true )
 	if should_use_neutral then
-		success = success or ULib.ucl.userAllow( target_ply:UniqueID(), access_string, should_use_neutral, false ) -- Remove from both lists
+		success = success or ULib.ucl.userAllow( target_ply:SteamID64(), access_string, should_use_neutral, false ) -- Remove from both lists
 	end
 
 	if should_use_neutral then
@@ -250,7 +250,7 @@ function ulx.userdenyid( calling_ply, id, access_string, should_use_neutral )
 	end
 end
 local userdenyid = ulx.command( CATEGORY_NAME, "ulx userdenyid", ulx.userdenyid, nil, false, false, true )
-userdenyid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, IP, or UniqueID" }
+userdenyid:addParam{ type=ULib.cmds.StringArg, hint="SteamID, SteamID64, IP, or UniqueID" }
 userdenyid:addParam{ type=ULib.cmds.StringArg, hint="command" } -- TODO, add completes for this
 userdenyid:addParam{ type=ULib.cmds.BoolArg, hint="remove explicit allow or deny instead of outright denying", ULib.cmds.optional }
 userdenyid:defaultAccess( ULib.ACCESS_SUPERADMIN )
