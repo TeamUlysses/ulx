@@ -434,6 +434,11 @@ jail:setOpposite( "ulx unjail", {_, _, _, true}, "!unjail" )
 
 ------------------------------ Jail TP ------------------------------
 function ulx.jailtp( calling_ply, target_ply, seconds )
+	if not calling_ply:IsValid() then
+		Msg( "You can't teleport and jail from the dedicated server console.\n" )
+		return
+	end
+
 	local t = {}
 	t.start = calling_ply:GetPos() + Vector( 0, 0, 32 ) -- Move them up a bit so they can travel across the ground
 	t.endpos = calling_ply:GetPos() + calling_ply:EyeAngles():Forward() * 16384
@@ -781,6 +786,7 @@ local function createRagdollAfterCleanup()
 		if ply.ragdollAfterCleanup then
 			ply.ragdollAfterCleanup = nil
 			timer.Simple( 0.1, function() -- Doesn't like us re-creating the ragdoll immediately
+				if not ply:IsValid() then return end
 				ulx.ragdollPlayer( ply )
 			end)
 		end
@@ -817,7 +823,7 @@ zombieDeath = function( ent, ply )
 		local pos = ent:GetPos()
 		local ang = ent:GetAngles()
 		ULib.queueFunctionCall( function() -- Create it next frame because 1. Old NPC won't be in way and 2. We won't overflow the server while shutting down with someone being mauled
-			if not ply:IsValid() then return end -- Player left
+			if not ply:IsValid() or not ply.maul_npcs then return end -- Player left or maul ended
 
 			local ent2 = newZombie( pos, ang, ply )
 			table.insert( ply.maul_npcs, ent2 ) -- Don't worry about removing the old one, doesn't matter.
