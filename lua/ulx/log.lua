@@ -314,7 +314,7 @@ local function updateColors()
 	for i=1, #cvars do
 		local cvar = cvars[ i ]
 		local pieces = ULib.explode( "%s+", cvar:GetString() )
-		if not #pieces == 3 then Msg( "Warning: Tried to set ulx log color cvar with bad data\n" ) return end
+		if #pieces ~= 3 then Msg( "Warning: Tried to set ulx log color cvar with bad data\n" ) return end
 		local color = Color( tonumber( pieces[ 1 ] ), tonumber( pieces[ 2 ] ), tonumber( pieces[ 3 ] ) )
 
 		if cvar == logEchoColorDefault then default_color = color

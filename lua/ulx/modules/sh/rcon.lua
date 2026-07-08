@@ -93,6 +93,7 @@ function ulx.ent( calling_ply, classname, params )
 
 	newEnt:SetPos( vector ) -- Note that the position can be overridden by the user's flags
 
+	params = params or ""
 	params:gsub( "([^|:\"]+)\"?:\"?([^|]+)", function( key, value )
 		key = key:Trim()
 		value = value:Trim()
