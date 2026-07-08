@@ -8,6 +8,8 @@ if SERVER then ulx.convar( "voteEcho", "0", _, ULib.ACCESS_SUPERADMIN ) end -- E
 if SERVER then
 	util.AddNetworkString( "ulx_vote" )
 end
+local APPROVAL_VOTE_TIMEOUT = 30
+
 -- First, our helper function to make voting so much easier!
 function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 	timeout = timeout or 20
@@ -23,12 +25,15 @@ function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 
 	local voters = 0
 	local rp = RecipientFilter()
+	local eligibleVoters
 	if not filter then
 		rp:AddAllPlayers()
 		voters = #player.GetAll()
 	else
+		eligibleVoters = {}
 		for _, ply in ipairs( filter ) do
 			rp:AddPlayer( ply )
+			eligibleVoters[ ply:UniqueID() ] = true
 			voters = voters + 1
 		end
 	end
@@ -41,7 +46,7 @@ function ulx.doVote( title, options, callback, timeout, filter, noecho, ... )
 	net.Send(rp)
 	
 
-	ulx.voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, args={...} }
+	ulx.voteInProgress = { callback=callback, options=options, title=title, results={}, voters=voters, votes=0, noecho=noecho, eligibleVoters=eligibleVoters, args={...} }
 
 	timer.Create( "ULXVoteTimeout", timeout, 1, ulx.voteDone )
 
@@ -51,6 +56,11 @@ end
 function ulx.voteCallback( ply, command, argv )
 	if not ulx.voteInProgress then
 		ULib.tsayError( ply, "There is not a vote in progress" )
+		return
+	end
+
+	if ulx.voteInProgress.eligibleVoters and not ulx.voteInProgress.eligibleVoters[ ply:UniqueID() ] then
+		ULib.tsayError( ply, "You are not eligible to vote in this vote." )
 		return
 	end
 
@@ -198,7 +208,7 @@ local function voteMapDone( t, argv, ply )
 	elseif ply:IsValid() then
 		str = "Vote results: Option '" .. t.options[ winner ] .. "' won, changemap pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
 
-		ulx.doVote( "Accept result and changemap to " .. changeTo .. "?", { "Yes", "No" }, voteMapDone2, 30000, { ply }, true, changeTo, ply )
+		ulx.doVote( "Accept result and changemap to " .. changeTo .. "?", { "Yes", "No" }, voteMapDone2, APPROVAL_VOTE_TIMEOUT, { ply }, true, changeTo, ply )
 	else -- It's the server console, let's roll with it
 		str = "Vote results: Option '" .. t.options[ winner ] .. "' won. (" .. winnernum .. "/" .. t.voters .. ")"
 		ULib.tsay( _, str )
@@ -254,7 +264,7 @@ local function voteKickDone2( t, target, time, ply, reason )
 		ulx.logUserAct( ply, target, "#A denied the votekick against #T" )
 	end
 
-	if shouldKick then
+	if shouldKick and target:IsValid() then
 		if reason and reason ~= "" then
 			ULib.kick( target, "Vote kick successful. (" .. reason .. ")" )
 		else
@@ -284,7 +294,7 @@ local function voteKickDone( t, target, time, ply, reason )
 			str = "Vote results: User voted to be kicked, but has already left."
 		elseif ply:IsValid() then
 			str = "Vote results: User will now be kicked, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
-			ulx.doVote( "Accept result and kick " .. target:Nick() .. "?", { "Yes", "No" }, voteKickDone2, 30000, { ply }, true, target, time, ply, reason )
+			ulx.doVote( "Accept result and kick " .. target:Nick() .. "?", { "Yes", "No" }, voteKickDone2, APPROVAL_VOTE_TIMEOUT, { ply }, true, target, time, ply, reason )
 		else -- Vote from server console, roll with it
 			str = "Vote results: User will now be kicked. (" .. winnernum .. "/" .. t.voters .. ")"
 			ULib.kick( target, "Vote kick successful." )
@@ -364,7 +374,7 @@ local function voteBanDone( t, nick, steamid, time, ply, reason )
 		reason = ("[ULX Voteban] " .. (reason or "")):Trim()
 		if ply:IsValid() then
 			str = "Vote results: User will now be banned, pending approval. (" .. winnernum .. "/" .. t.voters .. ")"
-			ulx.doVote( "Accept result and ban " .. nick .. "?", { "Yes", "No" }, voteBanDone2, 30000, { ply }, true, nick, steamid, time, ply, reason )
+			ulx.doVote( "Accept result and ban " .. nick .. "?", { "Yes", "No" }, voteBanDone2, APPROVAL_VOTE_TIMEOUT, { ply }, true, nick, steamid, time, ply, reason )
 		else -- Vote from server console, roll with it
 			str = "Vote results: User will now be banned. (" .. winnernum .. "/" .. t.voters .. ")"
 			ULib.addBan( steamid, time, reason, nick, ply )
